@@ -1,0 +1,30 @@
+{
+  "name": "comprehensive_node",
+  "version": "1.0.0",
+  "description": "A Comprehensive Node.js Tutorial by Robit Alhazmi",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robitalhazmi/laravel_vue.git"
+  },
+  "keywords": [
+    "Node.js"
+  ],
+  "author": "Robit Alhazmi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robitalhazmi/laravel_vue/issues"
+  },
+  "homepage": "https://github.com/robitalhazmi/laravel_vue#readme"
+}
