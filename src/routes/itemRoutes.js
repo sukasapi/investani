@@ -6,8 +6,8 @@ var itemRouter = express.Router();
 var Item = require('../models/Item');
 
 // Register routes
-itemRouter.route('/').get(function (req, res) {
-    res.render('items');
+itemRouter.route('/auth/register').get(function (req, res) {
+    res.render('register');
 });
 itemRouter.route('/single').get(function (req, res) {
     res.render('singleItem');

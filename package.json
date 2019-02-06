@@ -1,7 +1,7 @@
 {
-  "name": "comprehensive_node",
+  "name": "investani",
   "version": "1.0.0",
-  "description": "A Comprehensive Node.js Tutorial by Robit Alhazmi",
+  "description": "Investani",
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.18.3",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/robitalhazmi/laravel_vue.git"
+    "url": "git+https://github.com/robitalhazmi/investani.git"
   },
   "keywords": [
     "Node.js"
@@ -24,7 +24,7 @@
   "author": "Robit Alhazmi",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/robitalhazmi/laravel_vue/issues"
+    "url": "https://github.com/robitalhazmi/investani/issues"
   },
-  "homepage": "https://github.com/robitalhazmi/laravel_vue#readme"
+  "homepage": "https://github.com/robitalhazmi/investani#readme"
 }
