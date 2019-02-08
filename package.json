@@ -1,22 +1,40 @@
 {
-  "name": "investani",
+  "name": "comprehensive_node",
   "version": "1.0.0",
-  "description": "Investani",
+  "description": "A Comprehensive Node.js Tutorial by Robit Alhazmi",
   "main": "index.js",
-  "dependencies": {
-    "body-parser": "^1.18.3",
-    "ejs": "^2.6.1",
-    "express": "^4.16.4",
-    "mongoose": "^5.4.9"
-  },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "nodemon ./server.js --exec babel-node -e js"
+  },
+  "dependencies": {
+    "bcryptjs": "*",
+    "body-parser": "*",
+    "bootstrap": "^3.3.7",
+    "connect-flash": "*",
+    "cookie-parser": "*",
+    "ejs": "*",
+    "express": "*",
+    "express-messages": "*",
+    "express-session": "*",
+    "express-validator": "*",
+    "mongodb": "*",
+    "mongoose": "*",
+    "nodemon": "^1.18.9",
+    "passport": "*",
+    "passport-http": "*",
+    "passport-local": "*",
+    "nodemailer": "^5.1.1",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/robitalhazmi/investani.git"
+    "url": "git+https://github.com/robitalhazmi/comprehensive_node.js.git"
   },
   "keywords": [
     "Node.js"
@@ -24,7 +42,7 @@
   "author": "Robit Alhazmi",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/robitalhazmi/investani/issues"
+    "url": "https://github.com/robitalhazmi/comprehensive_node.js/issues"
   },
-  "homepage": "https://github.com/robitalhazmi/investani#readme"
+  "homepage": "https://github.com/robitalhazmi/comprehensive_node.js#readme"
 }

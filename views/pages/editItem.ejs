@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>EJS Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap.min.css"/>
+</head>
+<body>
+    <div class="container">
+    <% include ../partials/header %>
+        <h1>Add Item</h1>
+        <form action="/items/update/<%= item._id %>" method="POST">
+            <div class="form-group">
+                <label for="item">Item</label>
+                <input class="form-control" id="item" name="item" type="text" value="<%= item.item %>">
+            </div>
+            <button class="btn btn-default" type="submit">Update</button>
+        </form>
+    </div>
+</body>
+</html>
