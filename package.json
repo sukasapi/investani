@@ -20,11 +20,12 @@
     "express-validator": "*",
     "mongodb": "*",
     "mongoose": "*",
+    "nodemailer": "^5.1.1",
     "nodemon": "^1.18.9",
     "passport": "*",
     "passport-http": "*",
     "passport-local": "*",
-    "nodemailer": "^5.1.1",
+    "randomstring": "^1.1.5",
     "request": "^2.88.0"
   },
   "devDependencies": {

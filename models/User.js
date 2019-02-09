@@ -2,17 +2,23 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 let UserSchema = mongoose.Schema({
-  name: {
-    type: String,
-    index: true
-  },
   email: {
     type: String
   },
   password: {
     type: String
+  },
+  active: {
+    type: Boolean
+  },
+  secretToken: {
+    type: String
   }
-});
+},
+{
+  timestamps: true
+}
+);
 
 export const User = mongoose.model('User', UserSchema);
 export const createUser = (newUser, callback) => {
@@ -22,6 +28,9 @@ export const createUser = (newUser, callback) => {
         newUser.save(callback);
     });
   });
+}
+export const updateUser = (user, updateValue, callback) => {
+  User.findByIdAndUpdate(user._id, updateValue, callback);
 }
 export const getUserByEmail = (email, callback) => {
   let Obj = {
@@ -39,4 +48,10 @@ export const comparePassword = (password, hash, callback) => {
 }
 export const getUserByID = (id, callback) => {
   User.findById(id, callback);
+}
+export const getUserBySecretToken = (secretToken, callback) => {
+  let Obj = {
+    secretToken: secretToken
+  }
+  User.findOne(Obj, callback);
 }

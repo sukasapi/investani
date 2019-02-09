@@ -56,6 +56,9 @@ app.use(function(req, res, next){
     res.locals.error_message = req.flash('error_message');
     res.locals.error = req.flash('error');
     res.locals.user = req.user || null;
+    res.locals.error_email = req.flash('error_email');
+    res.locals.error_password = req.flash('error_password');
+    res.locals.error_cfm_pwd = req.flash('error_cfm_pwd');
     next();
   });
 
