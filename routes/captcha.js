@@ -36,7 +36,7 @@ function isLoggedIn(req, res, next) {
         next();
     }
     else {
-        res.redirect('/users/login');
+        res.redirect('/auth/login');
     }
 }
 

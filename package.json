@@ -23,7 +23,7 @@
     "nodemailer": "^5.1.1",
     "nodemon": "^1.18.9",
     "passport": "*",
-    "passport-http": "*",
+    "passport-http": "^0.3.0",
     "passport-local": "*",
     "randomstring": "^1.1.5",
     "request": "^2.88.0"

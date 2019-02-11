@@ -13,7 +13,36 @@ let UserSchema = mongoose.Schema({
   },
   secretToken: {
     type: String
-  }
+  },
+  profile: [{
+    registration_type: {
+      type: String
+    },
+    name: {
+      type: String
+    },
+    handphone: {
+      type: String
+    },
+    nationality: {
+      type: String
+    },
+    gender: {
+      type: String
+    },
+    birthdate: {
+      type: Date
+    },
+    province_id: {
+      type: String
+    },
+    city_id: {
+      type: String
+    },
+    address: {
+      type: String
+    }
+  }],
 },
 {
   timestamps: true

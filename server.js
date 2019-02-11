@@ -7,15 +7,15 @@ import expressValidator from 'express-validator';
 import flash from 'connect-flash';
 import session from 'express-session';
 import passport from 'passport';
-const LocalStrategy = require('passport-local').Strategy;
 // Set up MongoDB database
 import mongoose from 'mongoose';
 // Import route
 import ItemRoutes from './routes/itemRoutes';
 import index from './routes/index';
-import users from './routes/users';
+import auth from './routes/auth';
 import email from './routes/email';
 import captcha from './routes/captcha';
+import profile from './routes/profile';
 
 // Connect with Mongo database
 mongoose.Promise = global.Promise;
@@ -64,10 +64,11 @@ app.use(function(req, res, next){
 
 // Create routes
 app.use('/', index);
-app.use('/users', users);
+app.use('/auth', auth);
 app.use('/items', ItemRoutes);
 app.use('/email', email);
 app.use('/captcha', captcha);
+app.use('/profile', profile);
 
 app.listen(PORT, function(){
     console.log('Server is running on port:', PORT);
