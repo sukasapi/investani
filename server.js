@@ -15,6 +15,7 @@ import index from './routes/index';
 import auth from './routes/auth';
 import email from './routes/email';
 import captcha from './routes/captcha';
+import welcome from './routes/welcome';
 import profile from './routes/profile';
 
 // Connect with Mongo database
@@ -60,7 +61,7 @@ app.use(function(req, res, next){
     res.locals.error_password = req.flash('error_password');
     res.locals.error_cfm_pwd = req.flash('error_cfm_pwd');
     next();
-  });
+});
 
 // Create routes
 app.use('/', index);
@@ -68,7 +69,8 @@ app.use('/auth', auth);
 app.use('/items', ItemRoutes);
 app.use('/email', email);
 app.use('/captcha', captcha);
-app.use('/profile', profile);
+app.use('/welcome', welcome);
+app.use('/complete-profile', profile);
 
 app.listen(PORT, function(){
     console.log('Server is running on port:', PORT);

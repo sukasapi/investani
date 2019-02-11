@@ -8,6 +8,14 @@ let UserSchema = mongoose.Schema({
   password: {
     type: String
   },
+  flag: [{
+    name: {
+      type: String
+    },
+    status: {
+      type: String
+    }
+  }],
   active: {
     type: Boolean
   },

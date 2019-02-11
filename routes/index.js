@@ -1,7 +1,6 @@
 import express from 'express';
-import { getUserBySecretToken, updateUser, getUserByID } from '../models/User';
+import { getUserBySecretToken, updateUser } from '../models/User';
 
-let LocalStrategy = require('passport-local').Strategy;
 let router = express.Router();
 
 router.get('/', isLoggedIn, function (req, res) {
@@ -13,7 +12,7 @@ router.get('/welcome', isLoggedIn, function (req, res) {
         res.redirect('/');
     }
     else {
-        res.render('pages/welcome');
+        res.render('pages/welcome/welcome');
     }
 });
 router.get('/activation/:secretToken', function(req, res) {
@@ -53,7 +52,7 @@ router.get('/activation/:secretToken', function(req, res) {
 });
 router.get('/welcome/email-activated', isLoggedIn, function (req, res) {
     if (req.user.active) {
-        res.render('pages/email-activated');
+        res.render('pages/welcome/email-activated');
     }
     else {
         res.redirect('/welcome');

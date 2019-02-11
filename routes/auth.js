@@ -12,16 +12,13 @@ router.get('/', function (req, res) {
     res.render('pages/users');
 });
 router.get('/register', notLoggedIn, function (req, res) {
-    res.render('pages/register');
+    res.render('pages/auth/register');
 });
 router.post('/register', notLoggedIn, function (req, res) {
     let email = req.body.email;
     let password = req.body.password;
     let secretToken = randomstring.generate();
     let error_message;
-    let error_email;
-    let error_password;
-    let error_cfm_pwd;
 
     req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
     req.checkBody('email', 'Email wajib diisi.').notEmpty();
@@ -36,31 +33,29 @@ router.post('/register', notLoggedIn, function (req, res) {
     if (errors) {
         for (let index = 0; index < errors.length; index++) {
             if (errors[index].param == 'email') {
-                error_email = errors[index].msg;                
+                error_message = errors[index].msg;                
             }
             if (errors[index].param == 'password') {
-                error_password = errors[index].msg;
+                error_message = errors[index].msg;
                 
             }
             if (errors[index].param == 'cfm_pwd') {
-                error_cfm_pwd = errors[index].msg;
+                error_message = errors[index].msg;
             }
         }
-        req.flash('error_email', error_email);
-        req.flash('error_password', error_password);
-        req.flash('error_cfm_pwd', error_cfm_pwd);
+        req.flash('error_message', error_message);
         res.redirect('/auth/register');
     }
     else {
         getUserByEmail(email, function (err, user) {
             if (err) {
                 error_message = "Terjadi kesalahan"; 
-                req.flash('error_email', error_message);
+                req.flash('error_message', error_message);
                 res.redirect('/auth/register');
             }
             if (user) {
-                error_email = "User sudah ada"; 
-                req.flash('error_email', error_email);
+                error_message = "User sudah ada"; 
+                req.flash('error_message', error_message);
                 res.redirect('/auth/register');
             }
             else {
@@ -83,7 +78,7 @@ router.post('/register', notLoggedIn, function (req, res) {
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
                         error_message = "Email gagal terkirim"; 
-                        req.flash('error_email', error_message);
+                        req.flash('error_message', error_message);
                         res.redirect('/auth/register');
                     }
                     else {
@@ -114,7 +109,7 @@ router.post('/register', notLoggedIn, function (req, res) {
 });
 
 router.get('/login', notLoggedIn, function (req, res) {
-    res.render('pages/login');
+    res.render('pages/auth/login');
 });
 // Passport authenticate middleware
 router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedirect: '/auth/login', failureFlash: true }), function (req, res) {
@@ -122,12 +117,12 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
     getUserByEmail(email, function (error, user) {
         if (error) {
             error_message = "Terjadi kesalahan"; 
-            req.flash('error_email', error_message);
+            req.flash('error_message', error_message);
             res.redirect('/auth/login');
         }
         if (!user) {
             error_email = "User tidak tersedia"; 
-            req.flash('error_email', error_email);
+            req.flash('error_message', error_email);
             res.redirect('/auth/login');
         }
         if (!user.active) {
@@ -145,7 +140,7 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
 
 router.get('/logout', isLoggedIn, function (req, res) {
     req.logOut();
-    req.flash('success_message', 'You are logged out');
+    req.flash('success_message', 'Anda berhasil keluar');
     res.redirect('/auth/login');
 });
 
@@ -178,17 +173,17 @@ function (req, email, password, done) {
             return done(err);
         }
         if (!user) {
-            return done(null, false, req.flash('error_email', 'Email tidak ditemukan'));
+            return done(null, false, req.flash('error_message', 'Email tidak ditemukan'));
         }
         comparePassword(password, user.password, function (err, isMatch) {
             if (err) {
                 return done(err);
             }
             if (isMatch) {
-                return done(null, user, req.flash('success_message', 'Anda berhasil masuk!!'));
+                return done(null, user, req.flash('error_message', 'Anda berhasil masuk!!'));
             }
             else {
-                return done(null, false, req.flash('error_password', 'Password salah'));
+                return done(null, false, req.flash('error_message', 'Password salah'));
             }
         });
     });

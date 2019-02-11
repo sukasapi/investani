@@ -5,8 +5,8 @@ import passport from 'passport';
 
 let router = express.Router();
 
-router.get('', isLoggedIn, function (req, res) {
-    
+router.get('/', isLoggedIn, function (req, res) {
+    res.render('pages/profile/complete-profile');
 });
 
 function isLoggedIn(req, res, next) {
