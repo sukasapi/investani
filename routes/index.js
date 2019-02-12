@@ -7,14 +7,6 @@ router.get('/', isLoggedIn, function (req, res) {
     res.render('pages/index');
 });
 
-router.get('/welcome', isLoggedIn, function (req, res) {
-    if (req.user.active) {
-        res.redirect('/');
-    }
-    else {
-        res.render('pages/welcome/welcome');
-    }
-});
 router.get('/activation/:secretToken', function(req, res) {
 
     let secretToken = req.params.secretToken;
@@ -22,6 +14,7 @@ router.get('/activation/:secretToken', function(req, res) {
     getUserBySecretToken(secretToken, function (err, user) {
         if (err) {
             error_message = "Terjadi kesalahan"; 
+            req.flash('error_message', error_message);
         }
         if (!user) {
             error_message = "Token tidak valid"; 

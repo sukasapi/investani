@@ -1,90 +1,23 @@
 <!DOCTYPE html>
-<html lang="id">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Investani: Aktivasi</title>
-
-    <!-- Font Icon -->
-    <link rel="stylesheet" href="/fonts/material-icon/css/material-design-iconic-font.min.css">
-    <!-- Main css -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/register-style.css">
-    <style>
-        .invalid-feedback {
-            display: inherit;
-        }
-    </style>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>EJS Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap.min.css" />
 </head>
-
 <body>
-
-    <div class="main">
-
-        <!-- Sign up form -->
-        <div class="container">
-            <a href="/">
-                <img src="/images/ptpnx-logo.png" alt="" style="margin: 24px 32px">
-            </a>
-            <div class="signup-content">
-                <div class="signup-image">
-                    <figure><img src="/images/signup-image.jpg" alt="sing up image"></figure>
-                    <span>Sudah punya akun?</span><a href="/users/login" class="signup-image-link"> Login</a>
-                </div>
-                <div class="signup-form">
-                    <h2 class="form-title">Sign up</h2>
-                    <form action="/users/register" method="POST" class="register-form" id="register-form"
-                        novalidate>
-                        <div class="form-group">
-                            <label for="email"><i class="zmdi zmdi-email"></i></label>
-                            <input id="email" name="email" placeholder="masukkan alamat email" type="email" required />
-                            <% if (error_email != '') { %>
-                                <div class="invalid-feedback" style="font-size: 90%;">
-                                    <%= error_email %>
-                                </div>
-                            <% } %>
-                        </div>
-                        <div class="form-group">
-                            <label for="pass"><i class="zmdi zmdi-lock"></i></label>
-                            <input type="password" name="password" id="password" placeholder="masukkan password" />
-                            <% if (error_password != '') { %>
-                                <div class="invalid-feedback" style="font-size: 90%;">
-                                    <%= error_password %>
-                                </div>
-                            <% } %>
-                        </div>
-                        <div class="form-group">
-                            <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
-                            <input type="password" name="cfm_pwd" id="cfm_pwd" placeholder="ulangi password" />
-                                <% if (error_cfm_pwd != '') { %>
-                                    <div class="invalid-feedback" style="font-size: 90%;">
-                                        <%= error_cfm_pwd %>
-                                    </div>
-                                <% } %>
-                        </div>
-                        <div class="form-group">
-                            <label for="agree-term" class="label-agree-term">Dengan menekan tombol 'Daftar', Anda telah menyetujui Syarat Ketentuan dan Kebijakan Privasi.</label>
-                        </div>
-                        <div class="form-group form-button">
-                            <button type="submit" name="signup" id="signup" class="form-submit">Daftar</button>
-                        </div>
-                    </form>
-                </div>
+    <div class="container">
+    <% include ../partials/header %>
+        <h1>Add Item</h1>
+        <form action="/items/add/post" method="POST">
+            <div class="form-group">
+                <label for="item">Item</label>
+                <input class="form-control" id="item" name="item" type="text">
             </div>
-        </div>
+            <button class="btn btn-default" type="submit">Add</button>
+        </form>
     </div>
-
-    <!-- JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
-        crossorigin="anonymous"></script>
-    <script src="/js/register-main.js"></script>
 </body>
-
 </html>

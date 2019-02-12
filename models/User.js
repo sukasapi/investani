@@ -8,7 +8,7 @@ let UserSchema = mongoose.Schema({
   password: {
     type: String
   },
-  flag: [{
+  user_type: [{
     name: {
       type: String
     },

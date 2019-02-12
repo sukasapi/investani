@@ -4,14 +4,14 @@ let router = express.Router();
 
 router.get('/', isLoggedIn, function (req, res) {
     if (req.user.active) {
-        res.redirect('/');
+        res.redirect('/welcome/email-activated');
     }
     else {
         res.render('pages/welcome/welcome');
     }
 });
 
-router.get('/email-activated', isLoggedIn, function (req, res) {
+router.get('/email-activated', isLoggedIn, function (req, res) {   
     if (req.user.active) {
         res.render('pages/welcome/email-activated');
     }
