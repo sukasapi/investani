@@ -130,8 +130,8 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
             return ;
         }
         if (!user) {
-            error_email = "User tidak tersedia"; 
-            req.flash('error_message', error_email);
+            error_message = "User tidak tersedia"; 
+            req.flash('error_message', error_message);
             res.redirect('/auth/login');
             return ;
         }
@@ -140,10 +140,10 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
             return ;
         }
         if (user.active == true && user.profile.length == 0) {
-            res.redirect('/welcome/email-activated');
+            res.redirect('/complete-profile');
             return ;
         }
-        else {    
+        else {
             res.redirect('/');
             return ;
         }

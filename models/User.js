@@ -29,16 +29,13 @@ let UserSchema = mongoose.Schema({
     name: {
       type: String
     },
-    handphone: {
-      type: String
-    },
-    nationality: {
+    phone: {
       type: String
     },
     gender: {
       type: String
     },
-    birthdate: {
+    birth_date: {
       type: Date
     },
     province_id: {

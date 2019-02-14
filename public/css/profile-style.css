@@ -44,7 +44,7 @@ body {
 	display: -webkit-flex;
 }
 .wizard-v2-content .wizard-image {
-	background: url('../images/wizard-v2.jpg') center center no-repeat;
+	padding: 40px 73px 40px 52px;
     width: 66.61%;
 	border-top-left-radius: 10px;
 	border-bottom-left-radius: 10px;
@@ -60,20 +60,17 @@ body {
 }
 .wizard-form .wizard-header h3 {
 	color: #333;
-	font-size: 36px;
-	font-weight: 800;
+	font-size: 24px;
+	font-weight: 700;
 	margin: 0;
 }
 .wizard-form .wizard-header p {
 	color: #666;
 	font-size: 16px;
-	font-weight: 600;
 	margin: 6px 0 26px;
 }
-.form-register .steps {
-	margin-bottom: 36px;
-}
 .form-register .steps ul {
+	margin-top: 1rem;
     display: flex;
     display: -webkit-flex;
     list-style: none;
@@ -163,7 +160,7 @@ body {
 .inner .form-row .form-holder input,
 .inner .form-row .form-holder select {
     width: 100%;
-    padding: 14px 15px;
+    padding: 5px 10px;
     border: 1px solid #e5e5e5;
     border-radius: 5px;
     -o-border-radius: 5px;
@@ -216,15 +213,15 @@ body {
 .inner .form-row .form-holder .select-btn {
     z-index: 0;
     position: absolute;
-    top: 27.5%;
-    right: 12.5%;
+    top: 20%;
+    right: 20px;
     font-size: 19px;
     cursor: pointer;
     color: #666;
 }
 .inner .form-row .form-holder.form-holder-2 .select-btn {
-    top: 27%;
-    right: 6.5%;
+    top: 20%;
+    right: 20px;
 }
 .inner .form-row .form-holder .ui-datepicker-trigger {
     background: transparent;
@@ -344,7 +341,7 @@ body {
 		right:  5%;
 	}
 	.inner .form-row .form-holder .select-btn {
-		right: 6%;
+		right: 20px;
 	}
 }
 @media screen and (max-width: 575px) {
@@ -359,7 +356,7 @@ body {
 		right: 0;
 	}
 	.inner .form-row .form-holder .select-btn {
-		right: 6.5%;
+		right: 20px;
 	}
 	.inner .table-responsive tr.space-row,
 	.inner .table-responsive tbody th {

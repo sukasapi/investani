@@ -4,7 +4,7 @@ let router = express.Router();
 
 router.get('/', isLoggedIn, function (req, res) {
     if (req.user.active) {
-        res.redirect('/welcome/email-activated');
+        res.redirect('/complete-profile');
     }
     else {
         res.render('pages/welcome/welcome');
