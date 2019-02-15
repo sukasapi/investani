@@ -38,12 +38,38 @@ let UserSchema = mongoose.Schema({
     birth_date: {
       type: Date
     },
-    province_id: {
-      type: String
-    },
-    city_id: {
-      type: String
-    },
+    province: [{
+      province_id: {
+        type: Number
+      },
+      province_name: {
+        type: String
+      }
+    }],
+    city: [{
+      city_id: {
+        type: Number
+      },
+      city_name: {
+        type: String
+      }
+    }],
+    district: [{
+      district_id: {
+        type: Number
+      },
+      district_name: {
+        type: String
+      }
+    }],
+    sub_district: [{
+      sub_district_id: {
+        type: Number
+      },
+      sub_district_name: {
+        type: String
+      }
+    }],
     address: {
       type: String
     }

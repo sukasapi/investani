@@ -3,7 +3,7 @@ import express from 'express';
 let router = express.Router();
 
 router.get('/', isLoggedIn, function (req, res) {
-    if (req.user.active) {
+    if (req.user.active && req.user.profile.length != 0) {       
         res.redirect('/complete-profile');
     }
     else {

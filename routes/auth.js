@@ -32,18 +32,7 @@ router.post('/register', notLoggedIn, function (req, res) {
     let errors = req.validationErrors();
     
     if (errors) {
-        for (let index = 0; index < errors.length; index++) {
-            if (errors[index].param == 'email') {
-                error_message = errors[index].msg;                
-            }
-            if (errors[index].param == 'password') {
-                error_message = errors[index].msg;
-                
-            }
-            if (errors[index].param == 'cfm_pwd') {
-                error_message = errors[index].msg;
-            }
-        }
+        error_message = errors[errors.length-1].msg;
         req.flash('error_message', error_message);
         res.redirect('/auth/register');
         return ;
@@ -122,6 +111,7 @@ router.get('/login', notLoggedIn, function (req, res) {
 // Passport authenticate middleware
 router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedirect: '/auth/login', failureFlash: true }), function (req, res) {
     let email = req.body.email;
+    
     getUserByEmail(email, function (error, user) {
         if (error) {
             error_message = "Terjadi kesalahan"; 
@@ -135,15 +125,15 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
             res.redirect('/auth/login');
             return ;
         }
-        if (user.active == false) {        
-            res.redirect('/welcome/email-activated');
+        if (user.active == false) {
+            res.redirect('/welcome');
             return ;
         }
         if (user.active == true && user.profile.length == 0) {
-            res.redirect('/complete-profile');
+            res.redirect('/welcome/email-activated');
             return ;
         }
-        else {
+        else {          
             res.redirect('/');
             return ;
         }
@@ -183,7 +173,8 @@ passport.use(new LocalStrategy({
 },
 function (req, email, password, done) {
     getUserByEmail(email, function (err, user) {
-        if (err) {
+       
+        if (err) {            
             return done(err);
         }
         if (!user) {
@@ -194,7 +185,7 @@ function (req, email, password, done) {
                 return done(err);
             }
             if (isMatch) {
-                return done(null, user, req.flash('error_message', 'Anda berhasil masuk!!'));
+                return done(null, user, req.flash('success_message', 'Anda berhasil masuk!!'));
             }
             else {
                 return done(null, false, req.flash('error_message', 'Password salah'));

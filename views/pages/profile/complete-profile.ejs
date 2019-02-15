@@ -13,7 +13,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/jquery-ui.min.css">
 	<!-- Main Style Css -->
 	<link rel="stylesheet" href="/css/profile-style.css" />
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -37,7 +37,15 @@
 				<div class="wizard-header">
 					<h3>Profil</h3>
 				</div>
-				<form class="form-register" action="/complete-profile" method="post">
+				<form actions="/complete-profile" class="form-register" id="complete-profile-form" method="post">
+					<% if (error_message != '') { %>
+						<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+							<%= error_message %>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					<% } %>
 					<div id="form-total" role="application" class="wizard clearfix">
 						<div class="steps clearfix">
 							<ul role="tablist">
@@ -66,9 +74,9 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<select name="registration_type" id="registration_type" class="form-control">
-												<option disabled selected>Tipe Pendaftaran</option>
-												<option value="perseorangan">Perseorangan</option>
-												<option value="perusahaan">Perusahaan</option>
+												<option disabled>Tipe Pendaftaran</option>
+												<option value="individual" selected>Perseorangan</option>
+												<option value="company">Perusahaan</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
@@ -81,10 +89,10 @@
 										</div>
 									</div>
 									<div class="form-row">
-										<div class="form-holder">
-											<input class="form-control" id="phone" name="phone" placeholder="Nomor Handphone" type="text" >
+										<div class="form-holder" id="phone-input">
+											<input class="form-control" id="phone" name="phone" pattern="^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$" placeholder="Nomor Handphone" type="text" >
 										</div>
-										<div class="form-holder">
+										<div class="form-holder" id="gender-input">
 											<select name="gender" id="gender" class="form-control">
 												<option disabled selected>Jenis Kelamin</option>
 												<option value="male">Pria</option>
@@ -93,6 +101,14 @@
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
+										</div>
+									</div>
+									<div class="form-row" id="established-place-company-phone-row" style="display:none">
+										<div class="form-holder">
+											<input class="form-control" id="established-place" name="established_place" placeholder="Tempat Didirikan" type="text" >
+										</div>
+										<div class="form-holder" id="company-phone-input">
+											<input class="form-control" id="company-phone" name="company_phone" pattern="^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$" placeholder="Telepon Perusahaan" type="text" >
 										</div>
 									</div>
 									<div class="form-row">
@@ -111,36 +127,40 @@
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
+											<input class="form-control" id="province_name" name="province_name" type="text" style="display: none">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<select name="city" id="city" class="form-control">
-												<option id="city-placeholder" disabled selected >Kota</option>
+												<option id="city-placeholder" value="" disabled selected >Kota</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
+											<input class="form-control" id="city_name" name="city_name" type="text" style="display: none">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<select name="district" id="district" class="form-control">
-												<option id="district-placeholder" disabled selected>Kecamatan</option>
+												<option id="district-placeholder" value="" disabled selected>Kecamatan</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
+											<input class="form-control" id="district_name" name="district_name" type="text" style="display: none">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<select name="sub_district" id="sub_district" class="form-control">
-												<option id="sub_district-placeholder" disabled selected>Kelurahan</option>
+												<option id="sub_district-placeholder" value="" disabled selected>Kelurahan</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
+											<input class="form-control" id="sub_district_name" name="sub_district_name" type="text" style="display: none">
 										</div>
 									</div>
 									<div class="form-row">
@@ -179,6 +199,8 @@
 		</div>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 	<script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
 	<script>
         $('#datepicker').datepicker({
@@ -186,10 +208,31 @@
         });
 	</script>
 	<script>
+		$('#registration_type').on('change', function () {
+			event.preventDefault();
+			var registration_type = $('#registration_type option:selected').val();
+			console.log(registration_type);
+			if (registration_type == 'individual') {
+				$('#name').attr('placeholder', 'Nama Lengkap');
+				$('#phone-input').attr('class', 'form-holder');
+				$('#phone').attr('placeholder', 'Nomor Handphone');
+				$('#gender-input').show();
+				$('#established-place-company-phone-row').hide();
+			}
+			else {
+				$('#name').attr('placeholder', 'Nama Perusahaan');
+				$('#phone-input').attr('class', 'form-holder form-holder-2');
+				$('#phone').attr('placeholder', 'Nomor Handphone Penanggungjawab');
+				$('#gender-input').hide();
+				$('#established-place-company-phone-row').show();
+			}
+		});
+
 		$('#province').on('change', function(event) {
 			event.preventDefault();
 			var province_id = $(this).val();
-			
+			var province_name = $('#province option:selected').text();
+			$('#province_name').val(province_name);
 			$.ajax({
 				type: "GET",
 				url: '/complete-profile/get-city',
@@ -197,7 +240,7 @@
 					'province_id': province_id
 				},
 				success: function(data, status) {
-					if(data.success == true) {                    
+					if(data.success == true) {     
 						$('.city-option').remove();
 						$('.ditrict-option').remove();
 						$('.sub_ditrict-option').remove();
@@ -224,7 +267,8 @@
 		$('#city').on('change', function(event) {
 			event.preventDefault();
 			var city_id = $(this).val();
-			
+			var city_name = $('#city option:selected').text();
+			$('#city_name').val(city_name);
 			$.ajax({
 				type: "GET",
 				url: '/complete-profile/get-district',
@@ -255,7 +299,8 @@
 		$('#district').on('change', function(event) {
 			event.preventDefault();
 			var district_id = $(this).val();
-			
+			var district_name = $('#district option:selected').text();
+			$('#district_name').val(district_name);
 			$.ajax({
 				type: "GET",
 				url: '/complete-profile/get-sub_district',
@@ -278,6 +323,13 @@
 				}
 			})
 		});
+
+		$('#sub_district').on('change', function (event) {
+			event.preventDefault();
+			var sub_district_name = $('#sub_district option:selected').text();
+			$('#sub_district_name').val(sub_district_name);
+		});
+
 	</script>
 </body>
 
