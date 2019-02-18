@@ -35,9 +35,10 @@
 			</div>
 			<div class="wizard-form">
 				<div class="wizard-header">
-					<h3>Profil</h3>
+					<h3 id="header-form">Profil</h3>
 				</div>
-				<form actions="/complete-profile" class="form-register" id="complete-profile-form" method="post">
+				<!-- Profil -->
+				<form actions="/complete-profile" class="form-register" id="profile-form" method="post" >
 					<% if (error_message != '') { %>
 						<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
 							<%= error_message %>
@@ -67,16 +68,16 @@
 								</li>
 							</ul>
 						</div>
-						<div class="content clearfix">
+						<div class="content clearfix"  id="profile-form" style="display:none" >
 							<h2 id="form-total-h-0" tabindex="-1" class="title current">1</h2>
 							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false" style="">
-								<div class="inner">
+								<div class="inner" >
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<select name="registration_type" id="registration_type" class="form-control">
 												<option disabled>Tipe Pendaftaran</option>
-												<option value="individual" selected>Perseorangan</option>
-												<option value="company">Perusahaan</option>
+												<option id="registration_type_individual" value="individual" selected>Perseorangan</option>
+												<option id="registration_type_company" value="company">Perusahaan</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
@@ -95,8 +96,8 @@
 										<div class="form-holder" id="gender-input">
 											<select name="gender" id="gender" class="form-control">
 												<option disabled selected>Jenis Kelamin</option>
-												<option value="male">Pria</option>
-												<option value="female">Wanita</option>
+												<option id="gender-male" value="male">Pria</option>
+												<option id="gender-female" value="female">Wanita</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
@@ -121,7 +122,11 @@
 											<select name="province" id="province" class="form-control">
 												<option disabled selected>Provinsi</option>
 												<% for(var i = 0; i < province.length; i++) {%>
+													<% if (province[i].id == province_id) { %>
+														<option value="<%= province[i].id %>" selected><%= province[i].nama %></option>
+													<% } else { %>
 													<option value="<%= province[i].id %>"><%= province[i].nama %></option>
+													<% }%>
 												<% } %>
 											</select>
 											<span class="select-btn">
@@ -168,33 +173,17 @@
 											<input class="form-control" id="address" name="address" placeholder="Alamat Korespondendsi" type="text" >
 										</div>
 									</div>
+									<div class="form-actions form-group">
+										<button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
+											<span id="payment-button-amount">Lanjutkan</span>
+										</button>
+									</div>
 								</div>
 							</section>
 						</div>
-						<div class="form-actions form-group">
-							<button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
-								<span id="payment-button-amount">Lanjutkan</span>
-							</button>
-						</div>
-						<!--- <div class="actions clearfix">
-							<ul role="menu" aria-label="Pagination">
-								<li class="disabled" aria-disabled="true">
-									<a href="#previous" role="menuitem">Previous</a>
-								</li>
-								<li aria-hidden="false" aria-disabled="false">
-									<a href="#next" role="menuitem">Lanjutkan</a>
-								</li>
-								<li aria-hidden="false" aria-disabled="false">
-									<button type="submit">Lanjutkan</button>
-								</li>
-								<li aria-hidden="true" style="display: none;">
-									<a href="#finish" role="menuitem">Submit</a>
-								</li>
-							</ul>
-						</div>
-						-->
 					</div>
 				</form>
+				<!-- Profil -->
 			</div>
 		</div>
 	</div>
@@ -205,19 +194,135 @@
 	<script>
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap4'
-        });
+		});
+		
+		$(document).ready(function() {
+			var registration = '<%= registration_type %>';
+			if (<%= profile_length%> == 0) {
+				$('#profile-form').show()
+			}
+			else {
+				$('#name').val('<%= name %>');
+				$('#phone').val('<%= phone %>');
+				$('#datepicker').val('<%= birth_date %>');
+				$('#address').val('<%= address %>');
+
+				if (registration == 'individual') {
+					$('#registration_type_individual').attr('selected', 'selected');
+					$('#name').attr('placeholder', 'Nama Lengkap');
+					$('#phone-input').attr('class', 'form-holder');
+					$('#phone').attr('placeholder', 'Nomor Handphone');
+					$('#gender-input').show();
+					if ('<%= gender %>' == 'male') {
+						$('#gender-male').attr('selected', 'selected');
+					}
+					else {
+						$('#gender-female').attr('selected', 'selected');
+					}
+					$('#established-place-company-phone-row').hide();
+					$('#datepicker').attr('placeholder', 'Tanggal Lahir');
+				} 
+				if (registration == 'company') {
+					$('#registration_type_company').attr('selected', 'selected');
+					$('#name').attr('placeholder', 'Nama Perusahaan');
+					$('#phone-input').attr('class', 'form-holder form-holder-2');
+					$('#phone').attr('placeholder', 'Nomor Handphone Penanggungjawab');
+					$('#gender-input').hide();
+					$('#established-place-company-phone-row').show();
+					$('#established-place').val('<%= established_place %>');
+					$('#company-phone').val('<%= company_phone %>');
+					$('#datepicker').attr('placeholder', 'Tanggal Berdiri');
+				}
+
+				$.when(
+					$.ajax({
+						type: 'get',
+						url: '/complete-profile/get-city',
+						data: {
+							'province_id': <%= province_id %>
+						},
+						success: function(data, status) {
+							if(data.success == true) {     
+								for (let index = 0; index < data.city.length; index++) {
+									if (data.city[index].id == <%= city_id %>) {
+										$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
+									}
+									else {
+										$('#city').append('<option class="city-option" value="'+data.city[index].id+'">'+data.city[index].nama+'</option>');
+									}
+								}
+							}
+						}
+					}),
+					
+					$.ajax({
+						type: "GET",
+						url: '/complete-profile/get-district',
+						data: {
+							'city_id': <%= city_id %>
+						},
+						success: function(data, status) {
+							if(data.success == true) {
+								for (let index = 0; index < data.district.length; index++) {
+									if (data.district[index].id == <%= district_id %>) {
+										$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama+'</option>');
+									}
+									else {
+										$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
+									}
+								}
+							}
+						}
+					}),
+					$.ajax({
+						type: "GET",
+						url: '/complete-profile/get-sub_district',
+						data: {
+							'district_id': <%= district_id %>
+						},
+						success: function(data, status) {
+							if(data.success == true) {
+								for (let index = 0; index < data.sub_district.length; index++) {
+									if (data.sub_district[index].id == <%= sub_district_id %>) {
+										$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama+'</option>');
+									}
+									else {
+										$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
+									}
+								}
+							}
+						}
+					})
+				).then(function() {
+					
+				});
+			}
+			
+		});
+		
+		
+
+		
 	</script>
+	
 	<script>
 		$('#registration_type').on('change', function () {
 			event.preventDefault();
 			var registration_type = $('#registration_type option:selected').val();
-			console.log(registration_type);
+			$('#name').val('');
+			$('#phone').val('');
+			$('#established-place').val('');
+			$('#company-phone').val('');
+			$('#datepicker').val('');
+
+			
 			if (registration_type == 'individual') {
 				$('#name').attr('placeholder', 'Nama Lengkap');
 				$('#phone-input').attr('class', 'form-holder');
 				$('#phone').attr('placeholder', 'Nomor Handphone');
 				$('#gender-input').show();
 				$('#established-place-company-phone-row').hide();
+				$('#datepicker').attr('placeholder', 'Tanggal Lahir');
 			}
 			else {
 				$('#name').attr('placeholder', 'Nama Perusahaan');
@@ -225,6 +330,7 @@
 				$('#phone').attr('placeholder', 'Nomor Handphone Penanggungjawab');
 				$('#gender-input').hide();
 				$('#established-place-company-phone-row').show();
+				$('#datepicker').attr('placeholder', 'Tanggal Berdiri');
 			}
 		});
 
@@ -232,6 +338,8 @@
 			event.preventDefault();
 			var province_id = $(this).val();
 			var province_name = $('#province option:selected').text();
+			console.log(province_id)
+			console.log(province_name)
 			$('#province_name').val(province_name);
 			$.ajax({
 				type: "GET",
@@ -265,10 +373,13 @@
 		});
 
 		$('#city').on('change', function(event) {
+			console.log('city ganti')
 			event.preventDefault();
 			var city_id = $(this).val();
 			var city_name = $('#city option:selected').text();
 			$('#city_name').val(city_name);
+			console.log(city_id);
+			console.log(city_name);
 			$.ajax({
 				type: "GET",
 				url: '/complete-profile/get-district',
@@ -277,6 +388,7 @@
 				},
 				success: function(data, status) {
 					if(data.success == true) {
+						console.log(data);
 						$('.ditrict-option').remove();
 						$('.sub_ditrict-option').remove();
 

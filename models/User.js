@@ -35,6 +35,12 @@ let UserSchema = mongoose.Schema({
     gender: {
       type: String
     },
+    established_place: {
+      type: String
+    },
+    company_phone: {
+      type: String
+    },
     birth_date: {
       type: Date
     },
