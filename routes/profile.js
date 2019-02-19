@@ -17,10 +17,14 @@ router.get('/', isLoggedIn, function (req, res) {
             res.json({success: false, province: null});
         } 
         else {
-            if (req.user.profile.length == 0) {
-                res.render('pages/profile/complete-profile',
-                { 
-                    profile_length: req.user.profile.length,
+            let data = {};
+            let profile_length = req.user.profile.length
+            let occupation_length = req.user.occupation.length;
+            let document_length = req.user.document.length;
+            // belum isi profil
+            if (profile_length == 0) {
+                data = {
+                    profile_length: profile_length,
                     province: province,
                     profile: null,
                     registration_type: null,
@@ -34,14 +38,54 @@ router.get('/', isLoggedIn, function (req, res) {
                     city_id: 0,
                     district_id: 0,
                     sub_district_id: 0,
-                    address: null
-                });
+                    address: null,
+                    // occupation
+                    occupation_length: occupation_length,
+                    occupation: null,
+                    company_name: null,
+                    company_address: null,
+                    position: null,
+                    income: null,
+                    income_source: null,
+                    // document
+                    document_length: document_length
+                };
             }
-            if (req.user.profile.length != 0) {
-                if (req.user.profile[0].registration_type == 'individual') {
-                    res.render('pages/profile/complete-profile',
-                    { 
-                        profile_length: req.user.profile.length,
+            // sudah isi profil perseorangan
+            if (profile_length != 0 && req.user.profile[0].registration_type == 'individual') {
+                // belum isi pekerjaan
+                if (occupation_length == 0) {
+                    data = {
+                        profile_length: profile_length,
+                        province: province,
+                        registration_type: req.user.profile[0].registration_type,
+                        name: req.user.profile[0].name,
+                        phone: req.user.profile[0].phone,
+                        gender: req.user.profile[0].gender,
+                        established_place: null,
+                        company_phone: null,
+                        birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
+                        province_id: req.user.profile[0].province[0].province_id,
+                        city_id: req.user.profile[0].city[0].city_id,
+                        district_id: req.user.profile[0].district[0].district_id,
+                        sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
+                        address: req.user.profile[0].address,
+                        // occupation
+                        occupation_length: occupation_length,
+                        occupation: null,
+                        company_name: null,
+                        company_address: null,
+                        position: null,
+                        income: null,
+                        income_source: null,
+                        // document
+                        document_length: document_length
+                    };
+                }
+                // sudah isi pekerjaan
+                if (req.user.occupation.length != 0) {
+                    data = {
+                        profile_length: profile_length,
                         province: province,
                         registration_type: req.user.profile[0].registration_type,
                         name: req.user.profile[0].name,
@@ -54,30 +98,41 @@ router.get('/', isLoggedIn, function (req, res) {
                         city_id: req.user.profile[0].city[0].city_id,
                         district_id: req.user.profile[0].district[0].district_id,
                         sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
-                        address: req.user.profile[0].address
-                    });
-                }
-                if (req.user.profile[0].registration_type == 'company') {
-                    res.render('pages/profile/complete-profile',
-                    { 
-                        profile_length: req.user.profile.length,
-                        province: province, 
-                        registration_type: req.user.profile[0].registration_type,
-                        name: req.user.profile[0].name,
-                        phone: req.user.profile[0].phone,
-                        gender: null,
-                        established_place: req.user.profile[0].established_place,
-                        company_phone: req.user.profile[0].company_phone,
-                        birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
-                        province_id: req.user.profile[0].province[0].province_id,
-                        city_id: req.user.profile[0].city[0].city_id,
-                        district_id: req.user.profile[0].district[0].district_id,
-                        sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
-                        address: req.user.profile[0].address
-                    });
+                        address: req.user.profile[0].address,
+                        // occupation
+                        occupation_length: occupation_length,
+                        occupation: req.user.occupation.occupation,
+                        company_name: req.user.occupation.company_name,
+                        company_address: req.user.occupation.company_address,
+                        position: req.user.occupation.position,
+                        income: req.user.occupation.income,
+                        income_source: req.user.occupation.income_source,
+                        // document
+                        document_length: document_length,
+                        
+                    };
                 }
             }
-            
+            // sudah isi profil perusahaan
+            if (req.user.profile.length != 0 && req.user.profile[0].registration_type == 'company') {
+                // data = {
+                //     profile_length: profile_length,
+                //     province: province,
+                //     registration_type: req.user.profile[0].registration_type,
+                //     name: req.user.profile[0].name,
+                //     phone: req.user.profile[0].phone,
+                //     gender: null,
+                //     established_place: req.user.profile[0].established_place,
+                //     company_phone: req.user.profile[0].company_phone,
+                //     birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
+                //     province_id: req.user.profile[0].province[0].province_id,
+                //     city_id: req.user.profile[0].city[0].city_id,
+                //     district_id: req.user.profile[0].district[0].district_id,
+                //     sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
+                //     address: req.user.profile[0].address
+                // };
+            }
+            res.render('pages/profile/complete-profile', data);
         }
     });
 });
@@ -301,6 +356,62 @@ router.post('/', isLoggedIn, function (req, res) {
     }
 });
 
+router.post('/occupation', isLoggedIn, function (req, res) {
+    let error_message;
+    let occupation = req.body.occupation;
+    let company_name = req.body.company_name;
+    let company_address = req.body.company_address;
+    let position = req.body.position;
+    let income_source = req.body.income_source;
+    let income = req.body.income;
+    
+    req.checkBody('income', 'Penghasilan per Bulan wajib dipilih').notEmpty();
+    req.checkBody('income_source', 'Sumber Dana wajib dipilih').notEmpty();
+    req.checkBody('company_address', 'Alamat Perusahaan tidak boleh lebih dari 250 karakter').isLength({ max: 250 });
+    req.checkBody('company_address', 'Alamat Perusahaan minimal mengandung 10 karakter').isLength({min: 10});
+    req.checkBody('company_name', 'Nama Perusahaan tidak boleh lebih dari 255 karakter').isLength({ max: 255 });
+    req.checkBody('company_name', 'Nama Perusahaan minimal mengandung 3 karakter').isLength({ min: 3 });
+    req.checkBody('occupation', 'Pekerjaan wajib dipilih').notEmpty();
+
+    let errors = req.validationErrors();
+
+    if (errors) {
+        error_message = errors[errors.length-1].msg;
+        req.flash('error_message', error_message);
+        res.redirect('/complete-profile');
+        return ;
+    }
+    else {
+        updateUser(req.user, {
+            occupation: {
+                occupation: occupation,
+                company_name: company_name,
+                company_address: company_address,
+                position: position,
+                income_source: income_source,
+                income: income,
+            }
+        }, 
+        function (error, user) {
+            if (error) {
+                error_message = "Terjadi kesalahan"; 
+                req.flash('error_message', error_message);
+                res.redirect('/complete-profile');
+                return ;
+            }
+            if (!user) {
+                error_message = "User tidak tersedia"; 
+                req.flash('error_message', error_message);
+                res.redirect('/complete-profile');
+                return ;
+            }
+            else {    
+                res.redirect('/complete-profile');
+                return ;
+            }
+        });
+    }
+});
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {

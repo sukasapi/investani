@@ -80,6 +80,43 @@ let UserSchema = mongoose.Schema({
       type: String
     }
   }],
+  occupation: [{
+    occupation: {
+      type: String
+    },
+    company_name: {
+      type: String
+    },
+    company_address: {
+      type: String
+    },
+    position: {
+      type: String
+    },
+    income: {
+      type: String
+    },
+    income_source: {
+      type: String
+    }
+  }],
+  document: [{
+    identity_number: {
+      type: Number
+    },
+    identity_image: {
+      type: String
+    },
+    identity_image_selfie: {
+      type: String
+    },
+    npwp_number: {
+      type: Number
+    },
+    npwp_image: {
+      type: String
+    }
+  }]
 },
 {
   timestamps: true

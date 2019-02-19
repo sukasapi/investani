@@ -37,8 +37,8 @@
 				<div class="wizard-header">
 					<h3 id="header-form">Profil</h3>
 				</div>
-				<!-- Profil -->
-				<form actions="/complete-profile" class="form-register" id="profile-form" method="post" >
+				<!-- Profile -->
+				<form action="/complete-profile" class="form-register" id="profile-form" method="post" style="display:none">
 					<% if (error_message != '') { %>
 						<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
 							<%= error_message %>
@@ -50,27 +50,32 @@
 					<div id="form-total" role="application" class="wizard clearfix">
 						<div class="steps clearfix">
 							<ul role="tablist">
-								<li role="tab" class="first current" aria-disabled="false" aria-selected="true">
+								<li aria-disabled="false" aria-selected="true" class="first current" id="profile1-list" role="tab">
 									<a id="form-total-t-0" href="#" aria-controls="form-total-p-0">
 										<span class="current-info audible"> </span>
 										<span class="title">1</span>
 									</a>
 								</li>
-								<li role="tab" class="disabled" aria-disabled="false" aria-selected="false">
+								<li aria-disabled="false" aria-selected="false" class="disabled" id="profile2-list" role="tab">
 									<a id="form-total-t-1" href="#" aria-controls="form-total-p-1">
 										<span class="title">2</span>
 									</a>
 								</li>
-								<li role="tab" class="disabled last" aria-disabled="true">
-									<a id="form-total-t-2" href="#" aria-controls="form-total-p-2">
+								<li aria-disabled="false" aria-selected="false" class="disabled" id="profile3-list" role="tab">
+									<a id="form-total-t-2" href="#" aria-controls="form-total-p-1">
 										<span class="title">3</span>
+									</a>
+								</li>
+								<li aria-disabled="true" class="disabled last" id="profile4-list" role="tab">
+									<a id="form-total-t-3" href="#" aria-controls="form-total-p-2">
+										<span class="title">4</span>
 									</a>
 								</li>
 							</ul>
 						</div>
-						<div class="content clearfix"  id="profile-form" style="display:none" >
+						<div class="content clearfix" >
 							<h2 id="form-total-h-0" tabindex="-1" class="title current">1</h2>
-							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false" style="">
+							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false">
 								<div class="inner" >
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
@@ -173,17 +178,221 @@
 											<input class="form-control" id="address" name="address" placeholder="Alamat Korespondendsi" type="text" >
 										</div>
 									</div>
-									<div class="form-actions form-group">
-										<button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
-											<span id="payment-button-amount">Lanjutkan</span>
-										</button>
+									
+								</div>
+							</section>
+						</div>
+					</div>
+					<div class="form-actions form-group">
+						<button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
+							<span id="payment-button-amount">Lanjutkan</span>
+						</button>
+					</div>
+				</form>
+				<!-- Profile -->
+				<!-- Occupation -->
+				<form action="/complete-profile/occupation" class="form-register" id="occupation-form" method="post" style="display:none">
+					<% if (error_message != '') { %>
+						<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+							<%= error_message %>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					<% } %>
+					<div id="form-total" role="application" class="wizard clearfix">
+						<div class="steps clearfix">
+							<ul role="tablist">
+								<li aria-disabled="false" aria-selected="true" class="first current" id="occupation1-list" role="tab">
+									<a id="form-total-t-0" href="#" aria-controls="form-total-p-0">
+										<span class="current-info audible"> </span>
+										<span class="title">1</span>
+									</a>
+								</li>
+								<li aria-disabled="false" aria-selected="false" class="disabled" id="occupation2-list" role="tab">
+									<a id="form-total-t-1" href="#" aria-controls="form-total-p-1">
+										<span class="title">2</span>
+									</a>
+								</li>
+								<li aria-disabled="false" aria-selected="false" class="disabled" id="occupation3-list" role="tab">
+									<a id="form-total-t-2" href="#" aria-controls="form-total-p-1">
+										<span class="title">3</span>
+									</a>
+								</li>
+								<li aria-disabled="true" class="disabled last" id="occupation4-list" role="tab">
+									<a id="form-total-t-3" href="#" aria-controls="form-total-p-2">
+										<span class="title">4</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="content clearfix">
+							<h2 id="form-total-h-0" tabindex="-1" class="title current">1</h2>
+							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false">
+								<div class="inner" >
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<select name="occupation" id="occupation" class="form-control">
+												<option disabled selected>Pekerjaan</option>
+												<option value="karyawan_swasta">Karyawan swasta</option>
+												<option value="pegawai_negeri_sipil">Pegawai negeri sipil</option>
+												<option value="Pengusaha">Pengusaha</option>
+												<option value="tni_polisi">TNI / Polisi</option>
+												<option value="karyawan_bumn">Karyawan BUMN</option>
+												<option value="pensiun">Pensiun</option>
+												<option value="ibu_bapak_rumah_tangga">Ibu/Bapak rumah tangga</option>
+												<option value="pelajar">Pelajar</option>
+												<option value="profesional">Profesional</option>
+												<option value="lainnya">Lainnya</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<input class="form-control" id="company_name" name="company_name" placeholder="Nama Perusahaan (opsional)" type="text" >
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<input class="form-control" id="company_address" name="company_address" placeholder="Alamat Perusahaan (opsional)" type="text" >
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder" id="position-input">
+											<select name="position" id="position" class="form-control">
+												<option disabled selected>Jabatan (opsional)</option>
+												<option value="komisaris">Komisaris (setara non-eksekutif)</option>
+												<option value="eksekutif_perusahaan">Eksekutif Perusahaan (setara direksi)</option>
+												<option value="manajer">Manajer (atau setara)</option>
+												<option value="kepala_bagian_supervisor">Kepala Bagian/Supervisor</option>
+												<option value="karyawan_staff">Karyawan/Staff</option>
+												<option value="lainnya">Lainnya</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+										<div class="form-holder" id="income-input">
+											<select name="income_source" id="income-source" class="form-control">
+												<option disabled selected>Sumber Dana</option>
+												<option value="penghasilan_rutin_gaji">Penghasilan rutin/Gaji</option>
+												<option value="usaha_bisnis">Usaha/Bisnis</option>
+												<option value="hasil_investasi">Hasil Investani</option>
+												<option value="warisan">Warisan</option>
+												<option value="hadiah">Hadiah</option>
+												<option value="lainnya">Lainnya</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2" id="income-source-input">
+											<select name="income" id="income" class="form-control">
+											<option disabled selected>Penghasilan per Bulan</option>
+											<option value="5_juta">s/d 5 juta</option>
+											<option value="5_10_juta">5 - 10 juta</option>
+											<option value="10_20_juta">10 - 20 juta</option>
+											<option value="20_50_juta">20 - 50 juta</option>
+											<option value="50_juta">di atas 50 juta</option>
+										</select>
+										<span class="select-btn">
+											<i class="zmdi zmdi-chevron-down"></i>
+										</span>
+										</div>
+									</div>
+									
+								</div>
+							</section>
+						</div>
+					</div>
+					<div class="form-actions form-group">
+						<button id="occupation-button" type="submit" class="btn btn-lg btn-info btn-block">
+							<span id="occupation-button-amount">Lanjutkan</span>
+						</button>
+					</div>
+				</form>
+				<!-- Occupation -->
+				<!-- Document -->
+				<form action="/complete-profile/document" class="form-register" id="document-form" method="post" style="display:none">
+					<% if (error_message != '') { %>
+						<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+							<%= error_message %>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					<% } %>
+					<div id="form-total" role="application" class="wizard clearfix">
+						<div class="steps clearfix">
+							<ul role="tablist">
+								<li aria-disabled="false" aria-selected="true" class="first current" id="document1-list" role="tab">
+									<a id="form-total-t-0" href="#" aria-controls="form-total-p-0">
+										<span class="current-info audible"> </span>
+										<span class="title">1</span>
+									</a>
+								</li>
+								<li aria-disabled="false" aria-selected="false" class="disabled" id="document2-list" role="tab">
+									<a id="form-total-t-1" href="#" aria-controls="form-total-p-1">
+										<span class="title">2</span>
+									</a>
+								</li>
+								<li aria-disabled="false" aria-selected="false" class="disabled" id="document3-list" role="tab">
+									<a id="form-total-t-2" href="#" aria-controls="form-total-p-1">
+										<span class="title">3</span>
+									</a>
+								</li>
+								<li aria-disabled="true" class="disabled last" id="document4-list" role="tab">
+									<a id="form-total-t-3" href="#" aria-controls="form-total-p-2">
+										<span class="title">4</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="content clearfix">
+							<h2 id="form-total-h-0" tabindex="-1" class="title current">1</h2>
+							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false">
+								<div class="inner" >
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<input class="form-control" id="identity-number" name="identity_number" placeholder="Nomor KTP / Paspor" type="number" >
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<input class="form-control" id="company_address" name="company_address" placeholder="Unggah Foto KTP/ Paspor" type="file" >
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<input class="form-control" id="company_address" name="company_address" placeholder="Unggah Foto KTP/ Paspor + Selfie" type="file" >
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<input class="form-control" id="npwp-number" name="npwp_number" placeholder="Nomor NPWP (opsional)" type="text" >
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<input class="form-control" id="company_address" name="company_address" placeholder="Unggah NPWP (opsional)" type="file" >
+										</div>
 									</div>
 								</div>
 							</section>
 						</div>
 					</div>
+					<div class="form-actions form-group">
+						<button id="occupation-button" type="submit" class="btn btn-lg btn-info btn-block">
+							<span id="occupation-button-amount">Lanjutkan</span>
+						</button>
+					</div>
 				</form>
-				<!-- Profil -->
+				<!-- Document -->
 			</div>
 		</div>
 	</div>
@@ -201,108 +410,123 @@
 			if (<%= profile_length%> == 0) {
 				$('#profile-form').show()
 			}
-			else {
-				$('#name').val('<%= name %>');
-				$('#phone').val('<%= phone %>');
-				$('#datepicker').val('<%= birth_date %>');
-				$('#address').val('<%= address %>');
-
-				if (registration == 'individual') {
-					$('#registration_type_individual').attr('selected', 'selected');
-					$('#name').attr('placeholder', 'Nama Lengkap');
-					$('#phone-input').attr('class', 'form-holder');
-					$('#phone').attr('placeholder', 'Nomor Handphone');
-					$('#gender-input').show();
-					if ('<%= gender %>' == 'male') {
-						$('#gender-male').attr('selected', 'selected');
-					}
-					else {
-						$('#gender-female').attr('selected', 'selected');
-					}
-					$('#established-place-company-phone-row').hide();
-					$('#datepicker').attr('placeholder', 'Tanggal Lahir');
-				} 
-				if (registration == 'company') {
-					$('#registration_type_company').attr('selected', 'selected');
-					$('#name').attr('placeholder', 'Nama Perusahaan');
-					$('#phone-input').attr('class', 'form-holder form-holder-2');
-					$('#phone').attr('placeholder', 'Nomor Handphone Penanggungjawab');
-					$('#gender-input').hide();
-					$('#established-place-company-phone-row').show();
-					$('#established-place').val('<%= established_place %>');
-					$('#company-phone').val('<%= company_phone %>');
-					$('#datepicker').attr('placeholder', 'Tanggal Berdiri');
+			if (<%= profile_length%> != 0 && registration == 'individual') {
+				if (<%= occupation_length %> == 0) {
+					$('#occupation1-list').attr('class', 'done first');
+					$('#occupation2-list').attr('class', 'current');
+					$('#header-form').text('Pekerjaan');
+					$('#occupation-form').show();
 				}
-
-				$.when(
-					$.ajax({
-						type: 'get',
-						url: '/complete-profile/get-city',
-						data: {
-							'province_id': <%= province_id %>
-						},
-						success: function(data, status) {
-							if(data.success == true) {     
-								for (let index = 0; index < data.city.length; index++) {
-									if (data.city[index].id == <%= city_id %>) {
-										$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
-									}
-									else {
-										$('#city').append('<option class="city-option" value="'+data.city[index].id+'">'+data.city[index].nama+'</option>');
-									}
-								}
-							}
-						}
-					}),
-					
-					$.ajax({
-						type: "GET",
-						url: '/complete-profile/get-district',
-						data: {
-							'city_id': <%= city_id %>
-						},
-						success: function(data, status) {
-							if(data.success == true) {
-								for (let index = 0; index < data.district.length; index++) {
-									if (data.district[index].id == <%= district_id %>) {
-										$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama+'</option>');
-									}
-									else {
-										$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
-									}
-								}
-							}
-						}
-					}),
-					$.ajax({
-						type: "GET",
-						url: '/complete-profile/get-sub_district',
-						data: {
-							'district_id': <%= district_id %>
-						},
-						success: function(data, status) {
-							if(data.success == true) {
-								for (let index = 0; index < data.sub_district.length; index++) {
-									if (data.sub_district[index].id == <%= sub_district_id %>) {
-										$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama+'</option>');
-									}
-									else {
-										$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
-									}
-								}
-							}
-						}
-					})
-				).then(function() {
-					
-				});
+				if (<%= occupation_length %> != 0 && <%= document_length %> == 0) {
+					$('#document1-list').attr('class', 'done first');
+					$('#document2-list').attr('class', 'done');
+					$('#document3-list').attr('class', 'current');
+					$('#header-form').text('Dokumen');
+					$('#document-form').show();
+				}
 			}
+			if (<%= profile_length%> != 0 && registration == 'company') {
+
+			}
+			// else {
+			// 	$('#name').val('<%= name %>');
+			// 	$('#phone').val('<%= phone %>');
+			// 	$('#datepicker').val('<%= birth_date %>');
+			// 	$('#address').val('<%= address %>');
+
+			// 	$.when(
+			// 		$.ajax({
+			// 			type: 'get',
+			// 			url: '/complete-profile/get-city',
+			// 			data: {
+			// 				'province_id': <%= province_id %>
+			// 			},
+			// 			success: function(data, status) {
+			// 				if(data.success == true) {     
+			// 					for (let index = 0; index < data.city.length; index++) {
+			// 						if (data.city[index].id == <%= city_id %>) {
+			// 							$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
+			// 						}
+			// 						else {
+			// 							$('#city').append('<option class="city-option" value="'+data.city[index].id+'">'+data.city[index].nama+'</option>');
+			// 						}
+			// 					}
+			// 				}
+			// 			}
+			// 		}),
+					
+			// 		$.ajax({
+			// 			type: "GET",
+			// 			url: '/complete-profile/get-district',
+			// 			data: {
+			// 				'city_id': <%= city_id %>
+			// 			},
+			// 			success: function(data, status) {
+			// 				if(data.success == true) {
+			// 					for (let index = 0; index < data.district.length; index++) {
+			// 						if (data.district[index].id == <%= district_id %>) {
+			// 							$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama+'</option>');
+			// 						}
+			// 						else {
+			// 							$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
+			// 						}
+			// 					}
+			// 				}
+			// 			}
+			// 		}),
+			// 		$.ajax({
+			// 			type: "GET",
+			// 			url: '/complete-profile/get-sub_district',
+			// 			data: {
+			// 				'district_id': <%= district_id %>
+			// 			},
+			// 			success: function(data, status) {
+			// 				if(data.success == true) {
+			// 					for (let index = 0; index < data.sub_district.length; index++) {
+			// 						if (data.sub_district[index].id == <%= sub_district_id %>) {
+			// 							$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama+'</option>');
+			// 						}
+			// 						else {
+			// 							$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
+			// 						}
+			// 					}
+			// 				}
+			// 			}
+			// 		})
+			// 	).then(function() {
+			// 	});
+
+			// 	if (registration == 'individual') {
+			// 		$('#registration_type_individual').attr('selected', 'selected');
+			// 		$('#name').attr('placeholder', 'Nama Lengkap');
+			// 		$('#phone-input').attr('class', 'form-holder');
+			// 		$('#phone').attr('placeholder', 'Nomor Handphone');
+			// 		$('#gender-input').show();
+			// 		if ('<%= gender %>' == 'male') {
+			// 			$('#gender-male').attr('selected', 'selected');
+			// 		}
+			// 		else {
+			// 			$('#gender-female').attr('selected', 'selected');
+			// 		}
+			// 		$('#established-place-company-phone-row').hide();
+			// 		$('#datepicker').attr('placeholder', 'Tanggal Lahir');
+			// 	} 
+			// 	if (registration == 'company') {
+			// 		$('#registration_type_company').attr('selected', 'selected');
+			// 		$('#name').attr('placeholder', 'Nama Perusahaan');
+			// 		$('#phone-input').attr('class', 'form-holder form-holder-2');
+			// 		$('#phone').attr('placeholder', 'Nomor Handphone Penanggungjawab');
+			// 		$('#gender-input').hide();
+			// 		$('#established-place-company-phone-row').show();
+			// 		$('#established-place').val('<%= established_place %>');
+			// 		$('#company-phone').val('<%= company_phone %>');
+			// 		$('#datepicker').attr('placeholder', 'Tanggal Berdiri');
+			// 	}
+
+				
+			// }
 			
 		});
-		
-		
-
-		
 	</script>
 	
 	<script>
