@@ -213,14 +213,14 @@ body {
 .inner .form-row .form-holder .select-btn {
     z-index: 0;
     position: absolute;
-    top: 20%;
+    top: 50%;
     right: 20px;
     font-size: 19px;
     cursor: pointer;
     color: #666;
 }
 .inner .form-row .form-holder.form-holder-2 .select-btn {
-    top: 20%;
+    top: 50%;
     right: 20px;
 }
 .inner .form-row .form-holder .ui-datepicker-trigger {

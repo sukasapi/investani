@@ -13,8 +13,16 @@
 	<link rel="stylesheet" type="text/css" href="/css/jquery-ui.min.css">
 	<!-- Main Style Css -->
 	<link rel="stylesheet" href="/css/profile-style.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	 crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+	<link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+	<style>
+		input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
+			-webkit-appearance: none; 
+			margin: 0; 
+		}
+	</style>
 </head>
 
 <body>
@@ -40,45 +48,46 @@
 				<!-- Profile -->
 				<form action="/complete-profile" class="form-register" id="profile-form" method="post" style="display:none">
 					<% if (error_message != '') { %>
-						<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
-							<%= error_message %>
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
+					<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+						<%= error_message %>
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
 					<% } %>
 					<div id="form-total" role="application" class="wizard clearfix">
 						<div class="steps clearfix">
 							<ul role="tablist">
-								<li aria-disabled="false" aria-selected="true" class="first current" id="profile1-list" role="tab">
-									<a id="form-total-t-0" href="#" aria-controls="form-total-p-0">
+								<li aria-disabled="false" aria-selected="true" class="first current first-list" role="tab">
+									<a aria-controls="form-total-p-0" href="#" id="form-total-t-0">
 										<span class="current-info audible"> </span>
 										<span class="title">1</span>
 									</a>
 								</li>
-								<li aria-disabled="false" aria-selected="false" class="disabled" id="profile2-list" role="tab">
-									<a id="form-total-t-1" href="#" aria-controls="form-total-p-1">
+								<li aria-disabled="false" aria-selected="false" class="disabled second-list" role="tab">
+									<a aria-controls="form-total-p-1" href="#" id="form-total-t-1">
 										<span class="title">2</span>
 									</a>
 								</li>
-								<li aria-disabled="false" aria-selected="false" class="disabled" id="profile3-list" role="tab">
-									<a id="form-total-t-2" href="#" aria-controls="form-total-p-1">
+								<li aria-disabled="false" aria-selected="false" class="disabled third-list" role="tab">
+									<a aria-controls="form-total-p-1" href="#" id="form-total-t-2">
 										<span class="title">3</span>
 									</a>
 								</li>
-								<li aria-disabled="true" class="disabled last" id="profile4-list" role="tab">
-									<a id="form-total-t-3" href="#" aria-controls="form-total-p-2">
+								<li aria-disabled="true" class="disabled last last-list" role="tab">
+									<a aria-controls="form-total-p-2" href="#" id="form-total-t-3">
 										<span class="title">4</span>
 									</a>
 								</li>
 							</ul>
 						</div>
-						<div class="content clearfix" >
+						<div class="content clearfix">
 							<h2 id="form-total-h-0" tabindex="-1" class="title current">1</h2>
 							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false">
-								<div class="inner" >
+								<div class="inner">
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Tipe Pendaftaran</label>
 											<select name="registration_type" id="registration_type" class="form-control">
 												<option disabled>Tipe Pendaftaran</option>
 												<option id="registration_type_individual" value="individual" selected>Perseorangan</option>
@@ -91,14 +100,18 @@
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<input class="form-control" id="name" name="name" placeholder="Nama Lengkap" type="text" >
+											<label class="control-label mb-1">Nama Lengkap</label>
+											<input class="form-control" id="name" name="name" placeholder="Nama Lengkap" type="text">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder" id="phone-input">
-											<input class="form-control" id="phone" name="phone" pattern="^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$" placeholder="Nomor Handphone" type="text" >
+											<label class="control-label mb-1">Nomor Handphone</label>
+											<input class="form-control" id="phone" name="phone" pattern="^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$"
+											 placeholder="Nomor Handphone" type="text">
 										</div>
 										<div class="form-holder" id="gender-input">
+											<label class="control-label mb-1">Jenis Kelamin</label>
 											<select name="gender" id="gender" class="form-control">
 												<option disabled selected>Jenis Kelamin</option>
 												<option id="gender-male" value="male">Pria</option>
@@ -111,27 +124,37 @@
 									</div>
 									<div class="form-row" id="established-place-company-phone-row" style="display:none">
 										<div class="form-holder">
-											<input class="form-control" id="established-place" name="established_place" placeholder="Tempat Didirikan" type="text" >
+											<label class="control-label mb-1">Tempat Didirikan</label>
+											<input class="form-control" id="established-place" name="established_place" placeholder="Tempat Didirikan"
+											 type="text">
 										</div>
 										<div class="form-holder" id="company-phone-input">
-											<input class="form-control" id="company-phone" name="company_phone" pattern="^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$" placeholder="Telepon Perusahaan" type="text" >
+											<label class="control-label mb-1">Telepon Perusahaan</label>
+											<input class="form-control" id="company-phone" name="company_phone" pattern="^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$"
+											 placeholder="Telepon Perusahaan" type="text">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Tanggal Lahir</label>
 											<input type="text" name="birth_date" class="date" id="datepicker" placeholder="Tanggal Lahir" style="width: 90%">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Provinsi</label>
 											<select name="province" id="province" class="form-control">
-												<option disabled selected>Provinsi</option>
+												<option disabled selected>Pilih provinsi</option>
 												<% for(var i = 0; i < province.length; i++) {%>
-													<% if (province[i].id == province_id) { %>
-														<option value="<%= province[i].id %>" selected><%= province[i].nama %></option>
-													<% } else { %>
-													<option value="<%= province[i].id %>"><%= province[i].nama %></option>
-													<% }%>
+												<% if (province[i].id == province_id) { %>
+												<option value="<%= province[i].id %>" selected>
+													<%= province[i].nama %>
+												</option>
+												<% } else { %>
+												<option value="<%= province[i].id %>">
+													<%= province[i].nama %>
+												</option>
+												<% }%>
 												<% } %>
 											</select>
 											<span class="select-btn">
@@ -142,8 +165,9 @@
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Kota</label>
 											<select name="city" id="city" class="form-control">
-												<option id="city-placeholder" value="" disabled selected >Kota</option>
+												<option id="city-placeholder" value="" disabled selected>Pilih kota</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
@@ -153,8 +177,10 @@
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Kecamatan</label>
+
 											<select name="district" id="district" class="form-control">
-												<option id="district-placeholder" value="" disabled selected>Kecamatan</option>
+												<option id="district-placeholder" value="" disabled selected>Pilih kecamatan</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
@@ -164,8 +190,9 @@
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Kelurahan</label>
 											<select name="sub_district" id="sub_district" class="form-control">
-												<option id="sub_district-placeholder" value="" disabled selected>Kelurahan</option>
+												<option id="sub_district-placeholder" value="" disabled selected>Pilih kelurahan</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
@@ -175,17 +202,19 @@
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<input class="form-control" id="address" name="address" placeholder="Alamat Korespondendsi" type="text" >
+											<label class="control-label mb-1">Alamat Korespondendsi</label>
+											<input class="form-control" id="address" name="address" placeholder="Alamat Korespondendsi" type="text">
 										</div>
 									</div>
-									
+
 								</div>
 							</section>
 						</div>
 					</div>
 					<div class="form-actions form-group">
-						<button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
-							<span id="payment-button-amount">Lanjutkan</span>
+						<button id="profile-button" type="submit" class="btn btn-lg btn-info btn-block">
+							<span aria-hidden="true" class="spinner-border spinner-border-sm" id="profile-spinner" role="status" style="display: none"></span>
+							<span id="profile-button-placeholder">Lanjutkan</span>
 						</button>
 					</div>
 				</form>
@@ -193,34 +222,34 @@
 				<!-- Occupation -->
 				<form action="/complete-profile/occupation" class="form-register" id="occupation-form" method="post" style="display:none">
 					<% if (error_message != '') { %>
-						<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
-							<%= error_message %>
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
+					<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+						<%= error_message %>
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
 					<% } %>
 					<div id="form-total" role="application" class="wizard clearfix">
 						<div class="steps clearfix">
 							<ul role="tablist">
-								<li aria-disabled="false" aria-selected="true" class="first current" id="occupation1-list" role="tab">
-									<a id="form-total-t-0" href="#" aria-controls="form-total-p-0">
+								<li aria-disabled="false" aria-selected="true" class="first done first-list" role="tab">
+									<a aria-controls="form-total-p-0" href="#" id="form-total-t-0">
 										<span class="current-info audible"> </span>
 										<span class="title">1</span>
 									</a>
 								</li>
-								<li aria-disabled="false" aria-selected="false" class="disabled" id="occupation2-list" role="tab">
-									<a id="form-total-t-1" href="#" aria-controls="form-total-p-1">
+								<li aria-disabled="false" aria-selected="false" class="current second-list" role="tab">
+									<a aria-controls="form-total-p-1" href="#" id="form-total-t-1">
 										<span class="title">2</span>
 									</a>
 								</li>
-								<li aria-disabled="false" aria-selected="false" class="disabled" id="occupation3-list" role="tab">
-									<a id="form-total-t-2" href="#" aria-controls="form-total-p-1">
+								<li aria-disabled="false" aria-selected="false" class="disabled third-list" role="tab">
+									<a aria-controls="form-total-p-1" href="#" id="form-total-t-2">
 										<span class="title">3</span>
 									</a>
 								</li>
-								<li aria-disabled="true" class="disabled last" id="occupation4-list" role="tab">
-									<a id="form-total-t-3" href="#" aria-controls="form-total-p-2">
+								<li aria-disabled="true" class="disabled last last-list" role="tab">
+									<a aria-controls="form-total-p-2" href="#" id="form-total-t-3">
 										<span class="title">4</span>
 									</a>
 								</li>
@@ -229,11 +258,12 @@
 						<div class="content clearfix">
 							<h2 id="form-total-h-0" tabindex="-1" class="title current">1</h2>
 							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false">
-								<div class="inner" >
+								<div class="inner">
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Pekerjaan</label>
 											<select name="occupation" id="occupation" class="form-control">
-												<option disabled selected>Pekerjaan</option>
+												<option disabled selected>Pilih pekerjaan</option>
 												<option value="karyawan_swasta">Karyawan swasta</option>
 												<option value="pegawai_negeri_sipil">Pegawai negeri sipil</option>
 												<option value="Pengusaha">Pengusaha</option>
@@ -252,18 +282,23 @@
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<input class="form-control" id="company_name" name="company_name" placeholder="Nama Perusahaan (opsional)" type="text" >
+											<label class="control-label mb-1">Nama Perusahaan (opsional)</label>
+											<input class="form-control" id="company-name" name="company_name" placeholder="Nama Perusahaan (opsional)"
+											 type="text">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<input class="form-control" id="company_address" name="company_address" placeholder="Alamat Perusahaan (opsional)" type="text" >
+											<label class="control-label mb-1">Alamat Perusahaan (opsional)</label>
+											<input class="form-control" id="company-address" name="company_address" placeholder="Alamat Perusahaan (opsional)"
+											 type="text">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder" id="position-input">
+											<label class="control-label mb-1">Jabatan (opsional)</label>
 											<select name="position" id="position" class="form-control">
-												<option disabled selected>Jabatan (opsional)</option>
+												<option disabled selected>Pilih jabatan</option>
 												<option value="komisaris">Komisaris (setara non-eksekutif)</option>
 												<option value="eksekutif_perusahaan">Eksekutif Perusahaan (setara direksi)</option>
 												<option value="manajer">Manajer (atau setara)</option>
@@ -276,8 +311,9 @@
 											</span>
 										</div>
 										<div class="form-holder" id="income-input">
+											<label class="control-label mb-1">Sumber Dana</label>
 											<select name="income_source" id="income-source" class="form-control">
-												<option disabled selected>Sumber Dana</option>
+												<option disabled selected>Pilih sumber dana</option>
 												<option value="penghasilan_rutin_gaji">Penghasilan rutin/Gaji</option>
 												<option value="usaha_bisnis">Usaha/Bisnis</option>
 												<option value="hasil_investasi">Hasil Investani</option>
@@ -292,62 +328,63 @@
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2" id="income-source-input">
+											<label class="control-label mb-1">Sumber Dana</label>
 											<select name="income" id="income" class="form-control">
-											<option disabled selected>Penghasilan per Bulan</option>
-											<option value="5_juta">s/d 5 juta</option>
-											<option value="5_10_juta">5 - 10 juta</option>
-											<option value="10_20_juta">10 - 20 juta</option>
-											<option value="20_50_juta">20 - 50 juta</option>
-											<option value="50_juta">di atas 50 juta</option>
-										</select>
-										<span class="select-btn">
-											<i class="zmdi zmdi-chevron-down"></i>
-										</span>
+												<option disabled selected>Pilih penghasilan</option>
+												<option value="5_juta">s/d 5 juta</option>
+												<option value="5_10_juta">5 - 10 juta</option>
+												<option value="10_20_juta">10 - 20 juta</option>
+												<option value="20_50_juta">20 - 50 juta</option>
+												<option value="50_juta">di atas 50 juta</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
 										</div>
 									</div>
-									
 								</div>
 							</section>
 						</div>
 					</div>
 					<div class="form-actions form-group">
 						<button id="occupation-button" type="submit" class="btn btn-lg btn-info btn-block">
+							<span aria-hidden="true" class="spinner-border spinner-border-sm" id="occupation-spinner" role="status" style="display: none"></span>
 							<span id="occupation-button-amount">Lanjutkan</span>
 						</button>
 					</div>
 				</form>
 				<!-- Occupation -->
 				<!-- Document -->
-				<form action="/complete-profile/document" class="form-register" id="document-form" method="post" style="display:none">
+				<form action="/complete-profile/document" class="form-register" enctype="multipart/form-data" id="document-form" method="post" style="display:none">
 					<% if (error_message != '') { %>
-						<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
-							<%= error_message %>
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
+					<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+						<%= error_message %>
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
 					<% } %>
 					<div id="form-total" role="application" class="wizard clearfix">
 						<div class="steps clearfix">
 							<ul role="tablist">
-								<li aria-disabled="false" aria-selected="true" class="first current" id="document1-list" role="tab">
-									<a id="form-total-t-0" href="#" aria-controls="form-total-p-0">
+								<li aria-disabled="false" aria-selected="true" class="first done first-list" role="tab">
+									<a aria-controls="form-total-p-0" href="#" id="form-total-t-0">
 										<span class="current-info audible"> </span>
 										<span class="title">1</span>
 									</a>
 								</li>
-								<li aria-disabled="false" aria-selected="false" class="disabled" id="document2-list" role="tab">
-									<a id="form-total-t-1" href="#" aria-controls="form-total-p-1">
+								<li aria-disabled="false" aria-selected="false" class="done second-list" role="tab">
+									<a aria-controls="form-total-p-1" href="#" id="form-total-t-1">
 										<span class="title">2</span>
 									</a>
 								</li>
-								<li aria-disabled="false" aria-selected="false" class="disabled" id="document3-list" role="tab">
-									<a id="form-total-t-2" href="#" aria-controls="form-total-p-1">
+								<li aria-disabled="false" aria-selected="false" class="current third-list" role="tab">
+									<a aria-controls="form-total-p-1" href="#" id="form-total-t-2">
 										<span class="title">3</span>
 									</a>
 								</li>
-								<li aria-disabled="true" class="disabled last" id="document4-list" role="tab">
-									<a id="form-total-t-3" href="#" aria-controls="form-total-p-2">
+								<li aria-disabled="true" class="disabled last last-list" role="tab">
+									<a aria-controls="form-total-p-2" href="#" id="form-total-t-3">
 										<span class="title">4</span>
 									</a>
 								</li>
@@ -356,30 +393,39 @@
 						<div class="content clearfix">
 							<h2 id="form-total-h-0" tabindex="-1" class="title current">1</h2>
 							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false">
-								<div class="inner" >
+								<div class="inner">
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<input class="form-control" id="identity-number" name="identity_number" placeholder="Nomor KTP / Paspor" type="number" >
+											<label class="control-label mb-1">Nomor KTP / Paspor</label>
+											<input class="form-control" id="identity-number" name="identity_number" placeholder="Nomor KTP / Paspor"
+											 type="number">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<input class="form-control" id="company_address" name="company_address" placeholder="Unggah Foto KTP/ Paspor" type="file" >
+											<label class="control-label mb-1">Unggah Foto KTP/ Paspor</label>
+											<input class="form-control-file" id="identity-image" name="identity_image" type="file">
+											<label for="exampleFormControlFile1" id="identity-image-label" style="display: none"></label>
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<input class="form-control" id="company_address" name="company_address" placeholder="Unggah Foto KTP/ Paspor + Selfie" type="file" >
+											<label class="control-label mb-1">Unggah Foto KTP/ Paspor + Selfie</label>
+											<input class="form-control-file" id="identity-image-selfie" name="identity_image_selfie" type="file">
+											<label for="exampleFormControlFile1" id="identity-image-selfie-label" style="display: none"></label>
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<input class="form-control" id="npwp-number" name="npwp_number" placeholder="Nomor NPWP (opsional)" type="text" >
+											<label class="control-label mb-1">Nomor NPWP (opsional)</label>
+											<input class="form-control" id="npwp-number" name="npwp_number" type="number">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<input class="form-control" id="company_address" name="company_address" placeholder="Unggah NPWP (opsional)" type="file" >
+											<label class="control-label mb-1">Unggah NPWP (opsional)</label>
+											<input class="form-control-file" id="npwp_image" name="npwp_image" type="file">
+											<label for="exampleFormControlFile1" id="npwp-image-label" style="display: none"></label>
 										</div>
 									</div>
 								</div>
@@ -387,130 +433,723 @@
 						</div>
 					</div>
 					<div class="form-actions form-group">
-						<button id="occupation-button" type="submit" class="btn btn-lg btn-info btn-block">
-							<span id="occupation-button-amount">Lanjutkan</span>
+						<button id="document-button" type="submit" class="btn btn-lg btn-info btn-block">
+							<span aria-hidden="true" class="spinner-border spinner-border-sm" id="document-spinner" role="status" style="display: none"></span>
+							<span id="document-button-amount">Lanjutkan</span>
 						</button>
 					</div>
 				</form>
 				<!-- Document -->
+				<!-- Bank -->
+				<form action="/complete-profile/bank" class="form-register" id="bank-form" method="post" style="display:none">
+					<% if (error_message != '') { %>
+					<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+						<%= error_message %>
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<% } %>
+					<div id="form-total" role="application" class="wizard clearfix">
+						<div class="steps clearfix">
+							<ul role="tablist">
+								<li aria-disabled="false" aria-selected="true" class="first done first-list" role="tab">
+									<a aria-controls="form-total-p-0" href="#" id="form-total-t-0">
+										<span class="current-info audible"> </span>
+										<span class="title">1</span>
+									</a>
+								</li>
+								<li aria-disabled="false" aria-selected="false" class="done second-list" role="tab">
+									<a aria-controls="form-total-p-1" href="#" id="form-total-t-1">
+										<span class="title">2</span>
+									</a>
+								</li>
+								<li aria-disabled="false" aria-selected="false" class="done third-list" role="tab">
+									<a aria-controls="form-total-p-1" href="#" id="form-total-t-2">
+										<span class="title">3</span>
+									</a>
+								</li>
+								<li aria-disabled="true" class="current last last-list" role="tab">
+									<a aria-controls="form-total-p-2" href="#" id="form-total-t-3">
+										<span class="title">4</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="content clearfix">
+							<h2 id="form-total-h-0" tabindex="-1" class="title current">1</h2>
+							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false">
+								<div class="inner">
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Nama Bank</label>
+											<select name="bank_name" id="bank-name" class="form-control">
+												<option disabled selected>Pilih nama bank</option>
+												<option value="bri">BRI</option>
+												<option value="bank_mandiri">Bank Mandiri</option>
+												<option value="bni">BNI</option>
+												<option value="bank_danamon">Bank Danamon</option>
+												<option value="permata_bank">Permata Bank</option>
+												<option value="bca">BCA</option>
+												<option value="bank_maybank">Bank Maybank</option>
+												<option value="bank_panin">Bank Panin</option>
+												<option value="bank_cimb_niaga">Bank CIMB Niaga</option>
+												<option value="bank_uob_indonesia">Bank UOB Indonesia</option>
+												<option value="bank_ocbc_nisp">Bank OCBC NISP</option>
+												<option value="american_express_bank_ltd">American Express Bank Ltd</option>
+												<option value="bank_citibank">Bank Citibank</option>
+												<option value="jp_morgan_chase_bank_na">Jp. Morgan Chase Bank, N.A</option>
+												<option value="bank_of_america_na">Bank Of America, N.A</option>
+												<option value="ing_indonesia_bank">Ing Indonesia Bank</option>
+												<option value="china_construction_bank">China Construction Bank</option>
+												<option value="bank_artha_graha">Bank Artha Graha</option>
+												<option value="bank_credit_agricole_indosuez">Bank Credit Agricole Indosuez</option>
+												<option value="the_bankok_bank_comp_ltd">The Bangkok Bank Comp. Ltd</option>
+												<option value="hsbc_indonesia">HSBC Indonesia</option>
+												<option value="mufh_bank_ltd">MUFG Bank Ltd</option>
+												<option value="bank_sumitomo_mitsui_indonesia">Bank Sumitomo Mitsui Indonesia</option>
+												<option value="bank_dbs_indonesia">Bank DBS Indonesia</option>
+												<option value="bank_resona_indonesia">Bank Resona Perdania</option>
+												<option value="bank_mizuho_indonesia">Bank Mizuho Indonesia</option>
+												<option value="standard_charteder_bank">Standard Chartered Bank</option>
+												<option value="bank_abn_amro">Bank ABN AMRO</option>
+												<option value="bank_capital_indonesia_tbd">Bank Capital Indonesia, Tbk.</option>
+												<option value="bank_bnp_paribas_indonesia">Bank Bnp Paribas Indonesia</option>
+												<option value="anz_panin_bank">Anz Panin Bank</option>
+												<option value="deutsche_bank_ag">Deutsche Bank Ag.</option>
+												<option value="bank_woori_indonesia">Bank Woori Indonesia</option>
+												<option value="bank_of_china_limited">Bank Of China Limited</option>
+												<option value="bank_bumi_arta">Bank Bumi Arta</option>
+												<option value="bank_rabobank_indonesia">Bank Rabobank Indonesia</option>
+												<option value="bank_mayapada">Bank Mayapada</option>
+												<option value="bank_jabar">Bank Jabar</option>
+												<option value="bank_dki">Bank Dki</option>
+												<option value="bpd_diy">Bpd Diy</option>
+												<option value="bank_jateng">Bank Jateng</option>
+												<option value="bank_jatim">Bank Jatim</option>
+												<option value="bpd_jambi">Bpd Jambi</option>
+												<option value="bpd_aceh">Bpd Aceh</option>
+												<option value="bank_sumut">Bank Sumut</option>
+												<option value="bank_nagari">Bank Nagari</option>
+												<option value="bank_riau">Bank Riau</option>
+												<option value="bank_sumsel">Bank Sumsel</option>
+												<option value="bank_lampung">Bank Lampung</option>
+												<option value="bpd_kalsel">Bpd Kalsel</option>
+												<option value="bpd_kalimantan_barat">Bpd Kalimantan Barat</option>
+												<option value="bpd_kaltim">Bpd Kaltim</option>
+												<option value="bpd_kalteng">Bpd Kalteng</option>
+												<option value="bpd_sulsel">Bpd Sulsel</option>
+												<option value="bpd_sulut">Bank Sulut</option>
+												<option value="bpd_ntb">Bpd Ntb</option>
+												<option value="bpd_bali">Bpd Bali</option>
+												<option value="bank_ntt">Bank Ntt</option>
+												<option value="bank_maluku">Bank Maluku</option>
+												<option value="bpd_papua">Bpd Papua</option>
+												<option value="bank_bengkulu">Bank Bengkulu</option>
+												<option value="bpd_sulawesi_tengah">Bpd Sulawesi Tengah</option>
+												<option value="bank_sultra">Bank Sultra</option>
+												<option value="bank_nusantara_parahyangan">Bank Nusantara Parahyangan</option>
+												<option value="bank_of_india_indonesia">Bank Of India Indonesia</option>
+												<option value="bank_muamalat">Bank Muamalat</option>
+												<option value="bank_mestika">Bank Mestika</option>
+												<option value="bank_shinhan_indonesia">Bank Shinhan Indonesia</option>
+												<option value="bank_sinarmas">Bank Sinarmas</option>
+												<option value="bank_maspion">Bank Maspion</option>
+												<option value="bank_ganesha">Bank Ganesha</option>
+												<option value="bank_icbc_indonesia">Bank Icbc Indonesia</option>
+												<option value="bang_tabungan_negara_persero">Bank Tabungan Negara (persero)</option>
+												<option value="bank_tabungan_pensiunan_nasional">Bank Tabungan Pensiunan Nasional</option>
+												<option value="bank_mega">Bank Mega</option>
+												<option value="bank_bukoping">Bank Bukopin</option>
+												<option value="bank_syariah_mandiri">Bank Syariah Mandiri</option>
+												<option value="bank_bisnis_internasional">Bank Bisnis Internasional</option>
+												<option value="bank_oke_indonesia">Bank Oke Indonesia</option>
+												<option value="bank_jasa_jakarta">Bank Jasa Jakarta</option>
+												<option value="bank_keb_hana_indonesia">Bank Keb Hana Indonesia</option>
+												<option value="bank_yudha_bhakti">Bank Yudha Bhakti</option>
+												<option value="bank_mitraniaga">Bank Mitraniaga</option>
+												<option value="bank_bri_agro_niaga">Bank BRI Agro Niaga</option>
+												<option value="bank_sbi_indonesia">Bank Sbi Indonesia</option>
+												<option value="bank_royal_indonesia">Bank Royal Indonesia</option>
+												<option value="bank_natioal_nobu">Bank Natioal Nobu</option>
+												<option value="bank_syariah_mega">Bank Syariah Mega</option>
+												<option value="bank_ina_perdana">Bank Ina Perdana</option>
+												<option value="prima_master_bank">Prima Master Bank</option>
+												<option value="bank_barclays_indonesia">Bank Barclays Indonesia</option>
+												<option value="bank_dinar_indonesia">Bank Dinar Indonesia</option>
+												<option value="bank_amar_indonesia">Bank Amar Indonesia</option>
+												<option value="bank_kesejahteraan_ekonomi">Bank Kesejahteraan Ekonomi</option>
+												<option value="bank_artos_ind">Bank Artos Ind</option>
+												<option value="bank-multi_arta_sentosa">Bank Multi Arta Sentosa</option>
+												<option value="bank_mayora">Bank Mayora</option>
+												<option value="bank_index_selindo">Bank Index Selindo</option>
+												<option value="bank_victoria_international">Bank Victoria International</option>
+												<option value="bank_fama_internasional">Bank Fama Internasional</option>
+												<option value="bank_mandiri_taspen_pos">Bank Mandiri Taspen Pos</option>
+												<option value="bank_harda">Bank Harda</option>
+												<option value="bank_ctbc_indonesia">Bank CTBC Indonesia</option>
+												<option value="bank_commonwealth">Bank Commonwealth</option>
+												<option value="bank_syariah_bukoping">Bank Syariah Bukopin</option>
+												<option value="bank_syariah_bca">Bank Syariah BCA</option>
+												<option value="bank_tabungan_pensiunan_nasional_syariah">Bank Tabungan Pensiunan Nasional Syariah</option>
+												<option value="bank_syariah_maybank">Bank Syariah Maybank</option>
+												<option value="bank_bni_syariah">Bank BNI Syariah</option>
+												<option value="bank_victoria_syariah">Bank Victoria Syariah</option>
+												<option value="bank_bri_syariah">Bank BRI Syariah</option>
+												<option value="bank_panin_syariah">Bank Panin Syariah</option>
+												<option value="bank_cimb_niaga_syariah">Bank CIMB Niaga Syariah</option>
+											</select>
+											<span class="select-btn">
+												<i class="zmdi zmdi-chevron-down"></i>
+											</span>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Nama Pemilik Rekening</label>
+											<input class="form-control" id="account-name" name="account_name" type="text">
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Nomor Rekening</label>
+											<input class="form-control" id="account-number" name="account_number" type="number">
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2">
+											<label class="control-label mb-1">Cabang</label>
+											<input class="form-control" id="branch" name="branch" type="text">
+										</div>
+									</div>
+								</div>
+							</section>
+						</div>
+					</div>
+					<div class="form-actions form-group">
+						<button id="bank-button" type="submit" class="btn btn-lg btn-info btn-block">
+							<span aria-hidden="true" class="spinner-border spinner-border-sm" id="bank-spinner" role="status" style="display: none"></span>
+							<span id="bank-button-amount">Lanjutkan</span>
+						</button>
+					</div>
+				</form>
+				<!-- Bank -->
 			</div>
 		</div>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+	 crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	 crossorigin="anonymous"></script>
 	<script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
 	<script>
-        $('#datepicker').datepicker({
-            uiLibrary: 'bootstrap4'
+		$('#datepicker').datepicker({
+			uiLibrary: 'bootstrap4'
 		});
-		
-		$(document).ready(function() {
+
+		$('#profile-form').on('submit', function (event) {
+			$('#profile-button').attr('disabled', 'disabled');
+			$('#profile-spinner').show();
+		});
+
+		$('#occupation-form').on('submit', function (event) {
+			$('#occupation-button').attr('disabled', 'disabled');
+			$('#occupation-spinner').show();
+		});
+
+		$('#document-form').on('submit', function (event) {
+			$('#document-button').attr('disabled', 'disabled');
+			$('#document-spinner').show();
+		});
+
+		$('#bank-form').on('submit', function (event) {
+			$('#bank-button').attr('disabled', 'disabled');
+			$('#bank-spinner').show();
+		});
+
+		$(document).ready(function () {
 			var registration = '<%= registration_type %>';
-			if (<%= profile_length%> == 0) {
+			document.getElementById('identity-number').addEventListener('keydown', function(e) {
+				if (e.which === 38 || e.which === 40) {
+					e.preventDefault();
+				}
+			});
+			document.getElementById('npwp-number').addEventListener('keydown', function(e) {
+				if (e.which === 38 || e.which === 40) {
+					e.preventDefault();
+				}
+			});
+
+			if (<%= profile_length %> == 0) {
 				$('#profile-form').show()
 			}
 			if (<%= profile_length%> != 0 && registration == 'individual') {
-				if (<%= occupation_length %> == 0) {
-					$('#occupation1-list').attr('class', 'done first');
-					$('#occupation2-list').attr('class', 'current');
+				$('.first-list').click(function () {
+					$('.first-list').attr('class', 'first done first-list');
+					$('.second-list').attr('class', 'current second-list');
+					$('#header-form').text('Profil');
+					$('#profile-form').show();
+					$('#occupation-form').hide();
+
+					$('#registration_type_individual').attr('selected', 'selected');
+					$('#name').val('<%= name %>');
+					$('#phone').val('<%= phone %>');
+					$('#datepicker').val('<%= birth_date %>');
+					$('#address').val('<%= address %>');
+					$('#name').attr('placeholder', 'Nama Lengkap');
+					$('#phone-input').attr('class', 'form-holder');
+					$('#phone').attr('placeholder', 'Nomor Handphone');
+					$('#gender-input').show();
+					if ('<%= gender %>' == 'male') {
+						$('#gender-male').attr('selected', 'selected');
+					}
+					else {
+						$('#gender-female').attr('selected', 'selected');
+					}
+					$('#established-place-company-phone-row').hide();
+					$('#datepicker').attr('placeholder', 'Tanggal Lahir');
+					$.when(
+						$.ajax({
+							type: 'get',
+							url: '/complete-profile/get-city',
+							data: {
+								'province_id': <%= province_id %>
+							},
+							success: function(data, status) {
+								if(data.success == true) {     
+									for (let index = 0; index < data.city.length; index++) {
+										if (data.city[index].id == <%= city_id %>) {
+											$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
+										}
+										else {
+											$('#city').append('<option class="city-option" value="'+data.city[index].id+'">'+data.city[index].nama+'</option>');
+										}
+									}
+								}
+							}
+						}),
+	
+						$.ajax({
+							type: "GET",
+							url: '/complete-profile/get-district',
+							data: {
+								'city_id': <%= city_id %>
+							},
+							success: function(data, status) {
+								if(data.success == true) {
+									for (let index = 0; index < data.district.length; index++) {
+										if (data.district[index].id == <%= district_id %>) {
+											$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama+'</option>');
+										}
+										else {
+											$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
+										}
+									}
+								}
+							}
+						}),
+						$.ajax({
+							type: "GET",
+							url: '/complete-profile/get-sub_district',
+							data: {
+								'district_id': <%= district_id %>
+							},
+							success: function(data, status) {
+								if(data.success == true) {
+									for (let index = 0; index < data.sub_district.length; index++) {
+										if (data.sub_district[index].id == <%= sub_district_id %>) {
+											$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama+'</option>');
+										}
+										else {
+											$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
+										}
+									}
+								}
+							}
+						})
+					).then(function() {
+					});
+				});
+				$('.second-list').click(function () {
+					$('.first-list').attr('class', 'first done first-list');
+					$('.second-list').attr('class', 'current second-list');
 					$('#header-form').text('Pekerjaan');
 					$('#occupation-form').show();
+					$('#profile-form').hide();
+				});
+
+				if (<%= occupation_length %> == 0) {
+					$('#header-form').text('Pekerjaan');
+					$('#occupation-form').show();
+
+					$('.first-list').click(function () {
+						$('.first-list').attr('class', 'first done first-list');
+						$('.second-list').attr('class', 'done second-list');
+
+						$('#header-form').text('Profil');
+						$('#profile-form').show();
+						$('#occupation-form').hide();
+						$('#document-form').hide();
+
+						$('#name').val('<%= name %>');
+						$('#phone').val('<%= phone %>');
+						$('#datepicker').val('<%= birth_date %>');
+						$('#address').val('<%= address %>');
+						$('#registration_type_individual').attr('selected', 'selected');
+						$('#name').attr('placeholder', 'Nama Lengkap');
+						$('#phone-input').attr('class', 'form-holder');
+						$('#phone').attr('placeholder', 'Nomor Handphone');
+						$('#gender-input').show();
+						if ('<%= gender %>' == 'male') {
+							$('#gender-male').attr('selected', 'selected');
+						}
+						else {
+							$('#gender-female').attr('selected', 'selected');
+						}
+						$('#established-place-company-phone-row').hide();
+						$('#datepicker').attr('placeholder', 'Tanggal Lahir');
+						$.when(
+							$.ajax({
+								type: 'get',
+								url: '/complete-profile/get-city',
+								data: {
+									'province_id': <%= province_id %>
+								},
+								success: function(data, status) {
+									if(data.success == true) {     
+										for (let index = 0; index < data.city.length; index++) {
+											if (data.city[index].id == <%= city_id %>) {
+												$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
+											}
+											else {
+												$('#city').append('<option class="city-option" value="'+data.city[index].id+'">'+data.city[index].nama+'</option>');
+											}
+										}
+									}
+								}
+							}),
+		
+							$.ajax({
+								type: "GET",
+								url: '/complete-profile/get-district',
+								data: {
+									'city_id': <%= city_id %>
+								},
+								success: function(data, status) {
+									if(data.success == true) {
+										for (let index = 0; index < data.district.length; index++) {
+											if (data.district[index].id == <%= district_id %>) {
+												$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama+'</option>');
+											}
+											else {
+												$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
+											}
+										}
+									}
+								}
+							}),
+							$.ajax({
+								type: "GET",
+								url: '/complete-profile/get-sub_district',
+								data: {
+									'district_id': <%= district_id %>
+								},
+								success: function(data, status) {
+									if(data.success == true) {
+										for (let index = 0; index < data.sub_district.length; index++) {
+											if (data.sub_district[index].id == <%= sub_district_id %>) {
+												$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama+'</option>');
+											}
+											else {
+												$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
+											}
+										}
+									}
+								}
+							})
+						).then(function() {
+						});
+					});
+					$('.second-list').click(function () {
+						$('.first-list').attr('class', 'first done first-list');
+						$('.second-list').attr('class', 'current second-list');
+
+						$('#header-form').text('Pekerjaan');
+						$('#occupation-form').show();
+						$('#profile-form').hide();
+						$('#document-form').hide();
+
+						$('#occupation').val('<%= occupation %>');
+						$('#company-name').val('<%= company_name %>');
+						$('#company-address').val('<%= company_address %>');
+						$('#position').val('<%= position %>');
+						$('#income').val('<%= income %>');
+						$('#income-source').val('<%= income_source %>');
+					});
 				}
 				if (<%= occupation_length %> != 0 && <%= document_length %> == 0) {
-					$('#document1-list').attr('class', 'done first');
-					$('#document2-list').attr('class', 'done');
-					$('#document3-list').attr('class', 'current');
 					$('#header-form').text('Dokumen');
 					$('#document-form').show();
+					$('.first-list').click(function () {
+						$('.first-list').attr('class', 'first done first-list');
+						$('.second-list').attr('class', 'done second-list');
+						$('.third-list').attr('class', 'current third-list');
+
+						$('#header-form').text('Profil');
+						$('#profile-form').show();
+						$('#occupation-form').hide();
+						$('#document-form').hide();
+
+						$('#name').val('<%= name %>');
+						$('#phone').val('<%= phone %>');
+						$('#datepicker').val('<%= birth_date %>');
+						$('#address').val('<%= address %>');
+						$('#registration_type_individual').attr('selected', 'selected');
+						$('#name').attr('placeholder', 'Nama Lengkap');
+						$('#phone-input').attr('class', 'form-holder');
+						$('#phone').attr('placeholder', 'Nomor Handphone');
+						$('#gender-input').show();
+						if ('<%= gender %>' == 'male') {
+							$('#gender-male').attr('selected', 'selected');
+						}
+						else {
+							$('#gender-female').attr('selected', 'selected');
+						}
+						$('#established-place-company-phone-row').hide();
+						$('#datepicker').attr('placeholder', 'Tanggal Lahir');
+						$.when(
+							$.ajax({
+								type: 'get',
+								url: '/complete-profile/get-city',
+								data: {
+									'province_id': <%= province_id %>
+								},
+								success: function(data, status) {
+									if(data.success == true) {     
+										for (let index = 0; index < data.city.length; index++) {
+											if (data.city[index].id == <%= city_id %>) {
+												$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
+											}
+											else {
+												$('#city').append('<option class="city-option" value="'+data.city[index].id+'">'+data.city[index].nama+'</option>');
+											}
+										}
+									}
+								}
+							}),
+		
+							$.ajax({
+								type: "GET",
+								url: '/complete-profile/get-district',
+								data: {
+									'city_id': <%= city_id %>
+								},
+								success: function(data, status) {
+									if(data.success == true) {
+										for (let index = 0; index < data.district.length; index++) {
+											if (data.district[index].id == <%= district_id %>) {
+												$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama+'</option>');
+											}
+											else {
+												$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
+											}
+										}
+									}
+								}
+							}),
+							$.ajax({
+								type: "GET",
+								url: '/complete-profile/get-sub_district',
+								data: {
+									'district_id': <%= district_id %>
+								},
+								success: function(data, status) {
+									if(data.success == true) {
+										for (let index = 0; index < data.sub_district.length; index++) {
+											if (data.sub_district[index].id == <%= sub_district_id %>) {
+												$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama+'</option>');
+											}
+											else {
+												$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
+											}
+										}
+									}
+								}
+							})
+						).then(function() {
+						});
+					});
+					$('.second-list').click(function () {
+						$('.first-list').attr('class', 'first done first-list');
+						$('.second-list').attr('class', 'done second-list');
+						$('.third-list').attr('class', 'current third-list');
+
+						$('#header-form').text('Pekerjaan');
+						$('#occupation-form').show();
+						$('#profile-form').hide();
+						$('#document-form').hide();
+
+						$('#occupation').val('<%= occupation %>');
+						$('#company-name').val('<%= company_name %>');
+						$('#company-address').val('<%= company_address %>');
+						$('#position').val('<%= position %>');
+						$('#income').val('<%= income %>');
+						$('#income-source').val('<%= income_source %>');
+					});
+					$('.third-list').click(function () {
+						$('.first-list').attr('class', 'first done first-list');
+						$('.second-list').attr('class', 'done second-list');
+						$('.third-list').attr('class', 'current third-list');
+
+						$('#header-form').text('Dokumen');
+						$('#document-form').show();
+						$('#occupation-form').hide();
+						$('#profile-form').hide();
+					});
+				}
+				if (<%= occupation_length %> != 0 && <%= document_length %> != 0) {
+					$('#header-form').text('Bank');
+					$('#bank-form').show();
+					
+					$('.first-list').click(function () {
+						$('.first-list').attr('class', 'first done first-list');
+						$('.second-list').attr('class', 'done second-list');
+						$('.third-list').attr('class', 'done third-list');
+						$('.last-list').attr('class', 'last done last-list');
+
+						$('#occupation-form').hide();
+						$('#document-form').hide();
+						$('#bank-form').hide();
+						$('#header-form').text('Profil');
+						$('#profile-form').show()
+
+						$('#name').val('<%= name %>');
+						$('#phone').val('<%= phone %>');
+						$('#datepicker').val('<%= birth_date %>');
+						$('#address').val('<%= address %>');
+						$('#registration_type_individual').attr('selected', 'selected');
+						$('#name').attr('placeholder', 'Nama Lengkap');
+						$('#phone-input').attr('class', 'form-holder');
+						$('#phone').attr('placeholder', 'Nomor Handphone');
+						$('#gender-input').show();
+						if ('<%= gender %>' == 'male') {
+							$('#gender-male').attr('selected', 'selected');
+						}
+						else {
+							$('#gender-female').attr('selected', 'selected');
+						}
+						$('#established-place-company-phone-row').hide();
+						$('#datepicker').attr('placeholder', 'Tanggal Lahir');
+						$.when(
+							$.ajax({
+								type: 'get',
+								url: '/complete-profile/get-city',
+								data: {
+									'province_id': <%= province_id %>
+								},
+								success: function(data, status) {
+									if(data.success == true) {     
+										for (let index = 0; index < data.city.length; index++) {
+											if (data.city[index].id == <%= city_id %>) {
+												$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
+											}
+											else {
+												$('#city').append('<option class="city-option" value="'+data.city[index].id+'">'+data.city[index].nama+'</option>');
+											}
+										}
+									}
+								}
+							}),
+		
+							$.ajax({
+								type: "GET",
+								url: '/complete-profile/get-district',
+								data: {
+									'city_id': <%= city_id %>
+								},
+								success: function(data, status) {
+									if(data.success == true) {
+										for (let index = 0; index < data.district.length; index++) {
+											if (data.district[index].id == <%= district_id %>) {
+												$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama+'</option>');
+											}
+											else {
+												$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
+											}
+										}
+									}
+								}
+							}),
+							$.ajax({
+								type: "GET",
+								url: '/complete-profile/get-sub_district',
+								data: {
+									'district_id': <%= district_id %>
+								},
+								success: function(data, status) {
+									if(data.success == true) {
+										for (let index = 0; index < data.sub_district.length; index++) {
+											if (data.sub_district[index].id == <%= sub_district_id %>) {
+												$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama+'</option>');
+											}
+											else {
+												$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
+											}
+										}
+									}
+								}
+							})
+						).then(function() {
+						});
+					});
+					$('.second-list').click(function () {
+						$('.third-list').attr('class', 'done third-list');
+						$('.last-list').attr('class', 'last done last-list');
+
+						$('#profile-form').hide();
+						$('#document-form').hide();
+						$('#bank-form').hide();
+						$('#header-form').text('Pekerjaan');
+						$('#occupation-form').show();
+
+						$('#occupation').val('<%= occupation %>');
+						$('#company-name').val('<%= company_name %>');
+						$('#company-address').val('<%= company_address %>');
+						$('#position').val('<%= position %>');
+						$('#income').val('<%= income %>');
+						$('#income-source').val('<%= income_source %>');
+					});
+					$('.third-list').click(function () {
+						$('.last-list').attr('class', 'last done last-list');
+
+						$('#profile-form').hide();
+						$('#occupation-form').hide();
+						$('#bank-form').hide();
+						$('#header-form').text('Dokumen');
+						$('#document-form').show();
+
+
+						$('#identity-number').val('<%= identity_number %>');
+						$('#npwp-number').val('<%= npwp_number %>');
+						$('#identity-image-label').text('<%= identity_image %>');
+						$('#identity-image-selfie-label').text('<%= identity_image_selfie %>');
+						$('#npwp-image-label').text('<%= npwp_image %>');
+						$('#identity-image-label').show();
+						$('#identity-image-selfie-label').show();
+						$('#npwp-image-label').show()
+
+						// $('#bank-name').val('<%= bank_name %>');
+						// $('#account-name').val('<%= account_name %>');
+						// $('#account-number').val('<%= account_name %>');
+						// $('#branch').val('<%= branch %>');
+					});
 				}
 			}
 			if (<%= profile_length%> != 0 && registration == 'company') {
 
 			}
 			// else {
-			// 	$('#name').val('<%= name %>');
-			// 	$('#phone').val('<%= phone %>');
-			// 	$('#datepicker').val('<%= birth_date %>');
-			// 	$('#address').val('<%= address %>');
-
-			// 	$.when(
-			// 		$.ajax({
-			// 			type: 'get',
-			// 			url: '/complete-profile/get-city',
-			// 			data: {
-			// 				'province_id': <%= province_id %>
-			// 			},
-			// 			success: function(data, status) {
-			// 				if(data.success == true) {     
-			// 					for (let index = 0; index < data.city.length; index++) {
-			// 						if (data.city[index].id == <%= city_id %>) {
-			// 							$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
-			// 						}
-			// 						else {
-			// 							$('#city').append('<option class="city-option" value="'+data.city[index].id+'">'+data.city[index].nama+'</option>');
-			// 						}
-			// 					}
-			// 				}
-			// 			}
-			// 		}),
-					
-			// 		$.ajax({
-			// 			type: "GET",
-			// 			url: '/complete-profile/get-district',
-			// 			data: {
-			// 				'city_id': <%= city_id %>
-			// 			},
-			// 			success: function(data, status) {
-			// 				if(data.success == true) {
-			// 					for (let index = 0; index < data.district.length; index++) {
-			// 						if (data.district[index].id == <%= district_id %>) {
-			// 							$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama+'</option>');
-			// 						}
-			// 						else {
-			// 							$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
-			// 						}
-			// 					}
-			// 				}
-			// 			}
-			// 		}),
-			// 		$.ajax({
-			// 			type: "GET",
-			// 			url: '/complete-profile/get-sub_district',
-			// 			data: {
-			// 				'district_id': <%= district_id %>
-			// 			},
-			// 			success: function(data, status) {
-			// 				if(data.success == true) {
-			// 					for (let index = 0; index < data.sub_district.length; index++) {
-			// 						if (data.sub_district[index].id == <%= sub_district_id %>) {
-			// 							$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama+'</option>');
-			// 						}
-			// 						else {
-			// 							$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
-			// 						}
-			// 					}
-			// 				}
-			// 			}
-			// 		})
-			// 	).then(function() {
-			// 	});
-
-			// 	if (registration == 'individual') {
-			// 		$('#registration_type_individual').attr('selected', 'selected');
-			// 		$('#name').attr('placeholder', 'Nama Lengkap');
-			// 		$('#phone-input').attr('class', 'form-holder');
-			// 		$('#phone').attr('placeholder', 'Nomor Handphone');
-			// 		$('#gender-input').show();
-			// 		if ('<%= gender %>' == 'male') {
-			// 			$('#gender-male').attr('selected', 'selected');
-			// 		}
-			// 		else {
-			// 			$('#gender-female').attr('selected', 'selected');
-			// 		}
-			// 		$('#established-place-company-phone-row').hide();
-			// 		$('#datepicker').attr('placeholder', 'Tanggal Lahir');
-			// 	} 
 			// 	if (registration == 'company') {
 			// 		$('#registration_type_company').attr('selected', 'selected');
 			// 		$('#name').attr('placeholder', 'Nama Perusahaan');
@@ -522,13 +1161,11 @@
 			// 		$('#company-phone').val('<%= company_phone %>');
 			// 		$('#datepicker').attr('placeholder', 'Tanggal Berdiri');
 			// 	}
-
-				
 			// }
-			
+
 		});
 	</script>
-	
+
 	<script>
 		$('#registration_type').on('change', function () {
 			event.preventDefault();
@@ -539,7 +1176,7 @@
 			$('#company-phone').val('');
 			$('#datepicker').val('');
 
-			
+
 			if (registration_type == 'individual') {
 				$('#name').attr('placeholder', 'Nama Lengkap');
 				$('#phone-input').attr('class', 'form-holder');
@@ -547,8 +1184,7 @@
 				$('#gender-input').show();
 				$('#established-place-company-phone-row').hide();
 				$('#datepicker').attr('placeholder', 'Tanggal Lahir');
-			}
-			else {
+			} else {
 				$('#name').attr('placeholder', 'Nama Perusahaan');
 				$('#phone-input').attr('class', 'form-holder form-holder-2');
 				$('#phone').attr('placeholder', 'Nomor Handphone Penanggungjawab');
@@ -558,7 +1194,7 @@
 			}
 		});
 
-		$('#province').on('change', function(event) {
+		$('#province').on('change', function (event) {
 			event.preventDefault();
 			var province_id = $(this).val();
 			var province_name = $('#province option:selected').text();
@@ -571,8 +1207,8 @@
 				data: {
 					'province_id': province_id
 				},
-				success: function(data, status) {
-					if(data.success == true) {     
+				success: function (data, status) {
+					if (data.success == true) {
 						$('.city-option').remove();
 						$('.ditrict-option').remove();
 						$('.sub_ditrict-option').remove();
@@ -589,14 +1225,15 @@
 						$('#district-placeholder').attr('disabled');
 						$('#sub_district-placeholder').attr('disabled');
 						for (let index = 0; index < data.city.length; index++) {
-							$('#city').append('<option class="city-option" value="'+data.city[index].id+'">'+data.city[index].nama+'</option>');
-                    	}
+							$('#city').append('<option class="city-option" value="' + data.city[index].id + '">' + data.city[index].nama +
+								'</option>');
+						}
 					}
 				}
 			})
 		});
 
-		$('#city').on('change', function(event) {
+		$('#city').on('change', function (event) {
 			console.log('city ganti')
 			event.preventDefault();
 			var city_id = $(this).val();
@@ -610,8 +1247,8 @@
 				data: {
 					'city_id': city_id
 				},
-				success: function(data, status) {
-					if(data.success == true) {
+				success: function (data, status) {
+					if (data.success == true) {
 						console.log(data);
 						$('.ditrict-option').remove();
 						$('.sub_ditrict-option').remove();
@@ -625,14 +1262,15 @@
 						$('#district-placeholder').attr('disabled');
 						$('#sub_district-placeholder').attr('disabled');
 						for (let index = 0; index < data.district.length; index++) {
-							$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
-                    	}
+							$('#district').append('<option class="ditrict-option" value="' + data.district[index].id + '">' + data.district[
+								index].nama + '</option>');
+						}
 					}
 				}
 			})
 		});
 
-		$('#district').on('change', function(event) {
+		$('#district').on('change', function (event) {
 			event.preventDefault();
 			var district_id = $(this).val();
 			var district_name = $('#district option:selected').text();
@@ -643,8 +1281,8 @@
 				data: {
 					'district_id': district_id
 				},
-				success: function(data, status) {
-					if(data.success == true) {
+				success: function (data, status) {
+					if (data.success == true) {
 						$('.sub_ditrict-option').remove();
 
 						$('#sub_district-placeholder').removeAttr('disabled');
@@ -653,8 +1291,9 @@
 
 						$('#sub_district-placeholder').attr('disabled');
 						for (let index = 0; index < data.sub_district.length; index++) {
-							$('#sub_district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
-                    	}
+							$('#sub_district').append('<option class="sub_ditrict-option" value="' + data.sub_district[index].id + '">' +
+								data.sub_district[index].nama + '</option>');
+						}
 					}
 				}
 			})
@@ -665,7 +1304,6 @@
 			var sub_district_name = $('#sub_district option:selected').text();
 			$('#sub_district_name').val(sub_district_name);
 		});
-
 	</script>
 </body>
 

@@ -116,6 +116,20 @@ let UserSchema = mongoose.Schema({
     npwp_image: {
       type: String
     }
+  }],
+  bank: [{
+    bank_name: {
+      type: String
+    },
+    account_name: {
+      type: String
+    },
+    account_number: {
+      type: Number
+    },
+    branch: {
+      type: String
+    }
   }]
 },
 {
@@ -157,4 +171,11 @@ export const getUserBySecretToken = (secretToken, callback) => {
     secretToken: secretToken
   }
   User.findOne(Obj, callback);
+}
+export const getUserByIdentityNumber = (identity_number, callback) => {
+  User.findOne({ 'document.identity_number': identity_number }, callback);
+}
+
+export const getUserAndUpdateByIdentityNumber = (identity_number, callback) => {
+  User.findOne({ 'document[0].identity_number': identity_number }, callback);
 }

@@ -21,13 +21,16 @@
     "google-libphonenumber": "^3.2.2",
     "mongodb": "*",
     "mongoose": "*",
+    "multer": "^1.4.1",
     "nodemailer": "^5.1.1",
     "nodemon": "^1.18.9",
     "passport": "*",
     "passport-http": "^0.3.0",
     "passport-local": "*",
     "randomstring": "^1.1.5",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "sharp": "^0.21.3",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

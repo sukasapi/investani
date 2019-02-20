@@ -1,6 +1,9 @@
 import express from 'express';
 import request from 'request';
-import { updateUser } from '../models/User';
+import { updateUser, getUserByIdentityNumber, getUserAndUpdateByIdentityNumber } from '../models/User';
+import upload from '../uploadMiddleware';
+import Resize from '../Resize';
+import path from 'path';
 
 let router = express.Router();
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
@@ -10,17 +13,19 @@ router.get('/', isLoggedIn, function (req, res) {
     request({
         url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
         method: 'GET', // specify the request type
-    }, 
+    },
     function(error, response, body){      
         let province = JSON.parse(body).semuaprovinsi;
+        let data = {};
         if(error) {
             res.json({success: false, province: null});
         } 
         else {
-            let data = {};
+            
             let profile_length = req.user.profile.length
             let occupation_length = req.user.occupation.length;
             let document_length = req.user.document.length;
+            let bank_length = req.user.bank.length;
             // belum isi profil
             if (profile_length == 0) {
                 data = {
@@ -48,7 +53,18 @@ router.get('/', isLoggedIn, function (req, res) {
                     income: null,
                     income_source: null,
                     // document
-                    document_length: document_length
+                    document_length: document_length,
+                    identity_number: null,
+                    identity_image: null,
+                    identity_image_selfie: null,
+                    npwp_number: null,
+                    npwp_image: null,
+                    // bank
+                    bank_length: bank_length,
+                    bank_name: null,
+                    account_name: null,
+                    account_number: null,
+                    branch: null
                 };
             }
             // sudah isi profil perseorangan
@@ -79,18 +95,29 @@ router.get('/', isLoggedIn, function (req, res) {
                         income: null,
                         income_source: null,
                         // document
-                        document_length: document_length
+                        document_length: document_length,
+                        identity_number: null,
+                        identity_image: null,
+                        identity_image_selfie: null,
+                        npwp_number: null,
+                        npwp_image: null,
+                        // bank
+                        bank_length: bank_length,
+                        bank_name: null,
+                        account_name: null,
+                        account_number: null,
+                        branch: null
                     };
                 }
-                // sudah isi pekerjaan
-                if (req.user.occupation.length != 0) {
+                // sudah isi pekerjaan dan belum isi dokumen
+                if (occupation_length != 0 && document_length == 0) {
                     data = {
                         profile_length: profile_length,
                         province: province,
                         registration_type: req.user.profile[0].registration_type,
                         name: req.user.profile[0].name,
                         phone: req.user.profile[0].phone,
-                        gender: req.user.profile[0].phone,
+                        gender: req.user.profile[0].gender,
                         established_place: null,
                         company_phone: null,
                         birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
@@ -101,15 +128,66 @@ router.get('/', isLoggedIn, function (req, res) {
                         address: req.user.profile[0].address,
                         // occupation
                         occupation_length: occupation_length,
-                        occupation: req.user.occupation.occupation,
-                        company_name: req.user.occupation.company_name,
-                        company_address: req.user.occupation.company_address,
-                        position: req.user.occupation.position,
-                        income: req.user.occupation.income,
-                        income_source: req.user.occupation.income_source,
+                        occupation: req.user.occupation[0].occupation,
+                        company_name: req.user.occupation[0].company_name,
+                        company_address: req.user.occupation[0].company_address,
+                        position: req.user.occupation[0].position,
+                        income: req.user.occupation[0].income,
+                        income_source: req.user.occupation[0].income_source,
                         // document
                         document_length: document_length,
-                        
+                        identity_number: null,
+                        identity_image: null,
+                        identity_image_selfie: null,
+                        npwp_number: null,
+                        npwp_image: null,
+                        // bank
+                        bank_length: bank_length,
+                        bank_name: null,
+                        account_name: null,
+                        account_number: null,
+                        branch: null
+                    };
+                }
+                // sudah isi pekerjaan dan dokumen
+                if (occupation_length != 0 && document_length != 0) {                   
+                    data = {
+                        // profile
+                        profile_length: profile_length,
+                        province: province,
+                        registration_type: req.user.profile[0].registration_type,
+                        name: req.user.profile[0].name,
+                        phone: req.user.profile[0].phone,
+                        gender: req.user.profile[0].gender,
+                        established_place: null,
+                        company_phone: null,
+                        birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
+                        province_id: req.user.profile[0].province[0].province_id,
+                        city_id: req.user.profile[0].city[0].city_id,
+                        district_id: req.user.profile[0].district[0].district_id,
+                        sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
+                        address: req.user.profile[0].address,
+                        // occupation
+                        occupation_length: occupation_length,
+                        occupation: req.user.occupation[0].occupation,
+                        company_name: req.user.occupation[0].company_name,
+                        company_address: req.user.occupation[0].company_address,
+                        position: req.user.occupation[0].position,
+                        income: req.user.occupation[0].income,
+                        income_source: req.user.occupation[0].income_source,
+                        // document
+                        document_length: document_length,
+                        identity_number: req.user.document[0].identity_number,
+                        identity_image: req.user.document[0].identity_image,
+                        identity_image_selfie: req.user.document[0].identity_image_selfie,
+                        npwp_number: req.user.document[0].npwp_number,
+                        npwp_image: req.user.document[0].npwp_image,
+                        // bank
+                        bank_length: bank_length,
+                        bank_name: null,
+                        account_name: null,
+                        account_number: null,
+                        branch: null
                     };
                 }
             }
@@ -368,9 +446,7 @@ router.post('/occupation', isLoggedIn, function (req, res) {
     req.checkBody('income', 'Penghasilan per Bulan wajib dipilih').notEmpty();
     req.checkBody('income_source', 'Sumber Dana wajib dipilih').notEmpty();
     req.checkBody('company_address', 'Alamat Perusahaan tidak boleh lebih dari 250 karakter').isLength({ max: 250 });
-    req.checkBody('company_address', 'Alamat Perusahaan minimal mengandung 10 karakter').isLength({min: 10});
     req.checkBody('company_name', 'Nama Perusahaan tidak boleh lebih dari 255 karakter').isLength({ max: 255 });
-    req.checkBody('company_name', 'Nama Perusahaan minimal mengandung 3 karakter').isLength({ min: 3 });
     req.checkBody('occupation', 'Pekerjaan wajib dipilih').notEmpty();
 
     let errors = req.validationErrors();
@@ -407,6 +483,178 @@ router.post('/occupation', isLoggedIn, function (req, res) {
             }
             else {    
                 res.redirect('/complete-profile');
+                return ;
+            }
+        });
+    }
+});
+
+router.post('/document', isLoggedIn, upload.fields([{ name: 'identity_image', maxCount: 1 }, { name: 'identity_image_selfie', maxCount: 1 }, { name: 'npwp_image', maxCount: 1 }]), async function (req, res) {
+    let error_message;
+    let identity_number = req.body.identity_number;
+    let npwp_number = req.body.npwp_number;
+
+    const imagePath = path.join(__dirname, '../storage/images');
+    const fileUpload = new Resize(imagePath);
+    
+    if (npwp_number != '') {
+        req.checkBody('npwp_number', 'Nomor NPWP harus mengandung 15 karakter.').isLength({ min: 15, max: 15});
+    }
+    req.checkBody('identity_number', 'Nomor KTP/ Paspor wajib diisi.').notEmpty();
+    
+    let errors = req.validationErrors();
+
+    if (errors) {
+        error_message = errors[errors.length-1].msg;
+        req.flash('error_message', error_message);
+        res.redirect('/complete-profile');
+        return ;
+    }
+    else {
+        let npwp_image_filename;
+        let identity_image_filename;
+        let identity_image_selfie_filename;
+        if (req.user.document.length == 0) {
+            getUserByIdentityNumber(identity_number, function (error, user) {
+                if (error) {
+                    error_message = "Terjadi kesalahan"; 
+                    req.flash('error_message', error_message);
+                    res.redirect('/complete-profile');
+                    return ;
+                }
+                if (user) {
+                    error_message = "Nomor KTP/ Paspor sudah terdaftar"; 
+                    req.flash('error_message', error_message);
+                    res.redirect('/complete-profile');
+                    return ;
+                }
+            });
+
+            if (!req.files['identity_image']) {
+                req.flash('error_message', 'Unggah Foto KTP/ Paspor wajib diisi.');
+                res.redirect('/complete-profile');
+                return ;
+            }
+    
+            if (!req.files['identity_image_selfie']) {
+                req.flash('error_message', 'Unggah Foto KTP/ Paspor + Selfie wajib diisi.');
+                res.redirect('/complete-profile');
+                return ;
+            }
+
+            identity_image_filename = await fileUpload.save(req.files['identity_image'][0].buffer);
+            identity_image_selfie_filename = await fileUpload.save(req.files['identity_image_selfie'][0].buffer);
+        }
+        if (req.user.document.length != 0) {
+            getUserAndUpdateByIdentityNumber(identity_number, function (error, user) {
+                if (error) {
+                    error_message = "Terjadi kesalahan"; 
+                    req.flash('error_message', error_message);
+                    res.redirect('/complete-profile');
+                    return ;
+                }
+                if (user) {
+                    if (user._id != req.user._id) {
+                        error_message = "Nomor KTP/ Paspor sudah terdaftar"; 
+                        req.flash('error_message', error_message);
+                        res.redirect('/complete-profile');
+                        return ;
+                    }
+                }
+            });
+        }
+        if (req.files['identity_image']) {
+            identity_image_filename = await fileUpload.save(req.files['identity_image'][0].buffer);
+        }
+        if (req.files['identity_image_selfie']) {
+            identity_image_selfie_filename = await fileUpload.save(req.files['identity_image_selfie'][0].buffer);
+        }
+        if (req.files['npwp_image']) {
+            npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
+        }
+
+        updateUser(req.user, {
+            document: {
+                identity_number: identity_number,
+                identity_image: identity_image_filename,
+                identity_image_selfie: identity_image_selfie_filename,
+                npwp_number: npwp_number,
+                npwp_image: npwp_image_filename,
+            }
+        }, 
+        function (error, user) {
+            if (error) {
+                error_message = "Terjadi kesalahan"; 
+                req.flash('error_message', error_message);
+                res.redirect('/complete-profile');
+                return ;
+            }
+            if (!user) {
+                error_message = "User tidak tersedia"; 
+                req.flash('error_message', error_message);
+                res.redirect('/complete-profile');
+                return ;
+            }
+            else {
+                res.redirect('/complete-profile');
+                return ;
+            }
+        });
+    }
+    
+    
+});
+
+router.post('/bank', isLoggedIn, function (req, res) {
+    let error_message;
+    let bank_name = req.body.bank_name;
+    let account_name = req.body.account_name;
+    let account_number = req.body.account_number;
+    let branch = req.body.branch;
+    
+    req.checkBody('branch', 'Cabang tidak boleh lebih dari 50 karakter.').isLength({ max: 50 });
+    req.checkBody('branch', 'Cabang minimal mengandung 3 karakter.').isLength({ min: 3 });
+    req.checkBody('branch', 'Cabang wajib diisi.').notEmpty();
+    req.checkBody('account_name', 'Nomor Rekening tidak boleh lebih dari 50 karakter.').isLength({ max: 50 });
+    req.checkBody('account_number', 'Nomor Rekening minimal mengandung 3 karakter.').isLength({ min: 3 });
+    req.checkBody('account_number', 'Nomor Rekening wajib diisi.').notEmpty();
+    req.checkBody('account_name', 'Nama Pemilik Rekening tidak boleh lebih dari 50 karakter.').isLength({ max: 50 });
+    req.checkBody('account_name', 'Nama Pemilik Rekening minimal mengandung 3 karakter.').isLength({ min: 3 });
+    req.checkBody('account_name', 'Nama Pemilik Rekening wajib diisi.').notEmpty();
+    req.checkBody('bank_name', 'Nama Bank wajib dipilih.').notEmpty();
+
+    let errors = req.validationErrors();
+
+    if (errors) {
+        error_message = errors[errors.length-1].msg;
+        req.flash('error_message', error_message);
+        res.redirect('/complete-profile');
+        return ;
+    }
+    else {
+        updateUser(req.user, {
+            bank: {
+                bank_name: bank_name,
+                account_name: account_name,
+                account_number: account_number,
+                branch: branch
+            }
+        }, 
+        function (error, user) {
+            if (error) {
+                error_message = "Terjadi kesalahan"; 
+                req.flash('error_message', error_message);
+                res.redirect('/complete-profile');
+                return ;
+            }
+            if (!user) {
+                error_message = "User tidak tersedia"; 
+                req.flash('error_message', error_message);
+                res.redirect('/complete-profile');
+                return ;
+            }
+            else {
+                res.redirect('/');
                 return ;
             }
         });
