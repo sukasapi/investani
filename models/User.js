@@ -100,6 +100,23 @@ let UserSchema = mongoose.Schema({
       type: String
     }
   }],
+  pic: [{
+    pic_name: {
+      type: String
+    },
+    pic_birth_date: {
+      type: Date
+    },
+    pic_identity_number: {
+      type: Number
+    },
+    pic_identity_image: {
+      type: String
+    },
+    pic_identity_selfie_image: {
+      type: String
+    }
+  }],
   document: [{
     identity_number: {
       type: Number
@@ -107,13 +124,28 @@ let UserSchema = mongoose.Schema({
     identity_image: {
       type: String
     },
-    identity_image_selfie: {
+    identity_selfie_image: {
       type: String
     },
     npwp_number: {
       type: Number
     },
     npwp_image: {
+      type: String
+    },
+    company_registration_number: {
+      type: Number
+    },
+    company_registration_image: {
+      type: String
+    },
+    sk_kemenkumham_number: {
+      type: Number
+    },
+    sk_kemenkumham_image: {
+      type: String
+    },
+    business_permit_image: {
       type: String
     }
   }],
@@ -178,4 +210,12 @@ export const getUserByIdentityNumber = (identity_number, callback) => {
 
 export const getUserAndUpdateByIdentityNumber = (identity_number, callback) => {
   User.findOne({ 'document[0].identity_number': identity_number }, callback);
+}
+
+export const getUserByPICIdentityNumber = (identity_number, callback) => {
+  User.findOne({ 'pic.identity_number': identity_number }, callback);
+}
+
+export const getUserAndUpdateByPICIdentityNumber = (identity_number, callback) => {
+  User.findOne({ 'pic[0].identity_number': identity_number }, callback);
 }

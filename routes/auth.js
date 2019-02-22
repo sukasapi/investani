@@ -5,8 +5,8 @@ import passport from 'passport';
 import nodemailer from 'nodemailer';
 import randomstring from 'randomstring';
 
-let router = express.Router();
-let LocalStrategy = require('passport-local').Strategy;
+const router = express.Router();
+const LocalStrategy = require('passport-local').Strategy;
 
 router.get('/', function (req, res) {
     res.render('pages/users');
@@ -130,8 +130,13 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
             return ;
         }
         if (user.active == true && user.profile.length == 0) {
-            res.redirect('/welcome/email-activated');
-            return ;
+            if (user.user_type[0].name == 'super_user') {
+                res.redirect('/admin');
+            }
+            else {
+                res.redirect('/welcome/email-activated');
+                return ;
+            }
         }
         else {          
             res.redirect('/');

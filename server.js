@@ -17,6 +17,7 @@ import email from './routes/email';
 import captcha from './routes/captcha';
 import welcome from './routes/welcome';
 import profile from './routes/profile';
+import admin from './routes/admin';
 
 // Connect with Mongo database
 mongoose.Promise = global.Promise;
@@ -71,6 +72,7 @@ app.use('/email', email);
 app.use('/captcha', captcha);
 app.use('/welcome', welcome);
 app.use('/complete-profile', profile);
+app.use('/admin', admin);
 
 app.listen(PORT, function(){
     console.log('Server is running on port:', PORT);
