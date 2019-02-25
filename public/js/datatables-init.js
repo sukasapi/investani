@@ -8,7 +8,13 @@
 
 
 
-    $('#bootstrap-data-table').DataTable({
+    $('#bootstrap-data-table-1').DataTable({
+        lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
+	});
+	$('#bootstrap-data-table-2').DataTable({
+        lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
+	});
+	$('#bootstrap-data-table-3').DataTable({
         lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
     });
 

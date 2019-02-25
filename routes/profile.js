@@ -1,6 +1,6 @@
 import express from 'express';
 import request from 'request';
-import { updateUser, getUserByIdentityNumber, getUserAndUpdateByIdentityNumber, getUserByPICIdentityNumber, getUserAndUpdateByPICIdentityNumber } from '../models/User';
+import { updateUser, getUserByIdentityNumber, getUserByPICIdentityNumber } from '../models/User';
 import upload from '../uploadMiddleware';
 import Resize from '../Resize';
 import path from 'path';
@@ -9,7 +9,6 @@ const router = express.Router();
 
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
-// isUncompleted, 
 router.get('/', isLoggedIn, isUncompleted, isInvestor, function (req, res) {
     request({
         url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
@@ -223,11 +222,11 @@ router.get('/', isLoggedIn, isUncompleted, isInvestor, function (req, res) {
                         pic_identity_selfie_image: null,
                         // document
                         document_length: document_length,
-                        identity_number: null,
-                        identity_image: null,
-                        identity_selfie_image: null,
-                        npwp_number: null,
-                        npwp_image: null,
+                        identity_number: req.user.document[0].identity_number,
+                        identity_image: req.user.document[0].identity_image,
+                        identity_selfie_image: req.user.document[0].identity_selfie_image,
+                        npwp_number: req.user.document[0].npwp_number,
+                        npwp_image: req.user.document[0].npwp_image,
                         company_registration_number: null,
                         company_registration_image: null,
                         sk_kemenkumham_number: null,
@@ -418,7 +417,7 @@ router.get('/get-city', isLoggedIn, function (req, res) {
         method: 'GET', // specify the request type
     },
     function(error, response, body){
-        let city = JSON.parse(body).daftar_kecamatan;
+        let city = JSON.parse(body).kabupatens;        
         if(error) {
             res.json({success: false, city: null});
         } else {
@@ -433,7 +432,7 @@ router.get('/get-district', isLoggedIn, function (req, res) {
         method: 'GET', // specify the request type
     },
     function(error, response, body){
-        let district = JSON.parse(body).daftar_kecamatan;
+        let district = JSON.parse(body).kecamatans;
         if(error) {
             console.log(error);
             res.json({success: false, district: null});
@@ -449,7 +448,7 @@ router.get('/get-sub_district', isLoggedIn, function (req, res) {
         method: 'GET', // specify the request type
     },
     function(error, response, body){
-        let sub_district = JSON.parse(body).daftar_desa;
+        let sub_district = JSON.parse(body).desas;
         if(error) {
             res.json({success: false, sub_district: null});
         } else {
@@ -717,8 +716,8 @@ router.post('/pic', isLoggedIn, isUncompleted, isInvestor, upload.fields([{name:
         return ;
     }
     else {
-        let pic_identity_image_filename;
-        let pic_identity_selfie_image_filename;
+        let pic_identity_image_filename = req.body.pic_identity_image_input;
+        let pic_identity_selfie_image_filename = req.body.pic_identity_selfie_image_input;
 
         if (req.user.pic.length == 0) {
             getUserByPICIdentityNumber(pic_identity_number, function (error, user) {
@@ -752,7 +751,7 @@ router.post('/pic', isLoggedIn, isUncompleted, isInvestor, upload.fields([{name:
             pic_identity_selfie_image_filename = await fileUpload.save(req.files['pic_identity_selfie_image'][0].buffer);
         }
         if (req.user.pic.length != 0) {
-            getUserAndUpdateByPICIdentityNumber(identity_number, function (error, user) {
+            getUserByPICIdentityNumber(identity_number, function (error, user) {
                 if (error) {
                     error_message = "Terjadi kesalahan"; 
                     req.flash('error_message', error_message);
@@ -819,9 +818,9 @@ router.post('/document', isLoggedIn, isUncompleted, isInvestor, upload.fields([
     { name: 'sk_kemenkumham_image', maxCount: 1},
     { name: 'business_permit_image', maxCount: 1}
 ]), 
-async function (req, res) {
+async function (req, res) {   
     let error_message;
-    let identity_number;
+    let identity_number = req.body.identity_number;
     let npwp_number = req.body.npwp_number;
     let company_registration_number = req.body.company_registration_number;
     let sk_kemenkumham_number = req.body.sk_kemenkumham_number;
@@ -851,12 +850,12 @@ async function (req, res) {
         return ;
     }
     else {
-        let npwp_image_filename;
-        let identity_image_filename;
-        let identity_selfie_image_filename;
-        let company_registration_image_filename;
-        let sk_kemenkumham_image_filename;
-        let business_permit_image_filename;
+        let npwp_image_filename = req.body.npwp_image_input;
+        let identity_image_filename = req.body.identity_image_input;
+        let identity_selfie_image_filename = req.body.identity_selfie_image_input;
+        let company_registration_image_filename = req.body.company_registration_image_input;
+        let sk_kemenkumham_image_filename = req.body.sk_kemenkumham_image_input;
+        let business_permit_image_filename = req.body.business_permit_image_input;
 
         if (req.user.document.length == 0 ) {
             if (req.user.profile[0].registration_type == 'individual') {
@@ -891,6 +890,7 @@ async function (req, res) {
     
                 identity_image_filename = await fileUpload.save(req.files['identity_image'][0].buffer);
                 identity_selfie_image_filename = await fileUpload.save(req.files['identity_selfie_image'][0].buffer);
+                
                 if (req.files['npwp_image']) {
                     npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
                 }
@@ -915,14 +915,15 @@ async function (req, res) {
                 company_registration_image_filename = await fileUpload.save(req.files['company_registration_image'][0].buffer);
                 npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
                 sk_kemenkumham_image_filename = await fileUpload.save(req.files['sk_kemenkumham_image'][0].buffer);
+                
                 if (req.files['business_permit_image']) {
                     business_permit_image_filename = await fileUpload.save(req.files['business_permit_image'][0].buffer);
                 }
             }
         }
-        if (req.user.document.length != 0) {
-            if (req.user.registration_type == 'individual') {
-                getUserAndUpdateByIdentityNumber(identity_number, function (error, user) {
+        if (req.user.document.length != 0) {                        
+            if (req.user.profile[0].registration_type == 'individual') {               
+                getUserByIdentityNumber(identity_number, function (error, user) {
                     if (error) {
                         error_message = "Terjadi kesalahan"; 
                         req.flash('error_message', error_message);
@@ -930,15 +931,15 @@ async function (req, res) {
                         return ;
                     }
                     if (user) {
-                        if (user._id != req.user._id) {
+                        if (!user._id.equals(req.user._id)) {
                             error_message = "Nomor KTP/ Paspor sudah terdaftar"; 
                             req.flash('error_message', error_message);
                             res.redirect('/complete-profile');
                             return ;
                         }
                     }
-                });
-                if (req.files['identity_image']) {
+                });                
+                if (req.files['identity_image']) {                    
                     identity_image_filename = await fileUpload.save(req.files['identity_image'][0].buffer);
                 }
                 if (req.files['identity_selfie_image']) {
@@ -948,7 +949,7 @@ async function (req, res) {
                     npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
                 }
             }
-            if (req.user.registration_type == 'company') {
+            if (req.user.profile[0].registration_type == 'company') {
                 if (req.files['company_registration_image']) {
                     company_registration_image_filename = await fileUpload.save(req.files['company_registration_image'][0].buffer);
                 }
@@ -963,7 +964,8 @@ async function (req, res) {
                 }
             }
         }
-
+        console.log('update');
+        
         updateUser(req.user, {
             document: [{
                 identity_number: identity_number,
@@ -998,8 +1000,6 @@ async function (req, res) {
             }
         });
     }
-    
-    
 });
 
 router.post('/bank', isLoggedIn, isUncompleted, isInvestor, function (req, res) {
@@ -1068,23 +1068,27 @@ function isLoggedIn(req, res, next) {
 }
 
 function isUncompleted(req,res, next) {
-    if (req.user.profile[0].registration_type == 'individual') {
-        if (req.user.profile.length == 0 || req.user.occupation.length == 0 || req.user.document.length == 0 || req.user.bank.length == 0) {
-            next();
-        }
-        else {
-            res.redirect('/');
-        }
+    if (req.user.profile.length == 0 || req.user.occupation.length == 0 || req.user.pic.length == 0 || req.user.document.length == 0 || req.user.bank.length == 0) {
+        next();
     }
     else {
-        if (req.user.profile.length == 0 || req.user.pic.length == 0 || req.user.document.length == 0 || req.user.bank.length == 0) {
-            next();
+        if (req.user.profile[0].registration_type == 'individual') {
+            if (req.user.profile.length == 0 || req.user.occupation.length == 0 || req.user.document.length == 0 || req.user.bank.length == 0) {
+                next();
+            }
+            else {
+                res.redirect('/');
+            }
         }
         else {
-            res.redirect('/');
+            if (req.user.profile.length == 0 || req.user.pic.length == 0 || req.user.document.length == 0 || req.user.bank.length == 0) {
+                next();
+            }
+            else {
+                res.redirect('/');
+            }
         }
     }
-    
 }
 
 function isInvestor(req, res, next) {

@@ -208,14 +208,6 @@ export const getUserByIdentityNumber = (identity_number, callback) => {
   User.findOne({ 'document.identity_number': identity_number }, callback);
 }
 
-export const getUserAndUpdateByIdentityNumber = (identity_number, callback) => {
-  User.findOne({ 'document[0].identity_number': identity_number }, callback);
-}
-
 export const getUserByPICIdentityNumber = (identity_number, callback) => {
   User.findOne({ 'pic.identity_number': identity_number }, callback);
-}
-
-export const getUserAndUpdateByPICIdentityNumber = (identity_number, callback) => {
-  User.findOne({ 'pic[0].identity_number': identity_number }, callback);
 }

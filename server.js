@@ -21,9 +21,7 @@ import admin from './routes/admin';
 
 // Connect with Mongo database
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://admin:admin@127.0.0.1:27017/investani?authSource=admin', {	
-    useMongoClient: true
-});
+mongoose.connect('mongodb://admin:admin@127.0.0.1:27017/investani?authSource=admin', {useNewUrlParser: true});
 
 let db = mongoose.connect;
 

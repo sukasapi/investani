@@ -417,6 +417,7 @@
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Unggah Foto KTP/ Paspor Penanggungjawab</label>
 											<input class="form-control-file" id="pic-identity-image" name="pic_identity_image" type="file">
+											<input type="text" name="pic_identity_image_input" value="<%= pic_identity_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="pic-identity-image-label" style="display: none"></label>
 										</div>
 									</div>
@@ -424,6 +425,7 @@
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Unggah Foto KTP/ Paspor + Selfie Penanggungjawab</label>
 											<input class="form-control-file" id="pic-identity-selfie-image" name="pic_identity_selfie_image" type="file">
+											<input type="text" name="pic_identity_selfie_image_input" value="<%= pic_identity_selfie_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="pic-identity-selfie-image-label" style="display: none"></label>
 										</div>
 									</div>
@@ -495,11 +497,13 @@
 										<div class="form-holder form-holder-2" id="identity-image-input">
 											<label class="control-label mb-1">Unggah Foto KTP/ Paspor</label>
 											<input class="form-control-file" id="identity-image" name="identity_image" type="file">
+											<input type="text" name="npwp_image_input" value="<%= identity_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="identity-image-label" style="display: none"></label>
 										</div>
 										<div class="form-holder form-holder-2" id="company-registration-image-input" style="display: none">
 											<label class="control-label mb-1">Unggah Tanda Daftar Perusahaan</label>
 											<input class="form-control-file" id="company-registration-image" name="company_registration_image" type="file">
+											<input type="text" name="company_registration_image_input" value="<%= company_registration_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="company-registration-image-label" style="display: none"></label>
 										</div>
 									</div>
@@ -507,6 +511,7 @@
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Unggah Foto KTP/ Paspor + Selfie</label>
 											<input class="form-control-file" id="identity-selfie-image" name="identity_selfie_image" type="file">
+											<input type="text" name="identity_selfie_image_input" value="<%= identity_selfie_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="identity-selfie-image-label" style="display: none"></label>
 										</div>
 									</div>
@@ -520,7 +525,8 @@
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1" id="npwp-image-label">Unggah NPWP (opsional)</label>
 											<input class="form-control-file" id="npwp-image" name="npwp_image" type="file">
-											<label for="exampleFormControlFile1" id="npwp-image-label" style="display: none"></label>
+											<input type="text" name="npwp_image_input" value="<%= identity_image %>" style="display: none">
+											<label for="exampleFormControlFile1" id="npwp-image-filename-label" style="display: none"></label>
 										</div>
 									</div>
 									<div class="form-row" id="sk-kemenkumham-number-row" style="display: none">
@@ -533,6 +539,7 @@
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Unggah SK KEMENKUMHAM</label>
 											<input class="form-control-file" id="sk-kemenkumham-image" name="sk_kemenkumham_image" type="file">
+											<input type="text" name="sk_kemenkumham_image_input" value="<%= sk_kemenkumham_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="sk-kemenkumham-image-label" style="display: none"></label>
 										</div>
 									</div>
@@ -540,6 +547,7 @@
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Unggah Surat Izin Usaha Perdagangan (opsional)</label>
 											<input class="form-control-file" id="business-permit-image" name="business_permit_image" type="file">
+											<input type="text" name="business_permit_image_input" value="<%= business_permit_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="business-permit-image-label" style="display: none"></label>
 										</div>
 									</div>
@@ -861,7 +869,7 @@
 									'province_id': <%= province_id %>
 								},
 								success: function(data, status) {
-									if(data.success == true) {     
+									if(data.success == true) {
 										for (let index = 0; index < data.city.length; index++) {
 											if (data.city[index].id == <%= city_id %>) {
 												$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
@@ -1166,16 +1174,14 @@
 						$('#bank-form').hide();
 						$('#header-form').text('Dokumen');
 						$('#document-form').show();
-
-
 						$('#identity-number').val('<%= identity_number %>');
 						$('#npwp-number').val('<%= npwp_number %>');
 						$('#identity-image-label').text('<%= identity_image %>');
 						$('#identity-selfie-image-label').text('<%= identity_selfie_image %>');
-						$('#npwp-image-label').text('<%= npwp_image %>');
+						$('#npwp-image-filename-label').text('<%= npwp_image %>');
 						$('#identity-image-label').show();
 						$('#identity-selfie-image-label').show();
-						$('#npwp-image-label').show()
+						$('#npwp-image-filename-label').show()
 					});
 					$('.last-list').click(function () {
 						$('#profile-form').hide();
@@ -1570,7 +1576,7 @@
 						$('#company-registration-number').val('<%= company_registration_number %>');
 						$('#company-registration-label').val('<%= company_registration_image %>');
 						$('#npwp-number').val('<%= npwp_number %>');
-						$('#npwp-image-label').val('<%= npwp_image %>');
+						$('#npwp-image-filename-label').val('<%= npwp_image %>');
 						$('#sk-kemenkumham-number').val('<%= sk_kemenkumham_number %>');
 						$('#sk-kemenkumham-image-label').val('<%= sk_kemenkumham_image %>');
 						$('#business-permit-image-label').val('<%= business_permit_image %>');
