@@ -1,5 +1,5 @@
 import express from 'express';
-import {User, getUser } from '../models/User';
+import { User, getUserByID } from '../models/User';
 
 const router = express.Router();
 
@@ -24,6 +24,27 @@ router.get('/user/investor/individual', isLoggedIn, isAdmin, function (req, res)
             res.render('pages/admin/user/investor/individual', {users: users});
         }
     });
+});
+
+router.get('/user/investor/individual/:id', isLoggedIn, isAdmin, function (req, res) {
+    getUserByID(req.params.id, function (error, user) {        
+        res.render('pages/admin/user/investor/detail', {user: user});
+    });
+});
+
+router.get('/user/investor/company', isLoggedIn, isAdmin, function (req, res) {
+    User.find({'active': true, 'user_type.name': 'investor', 'profile.registration_type': "company"}, function (error, users) {
+        if (error) {
+            console.log(error);
+        }
+        else {
+            res.render('pages/admin/user/investor/company', {users: users});
+        }
+    });
+});
+
+router.get('/user/get-image/:filename', function (req, res) {
+    res.download(__dirname+'/../storage/images/'+req.params.filename);
 });
 
 function isLoggedIn(req, res, next) {

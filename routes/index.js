@@ -1,6 +1,7 @@
 import express from 'express';
 import { getUserBySecretToken, updateUser } from '../models/User';
 
+
 let router = express.Router();
 
 router.get('/', isLoggedIn, function (req, res) {
@@ -43,13 +44,10 @@ router.get('/activation/:secretToken', function(req, res) {
         }
     });
 });
-router.get('/welcome/email-activated', isLoggedIn, function (req, res) {
-    if (req.user.active) {
-        res.render('pages/welcome/email-activated');
-    }
-    else {
-        res.redirect('/welcome');
-    }
+
+router.get('/contract', function (req, res) {
+    
+    res.render('pages/contract/contract');
 });
 
 function isLoggedIn(req, res, next) {

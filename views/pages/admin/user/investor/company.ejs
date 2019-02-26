@@ -34,9 +34,6 @@
         .pagination {
             display: -webkit-inline-box;
         }
-        .detail-link, .detail-link:hover {
-            color: #fff;
-        }
     </style>
 </head>
 
@@ -263,47 +260,40 @@
                                     </thead>
                                     <tbody>
                                         <% for(var i=0; i<users.length; i++) { %>
-                                            <tr>
-                                                <td>
-                                                    <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                        <%= users[i].profile[0].name%>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                        <%= users[i].email %>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                        <%= users[i].profile[0].address %>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                        <%= users[i].profile[0].phone %>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].bank.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                        <%= users[i].bank[0].account_number%>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].document.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                        <%= users[i].document[0].npwp_number%>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].document.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                        <div class="input-group-btn">
-                                                            <button class="btn btn-primary">
-                                                                <a href="">Lihat Detail</a>
-                                                            </button>
-                                                        </div>
-                                                    <%}%>
-                                                </td>
-                                            </tr>
+                                        <tr>
+                                            <td>
+                                                <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
+                                                <%= users[i].profile[0].name%>
+                                                <%}%>
+                                            </td>
+                                            <td>
+                                                <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
+                                                <%= users[i].email %>
+                                            </td>
+                                            <%}%>
+                                            <td>
+                                                <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
+                                                <%= users[i].profile[0].address %>
+                                            </td>
+                                            <%}%>
+                                            <td>
+                                                <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
+                                                <%= users[i].profile[0].phone %>
+                                            </td>
+                                            <%}%>
+                                            <td>
+                                                <%if (users[i].bank.length != 0 && users[i].user_type[0].status == 'verified') { %>
+                                                <%= users[i].bank[0].account_name%>
+                                                <%}%>
+                                            </td>
+                                            <td>
+                                                <%if (users[i].document.length != 0 && users[i].user_type[0].status == 'verified') { %>
+                                                <%= users[i].document[0].npwp_number%>
+                                                <%}%>
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
                                         <% }%>
                                     </tbody>
                                 </table>
@@ -337,42 +327,36 @@
                                         <tr>
                                             <td>
                                                 <%if (users[i].profile.length != 0 && users[i].bank.length != 0) { %>
-                                                    <%= users[i].profile[0].name%>
+                                                <%= users[i].profile[0].name%>
                                                 <%}%>
                                             </td>
                                             <td>
                                                 <%if (users[i].profile.length != 0 && users[i].bank.length != 0) { %>
-                                                    <%= users[i].email %>
-                                                <%}%>
+                                                <%= users[i].email %>
                                             </td>
+                                            <%}%>
                                             <td>
                                                 <%if (users[i].profile.length != 0 && users[i].bank.length != 0) { %>
-                                                    <%= users[i].profile[0].address %>
-                                                <%}%>
+                                                <%= users[i].profile[0].address %>
                                             </td>
+                                            <%}%>
                                             <td>
                                                 <%if (users[i].profile.length != 0 && users[i].bank.length != 0) { %>
-                                                    <%= users[i].profile[0].phone %>
-                                                <%}%>
+                                                <%= users[i].profile[0].phone %>
                                             </td>
+                                            <%}%>
                                             <td>
                                                 <%if (users[i].bank.length != 0 && users[i].bank.length != 0) { %>
-                                                    <%= users[i].bank[0].account_number%>
+                                                <%= users[i].bank[0].account_name%>
                                                 <%}%>
                                             </td>
                                             <td>
                                                 <%if (users[i].document.length != 0 && users[i].bank.length != 0) { %>
-                                                    <%= users[i].document[0].npwp_number%>
+                                                <%= users[i].document[0].npwp_number%>
                                                 <%}%>
                                             </td>
                                             <td>
-                                                <%if (users[i].document.length != 0 && users[i].bank.length != 0) { %>
-                                                    <div class="input-group-btn">
-                                                        <button class="btn btn-primary">
-                                                            <a class="detail-link" href="/admin/user/investor/individual/<%= users[i]._id %>" target="_blank">Lihat Detail</a>
-                                                        </button>
-                                                    </div>
-                                                <%}%>
+
                                             </td>
                                         </tr>
                                         <% }%>
@@ -405,47 +389,41 @@
                                     </thead>
                                     <tbody>
                                         <% for(var i=0; i<users.length; i++) { %>
-                                            <tr>
-                                                <td>
-                                                    <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
-                                                        <%= users[i].profile[0].name%>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
-                                                        <%= users[i].email %>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
-                                                        <%= users[i].profile[0].address %>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
-                                                        <%= users[i].profile[0].phone %>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].bank.length != 0 && users[i].bank.length == 0) { %>
-                                                        <%= users[i].bank[0].account_number%>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].document.length != 0 && users[i].bank.length == 0) { %>
-                                                        <%= users[i].document[0].npwp_number%>
-                                                    <%}%>
-                                                </td>
-                                                <td>
-                                                    <%if (users[i].document.length != 0 && users[i].bank.length == 0) { %>
-                                                        <div class="input-group-btn">
-                                                            <button class="btn btn-primary">
-                                                                <a href="">Lihat Detail</a>
-                                                            </button>
-                                                        </div>
-                                                    <%}%>
-                                                </td>
-                                            </tr>
+                                        <tr>
+                                            <td>
+                                                <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
+                                                <%= users[i].profile[0].name%>
+                                                <%}%>
+                                            </td>
+                                            <td>
+                                                <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
+                                                <%= users[i].email %>
+                                            </td>
+                                            <%}%>
+                                            <td>
+                                                <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
+                                                <%= users[i].profile[0].address %>
+                                            </td>
+                                            <%}%>
+                                            <td>
+                                                <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
+                                                <%= users[i].profile[0].phone %>
+                                            </td>
+                                            <%}%>
+                                            <td>
+                                                <%if (users[i].bank.length != 0 && users[i].bank.length == 0) { %>
+                                                <%= users[i].bank[0].account_name%>
+                                                <%}%>
+                                            </td>
+                                            <td>
+                                                <%if (users[i].document.length != 0 && users[i].bank.length == 0) { %>
+                                                <%= users[i].document[0].npwp_number%>
+                                                <%}%>
+                                            </td>
+                                            <td>
+                                                
+                                            </td>
+                                        </tr>
                                         <% }%>
                                     </tbody>
                                 </table>
