@@ -9,7 +9,7 @@ const router = express.Router();
 
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
-router.get('/', isLoggedIn, isUncompleted, isInvestor, function (req, res) {
+router.get('/', isLoggedIn, isUncompleted, isUser, function (req, res) {
     request({
         url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
         method: 'GET', // specify the request type
@@ -434,7 +434,6 @@ router.get('/get-district', isLoggedIn, function (req, res) {
     function(error, response, body){
         let district = JSON.parse(body).kecamatans;
         if(error) {
-            console.log(error);
             res.json({success: false, district: null});
         } else {
         res.json({success: true, district: district});
@@ -457,7 +456,7 @@ router.get('/get-sub_district', isLoggedIn, function (req, res) {
     });
 });
 
-router.post('/', isLoggedIn, isUncompleted, isInvestor, function (req, res) {   
+router.post('/', isLoggedIn, isUncompleted, isUser, function (req, res) {   
     let error_message;
     let registration_type = req.body.registration_type;
     let name = req.body.name;
@@ -493,17 +492,9 @@ router.post('/', isLoggedIn, isUncompleted, isInvestor, function (req, res) {
     req.checkBody('district', 'Kecamatan wajib dipilih.').notEmpty();
     req.checkBody('city', 'Kota wajib dipilih.').notEmpty();
     req.checkBody('province', 'Provinsi wajib dipilih.').notEmpty();
-    req.checkBody('phone', 'Nomor Handphone tidak boleh lebih dari 15 karakter.').isLength({ max: 15 });
-    req.checkBody('phone', 'Nomor Handphone minimal mengandung 5 karakter.').isLength({ min: 5 });
-    req.checkBody('phone', 'Nomor Handphone wajib diisi.').notEmpty();
-    req.checkBody('name', 'Nama Lengkap tidak boleh lebih dari 255 karakter.').isLength({ max: 255 });
-    req.checkBody('name', 'Nama Lengkap minimal mengandung 3 karakter.').isLength({ min: 3 });
-    req.checkBody('name', 'Nama Lengkap wajib diisi.').notEmpty();
-    req.checkBody('registration_type', 'Tipe Pendaftaran wajib dipilih.').notEmpty();
-
     if (registration_type == 'individual') {
-        req.checkBody('gender', 'Jenis Kelamin wajib dipilih.').notEmpty();
         req.checkBody('birth_date', 'Tanggal Lahir wajib diisi.').notEmpty();
+        req.checkBody('gender', 'Jenis Kelamin wajib dipilih.').notEmpty();
     }
     else {
         registration_type = 'company';
@@ -515,6 +506,16 @@ router.post('/', isLoggedIn, isUncompleted, isInvestor, function (req, res) {
         req.checkBody('established_place', 'Tempat Didirikan minimal mengandung 3 karakter.').isLength({ min: 3 });
         req.checkBody('established_place', 'Tempat Didirikan wajib diisi.').notEmpty();
     }
+    req.checkBody('phone', 'Nomor Handphone tidak boleh lebih dari 15 karakter.').isLength({ max: 15 });
+    req.checkBody('phone', 'Nomor Handphone minimal mengandung 5 karakter.').isLength({ min: 5 });
+    req.checkBody('phone', 'Nomor Handphone wajib diisi.').notEmpty();
+    req.checkBody('name', 'Nama Lengkap tidak boleh lebih dari 255 karakter.').isLength({ max: 255 });
+    req.checkBody('name', 'Nama Lengkap minimal mengandung 3 karakter.').isLength({ min: 3 });
+    req.checkBody('name', 'Nama Lengkap wajib diisi.').notEmpty();
+    req.checkBody('registration_type', 'Tipe Pendaftaran wajib dipilih.').notEmpty();
+
+    
+    
 
     let errors = req.validationErrors();
 
@@ -634,7 +635,7 @@ router.post('/', isLoggedIn, isUncompleted, isInvestor, function (req, res) {
     }
 });
 
-router.post('/occupation', isLoggedIn, isUncompleted, isInvestor, function (req, res) {
+router.post('/occupation', isLoggedIn, isUncompleted, isUser, function (req, res) {
     let error_message;
     let occupation = req.body.occupation;
     let company_name = req.body.company_name;
@@ -642,6 +643,9 @@ router.post('/occupation', isLoggedIn, isUncompleted, isInvestor, function (req,
     let position = req.body.position;
     let income_source = req.body.income_source;
     let income = req.body.income;
+    if (position == undefined) {
+        position = "";
+    }
     
     req.checkBody('income', 'Penghasilan per Bulan wajib dipilih').notEmpty();
     req.checkBody('income_source', 'Sumber Dana wajib dipilih').notEmpty();
@@ -692,13 +696,13 @@ router.post('/occupation', isLoggedIn, isUncompleted, isInvestor, function (req,
     }
 });
 
-router.post('/pic', isLoggedIn, isUncompleted, isInvestor, upload.fields([{name: 'pic_identity_image', maxCount: 1}, { name: 'pic_identity_selfie_image', maxCount: 1 }]), async function (req, res) {
+router.post('/pic', isLoggedIn, isUncompleted, isUser, upload.fields([{name: 'pic_identity_image', maxCount: 1}, { name: 'pic_identity_selfie_image', maxCount: 1 }]), async function (req, res) {
     let error_message;
     let pic_name = req.body.pic_name;
     let pic_birth_date = req.body.pic_birth_date;
     let pic_identity_number = req.body.pic_identity_number;
 
-    const imagePath = path.join(__dirname, '../storage/images');
+    const imagePath = path.join(__dirname, '../storage/documents');
     const fileUpload = new Resize(imagePath);
 
     req.checkBody('pic_identity_number', 'Nomor KTP/ Paspor Penanggungjawab wajib diisi.').notEmpty();
@@ -810,7 +814,7 @@ router.post('/pic', isLoggedIn, isUncompleted, isInvestor, upload.fields([{name:
     }
 });
 
-router.post('/document', isLoggedIn, isUncompleted, isInvestor, upload.fields([
+router.post('/document', isLoggedIn, isUncompleted, isUser, upload.fields([
     { name: 'identity_image', maxCount: 1 }, 
     { name: 'identity_selfie_image', maxCount: 1 }, 
     { name: 'npwp_image', maxCount: 1 }, 
@@ -825,7 +829,7 @@ async function (req, res) {
     let company_registration_number = req.body.company_registration_number;
     let sk_kemenkumham_number = req.body.sk_kemenkumham_number;
 
-    const imagePath = path.join(__dirname, '../storage/images');
+    const imagePath = path.join(__dirname, '../storage/documents');
     const fileUpload = new Resize(imagePath);
 
     if (req.user.profile[0].registration_type == 'individual') {
@@ -857,45 +861,94 @@ async function (req, res) {
         let sk_kemenkumham_image_filename = req.body.sk_kemenkumham_image_input;
         let business_permit_image_filename = req.body.business_permit_image_input;
 
-        if (req.user.document.length == 0 ) {
-            if (req.user.profile[0].registration_type == 'individual') {
-                identity_number = req.body.identity_number;
-
-                getUserByIdentityNumber(identity_number, function (error, user) {
-                    if (error) {
-                        error_message = "Terjadi kesalahan"; 
-                        req.flash('error_message', error_message);
-                        res.redirect('/complete-profile');
-                        return ;
-                    }
-                    if (user) {
-                        error_message = "Nomor KTP/ Paspor sudah terdaftar"; 
-                        req.flash('error_message', error_message);
-                        res.redirect('/complete-profile');
-                        return ;
-                    }
-                });
-
-                if (!req.files['identity_image']) {
-                    req.flash('error_message', 'Foto KTP/ Paspor wajib diunggah.');
+        if (req.user.profile[0].registration_type == 'individual') {
+            getUserByIdentityNumber(identity_number, async function (error, user) {
+                if (error) {
+                    error_message = "Terjadi kesalahan"; 
+                    req.flash('error_message', error_message);
                     res.redirect('/complete-profile');
                     return ;
                 }
-        
-                if (!req.files['identity_selfie_image']) {
-                    req.flash('error_message', 'Foto KTP/ Paspor + Selfie wajib diunggah.');
+                if (user) {
+                    error_message = "Nomor KTP/ Paspor sudah terdaftar"; 
+                    req.flash('error_message', error_message);
                     res.redirect('/complete-profile');
-                    return ;
+                    return;
                 }
-    
-                identity_image_filename = await fileUpload.save(req.files['identity_image'][0].buffer);
-                identity_selfie_image_filename = await fileUpload.save(req.files['identity_selfie_image'][0].buffer);
+                else {
+                    if (req.user.document.length == 0) {
                 
-                if (req.files['npwp_image']) {
-                    npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
+                        if (!req.files['identity_image']) {
+                            req.flash('error_message', 'Foto KTP/ Paspor wajib diunggah.');
+                            res.redirect('/complete-profile');
+                            return ;
+                        }
+                
+                        if (!req.files['identity_selfie_image']) {
+                            req.flash('error_message', 'Foto KTP/ Paspor + Selfie wajib diunggah.');
+                            res.redirect('/complete-profile');
+                            return ;
+                        }
+                        else {
+                            identity_image_filename = await fileUpload.save(req.files['identity_image'][0].buffer);
+                            identity_selfie_image_filename = await fileUpload.save(req.files['identity_selfie_image'][0].buffer);
+                            
+                            if (req.files['npwp_image']) {
+                                npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
+                            }
+                        }      
+                    }
+                    if (req.user.document.length != 0) {
+                        if (req.files['identity_image']) {                    
+                            identity_image_filename = await fileUpload.save(req.files['identity_image'][0].buffer);
+                        }
+                        if (req.files['identity_selfie_image']) {
+                            identity_selfie_image_filename = await fileUpload.save(req.files['identity_selfie_image'][0].buffer);
+                        }
+                        if (req.files['npwp_image']) {
+                            npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
+                        }
+                    }
+        
+                    updateUser(req.user, {
+                        document: [{
+                            identity_number: identity_number,
+                            identity_image: identity_image_filename,
+                            identity_selfie_image: identity_selfie_image_filename,
+                            company_registration_number: company_registration_number,
+                            company_registration_image: company_registration_image_filename,
+                            sk_kemenkumham_number: sk_kemenkumham_number,
+                            sk_kemenkumham_image: sk_kemenkumham_image_filename,
+                            npwp_number: npwp_number,
+                            npwp_image: npwp_image_filename,
+                            business_permit_image: business_permit_image_filename
+                        }],
+                        bank: []
+                    },
+                    function (error, user) {
+                        if (error) {
+                            error_message = "Terjadi kesalahan"; 
+                            req.flash('error_message', error_message);
+                            res.redirect('/complete-profile');
+                            return ;
+                        }
+                        if (!user) {
+                            error_message = "User tidak tersedia"; 
+                            req.flash('error_message', error_message);
+                            res.redirect('/complete-profile');
+                            return ;
+                        }
+                        else {
+                            res.redirect('/complete-profile');
+                            return ;
+                        }
+                    });
                 }
-            }
-            if (req.user.profile[0].registration_type == 'company') {
+                
+            }); 
+        }
+        if (req.user.profile[0].registration_type == 'company') {
+            if (req.user.document.length == 0) {
                 if (!req.files['company_registration_image']) {
                     req.flash('error_message', 'Tanda Daftar Perusahaan wajib diunggah.');
                     res.redirect('/complete-profile');
@@ -911,7 +964,7 @@ async function (req, res) {
                     res.redirect('/complete-profile');
                     return ;
                 }
-
+    
                 company_registration_image_filename = await fileUpload.save(req.files['company_registration_image'][0].buffer);
                 npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
                 sk_kemenkumham_image_filename = await fileUpload.save(req.files['sk_kemenkumham_image'][0].buffer);
@@ -920,36 +973,7 @@ async function (req, res) {
                     business_permit_image_filename = await fileUpload.save(req.files['business_permit_image'][0].buffer);
                 }
             }
-        }
-        if (req.user.document.length != 0) {                        
-            if (req.user.profile[0].registration_type == 'individual') {               
-                getUserByIdentityNumber(identity_number, function (error, user) {
-                    if (error) {
-                        error_message = "Terjadi kesalahan"; 
-                        req.flash('error_message', error_message);
-                        res.redirect('/complete-profile');
-                        return ;
-                    }
-                    if (user) {
-                        if (!user._id.equals(req.user._id)) {
-                            error_message = "Nomor KTP/ Paspor sudah terdaftar"; 
-                            req.flash('error_message', error_message);
-                            res.redirect('/complete-profile');
-                            return ;
-                        }
-                    }
-                });                
-                if (req.files['identity_image']) {                    
-                    identity_image_filename = await fileUpload.save(req.files['identity_image'][0].buffer);
-                }
-                if (req.files['identity_selfie_image']) {
-                    identity_selfie_image_filename = await fileUpload.save(req.files['identity_selfie_image'][0].buffer);
-                }
-                if (req.files['npwp_image']) {
-                    npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
-                }
-            }
-            if (req.user.profile[0].registration_type == 'company') {
+            if (req.user.document.length != 0) {
                 if (req.files['company_registration_image']) {
                     company_registration_image_filename = await fileUpload.save(req.files['company_registration_image'][0].buffer);
                 }
@@ -963,47 +987,46 @@ async function (req, res) {
                     business_permit_image_filename = await fileUpload.save(req.files['business_permit_image'][0].buffer);
                 }
             }
+            updateUser(req.user, {
+                document: [{
+                    identity_number: identity_number,
+                    identity_image: identity_image_filename,
+                    identity_selfie_image: identity_selfie_image_filename,
+                    company_registration_number: company_registration_number,
+                    company_registration_image: company_registration_image_filename,
+                    sk_kemenkumham_number: sk_kemenkumham_number,
+                    sk_kemenkumham_image: sk_kemenkumham_image_filename,
+                    npwp_number: npwp_number,
+                    npwp_image: npwp_image_filename,
+                    business_permit_image: business_permit_image_filename
+                }],
+                bank: []
+            },
+            function (error, user) {
+                if (error) {
+                    error_message = "Terjadi kesalahan"; 
+                    req.flash('error_message', error_message);
+                    res.redirect('/complete-profile');
+                    return ;
+                }
+                if (!user) {
+                    error_message = "User tidak tersedia"; 
+                    req.flash('error_message', error_message);
+                    res.redirect('/complete-profile');
+                    return ;
+                }
+                else {
+                    res.redirect('/complete-profile');
+                    return ;
+                }
+            });
         }
-        console.log('update');
-        
-        updateUser(req.user, {
-            document: [{
-                identity_number: identity_number,
-                identity_image: identity_image_filename,
-                identity_selfie_image: identity_selfie_image_filename,
-                company_registration_number: company_registration_number,
-                company_registration_image: company_registration_image_filename,
-                sk_kemenkumham_number: sk_kemenkumham_number,
-                sk_kemenkumham_image: sk_kemenkumham_image_filename,
-                npwp_number: npwp_number,
-                npwp_image: npwp_image_filename,
-                business_permit_image: business_permit_image_filename
-            }],
-            bank: []
-        }, 
-        function (error, user) {
-            if (error) {
-                error_message = "Terjadi kesalahan"; 
-                req.flash('error_message', error_message);
-                res.redirect('/complete-profile');
-                return ;
-            }
-            if (!user) {
-                error_message = "User tidak tersedia"; 
-                req.flash('error_message', error_message);
-                res.redirect('/complete-profile');
-                return ;
-            }
-            else {
-                res.redirect('/complete-profile');
-                return ;
-            }
-        });
     }
 });
 
-router.post('/bank', isLoggedIn, isUncompleted, isInvestor, function (req, res) {
+router.post('/bank', isLoggedIn, isUncompleted, isUser, function (req, res) {
     let error_message;
+    let success_message;
     let bank_name = req.body.bank_name;
     let account_name = req.body.account_name;
     let account_number = req.body.account_number;
@@ -1051,8 +1074,14 @@ router.post('/bank', isLoggedIn, isUncompleted, isInvestor, function (req, res) 
                 return ;
             }
             else {
-                res.redirect('/contract');
-                return ;
+                success_message = "Proses berhasil"; 
+                req.flash('success_message', success_message);
+                if (user.user_type[0].name == 'investor') {
+                    return res.redirect('/contract');
+                }
+                else {
+                    return res.redirect('/');
+                }
             }
         });
     }
@@ -1068,7 +1097,7 @@ function isLoggedIn(req, res, next) {
 }
 
 function isUncompleted(req,res, next) {
-    if (req.user.profile.length == 0 || req.user.occupation.length == 0 || req.user.pic.length == 0 || req.user.document.length == 0 || req.user.bank.length == 0) {
+    if (req.user.profile.length == 0 ) {
         next();
     }
     else {
@@ -1091,8 +1120,8 @@ function isUncompleted(req,res, next) {
     }
 }
 
-function isInvestor(req, res, next) {
-    if (req.user.user_type[0].name = 'investor') {
+function isUser(req, res, next) {
+    if (req.user.user_type[0].name == 'investor' || req.user.user_type[0].name == 'inisiator') {
         next();
     }
     else {

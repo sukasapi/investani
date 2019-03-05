@@ -1,8 +1,11 @@
 import express from 'express';
 import { getUserBySecretToken, updateUser } from '../models/User';
+import upload from '../uploadMiddleware';
+import Resize from '../Resize';
+import path from 'path';
 
 
-let router = express.Router();
+const router = express.Router();
 
 router.get('/', isLoggedIn, function (req, res) {
     res.render('pages/index');
@@ -45,9 +48,41 @@ router.get('/activation/:secretToken', function(req, res) {
     });
 });
 
-router.get('/contract', function (req, res) {
+router.get('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNotContract, function (req, res) { 
+    res.render('pages/contract/contract', req.user);
+});
+
+router.post('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNotContract, upload.fields([{name: 'signature', maxCount: 1}]), async function (req, res) {
+    const imagePath = path.join(__dirname, '../public/images/signatures');
+    const fileUpload = new Resize(imagePath);
+
+    let success_message;
+    let error_message;
+
+    if (!req.files['signature']) {
+        req.flash('error_message', ' Tanda tangan wajib diunggah.');
+        res.redirect('/contract');
+        return ;
+    }
+    let contract = await fileUpload.save(req.files['signature'][0].buffer);
     
-    res.render('pages/contract/contract');
+    updateUser(req.user, {
+        contract: contract.slice(0, -4)
+    }, function (error, user) {
+        if (error) {
+            error_message = "Terjadi kesalahan"; 
+            return res.json({success: false, message: error_message});
+
+        }
+        if (!user) {
+            error_message = "User tidak tersedia"; 
+            return res.json({success: false, message: error_message});
+        }
+        else {
+            success_message = "Berhasil menandatangani kontrak"
+            return res.json({success: true, message: success_message});
+        }
+    });
 });
 
 function isLoggedIn(req, res, next) {
@@ -56,6 +91,33 @@ function isLoggedIn(req, res, next) {
     }
     else {
         res.redirect('/auth/login');
+    }
+}
+
+function isInvestor(req, res, next) {    
+    if (req.user.user_type[0].name == 'investor') {
+        next();
+    }
+    else {
+        res.redirect('/');
+    }
+}
+
+function isCompleteProfile(req, res, next) {
+    if (req.user.bank.length != 0) {
+        next();
+    }
+    else {
+        res.redirect('/');
+    }
+}
+
+function isNotContract(req, res, next) {
+    if (req.user.contract == '') {
+        next();
+    }
+    else {
+        res.redirect('/');
     }
 }
 

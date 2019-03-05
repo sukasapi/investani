@@ -81,10 +81,13 @@ router.post('/register', notLoggedIn, function (req, res) {
                             password: password,
                             user_type: [{
                                 name: user_type,
-                                status: "waiting"
+                                status: "waiting",
+                                contract: null,
+                                signature: null
                             }],
                             active: false,
                             secretToken: secretToken,
+                            contract: ""
                         });
                         createUser(user, function (err, user) {
                             if (err) {
@@ -138,10 +141,31 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
                 return ;
             }
         }
-        else {          
-            res.redirect('/');
-            return ;
+        if (user.active == true && user.profile.length != 0 && user.bank.length == 0) {
+            res.redirect('/complete-profile');
         }
+        if (user.active == true && user.profile.length != 0 && user.bank.length != 0) {
+            if (user.active == true && user.user_type[0].status == 'verified') {
+                if (user.user_type[0].name == 'investor') {
+                    if (user.contract == '') {
+                        res.redirect('/contract');
+                    }
+                    else {
+                        res.redirect('/');
+                        return ;
+                    }
+                }
+                else {                    
+                    res.redirect('/');
+                    return ;
+                }  
+            }
+            else {
+                res.redirect('/');
+                return ;
+            }
+        }
+        
     });
 });
 

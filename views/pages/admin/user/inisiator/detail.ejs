@@ -265,11 +265,6 @@
                                     </li>
                                 </ul>
                                 <div class="tab-content" id="pills-tabContent">
-                                    <div class="sufee-alert alert with-close alert-success alert-dismissible fade show" id="success-alert" style="display:none">
-                                        
-                                    </div>
-                                    <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show" id="error-alert" style="display:none">
-                                    </div>
                                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
                                         aria-labelledby="pills-home-tab">
                                         <div class="form-group">
@@ -561,20 +556,11 @@
         $('#verification-button-text').hide();
         $.ajax({
             type: 'post',
-            url: '/admin/user/investor/individual/verify/<%= user._id %>',
+            url: '/admin/user/inisiator/individual/verify/<%= user._id %>',
+            data: {},
             success: function(data, status) {
                 if(data.success == true) {
-                    $('#verification-button-process').hide();
-                    $('#verification-button-text').show();
-                    $('#verification-button-text').text('Terverifikasi');
-                    $('#success-alert').show();
-                    $('#success-alert').append(data.message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>');
-                }
-                else {
-                    $('#verification-button-process').hide();
-                    $('#verification-button-text').show();
-                    $('#error-alert').show();
-                    $('#error-alert').append(data.message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>');
+                    location.reload();
                 }
             }
         })

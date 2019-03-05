@@ -162,7 +162,10 @@ let UserSchema = mongoose.Schema({
     branch: {
       type: String
     }
-  }]
+  }],
+  contract : {
+    type: String
+  }
 },
 {
   timestamps: true
@@ -170,6 +173,7 @@ let UserSchema = mongoose.Schema({
 );
 
 export const User = mongoose.model('User', UserSchema);
+
 export const createUser = (newUser, callback) => {
   bcrypt.genSalt(10, function(err, salt) {
     bcrypt.hash(newUser.password, salt, function(err, hash) {
