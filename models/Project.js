@@ -12,7 +12,7 @@ let ProjectSchema = mongoose.Schema({
         },
         province: [{
             province_id: {
-              type: Number
+              type: String
             },
             province_name: {
               type: String
@@ -20,16 +20,13 @@ let ProjectSchema = mongoose.Schema({
         }],
         city: [{
             city_id: {
-                type: Number
+                type: String
             },
             city_name: {
                 type: String
             }
         }],
         area: {
-            type: Number
-        },
-        goal:{
             type: Number
         },
         duration: [{

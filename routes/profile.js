@@ -413,11 +413,11 @@ router.get('/', isLoggedIn, isUncompleted, isUser, function (req, res) {
 
 router.get('/get-city', isLoggedIn, function (req, res) {
     request({
-        url: `http://dev.farizdotid.com/api/daerahindonesia/provinsi/${req.query.province_id}/kabupaten`, //URL to hit
+        url: `https://kodepos-2d475.firebaseio.com/list_kotakab/${req.query.province_id}.json`, //URL to hit
         method: 'GET', // specify the request type
     },
     function(error, response, body){
-        let city = JSON.parse(body).kabupatens;        
+        let city = JSON.parse(body);
         if(error) {
             res.json({success: false, city: null});
         } else {

@@ -143,17 +143,11 @@
                                                     <label class="control-label mb-1">Provinsi</label>
                                                     <select name="province" id="province" class="form-control">
                                                         <option disabled selected>Pilih provinsi</option>
-                                                        <% for(var i = 0; i < province.length; i++) {%>
-                                                        <% if (province[i].id == province_id) { %>
-                                                        <option value="<%= province[i].id %>" selected>
-                                                            <%= province[i].nama %>
-                                                        </option>
-                                                        <% } else { %>
-                                                        <option value="<%= province[i].id %>">
-                                                            <%= province[i].nama %>
-                                                        </option>
-                                                        <% }%>
-                                                        <% } %>
+                                                        <% Object.keys(province).forEach(function(key) {%>
+                                                            <option value="<%= key %>" <% if (key == province_id) { %> selected <% } %>>
+                                                                <%= province[key] %>
+                                                            </option>
+                                                        <% }) %>
                                                     </select>
                                                     <input class="form-control" id="province-name" name="province_name"
                                                         type="text" style="display: none">
@@ -465,6 +459,28 @@
         });
     </script>
     <script type="text/javascript">
+        <% if (province_id != null) {%>
+            $.ajax({
+                type: 'get',
+                url: '/complete-profile/get-city',
+                data: {
+                    'province_id': '<%= province_id %>'
+                },
+                success: function (data, status) {
+                    if (data.success == true) {
+                        Object.keys(data.city).forEach(function(key) {
+                            if (key == '<%= city_id %>') {
+                                $('#city').append('<option class="city-option" value="' + key +
+                                    '" selected>' + data.city[key] + '</option>');
+                            } else {
+                                $('#city').append('<option class="city-option" value="' + key +
+                                    '">' + data.city[key] + '</option>');
+                            }
+                        });
+                    }
+                }
+            });
+        <% } %>
         var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap4',
@@ -486,16 +502,12 @@
                 success: function (data, status) {
                     if (data.success == true) {
                         $('.city-option').remove();
-
                         $('#city-placeholder').removeAttr('disabled');
-
                         $('#city-placeholder').attr('selected');
-
                         $('#city-placeholder').attr('disabled');
-                        for (let index = 0; index < data.city.length; index++) {
-                            $('#city').append('<option class="city-option" value="' + data.city[
-                                index].id + '">' + data.city[index].nama + '</option>');
-                        }
+                        Object.keys(data.city).forEach(function(key) {
+                            $('#city').append('<option class="city-option" value="' + key + '">' + data.city[key] + '</option>');
+                        });
                     }
                 }
             })
@@ -684,28 +696,7 @@
             }, delay);
         });
 
-        <% if (province_id != null) {%>
-            $.ajax({
-                type: 'get',
-                url: '/complete-profile/get-city',
-                data: {
-                    'province_id': <%= province_id %>
-                },
-                success: function (data, status) {
-                    if (data.success == true) {
-                        for (let index = 0; index < data.city.length; index++) {
-                            if (data.city[index].id == <%= city_id %>) {
-                                $('#city').append('<option class="city-option" value="' + data.city[index].id +
-                                    '" selected>' + data.city[index].nama + '</option>');
-                            } else {
-                                $('#city').append('<option class="city-option" value="' + data.city[index].id +
-                                    '">' + data.city[index].nama + '</option>');
-                            }
-                        }
-                    }
-                }
-            });
-        <% } %>
+        
         
     </script>
     <script>

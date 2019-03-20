@@ -40,7 +40,7 @@ router.get('/start-project', isLoggedIn, isInisiator, function (req, res) {
 router.get('/project/:project_id/edit', isLoggedIn, isInisiator, function (req, res) {
     let error_message;
     request({
-        url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
+        url: 'https://kodepos-2d475.firebaseio.com/list_propinsi.json', //URL to hit
         method: 'GET', // specify the request type
     },
     function(error, response, body){
@@ -48,7 +48,6 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, function (req, 
             res.json({success: false, province: null});
         }
         else {
-            console.log('tidak error')
             getProjectByID(req.params.project_id, function (error, project){
                 if (error) {
                     error_message = "Terjadi kesalahan"; 
@@ -141,7 +140,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, function (req, 
                             user_id: req.user._id,
                             project_id: project._id,
                             title: project.basic[0].title,
-                            province: JSON.parse(body).semuaprovinsi,
+                            province: JSON.parse(body),
                             province_id: province_id,
                             city_id: city_id,
                             category: category,
@@ -159,7 +158,6 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, function (req, 
                             prospectus: prospectus,
                             image: image
                         }
-                        console.log(data)
                         res.render('pages/inisiator/edit-project', data);
                     }
                     else {
@@ -216,7 +214,6 @@ router.post('/start-project', isLoggedIn, isInisiator, function (req, res, next)
                     if (err) {
                         fs.mkdir(dir, async (err) => {
                             if (err) {
-                                console.log("gagal buat folder")
                                 error_message = "Terjadi Kesalahan";
                                 req.flash('error_message', error_message);
                                 return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
@@ -255,7 +252,6 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, function (req
                 city_name : req.body.city_name
             },
             area: req.body.area,
-            goal: req.body.goal,
             duration: {
                 campaign: req.body.campaign,
                 start_date: req.body.start_date,
@@ -302,7 +298,8 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, function (req
     else {
         updateProject(req.params.project_id, data, function (error, project) {
             if (error) {
-                error_message = "Terjadi kesalahan"; 
+                console.log(error)
+                error_message = "Terjadi kesalahan update"; 
                 req.flash('error_message', error_message);
                 return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
             }
