@@ -7,8 +7,14 @@ import path from 'path';
 
 const router = express.Router();
 
-router.get('/', isLoggedIn, function (req, res) {
-    res.render('pages/index');
+router.get('/', function (req, res) {
+    let auth = false;
+    let user_type = null;
+    if (req.isAuthenticated()) {
+        auth = true;
+        user_type = req.user.user_type[0].name;
+    }
+    res.render('pages/index', {auth: auth, user_type: user_type});
 });
 
 router.get('/activation/:secretToken', function(req, res) {

@@ -1,0 +1,172 @@
+<!--
+<div class="col-lg-6">
+    <div class="card">
+        <div class="card-header">
+            <strong class="card-title">1. Unggah Gambar Proyek</strong>
+        </div>
+        <div class="card-body">
+            <div id="pay-invoice">
+                <div class="card-body">
+                    <form action="/inisiator/new-project" id="new-project-form" method="post" enctype="multipart/form-data">
+                        <% if (success_message != '') { %>
+                        <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                            <%= success_message %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <% } %>
+                        <% if (error_message != '') { %>
+                        <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                            <%= error_message %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <% } %>
+                        <div class="form-group">
+                            <label class="control-label mb-1">Judul Proyek</label>
+                            <div id="file" class="dropzone"></div>
+                        </div>
+                        <div>
+                            <button id="new-project-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                <span aria-hidden="true" class="spinner-border spinner-border-sm" id="new-project-spinner"
+                                    role="status" style="display: none"></span>
+                                <span id="new-project-button-placeholder">Buat Proyek</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+-->
+<!--/.col-->
+<div class="col-lg-8">
+    <div id="basic-card" class="card">
+        <div class="card-header">
+            <strong class="card-title">Informasi Dasar</strong>
+        </div>
+        <div class="card-body">
+            <!-- Credit Card -->
+            <div id="pay-invoice">
+                <div class="card-body">
+                    <form action="/inisiator/basic-project" id="new-project-form" method="post">
+                        <% if (success_message != '') { %>
+                        <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                            <%= success_message %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <% } %>
+                        <% if (error_message != '') { %>
+                        <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                            <%= error_message %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <% } %>
+                        <div class="form-group">
+                            <label class="control-label mb-1">Judul Proyek</label>
+                            <input name="title" type="text" class="form-control" placeholder="Judul Proyek">
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-sm-6">
+                                <label class="control-label mb-1">Provinsi</label>
+                                <select name="province" id="province" class="form-control">
+                                    <option disabled selected>Pilih provinsi</option>
+                                    <% for(var i = 0; i < province.length; i++) {%>
+                                    <option value="<%= province[i].id %>">
+                                        <%= province[i].nama %>
+                                    </option>
+                                    <% } %>
+                                </select>
+                                <input class="form-control" id="province-name" name="province_name" type="text" style="display: none">
+                            </div>
+                            <div class="col col-sm-6">
+                                <label class="control-label mb-1">Kota</label>
+                                <select name="city" id="city" class="form-control">
+                                    <option id="city-placeholder" value="" disabled selected>Pilih kota</option>
+                                </select>
+                                <input class="form-control" id="city-name" name="city_name" type="text" style="display: none">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-sm-6">
+                                <label for="cc-name" class="control-label mb-1">Kategori Tanaman</label>
+                                <select name="category" id="category" class="form-control">
+                                    <option selected disabled>Pilih kategori</option>
+                                    <option value="tg-ii">TG-II</option>
+                                </select>
+                            </div>
+                            <div class="col col-sm-6">
+                                <label class="control-label mb-1">Luas Lahan (ha)</label>
+                                <input class="form-control" id="area" name="area" placeholder="Luas Lahan (ha)" type="number">
+                            </div>
+                            
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-sm-6">
+                                <label class="control-label mb-1">Dana yang dibutuhkan</label>
+                                <input class="form-control" id="goal" name="goal" placeholder="Dana yang dibutuhkan" type="number">
+                            </div>
+                            <div class="col col-sm-6">
+                                <label class="control-label mb-1">Durasi Kampanye (hari)</label>
+                                <select name="campaign" id="campaign" class="form-control">
+                                    <option selected disabled>Pilih Durasi Kampanye</option>
+                                    <option value="30">30</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label mb-1" id="date-picker-label">Tanggal Proyek
+                                Dimulai</label>
+                            <input type="text" name="start_date" class="date" id="datepicker" placeholder="Tanggal Proyek Dimulai"
+                                style="width: 89%">
+                        </div>
+                        <div class="row form-group">
+                            <div class="col col-sm-6">
+                                <label class="control-label mb-1">Imbal Hasil/RoI (%)</label>
+                                <input class="form-control" id="roi" name="roi" placeholder="Imbal Hasil (RoI)"
+                                    type="number">
+                            </div>
+                            <div class="col col-sm-6">
+                                <label class="control-label mb-1">Durasi Proyek (Bulan)</label>
+                                <input class="form-control" id="duration" name="duration" placeholder="Durasi Proyek (Bulan)"
+                                    type="number">
+                            </div>
+                        </div>        
+                        <div class="row form-group">
+                            <div class="col col-sm-6">
+                                <label class="control-label mb-1">Harga Saham</label>
+                                <input class="form-control" id="stock-price" name="stock_price" placeholder="Harga Saham"
+                                    type="number">
+                            </div>
+                            <div class="col col-sm-6">
+                                <label class="control-label mb-1">Jumlah Saham</label>
+                                <input class="form-control" id="total-stock" name="total_stock" placeholder="Jumlah Saham"
+                                    type="number">
+                            </div>
+                            
+                        </div>
+                        <div>
+                            <button id="new-project-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                <span aria-hidden="true" class="spinner-border spinner-border-sm" id="new-project-spinner"
+                                    role="status" style="display: none"></span>
+                                <span id="new-project-button-placeholder">Simpan dan Lanjutkan</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div> <!-- .card -->
+
+</div>
+<!--/.col-->

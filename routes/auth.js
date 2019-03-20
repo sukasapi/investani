@@ -109,6 +109,7 @@ router.post('/register', notLoggedIn, function (req, res) {
 });
 
 router.get('/login', notLoggedIn, function (req, res) {
+    
     res.render('pages/auth/login');
 });
 // Passport authenticate middleware
