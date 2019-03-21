@@ -61,24 +61,6 @@
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
-                    <!--
-                        <div class="col-lg-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <strong class="card-title">1. Unggah Gambar Proyek</strong>
-                                </div>
-                                <div class="card-body">
-                                    <div id="pay-invoice">
-                                        <div class="card-body">
-                                            
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    -->
                     <!--/.col-->
                     <div class="col-lg-8" id="budget-chart-col" style="display: none">
                         <div class="card">
@@ -389,7 +371,7 @@
                                                 <button id="project-image-button" type="submit" class="btn btn-lg btn-info btn-block">
                                                     <span aria-hidden="true" class="spinner-border spinner-border-sm"
                                                         id="project-image-spinner" role="status" style="display: none"></span>
-                                                    <span>Kirim</span>
+                                                    <span>Simpan dan Lanjutkan</span>
                                                 </button>
                                             </div>
                                         </form>
@@ -486,8 +468,9 @@
             uiLibrary: 'bootstrap4',
             minDate: today
         });
-        document.getElementById("my-project").className = "active";
-
+        document.getElementById("my-project").className = "menu-item-has-children dropdown active show";
+        document.getElementById("my-project-link").click();
+        document.getElementById("started-project-sub").style.color= '#03a9f3';
         $('#province').on('change', function (event) {
             event.preventDefault();
             var province_id = $(this).val();
@@ -695,9 +678,6 @@
                 updateItem(labels, data);
             }, delay);
         });
-
-        
-        
     </script>
     <script>
         var ctx = document.getElementById("budget-chart");

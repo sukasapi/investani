@@ -11,11 +11,17 @@
             <div class="col-sm-8">
                 <div class="page-header float-right">
                     <div class="page-title">
-                        <ol class="breadcrumb text-right">
-                            <li><a href="#">Dashboard</a></li>
-                            <li><a href="#">Table</a></li>
-                            <li class="active">Data table</li>
-                        </ol>
+                    <ol class="breadcrumb text-right">
+                        <li><a href="/inisiator/dashboard">Dashboard</a></li>
+                        <% if (url == "start-project") { %>
+                            <li><a href="#">Proyek</a></li>
+                            <li class="active">Proyek yang Dimulai</li>
+                        <% } %>
+                        <% if (url == "started-project" || url == "edit") { %>
+                            <li><a href="#">Proyek</a></li>
+                            <li class="active">Proyek yang Dimulai</li>
+                        <% } %>
+                    </ol>
                     </div>
                 </div>
             </div>

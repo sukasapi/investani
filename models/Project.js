@@ -76,6 +76,9 @@ let ProjectSchema = mongoose.Schema({
             type: String
         }
     }],
+    status: {
+        type: String
+    },
     inisiator: { type: Schema.Types.ObjectId, ref: 'User' }
 },
 {
@@ -93,9 +96,15 @@ export const updateProject = (project_id, updateValue, callback) => {
 export const getProjectByID = (id, callback) => {
     Project.findById(id, callback);
 }
+export const getProjectByStatus = (status, callback) => {
+    let Obj = {
+        status: status
+    }
+    Project.find(Obj, callback).populate('inisiator').sort({ createdAt: -1 });
+}
 export const getProjectByInisiator = (id, callback) => {
     let Obj = {
       inisiator: id
     }
-    Project.findOne(Obj, callback).sort({ createdAt: -1 });
+    Project.find(Obj, callback).sort({ createdAt: -1 });
   }

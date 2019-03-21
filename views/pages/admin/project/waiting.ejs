@@ -18,12 +18,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
     <link rel="stylesheet" href="/css/cs-skin-elastic.css">
-    <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/css/dashboard-style.css">
+
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
     <style>
-        .card-title a {
-            color: #000000
+        #bootstrap-data-table-1_filter, #bootstrap-data-table-1_paginate, #bootstrap-data-table-2_filter, #bootstrap-data-table-2_paginate, #bootstrap-data-table-3_filter, #bootstrap-data-table-3_paginate{
+            text-align: right
+        }
+        #bootstrap-data-table-1_filter label, #bootstrap-data-table-2_filter label, #bootstrap-data-table-3_filter label{
+            text-align: left;
+        }
+        .pagination {
+            display: -webkit-inline-box;
+        }
+        .detail-link, .detail-link:hover, .detail-link:focus {
+            color: #fff;
         }
     </style>
 </head>
@@ -31,7 +42,7 @@
 <body>
     <!-- Left Panel -->
 
-    <% include ../../partials/inisiator/aside-dashboard %>
+    <% include ../../../partials/admin/aside-dashboard %>
 
     <!-- Left Panel -->
 
@@ -40,10 +51,10 @@
     <div id="right-panel" class="right-panel">
 
         <!-- Header-->
-        <% include ../../partials/inisiator/header-dashboard %>
+        <% include ../../../partials/admin/header-dashboard %>
         <!-- Header-->
 
-        <% include ../../partials/inisiator/breadcrumbs-dashboard %>
+        <% include ../../../partials/admin/breadcrumbs-dashboard %>
 
         <div class="content">
             <div class="animated fadeIn">
@@ -51,12 +62,12 @@
                     <% projects.forEach((project) => { %> 
                         <div class="col-md-4">
                             <div class="card">
-                                <a href="/inisiator/project/<%= project._id %>/edit">
+                                <a href="/admin/project/waiting/<%= project._id %>">
                                     <img class="card-img-top" src="/inisiator/project/<%= project._id %>/<%= project.image[0].filename %>" alt="Card image cap">
                                 </a>
                                 <div class="card-body">
                                     <div class="mx-auto d-block">
-                                        <h4 class="card-title mb-3"><a href="/inisiator/project/<%= project._id %>/edit"><%= project.basic[0].title %></a> 
+                                        <h4 class="card-title mb-3"><a href="/admin/project/waiting/<%= project._id %>"><%= project.basic[0].title %></a> 
                                             <% if (project.status == "draft") { %>
                                                 <small><span class="badge badge-light float-right mt-1">Draft</span></small>
                                             <% } %>
@@ -64,7 +75,7 @@
                                                 <small><span class="badge badge-warning float-right mt-1">Menunggu</span></small>
                                             <% } %>
                                         </h4>
-                                        <p class="card-text">Dibuat oleh <%= inisiator %></p>
+                                        <p class="card-text">Dibuat oleh <%= project.inisiator.profile[0].name %></p>
                                     </div>
                                 </div>
                                 <div class="card-footer" style="font-size: 12px;">
@@ -85,9 +96,9 @@
             </div><!-- .animated -->
         </div><!-- .content -->
 
-
         <div class="clearfix"></div>
-        <% include ../../partials/inisiator/footer-dashboard %>
+
+        <% include ../../../partials/admin/footer-dashboard %>
 
     </div><!-- /#right-panel -->
 
@@ -101,12 +112,8 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="/js/dashboard-main.js"></script>
-    <script>
-    document.getElementById("my-project").className = "menu-item-has-children dropdown active show";
-    document.getElementById("my-project-link").click();
-    document.getElementById("started-project-sub").style.color= '#03a9f3';
-    </script>
-
+    <script src="/js/dropify.min.js"></script>
+    
 </body>
 
 </html>
