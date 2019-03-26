@@ -156,7 +156,7 @@
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
-											<input class="form-control" id="province-name" name="province_name" type="text" style="display: none">
+											<input class="form-control" id="province-name" name="province_name" style="display: none" type="text" value="<%= province_name %>">
 										</div>
 									</div>
 									<div class="form-row">
@@ -168,7 +168,7 @@
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
-											<input class="form-control" id="city-name" name="city_name" type="text" style="display: none">
+											<input class="form-control" id="city-name" name="city_name" style="display: none" type="text" value="<%= city_name %>">
 										</div>
 									</div>
 									<div class="form-row">
@@ -181,7 +181,7 @@
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
-											<input class="form-control" id="district-name" name="district_name" type="text" style="display: none">
+											<input class="form-control" id="district-name" name="district_name" style="display: none" type="text" value="<%= district_name %>">
 										</div>
 									</div>
 									<div class="form-row">
@@ -193,7 +193,7 @@
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
-											<input class="form-control" id="sub-district-name" name="sub_district_name" type="text" style="display: none">
+											<input class="form-control" id="sub-district-name" name="sub_district_name" style="display: none" type="text" value="<%= sub_district_name %>">
 										</div>
 									</div>
 									<div class="form-row">
@@ -430,9 +430,9 @@
 						</div>
 					</div>
 					<div class="form-actions form-group">
-						<button id="bank-button" type="submit" class="btn btn-lg btn-info btn-block">
-							<span aria-hidden="true" class="spinner-border spinner-border-sm" id="bank-spinner" role="status" style="display: none"></span>
-							<span id="bank-button-amount">Lanjutkan</span>
+						<button id="pic-button" type="submit" class="btn btn-lg btn-info btn-block">
+							<span aria-hidden="true" class="spinner-border spinner-border-sm" id="pic-spinner" role="status" style="display: none"></span>
+							<span id="pic-button-amount">Lanjutkan</span>
 						</button>
 					</div>
 				</form>
@@ -604,119 +604,119 @@
 											<label class="control-label mb-1">Nama Bank</label>
 											<select name="bank_name" id="bank-name" class="form-control">
 												<option disabled selected>Pilih nama bank</option>
-												<option value="bri">BRI</option>
-												<option value="bank_mandiri">Bank Mandiri</option>
-												<option value="bni">BNI</option>
-												<option value="bank_danamon">Bank Danamon</option>
-												<option value="permata_bank">Permata Bank</option>
-												<option value="bca">BCA</option>
-												<option value="bank_maybank">Bank Maybank</option>
-												<option value="bank_panin">Bank Panin</option>
-												<option value="bank_cimb_niaga">Bank CIMB Niaga</option>
-												<option value="bank_uob_indonesia">Bank UOB Indonesia</option>
-												<option value="bank_ocbc_nisp">Bank OCBC NISP</option>
-												<option value="american_express_bank_ltd">American Express Bank Ltd</option>
-												<option value="bank_citibank">Bank Citibank</option>
-												<option value="jp_morgan_chase_bank_na">Jp. Morgan Chase Bank, N.A</option>
-												<option value="bank_of_america_na">Bank Of America, N.A</option>
-												<option value="ing_indonesia_bank">Ing Indonesia Bank</option>
-												<option value="china_construction_bank">China Construction Bank</option>
-												<option value="bank_artha_graha">Bank Artha Graha</option>
-												<option value="bank_credit_agricole_indosuez">Bank Credit Agricole Indosuez</option>
-												<option value="the_bankok_bank_comp_ltd">The Bangkok Bank Comp. Ltd</option>
-												<option value="hsbc_indonesia">HSBC Indonesia</option>
-												<option value="mufh_bank_ltd">MUFG Bank Ltd</option>
-												<option value="bank_sumitomo_mitsui_indonesia">Bank Sumitomo Mitsui Indonesia</option>
-												<option value="bank_dbs_indonesia">Bank DBS Indonesia</option>
-												<option value="bank_resona_indonesia">Bank Resona Perdania</option>
-												<option value="bank_mizuho_indonesia">Bank Mizuho Indonesia</option>
-												<option value="standard_charteder_bank">Standard Chartered Bank</option>
-												<option value="bank_abn_amro">Bank ABN AMRO</option>
-												<option value="bank_capital_indonesia_tbd">Bank Capital Indonesia, Tbk.</option>
-												<option value="bank_bnp_paribas_indonesia">Bank Bnp Paribas Indonesia</option>
-												<option value="anz_panin_bank">Anz Panin Bank</option>
-												<option value="deutsche_bank_ag">Deutsche Bank Ag.</option>
-												<option value="bank_woori_indonesia">Bank Woori Indonesia</option>
-												<option value="bank_of_china_limited">Bank Of China Limited</option>
-												<option value="bank_bumi_arta">Bank Bumi Arta</option>
-												<option value="bank_rabobank_indonesia">Bank Rabobank Indonesia</option>
-												<option value="bank_mayapada">Bank Mayapada</option>
-												<option value="bank_jabar">Bank Jabar</option>
-												<option value="bank_dki">Bank Dki</option>
-												<option value="bpd_diy">Bpd Diy</option>
-												<option value="bank_jateng">Bank Jateng</option>
-												<option value="bank_jatim">Bank Jatim</option>
-												<option value="bpd_jambi">Bpd Jambi</option>
-												<option value="bpd_aceh">Bpd Aceh</option>
-												<option value="bank_sumut">Bank Sumut</option>
-												<option value="bank_nagari">Bank Nagari</option>
-												<option value="bank_riau">Bank Riau</option>
-												<option value="bank_sumsel">Bank Sumsel</option>
-												<option value="bank_lampung">Bank Lampung</option>
-												<option value="bpd_kalsel">Bpd Kalsel</option>
-												<option value="bpd_kalimantan_barat">Bpd Kalimantan Barat</option>
-												<option value="bpd_kaltim">Bpd Kaltim</option>
-												<option value="bpd_kalteng">Bpd Kalteng</option>
-												<option value="bpd_sulsel">Bpd Sulsel</option>
-												<option value="bpd_sulut">Bank Sulut</option>
-												<option value="bpd_ntb">Bpd Ntb</option>
-												<option value="bpd_bali">Bpd Bali</option>
-												<option value="bank_ntt">Bank Ntt</option>
-												<option value="bank_maluku">Bank Maluku</option>
-												<option value="bpd_papua">Bpd Papua</option>
-												<option value="bank_bengkulu">Bank Bengkulu</option>
-												<option value="bpd_sulawesi_tengah">Bpd Sulawesi Tengah</option>
-												<option value="bank_sultra">Bank Sultra</option>
-												<option value="bank_nusantara_parahyangan">Bank Nusantara Parahyangan</option>
-												<option value="bank_of_india_indonesia">Bank Of India Indonesia</option>
-												<option value="bank_muamalat">Bank Muamalat</option>
-												<option value="bank_mestika">Bank Mestika</option>
-												<option value="bank_shinhan_indonesia">Bank Shinhan Indonesia</option>
-												<option value="bank_sinarmas">Bank Sinarmas</option>
-												<option value="bank_maspion">Bank Maspion</option>
-												<option value="bank_ganesha">Bank Ganesha</option>
-												<option value="bank_icbc_indonesia">Bank Icbc Indonesia</option>
-												<option value="bang_tabungan_negara_persero">Bank Tabungan Negara (persero)</option>
-												<option value="bank_tabungan_pensiunan_nasional">Bank Tabungan Pensiunan Nasional</option>
-												<option value="bank_mega">Bank Mega</option>
-												<option value="bank_bukoping">Bank Bukopin</option>
-												<option value="bank_syariah_mandiri">Bank Syariah Mandiri</option>
-												<option value="bank_bisnis_internasional">Bank Bisnis Internasional</option>
-												<option value="bank_oke_indonesia">Bank Oke Indonesia</option>
-												<option value="bank_jasa_jakarta">Bank Jasa Jakarta</option>
-												<option value="bank_keb_hana_indonesia">Bank Keb Hana Indonesia</option>
-												<option value="bank_yudha_bhakti">Bank Yudha Bhakti</option>
-												<option value="bank_mitraniaga">Bank Mitraniaga</option>
-												<option value="bank_bri_agro_niaga">Bank BRI Agro Niaga</option>
-												<option value="bank_sbi_indonesia">Bank Sbi Indonesia</option>
-												<option value="bank_royal_indonesia">Bank Royal Indonesia</option>
-												<option value="bank_natioal_nobu">Bank Natioal Nobu</option>
-												<option value="bank_syariah_mega">Bank Syariah Mega</option>
-												<option value="bank_ina_perdana">Bank Ina Perdana</option>
-												<option value="prima_master_bank">Prima Master Bank</option>
-												<option value="bank_barclays_indonesia">Bank Barclays Indonesia</option>
-												<option value="bank_dinar_indonesia">Bank Dinar Indonesia</option>
-												<option value="bank_amar_indonesia">Bank Amar Indonesia</option>
-												<option value="bank_kesejahteraan_ekonomi">Bank Kesejahteraan Ekonomi</option>
-												<option value="bank_artos_ind">Bank Artos Ind</option>
-												<option value="bank-multi_arta_sentosa">Bank Multi Arta Sentosa</option>
-												<option value="bank_mayora">Bank Mayora</option>
-												<option value="bank_index_selindo">Bank Index Selindo</option>
-												<option value="bank_victoria_international">Bank Victoria International</option>
-												<option value="bank_fama_internasional">Bank Fama Internasional</option>
-												<option value="bank_mandiri_taspen_pos">Bank Mandiri Taspen Pos</option>
-												<option value="bank_harda">Bank Harda</option>
-												<option value="bank_ctbc_indonesia">Bank CTBC Indonesia</option>
-												<option value="bank_commonwealth">Bank Commonwealth</option>
-												<option value="bank_syariah_bukoping">Bank Syariah Bukopin</option>
-												<option value="bank_syariah_bca">Bank Syariah BCA</option>
-												<option value="bank_tabungan_pensiunan_nasional_syariah">Bank Tabungan Pensiunan Nasional Syariah</option>
-												<option value="bank_syariah_maybank">Bank Syariah Maybank</option>
-												<option value="bank_bni_syariah">Bank BNI Syariah</option>
-												<option value="bank_victoria_syariah">Bank Victoria Syariah</option>
-												<option value="bank_bri_syariah">Bank BRI Syariah</option>
-												<option value="bank_panin_syariah">Bank Panin Syariah</option>
-												<option value="bank_cimb_niaga_syariah">Bank CIMB Niaga Syariah</option>
+												<option <% if (bank_name == 'bri') { %>selected<% } %> value="bri">BRI</option>
+												<option <% if (bank_name == 'bank_mandiri') { %>selected<% } %> value="bank_mandiri">Bank Mandiri</option>
+												<option <% if (bank_name == 'bni') { %>selected<% } %> value="bni">BNI</option>
+												<option <% if (bank_name == 'bank_danamon') { %>selected<% } %> value="bank_danamon">Bank Danamon</option>
+												<option <% if (bank_name == 'permata_bank') { %>selected<% } %> value="permata_bank">Permata Bank</option>
+												<option <% if (bank_name == 'bca') { %>selected<% } %> value="bca">BCA</option>
+												<option <% if (bank_name == 'bank_maybank') { %>selected<% } %> value="bank_maybank">Bank Maybank</option>
+												<option <% if (bank_name == 'bank_panin') { %>selected<% } %> value="bank_panin">Bank Panin</option>
+												<option <% if (bank_name == 'bank_cimb_niaga') { %>selected<% } %> value="bank_cimb_niaga">Bank CIMB Niaga</option>
+												<option <% if (bank_name == 'bank_uob_indonesia') { %>selected<% } %> value="bank_uob_indonesia">Bank UOB Indonesia</option>
+												<option <% if (bank_name == 'bank_ocbc_nisp') { %>selected<% } %> value="bank_ocbc_nisp">Bank OCBC NISP</option>
+												<option <% if (bank_name == 'american_express_bank_ltd') { %>selected<% } %> value="american_express_bank_ltd">American Express Bank Ltd</option>
+												<option <% if (bank_name == 'bank_citibank') { %>selected<% } %> value="bank_citibank">Bank Citibank</option>
+												<option <% if (bank_name == 'jp_morgan_chase_bank_na') { %>selected<% } %> value="jp_morgan_chase_bank_na">Jp. Morgan Chase Bank, N.A</option>
+												<option <% if (bank_name == 'bank_of_america_na') { %>selected<% } %> value="bank_of_america_na">Bank Of America, N.A</option>
+												<option <% if (bank_name == 'ing_indonesia_bank') { %>selected<% } %> value="ing_indonesia_bank">Ing Indonesia Bank</option>
+												<option <% if (bank_name == 'china_construction_bank') { %>selected<% } %> value="china_construction_bank">China Construction Bank</option>
+												<option <% if (bank_name == 'bank_artha_graha') { %>selected<% } %> value="bank_artha_graha">Bank Artha Graha</option>
+												<option <% if (bank_name == 'bank_credit_agricole_indosuez') { %>selected<% } %> value="bank_credit_agricole_indosuez">Bank Credit Agricole Indosuez</option>
+												<option <% if (bank_name == 'the_bankok_bank_comp_ltd') { %>selected<% } %> value="the_bankok_bank_comp_ltd">The Bangkok Bank Comp. Ltd</option>
+												<option <% if (bank_name == 'hsbc_indonesia') { %>selected<% } %> value="hsbc_indonesia">HSBC Indonesia</option>
+												<option <% if (bank_name == 'mufh_bank_ltd') { %>selected<% } %> value="mufh_bank_ltd">MUFG Bank Ltd</option>
+												<option <% if (bank_name == 'bank_sumitomo_mitsui_indonesia') { %>selected<% } %> value="bank_sumitomo_mitsui_indonesia">Bank Sumitomo Mitsui Indonesia</option>
+												<option <% if (bank_name == 'bank_dbs_indonesia') { %>selected<% } %> value="bank_dbs_indonesia">Bank DBS Indonesia</option>
+												<option <% if (bank_name == 'bank_resona_indonesia') { %>selected<% } %> value="bank_resona_indonesia">Bank Resona Perdania</option>
+												<option <% if (bank_name == 'bank_mizuho_indonesia') { %>selected<% } %> value="bank_mizuho_indonesia">Bank Mizuho Indonesia</option>
+												<option <% if (bank_name == 'standard_charteder_bank') { %>selected<% } %> value="standard_charteder_bank">Standard Chartered Bank</option>
+												<option <% if (bank_name == 'bank_abn_amro') { %>selected<% } %> value="bank_abn_amro">Bank ABN AMRO</option>
+												<option <% if (bank_name == 'bank_capital_indonesia_tbd') { %>selected<% } %> value="bank_capital_indonesia_tbd">Bank Capital Indonesia, Tbk.</option>
+												<option <% if (bank_name == 'bank_bnp_paribas_indonesia') { %>selected<% } %> value="bank_bnp_paribas_indonesia">Bank Bnp Paribas Indonesia</option>
+												<option <% if (bank_name == 'anz_panin_bank') { %>selected<% } %> value="anz_panin_bank">Anz Panin Bank</option>
+												<option <% if (bank_name == 'deutsche_bank_ag') { %>selected<% } %> value="deutsche_bank_ag">Deutsche Bank Ag.</option>
+												<option <% if (bank_name == 'bank_woori_indonesia') { %>selected<% } %> value="bank_woori_indonesia">Bank Woori Indonesia</option>
+												<option <% if (bank_name == 'bank_of_china_limited') { %>selected<% } %> value="bank_of_china_limited">Bank Of China Limited</option>
+												<option <% if (bank_name == 'bank_bumi_arta') { %>selected<% } %> value="bank_bumi_arta">Bank Bumi Arta</option>
+												<option <% if (bank_name == 'bank_rabobank_indonesia') { %>selected<% } %> value="bank_rabobank_indonesia">Bank Rabobank Indonesia</option>
+												<option <% if (bank_name == 'bank_mayapada') { %>selected<% } %> value="bank_mayapada">Bank Mayapada</option>
+												<option <% if (bank_name == 'bank_jabar') { %>selected<% } %> value="bank_jabar">Bank Jabar</option>
+												<option <% if (bank_name == 'bank_dki') { %>selected<% } %> value="bank_dki">Bank Dki</option>
+												<option <% if (bank_name == 'bpd_diy') { %>selected<% } %> value="bpd_diy">Bpd Diy</option>
+												<option <% if (bank_name == 'bank_jateng') { %>selected<% } %> value="bank_jateng">Bank Jateng</option>
+												<option <% if (bank_name == 'bank_jatim') { %>selected<% } %> value="bank_jatim">Bank Jatim</option>
+												<option <% if (bank_name == 'bpd_jambi') { %>selected<% } %> value="bpd_jambi">Bpd Jambi</option>
+												<option <% if (bank_name == 'bpd_aceh') { %>selected<% } %> value="bpd_aceh">Bpd Aceh</option>
+												<option <% if (bank_name == 'bank_sumut') { %>selected<% } %> value="bank_sumut">Bank Sumut</option>
+												<option <% if (bank_name == 'bank_nagari') { %>selected<% } %> value="bank_nagari">Bank Nagari</option>
+												<option <% if (bank_name == 'bank_riau') { %>selected<% } %> value="bank_riau">Bank Riau</option>
+												<option <% if (bank_name == 'bank_sumsel') { %>selected<% } %> value="bank_sumsel">Bank Sumsel</option>
+												<option <% if (bank_name == 'bank_lampung') { %>selected<% } %> value="bank_lampung">Bank Lampung</option>
+												<option <% if (bank_name == 'bpd_kalsel') { %>selected<% } %> value="bpd_kalsel">Bpd Kalsel</option>
+												<option <% if (bank_name == 'bpd_kalimantan_barat') { %>selected<% } %> value="bpd_kalimantan_barat">Bpd Kalimantan Barat</option>
+												<option <% if (bank_name == 'bpd_kaltim') { %>selected<% } %> value="bpd_kaltim">Bpd Kaltim</option>
+												<option <% if (bank_name == 'bpd_kalteng') { %>selected<% } %> value="bpd_kalteng">Bpd Kalteng</option>
+												<option <% if (bank_name == 'bpd_sulsel') { %>selected<% } %> value="bpd_sulsel">Bpd Sulsel</option>
+												<option <% if (bank_name == 'bpd_sulut') { %>selected<% } %> value="bpd_sulut">Bank Sulut</option>
+												<option <% if (bank_name == 'bpd_ntb') { %>selected<% } %> value="bpd_ntb">Bpd Ntb</option>
+												<option <% if (bank_name == 'bpd_bali') { %>selected<% } %> value="bpd_bali">Bpd Bali</option>
+												<option <% if (bank_name == 'bank_ntt') { %>selected<% } %> value="bank_ntt">Bank Ntt</option>
+												<option <% if (bank_name == 'bank_maluku') { %>selected<% } %> value="bank_maluku">Bank Maluku</option>
+												<option <% if (bank_name == 'bpd_papua') { %>selected<% } %> value="bpd_papua">Bpd Papua</option>
+												<option <% if (bank_name == 'bank_bengkulu') { %>selected<% } %> value="bank_bengkulu">Bank Bengkulu</option>
+												<option <% if (bank_name == 'bpd_sulawesi_tengah') { %>selected<% } %> value="bpd_sulawesi_tengah">Bpd Sulawesi Tengah</option>
+												<option <% if (bank_name == 'bank_sultra') { %>selected<% } %> value="bank_sultra">Bank Sultra</option>
+												<option <% if (bank_name == 'bank_nusantara_parahyangan') { %>selected<% } %> value="bank_nusantara_parahyangan">Bank Nusantara Parahyangan</option>
+												<option <% if (bank_name == 'bank_of_india_indonesia') { %>selected<% } %> value="bank_of_india_indonesia">Bank Of India Indonesia</option>
+												<option <% if (bank_name == 'bank_muamalat') { %>selected<% } %> value="bank_muamalat">Bank Muamalat</option>
+												<option <% if (bank_name == 'bank_mestika') { %>selected<% } %> value="bank_mestika">Bank Mestika</option>
+												<option <% if (bank_name == 'bank_shinhan_indonesia') { %>selected<% } %> value="bank_shinhan_indonesia">Bank Shinhan Indonesia</option>
+												<option <% if (bank_name == 'bank_sinarmas') { %>selected<% } %> value="bank_sinarmas">Bank Sinarmas</option>
+												<option <% if (bank_name == 'bank_maspion') { %>selected<% } %> value="bank_maspion">Bank Maspion</option>
+												<option <% if (bank_name == 'bank_ganesha') { %>selected<% } %> value="bank_ganesha">Bank Ganesha</option>
+												<option <% if (bank_name == 'bank_icbc_indonesia') { %>selected<% } %> value="bank_icbc_indonesia">Bank Icbc Indonesia</option>
+												<option <% if (bank_name == 'bang_tabungan_negara_persero') { %>selected<% } %> value="bang_tabungan_negara_persero">Bank Tabungan Negara (persero)</option>
+												<option <% if (bank_name == 'bank_tabungan_pensiunan_nasional') { %>selected<% } %> value="bank_tabungan_pensiunan_nasional">Bank Tabungan Pensiunan Nasional</option>
+												<option <% if (bank_name == 'bank_mega') { %>selected<% } %> value="bank_mega">Bank Mega</option>
+												<option <% if (bank_name == 'bank_bukoping') { %>selected<% } %> value="bank_bukoping">Bank Bukopin</option>
+												<option <% if (bank_name == 'bank_syariah_mandiri') { %>selected<% } %> value="bank_syariah_mandiri">Bank Syariah Mandiri</option>
+												<option <% if (bank_name == 'bank_bisnis_internasional') { %>selected<% } %> value="bank_bisnis_internasional">Bank Bisnis Internasional</option>
+												<option <% if (bank_name == 'bank_oke_indonesia') { %>selected<% } %> value="bank_oke_indonesia">Bank Oke Indonesia</option>
+												<option <% if (bank_name == 'bank_jasa_jakarta') { %>selected<% } %> value="bank_jasa_jakarta">Bank Jasa Jakarta</option>
+												<option <% if (bank_name == 'bank_keb_hana_indonesia') { %>selected<% } %> value="bank_keb_hana_indonesia">Bank Keb Hana Indonesia</option>
+												<option <% if (bank_name == 'bank_yudha_bhakti') { %>selected<% } %> value="bank_yudha_bhakti">Bank Yudha Bhakti</option>
+												<option <% if (bank_name == 'bank_mitraniaga') { %>selected<% } %> value="bank_mitraniaga">Bank Mitraniaga</option>
+												<option <% if (bank_name == 'bank_bri_agro_niaga') { %>selected<% } %> value="bank_bri_agro_niaga">Bank BRI Agro Niaga</option>
+												<option <% if (bank_name == 'bank_sbi_indonesia') { %>selected<% } %> value="bank_sbi_indonesia">Bank Sbi Indonesia</option>
+												<option <% if (bank_name == 'bank_royal_indonesia') { %>selected<% } %> value="bank_royal_indonesia">Bank Royal Indonesia</option>
+												<option <% if (bank_name == 'bank_natioal_nobu') { %>selected<% } %> value="bank_natioal_nobu">Bank Natioal Nobu</option>
+												<option <% if (bank_name == 'bank_syariah_mega') { %>selected<% } %> value="bank_syariah_mega">Bank Syariah Mega</option>
+												<option <% if (bank_name == 'bank_ina_perdana') { %>selected<% } %> value="bank_ina_perdana">Bank Ina Perdana</option>
+												<option <% if (bank_name == 'prima_master_bank') { %>selected<% } %> value="prima_master_bank">Prima Master Bank</option>
+												<option <% if (bank_name == 'bank_barclays_indonesia') { %>selected<% } %> value="bank_barclays_indonesia">Bank Barclays Indonesia</option>
+												<option <% if (bank_name == 'bank_dinar_indonesia') { %>selected<% } %> value="bank_dinar_indonesia">Bank Dinar Indonesia</option>
+												<option <% if (bank_name == 'bank_amar_indonesia') { %>selected<% } %> value="bank_amar_indonesia">Bank Amar Indonesia</option>
+												<option <% if (bank_name == 'bank_kesejahteraan_ekonomi') { %>selected<% } %> value="bank_kesejahteraan_ekonomi">Bank Kesejahteraan Ekonomi</option>
+												<option <% if (bank_name == 'bank_artos_ind') { %>selected<% } %> value="bank_artos_ind">Bank Artos Ind</option>
+												<option <% if (bank_name == 'bank') { %>selected<% } %> value="bank-multi_arta_sentosa">Bank Multi Arta Sentosa</option>
+												<option <% if (bank_name == 'bank_mayora') { %>selected<% } %> value="bank_mayora">Bank Mayora</option>
+												<option <% if (bank_name == 'bank_index_selindo') { %>selected<% } %> value="bank_index_selindo">Bank Index Selindo</option>
+												<option <% if (bank_name == 'bank_victoria_international') { %>selected<% } %> value="bank_victoria_international">Bank Victoria International</option>
+												<option <% if (bank_name == 'bank_fama_internasional') { %>selected<% } %> value="bank_fama_internasional">Bank Fama Internasional</option>
+												<option <% if (bank_name == 'bank_mandiri_taspen_pos') { %>selected<% } %> value="bank_mandiri_taspen_pos">Bank Mandiri Taspen Pos</option>
+												<option <% if (bank_name == 'bank_harda') { %>selected<% } %> value="bank_harda">Bank Harda</option>
+												<option <% if (bank_name == 'bank_ctbc_indonesia') { %>selected<% } %> value="bank_ctbc_indonesia">Bank CTBC Indonesia</option>
+												<option <% if (bank_name == 'bank_commonwealth') { %>selected<% } %> value="bank_commonwealth">Bank Commonwealth</option>
+												<option <% if (bank_name == 'bank_syariah_bukoping') { %>selected<% } %> value="bank_syariah_bukoping">Bank Syariah Bukopin</option>
+												<option <% if (bank_name == 'bank_syariah_bca') { %>selected<% } %> value="bank_syariah_bca">Bank Syariah BCA</option>
+												<option <% if (bank_name == 'bank_tabungan_pensiunan_nasional_syariah') { %>selected<% } %> value="bank_tabungan_pensiunan_nasional_syariah">Bank Tabungan Pensiunan Nasional Syariah</option>
+												<option <% if (bank_name == 'bank_syariah_maybank') { %>selected<% } %> value="bank_syariah_maybank">Bank Syariah Maybank</option>
+												<option <% if (bank_name == 'bank_bni_syariah') { %>selected<% } %> value="bank_bni_syariah">Bank BNI Syariah</option>
+												<option <% if (bank_name == 'bank_victoria_syariah') { %>selected<% } %> value="bank_victoria_syariah">Bank Victoria Syariah</option>
+												<option <% if (bank_name == 'bank_bri_syariah') { %>selected<% } %> value="bank_bri_syariah">Bank BRI Syariah</option>
+												<option <% if (bank_name == 'bank_panin_syariah') { %>selected<% } %> value="bank_panin_syariah">Bank Panin Syariah</option>
+												<option <% if (bank_name == 'bank_cimb_niaga_syariah') { %>selected<% } %> value="bank_cimb_niaga_syariah">Bank CIMB Niaga Syariah</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
@@ -726,19 +726,19 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Nama Pemilik Rekening</label>
-											<input class="form-control" id="account-name" name="account_name" type="text">
+											<input class="form-control" id="account-name" name="account_name" type="text" value="<%= account_name %>">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Nomor Rekening</label>
-											<input class="form-control" id="account-number" name="account_number" type="number">
+											<input class="form-control" id="account-number" name="account_number" type="number" value="<%= account_number %>">
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Cabang</label>
-											<input class="form-control" id="branch" name="branch" type="text">
+											<input class="form-control" id="branch" name="branch" type="text" value="<%= branch %>">
 										</div>
 									</div>
 								</div>
@@ -833,7 +833,7 @@
 
 					$('.first-list').click(function () {
 						$('.first-list').attr('class', 'first done first-list');
-						$('.second-list').attr('class', 'done second-list');
+						$('.second-list').attr('class', 'current second-list');
 
 						$('#header-form').text('Profil');
 						$('#profile-form').show();
@@ -1697,7 +1697,8 @@
 					).then(function() {
 					});
 				}
-			} else {
+			} 
+			else {
 				$('#name-label').text('Nama Perusahaan');
 				$('#name').attr('placeholder', 'Nama Perusahaan');
 				$('#phone-input').attr('class', 'form-holder form-holder-2');

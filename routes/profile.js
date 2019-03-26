@@ -4,12 +4,13 @@ import { updateUser, getUserByIdentityNumber, getUserByPICIdentityNumber } from 
 import upload from '../uploadMiddleware';
 import Resize from '../Resize';
 import path from 'path';
+import fs from 'fs';
 
 const router = express.Router();
 
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
-router.get('/', isLoggedIn, isUncompleted, isUser, function (req, res) {
+router.get('/', isLoggedIn, isNoContract, isUser, function (req, res) {
     request({
         url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
         method: 'GET', // specify the request type
@@ -18,394 +19,175 @@ router.get('/', isLoggedIn, isUncompleted, isUser, function (req, res) {
         if(error) {
             res.json({success: false, province: null});
         } 
-        else {
-            let data = {};
-            let province = JSON.parse(body).semuaprovinsi;
+        else { 
             let profile_length = req.user.profile.length
             let occupation_length = req.user.occupation.length;
             let pic_length = req.user.pic.length;
             let document_length = req.user.document.length;
             let bank_length = req.user.bank.length;
-            // belum isi profil
-            if (profile_length == 0) {
-                data = {
-                    profile_length: profile_length,
-                    province: province,
-                    profile: null,
-                    registration_type: null,
-                    name: null,
-                    phone: null,
-                    gender: null,
-                    established_place: null,
-                    company_phone: null,
-                    birth_date: null,
-                    province_id: 0,
-                    city_id: 0,
-                    district_id: 0,
-                    sub_district_id: 0,
-                    address: null,
-                    // occupation
-                    occupation_length: occupation_length,
-                    occupation: null,
-                    company_name: null,
-                    company_address: null,
-                    position: null,
-                    income: null,
-                    income_source: null,
-                    // pic
-                    pic_length: pic_length,
-                    pic_name: null,
-                    pic_birth_date: null,
-                    pic_identity_number:null,
-                    pic_identity_image: null,
-                    pic_identity_selfie_image: null,
-                    // document
-                    document_length: document_length,
-                    identity_number: null,
-                    identity_image: null,
-                    identity_selfie_image: null,
-                    npwp_number: null,
-                    npwp_image: null,
-                    company_registration_number: null,
-                    company_registration_image: null,
-                    sk_kemenkumham_number: null,
-                    sk_kemenkumham_image: null,
-                    business_permit_image: null,
-                    // bank
-                    bank_length: bank_length,
-                    bank_name: null,
-                    account_name: null,
-                    account_number: null,
-                    branch: null
-                };
-            }
+            let province = JSON.parse(body).semuaprovinsi;
+            let registration_type = null;
+            let name = null;
+            let phone = null;
+            let gender = null;
+            let established_place = null;
+            let company_phone = null;
+            let birth_date = null;
+            let province_id = 0;
+            let province_name = null;
+            let city_id = 0;
+            let city_name = null;
+            let district_id = 0;
+            let district_name = null;
+            let sub_district_id = 0;
+            let sub_district_name = null;
+            let address = null;
+            // occupation
+            let occupation = null;
+            let company_name = null;
+            let company_address = null;
+            let position = null;
+            let income = null;
+            let income_source = null;
+            // pic
+            let pic_name = null;
+            let pic_birth_date = null;
+            let pic_identity_number = null;
+            let pic_identity_image = null;
+            let pic_identity_selfie_image = null;
+            // document
+            let identity_number = null;
+            let identity_image = null;
+            let identity_selfie_image = null;
+            let npwp_number = null;
+            let npwp_image = null;
+            let company_registration_number = null;
+            let company_registration_image = null;
+            let sk_kemenkumham_number = null;
+            let sk_kemenkumham_image = null;
+            let business_permit_image = null;
+            // bank
+            let bank_name = null;
+            let account_name = null;
+            let account_number = null;
+            let branch = null;
+            
             // sudah isi profil perseorangan
-            if (profile_length != 0 && req.user.profile[0].registration_type == 'individual') {
-                // belum isi pekerjaan
-                if (occupation_length == 0) {
-                    data = {
-                        // profile
-                        profile_length: profile_length,
-                        province: province,
-                        registration_type: req.user.profile[0].registration_type,
-                        name: req.user.profile[0].name,
-                        phone: req.user.profile[0].phone,
-                        gender: req.user.profile[0].gender,
-                        established_place: null,
-                        company_phone: null,
-                        birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
-                        province_id: req.user.profile[0].province[0].province_id,
-                        city_id: req.user.profile[0].city[0].city_id,
-                        district_id: req.user.profile[0].district[0].district_id,
-                        sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
-                        address: req.user.profile[0].address,
-                        // occupation
-                        occupation_length: occupation_length,
-                        occupation: null,
-                        company_name: null,
-                        company_address: null,
-                        position: null,
-                        income: null,
-                        income_source: null,
-                        // pic
-                        pic_length: pic_length,
-                        pic_name: null,
-                        pic_birth_date: null,
-                        pic_identity_number:null,
-                        pic_identity_image: null,
-                        pic_identity_selfie_image: null,
-                        // document
-                        document_length: document_length,
-                        identity_number: null,
-                        identity_image: null,
-                        identity_selfie_image: null,
-                        npwp_number: null,
-                        npwp_image: null,
-                        company_registration_number: null,
-                        company_registration_image: null,
-                        sk_kemenkumham_number: null,
-                        sk_kemenkumham_image: null,
-                        business_permit_image: null,
-                        // bank
-                        bank_length: bank_length,
-                        bank_name: null,
-                        account_name: null,
-                        account_number: null,
-                        branch: null
-                    };
+            if (profile_length != 0) {
+                registration_type = req.user.profile[0].registration_type;
+                name = req.user.profile[0].name;
+                phone = req.user.profile[0].phone;
+                birth_date = req.user.profile[0].birth_date.toLocaleDateString();
+                province_id = req.user.profile[0].province[0].province_id;
+                province_name = req.user.profile[0].province[0].province_name;
+                city_id = req.user.profile[0].city[0].city_id;
+                city_name = req.user.profile[0].city[0].city_name;
+                district_id = req.user.profile[0].district[0].district_id;
+                district_name = req.user.profile[0].district[0].district_name;
+                sub_district_id = req.user.profile[0].sub_district[0].sub_district_id;
+                sub_district_name = req.user.profile[0].sub_district[0].sub_district_name;
+                address = req.user.profile[0].address;
+                if (req.user.profile[0].registration_type == 'individual') {
+                    gender = req.user.profile[0].gender;
+                    // sudah isi pekerjaan dan belum isi dokumen
+                    if (occupation_length != 0) {
+                        occupation = req.user.occupation[0].occupation;
+                        company_name = req.user.occupation[0].company_name;
+                        company_address = req.user.occupation[0].company_address;
+                        position = req.user.occupation[0].position;
+                        income = req.user.occupation[0].income;
+                        income_source = req.user.occupation[0].income_source;
+                        if (document_length != 0) {
+                            document_length = document_length;
+                            identity_number = req.user.document[0].identity_number;
+                            identity_image = req.user.document[0].identity_image;
+                            identity_selfie_image = req.user.document[0].identity_selfie_image;
+                            npwp_number = req.user.document[0].npwp_number;
+                            npwp_image = req.user.document[0].npwp_image;
+                        }
+                    }
                 }
-                // sudah isi pekerjaan dan belum isi dokumen
-                if (occupation_length != 0 && document_length == 0) {
-                    data = {
-                        profile_length: profile_length,
-                        province: province,
-                        registration_type: req.user.profile[0].registration_type,
-                        name: req.user.profile[0].name,
-                        phone: req.user.profile[0].phone,
-                        gender: req.user.profile[0].gender,
-                        established_place: null,
-                        company_phone: null,
-                        birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
-                        province_id: req.user.profile[0].province[0].province_id,
-                        city_id: req.user.profile[0].city[0].city_id,
-                        district_id: req.user.profile[0].district[0].district_id,
-                        sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
-                        address: req.user.profile[0].address,
-                        // occupation
-                        occupation_length: occupation_length,
-                        occupation: req.user.occupation[0].occupation,
-                        company_name: req.user.occupation[0].company_name,
-                        company_address: req.user.occupation[0].company_address,
-                        position: req.user.occupation[0].position,
-                        income: req.user.occupation[0].income,
-                        income_source: req.user.occupation[0].income_source,
-                        // pic
-                        pic_length: pic_length,
-                        pic_name: null,
-                        pic_birth_date: null,
-                        pic_identity_number:null,
-                        pic_identity_image: null,
-                        pic_identity_selfie_image: null,
-                        // document
-                        // document
-                        document_length: document_length,
-                        identity_number: null,
-                        identity_image: null,
-                        identity_selfie_image: null,
-                        npwp_number: null,
-                        npwp_image: null,
-                        company_registration_number: null,
-                        company_registration_image: null,
-                        sk_kemenkumham_number: null,
-                        sk_kemenkumham_image: null,
-                        business_permit_image: null,
-                        // bank
-                        bank_length: bank_length,
-                        bank_name: null,
-                        account_name: null,
-                        account_number: null,
-                        branch: null
-                    };
+                if (req.user.profile[0].registration_type == 'company') {
+                    established_place = req.user.profile[0].established_place;
+                    company_phone = req.user.profile[0].company_phone;
+                    if (pic_length != 0) {
+                        pic_name = req.user.pic[0].pic_name;
+                        pic_birth_date = req.user.pic[0].pic_birth_date.toLocaleDateString();
+                        pic_identity_number = req.user.pic[0].pic_identity_number;
+                        pic_identity_image = req.user.pic[0].pic_identity_image;
+                        pic_identity_selfie_image = req.user.pic[0].pic_identity_selfie_image;
+                        if (document_length != 0) {
+                            npwp_number = req.user.document[0].npwp_number;
+                            npwp_image = req.user.document[0].npwp_image;
+                            company_registration_number = req.user.document[0].company_registration_number;
+                            company_registration_image = req.user.document[0].company_registration_image;
+                            sk_kemenkumham_number = req.user.document[0].sk_kemenkumham_number;
+                            sk_kemenkumham_image = req.user.document[0].sk_kemenkumham_image;
+                            business_permit_image = req.user.document[0].business_permit_image;
+                        }
+                    }
                 }
-                // sudah isi pekerjaan dan dokumen
-                if (occupation_length != 0 && document_length != 0) {                   
-                    data = {
-                        // profile
-                        profile_length: profile_length,
-                        province: province,
-                        registration_type: req.user.profile[0].registration_type,
-                        name: req.user.profile[0].name,
-                        phone: req.user.profile[0].phone,
-                        gender: req.user.profile[0].gender,
-                        established_place: null,
-                        company_phone: null,
-                        birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
-                        province_id: req.user.profile[0].province[0].province_id,
-                        city_id: req.user.profile[0].city[0].city_id,
-                        district_id: req.user.profile[0].district[0].district_id,
-                        sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
-                        address: req.user.profile[0].address,
-                        // occupation
-                        occupation_length: occupation_length,
-                        occupation: req.user.occupation[0].occupation,
-                        company_name: req.user.occupation[0].company_name,
-                        company_address: req.user.occupation[0].company_address,
-                        position: req.user.occupation[0].position,
-                        income: req.user.occupation[0].income,
-                        income_source: req.user.occupation[0].income_source,
-                        // pic
-                        pic_length: pic_length,
-                        pic_name: null,
-                        pic_birth_date: null,
-                        pic_identity_number:null,
-                        pic_identity_image: null,
-                        pic_identity_selfie_image: null,
-                        // document
-                        document_length: document_length,
-                        identity_number: req.user.document[0].identity_number,
-                        identity_image: req.user.document[0].identity_image,
-                        identity_selfie_image: req.user.document[0].identity_selfie_image,
-                        npwp_number: req.user.document[0].npwp_number,
-                        npwp_image: req.user.document[0].npwp_image,
-                        company_registration_number: null,
-                        company_registration_image: null,
-                        sk_kemenkumham_number: null,
-                        sk_kemenkumham_image: null,
-                        business_permit_image: null,
-                        // bank
-                        bank_length: bank_length,
-                        bank_name: null,
-                        account_name: null,
-                        account_number: null,
-                        branch: null
-                    };
-                }
+                if (bank_length != 0) {
+                    bank_name = req.user.bank[0].bank_name;
+                    account_name = req.user.bank[0].account_name;
+                    account_number = req.user.bank[0].account_number;
+                    branch = req.user.bank[0].branch;
+                }          
+                
             }
-            // sudah isi profil perusahaan
-            if (req.user.profile.length != 0 && req.user.profile[0].registration_type == 'company') {
-                // belum isi penanggungjawab
-                if (pic_length == 0) {
-                    data = {
-                        // profile
-                        profile_length: profile_length,
-                        province: province,
-                        registration_type: req.user.profile[0].registration_type,
-                        province: province,
-                        name: req.user.profile[0].name,
-                        phone: req.user.profile[0].phone,
-                        gender: null,
-                        established_place: req.user.profile[0].established_place,
-                        company_phone: req.user.profile[0].company_phone,
-                        birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
-                        province_id: req.user.profile[0].province[0].province_id,
-                        city_id: req.user.profile[0].city[0].city_id,
-                        district_id: req.user.profile[0].district[0].district_id,
-                        sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
-                        address: req.user.profile[0].address,
-                        // occupation
-                        occupation_length: occupation_length,
-                        occupation: null,
-                        company_name: null,
-                        company_address: null,
-                        position: null,
-                        income: null,
-                        income_source: null,
-                        // pic
-                        pic_length: pic_length,
-                        pic_name: null,
-                        pic_birth_date: null,
-                        pic_identity_number:null,
-                        pic_identity_image: null,
-                        pic_identity_selfie_image: null,
-                        // document
-                        document_length: document_length,
-                        identity_number: null,
-                        identity_image: null,
-                        identity_selfie_image: null,
-                        npwp_number: null,
-                        npwp_image: null,
-                        company_registration_number: null,
-                        company_registration_image: null,
-                        sk_kemenkumham_number: null,
-                        sk_kemenkumham_image: null,
-                        business_permit_image: null,
-                        // bank
-                        bank_length: bank_length,
-                        bank_name: null,
-                        account_name: null,
-                        account_number: null,
-                        branch: null
-                    };
-                }
-                // sudah isi penanggungjawab dan belum isi dokumen
-                if (pic_length != 0 && document_length == 0) {
-                    data = {
-                        // profile
-                        profile_length: profile_length,
-                        province: province,
-                        registration_type: req.user.profile[0].registration_type,
-                        province: province,
-                        name: req.user.profile[0].name,
-                        phone: req.user.profile[0].phone,
-                        gender: null,
-                        established_place: req.user.profile[0].established_place,
-                        company_phone: req.user.profile[0].company_phone,
-                        birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
-                        province_id: req.user.profile[0].province[0].province_id,
-                        city_id: req.user.profile[0].city[0].city_id,
-                        district_id: req.user.profile[0].district[0].district_id,
-                        sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
-                        address: req.user.profile[0].address,
-                        // occupation
-                        occupation_length: occupation_length,
-                        occupation: null,
-                        company_name: null,
-                        company_address: null,
-                        position: null,
-                        income: null,
-                        income_source: null,
-                        // pic
-                        pic_length: pic_length,
-                        pic_name: req.user.pic[0].pic_name,
-                        pic_birth_date: req.user.pic[0].pic_birth_date.toLocaleDateString(),
-                        pic_identity_number: req.user.pic[0].pic_identity_number,
-                        pic_identity_image: req.user.pic[0].pic_identity_image,
-                        pic_identity_selfie_image: req.user.pic[0].pic_identity_selfie_image,
-                        // document
-                        document_length: document_length,
-                        identity_number: null,
-                        identity_image: null,
-                        identity_selfie_image: null,
-                        npwp_number: null,
-                        npwp_image: null,
-                        company_registration_number: null,
-                        company_registration_image: null,
-                        sk_kemenkumham_number: null,
-                        sk_kemenkumham_image: null,
-                        business_permit_image: null,
-                        // bank
-                        bank_length: bank_length,
-                        bank_name: null,
-                        account_name: null,
-                        account_number: null,
-                        branch: null
-                    };
-                }
-                // sudah isi penanggungjawab dan sudah isi dokumen
-                if (pic_length != 0 && document_length != 0) {
-                    data = {
-                        // profile
-                        profile_length: profile_length,
-                        province: province,
-                        registration_type: req.user.profile[0].registration_type,
-                        province: province,
-                        name: req.user.profile[0].name,
-                        phone: req.user.profile[0].phone,
-                        gender: null,
-                        established_place: req.user.profile[0].established_place,
-                        company_phone: req.user.profile[0].company_phone,
-                        birth_date: req.user.profile[0].birth_date.toLocaleDateString(),
-                        province_id: req.user.profile[0].province[0].province_id,
-                        city_id: req.user.profile[0].city[0].city_id,
-                        district_id: req.user.profile[0].district[0].district_id,
-                        sub_district_id: req.user.profile[0].sub_district[0].sub_district_id,
-                        address: req.user.profile[0].address,
-                        // occupation
-                        occupation_length: occupation_length,
-                        occupation: null,
-                        company_name: null,
-                        company_address: null,
-                        position: null,
-                        income: null,
-                        income_source: null,
-                        // pic
-                        pic_length: pic_length,
-                        pic_name: req.user.pic[0].pic_name,
-                        pic_birth_date: req.user.pic[0].pic_birth_date.toLocaleDateString(),
-                        pic_identity_number: req.user.pic[0].pic_identity_number,
-                        pic_identity_image: req.user.pic[0].pic_identity_image,
-                        pic_identity_selfie_image: req.user.pic[0].pic_identity_selfie_image,
-                        // document
-                        document_length: document_length,
-                        identity_number: null,
-                        identity_image: null,
-                        identity_selfie_image: null,
-                        npwp_number: req.user.document[0].npwp_number,
-                        npwp_image: req.user.document[0].npwp_image,
-                        company_registration_number: req.user.document[0].company_registration_number,
-                        company_registration_image: req.user.document[0].company_registration_image,
-                        sk_kemenkumham_number: req.user.document[0].sk_kemenkumham_number,
-                        sk_kemenkumham_image: req.user.document[0].sk_kemenkumham_image,
-                        business_permit_image: req.user.document[0].business_permit_image,
-                        // bank
-                        bank_length: bank_length,
-                        bank_name: null,
-                        account_name: null,
-                        account_number: null,
-                        branch: null
-                    };
-                }
-            }
+            let data = {
+                profile_length: profile_length,
+                province: province,
+                province_name: province_name,
+                city_name: city_name,
+                district_name: district_name,
+                sub_district_name: sub_district_name,
+                registration_type: registration_type,
+                name: name,
+                phone: phone,
+                gender: gender,
+                established_place: established_place,
+                company_phone: company_phone,
+                birth_date: birth_date,
+                province_id: province_id,
+                city_id: city_id,
+                district_id: district_id,
+                sub_district_id: sub_district_id,
+                address: address,
+                // occupation
+                occupation_length: occupation_length,
+                occupation: occupation,
+                company_name: company_name,
+                company_address: company_address,
+                position: position,
+                income: income,
+                income_source: income_source,
+                // pic
+                pic_length: pic_length,
+                pic_name: pic_name,
+                pic_birth_date: pic_birth_date,
+                pic_identity_number: pic_identity_number,
+                pic_identity_image: pic_identity_image,
+                pic_identity_selfie_image: pic_identity_selfie_image,
+                // document
+                document_length: document_length,
+                identity_number: identity_number,
+                identity_image: identity_image,
+                identity_selfie_image: identity_selfie_image,
+                npwp_number: npwp_number,
+                npwp_image: npwp_image,
+                company_registration_number: company_registration_number,
+                company_registration_image: company_registration_image,
+                sk_kemenkumham_number: sk_kemenkumham_number,
+                sk_kemenkumham_image: sk_kemenkumham_image,
+                business_permit_image: business_permit_image,
+                // bank
+                bank_length: bank_length,
+                bank_name: bank_name,
+                account_name: account_name,
+                account_number: account_number,
+                branch: branch
+            };
             res.render('pages/profile/complete-profile', data);
         }
     });
@@ -413,11 +195,11 @@ router.get('/', isLoggedIn, isUncompleted, isUser, function (req, res) {
 
 router.get('/get-city', isLoggedIn, function (req, res) {
     request({
-        url: `https://kodepos-2d475.firebaseio.com/list_kotakab/${req.query.province_id}.json`, //URL to hit
+        url: `http://dev.farizdotid.com/api/daerahindonesia/provinsi/${req.query.province_id}/kabupaten`, //URL to hit
         method: 'GET', // specify the request type
     },
     function(error, response, body){
-        let city = JSON.parse(body);
+        let city = JSON.parse(body).kabupatens;
         if(error) {
             res.json({success: false, city: null});
         } else {
@@ -456,8 +238,9 @@ router.get('/get-sub_district', isLoggedIn, function (req, res) {
     });
 });
 
-router.post('/', isLoggedIn, isUncompleted, isUser, function (req, res) {   
+router.post('/', isLoggedIn, isNoContract, isUser, function (req, res) { 
     let error_message;
+    let success_message;
     let registration_type = req.body.registration_type;
     let name = req.body.name;
     let phone = req.body.phone;
@@ -514,38 +297,35 @@ router.post('/', isLoggedIn, isUncompleted, isUser, function (req, res) {
     req.checkBody('name', 'Nama Lengkap wajib diisi.').notEmpty();
     req.checkBody('registration_type', 'Tipe Pendaftaran wajib dipilih.').notEmpty();
 
-    
-    
-
     let errors = req.validationErrors();
 
     if (errors) {
         error_message = errors[errors.length-1].msg;
         req.flash('error_message', error_message);
-        res.redirect('/complete-profile');
-        return ;
+        return res.redirect('/complete-profile');
     }
     else {
-        if(gender != 'male') {
-            gender = 'female';
-        }
-        if (registration_type == 'individual') {
-            let check_phone = phoneUtil.parseAndKeepRawInput(phone, 'ID');
-
-            if (phoneUtil.isPossibleNumber(check_phone)) {
-                phone = req.body.phone;
-            } else {
-                error_message = "Nomor Handphone tidak valid";
-                req.flash('error_message', error_message);
-                res.redirect('/complete-profile');
-                return ;
+        let check_phone = phoneUtil.parseAndKeepRawInput(phone, 'ID');
+        if (phoneUtil.isPossibleNumber(check_phone)) {
+            phone = req.body.phone;
+            if (registration_type != 'individual') {
+                let check_company_phone = phoneUtil.parseAndKeepRawInput(company_phone, 'ID');
+                if (phoneUtil.isPossibleNumber(check_company_phone)) {
+                    company_phone = req.body.company_phone;
+                } 
+                else {
+                    error_message = "Nomor Telepon Perusahaan tidak valid";
+                    req.flash('error_message', error_message);
+                    return res.redirect('/complete-profile');
+                }
             }
-
-            updateUser(req.user, {
+            let data = {
                 profile: [{
                     registration_type: registration_type,
                     name: name,
                     phone: phone,
+                    established_place: established_place,
+                    company_phone: company_phone,
                     gender: gender,
                     birth_date: birth_date,
                     province: province,
@@ -554,88 +334,57 @@ router.post('/', isLoggedIn, isUncompleted, isUser, function (req, res) {
                     sub_district: sub_district,
                     address: address
                 }]
-            }, 
-            function (error, user) {
+            };
+    
+            updateUser(req.user, data, function (error, user) {
                 if (error) {
                     error_message = "Terjadi kesalahan"; 
                     req.flash('error_message', error_message);
-                    res.redirect('/complete-profile');
-                    return ;
+                    return res.redirect('/complete-profile');
                 }
                 if (!user) {
                     error_message = "User tidak tersedia"; 
                     req.flash('error_message', error_message);
-                    res.redirect('/complete-profile');
-                    return ;
+                    return res.redirect('/complete-profile');
                 }
                 else {    
-                    res.redirect('/complete-profile');
-                    return ;
+                    const dir = path.join(__dirname, `../storage/documents/${req.user._id}`);
+                    fs.access(dir, (err) => {
+                        if (err) {
+                            fs.mkdir(dir, async (err) => {
+                                if (err) {                                   
+                                    error_message = "Terjadi Kesalahan";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect('/complete-profile');
+                                } else {
+                                    success_message = "Berhasil memperbarui data";
+                                    req.flash('success_message', success_message);
+                                    return res.redirect('/complete-profile');
+                                }
+                            });
+                        } else {
+                            success_message = "Berhasil memperbarui data";
+                            req.flash('success_message', success_message);
+                            return res.redirect('/complete-profile');
+                        }
+                    });
                 }
             });
-        }
+        } 
         else {
-            let check_phone = phoneUtil.parseAndKeepRawInput(phone, 'ID');
-            let check_company_phone = phoneUtil.parseAndKeepRawInput(company_phone, 'ID');
-            if (phoneUtil.isPossibleNumber(check_phone)) {
-                phone = req.body.phone;
-            } else {
+            if (registration_type == 'individual') {
+                error_message = "Nomor Handphone tidak valid";
+            }
+            else {
                 error_message = "Nomor Handphone Penanggungjawab tidak valid";
-                req.flash('error_message', error_message);
-                res.redirect('/complete-profile');
-                return ;
             }
-            if (phoneUtil.isPossibleNumber(check_company_phone)) {
-                company_phone = req.body.company_phone;
-            } else {
-                error_message = "Nomor Telepon Perusahaan tidak valid";
-                req.flash('error_message', error_message);
-                res.redirect('/complete-profile');
-                return ;
-            }
-
-            updateUser(req.user, {
-                profile: [{
-                    registration_type: registration_type,
-                    name: name,
-                    phone: phone,
-                    established_place: established_place,
-                    company_phone: company_phone,
-                    birth_date: birth_date,
-                    province: province,
-                    city: city,
-                    district: district,
-                    sub_district: sub_district,
-                    address: address
-                }],
-                occupation: [],
-                pic: [],
-                document: [],
-                bank: []
-            }, 
-            function (error, user) {
-                if (error) {
-                    error_message = "Terjadi kesalahan"; 
-                    req.flash('error_message', error_message);
-                    res.redirect('/complete-profile');
-                    return ;
-                }
-                if (!user) {
-                    error_message = "User tidak tersedia"; 
-                    req.flash('error_message', error_message);
-                    res.redirect('/complete-profile');
-                    return ;
-                }
-                else {    
-                    res.redirect('/complete-profile');
-                    return ;
-                }
-            });
+            req.flash('error_message', error_message);
+            return res.redirect('/complete-profile');
         }
     }
 });
 
-router.post('/occupation', isLoggedIn, isUncompleted, isUser, function (req, res) {
+router.post('/occupation', isLoggedIn, isNoContract, isUser, function (req, res) {
     let error_message;
     let occupation = req.body.occupation;
     let company_name = req.body.company_name;
@@ -658,8 +407,7 @@ router.post('/occupation', isLoggedIn, isUncompleted, isUser, function (req, res
     if (errors) {
         error_message = errors[errors.length-1].msg;
         req.flash('error_message', error_message);
-        res.redirect('/complete-profile');
-        return ;
+        return res.redirect('/complete-profile');
     }
     else {
         updateUser(req.user, {
@@ -679,24 +427,21 @@ router.post('/occupation', isLoggedIn, isUncompleted, isUser, function (req, res
             if (error) {
                 error_message = "Terjadi kesalahan"; 
                 req.flash('error_message', error_message);
-                res.redirect('/complete-profile');
-                return ;
+                return res.redirect('/complete-profile');
             }
             if (!user) {
                 error_message = "User tidak tersedia"; 
                 req.flash('error_message', error_message);
-                res.redirect('/complete-profile');
-                return ;
+                return res.redirect('/complete-profile');
             }
             else {    
-                res.redirect('/complete-profile');
-                return ;
+                return res.redirect('/complete-profile');
             }
         });
     }
 });
 
-router.post('/pic', isLoggedIn, isUncompleted, isUser, upload.fields([{name: 'pic_identity_image', maxCount: 1}, { name: 'pic_identity_selfie_image', maxCount: 1 }]), async function (req, res) {
+router.post('/pic', isLoggedIn, isNoContract, isUser, upload.fields([{name: 'pic_identity_image', maxCount: 1}, { name: 'pic_identity_selfie_image', maxCount: 1 }]), async function (req, res) {
     let error_message;
     let pic_name = req.body.pic_name;
     let pic_birth_date = req.body.pic_birth_date;
@@ -814,7 +559,7 @@ router.post('/pic', isLoggedIn, isUncompleted, isUser, upload.fields([{name: 'pi
     }
 });
 
-router.post('/document', isLoggedIn, isUncompleted, isUser, upload.fields([
+router.post('/document', isLoggedIn, isNoContract, isUser, upload.fields([
     { name: 'identity_image', maxCount: 1 }, 
     { name: 'identity_selfie_image', maxCount: 1 }, 
     { name: 'npwp_image', maxCount: 1 }, 
@@ -828,9 +573,6 @@ async function (req, res) {
     let npwp_number = req.body.npwp_number;
     let company_registration_number = req.body.company_registration_number;
     let sk_kemenkumham_number = req.body.sk_kemenkumham_number;
-
-    const imagePath = path.join(__dirname, '../storage/documents');
-    const fileUpload = new Resize(imagePath);
 
     if (req.user.profile[0].registration_type == 'individual') {
         if (npwp_number != '') {
@@ -850,8 +592,7 @@ async function (req, res) {
     if (errors) {
         error_message = errors[errors.length-1].msg;
         req.flash('error_message', error_message);
-        res.redirect('/complete-profile');
-        return ;
+        return res.redirect('/complete-profile');
     }
     else {
         let npwp_image_filename = req.body.npwp_image_input;
@@ -860,39 +601,36 @@ async function (req, res) {
         let company_registration_image_filename = req.body.company_registration_image_input;
         let sk_kemenkumham_image_filename = req.body.sk_kemenkumham_image_input;
         let business_permit_image_filename = req.body.business_permit_image_input;
-
+        
+        const imagePath = path.join(__dirname, `../storage/documents/${req.user._id}`);
+        const fileUpload = new Resize(imagePath);
+        
         if (req.user.profile[0].registration_type == 'individual') {
             getUserByIdentityNumber(identity_number, async function (error, user) {
+                
                 if (error) {
                     error_message = "Terjadi kesalahan"; 
                     req.flash('error_message', error_message);
-                    res.redirect('/complete-profile');
-                    return ;
+                    return res.redirect('/complete-profile');
                 }
                 if (user) {
-                    error_message = "Nomor KTP/ Paspor sudah terdaftar"; 
+                    error_message = "Nomor KTP/Paspor sudah terdaftar"; 
                     req.flash('error_message', error_message);
-                    res.redirect('/complete-profile');
-                    return;
+                    return res.redirect('/complete-profile');
                 }
                 else {
-                    if (req.user.document.length == 0) {
-                
+                    if (req.user.document.length == 0) {     
                         if (!req.files['identity_image']) {
                             req.flash('error_message', 'Foto KTP/ Paspor wajib diunggah.');
-                            res.redirect('/complete-profile');
-                            return ;
+                            return res.redirect('/complete-profile');
                         }
-                
                         if (!req.files['identity_selfie_image']) {
                             req.flash('error_message', 'Foto KTP/ Paspor + Selfie wajib diunggah.');
-                            res.redirect('/complete-profile');
-                            return ;
+                            return res.redirect('/complete-profile');
                         }
                         else {
                             identity_image_filename = await fileUpload.save(req.files['identity_image'][0].buffer);
                             identity_selfie_image_filename = await fileUpload.save(req.files['identity_selfie_image'][0].buffer);
-                            
                             if (req.files['npwp_image']) {
                                 npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
                             }
@@ -909,8 +647,7 @@ async function (req, res) {
                             npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
                         }
                     }
-        
-                    updateUser(req.user, {
+                    let data = {
                         document: [{
                             identity_number: identity_number,
                             identity_image: identity_image_filename,
@@ -922,10 +659,10 @@ async function (req, res) {
                             npwp_number: npwp_number,
                             npwp_image: npwp_image_filename,
                             business_permit_image: business_permit_image_filename
-                        }],
-                        bank: []
-                    },
-                    function (error, user) {
+                        }]
+                    };
+        
+                    updateUser(req.user, data, function (error, user) {
                         if (error) {
                             error_message = "Terjadi kesalahan"; 
                             req.flash('error_message', error_message);
@@ -999,8 +736,7 @@ async function (req, res) {
                     npwp_number: npwp_number,
                     npwp_image: npwp_image_filename,
                     business_permit_image: business_permit_image_filename
-                }],
-                bank: []
+                }]
             },
             function (error, user) {
                 if (error) {
@@ -1024,7 +760,7 @@ async function (req, res) {
     }
 });
 
-router.post('/bank', isLoggedIn, isUncompleted, isUser, function (req, res) {
+router.post('/bank', isLoggedIn, isNoContract, isUser, function (req, res) {
     let error_message;
     let success_message;
     let bank_name = req.body.bank_name;
@@ -1096,27 +832,12 @@ function isLoggedIn(req, res, next) {
     }
 }
 
-function isUncompleted(req,res, next) {
-    if (req.user.profile.length == 0 ) {
+function isNoContract(req, res, next) {
+    if (req.user.contract == '') {
         next();
     }
     else {
-        if (req.user.profile[0].registration_type == 'individual') {
-            if (req.user.profile.length == 0 || req.user.occupation.length == 0 || req.user.document.length == 0 || req.user.bank.length == 0) {
-                next();
-            }
-            else {
-                res.redirect('/');
-            }
-        }
-        else {
-            if (req.user.profile.length == 0 || req.user.pic.length == 0 || req.user.document.length == 0 || req.user.bank.length == 0) {
-                next();
-            }
-            else {
-                res.redirect('/');
-            }
-        }
+        res.redirect('/');
     }
 }
 

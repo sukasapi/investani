@@ -30,7 +30,7 @@
     "passport": "*",
     "passport-http": "^0.3.0",
     "passport-local": "*",
-    "puppeteer": "^1.12.2",
+    "puppeteer": "^1.13.0",
     "puppeteer-core": "^1.12.2",
     "randomstring": "^1.1.5",
     "request": "^2.88.0",

@@ -178,109 +178,40 @@
     </section>
 
     <section class="features3 cid-rjV8Ehgxi9" id="features3-i">
-
-
-
-
         <div class="container">
             <div class="media-container-row">
-                <div class="card p-3 col-12 col-md-6 col-lg-3">
-                    <div class="card-wrapper">
-                        <div class="card-img">
-                            <img src="assets/images/background1.jpg" alt="Mobirise">
-                        </div>
-                        <div class="card-box">
-                            <h4 class="card-title mbr-fonts-style display-7">
-                                No Coding
-                            </h4>
-                            <p class="mbr-text mbr-fonts-style display-7">
-                                Mobirise is an easy website builder - just drop site elements to your page, add content
-                                and style it to look the way you like.
-                            </p>
-                        </div>
-                        <div class="mbr-section-btn text-center">
-                            <a href="https://mobirise.co" class="btn btn-primary display-4">
-                                Learn More
+                <% projects.forEach((project) => { %> 
+                    <div class="col-md-4">
+                        <div class="card">
+                            <a href="#">
+                                <img class="card-img-top" src="https://picsum.photos/300/169/?random %>" alt="Card image cap">
                             </a>
+                            <div class="card-body">
+                                <div class="mx-auto d-block">
+                                    <h4 class="card-title mb-3"><a href="#"><%= project.basic[0].title %></a> 
+                                    </h4>
+                                    <p class="card-text">Dibuat oleh <%= project.inisiator.profile[0].name %></p>
+                                </div>
+                            </div>
+                            <div class="card-footer" style="font-size: 12px;">
+                                <div class="card-text text-sm-center">
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <strong class="card-title mb-3">0%</strong> Dana terkumpul
+                                <span class="pull-right">
+                                    Target dana: Rp. 4000000 
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="card p-3 col-12 col-md-6 col-lg-3">
-                    <div class="card-wrapper">
-                        <div class="card-img">
-                            <img src="/assets/images/background2.jpg" alt="Mobirise">
-                        </div>
-                        <div class="card-box">
-                            <h4 class="card-title mbr-fonts-style display-7">
-                                Mobile Friendly
-                            </h4>
-                            <p class="mbr-text mbr-fonts-style display-7">
-                                All sites you make with Mobirise are mobile-friendly. You don't have to create a
-                                special mobile version of your site.
-                            </p>
-                        </div>
-                        <div class="mbr-section-btn text-center">
-                            <a href="https://mobirise.co" class="btn btn-primary display-4">
-                                Learn More
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card p-3 col-12 col-md-6 col-lg-3">
-                    <div class="card-wrapper">
-                        <div class="card-img">
-                            <img src="/assets/images/background3.jpg" alt="Mobirise">
-                        </div>
-                        <div class="card-box">
-                            <h4 class="card-title mbr-fonts-style display-7">
-                                Unique Styles
-                            </h4>
-                            <p class="mbr-text mbr-fonts-style display-7">
-                                Mobirise offers many site blocks in several themes, and though these blocks are
-                                pre-made, they are flexible.
-                            </p>
-                        </div>
-                        <div class="mbr-section-btn text-center">
-                            <a href="https://mobirise.co" class="btn btn-primary display-4">
-                                Learn More
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card p-3 col-12 col-md-6 col-lg-3">
-                    <div class="card-wrapper">
-                        <div class="card-img">
-                            <img src="/assets/images/background4.jpg" alt="Mobirise">
-                        </div>
-                        <div class="card-box">
-                            <h4 class="card-title mbr-fonts-style display-7">
-                                Unlimited Sites
-                            </h4>
-                            <p class="mbr-text mbr-fonts-style display-7">
-                                Mobirise gives you the freedom to develop as many websites as you like given the fact
-                                that it is a desktop app.
-                            </p>
-                        </div>
-                        <div class="mbr-section-btn text-center">
-                            <a href="https://mobirise.co" class="btn btn-primary display-4">
-                                Learn More
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <% }) %>
             </div>
         </div>
     </section>
 
     <section class="carousel slide testimonials-slider cid-rjV9cuIa8y" data-interval="false" id="testimonials-slider1-l">
-
-
-
-
-
         <div class="container text-center">
             <h2 class="pb-5 mbr-fonts-style display-2"><strong>
                     PENDAPAT MEREKA</strong></h2>

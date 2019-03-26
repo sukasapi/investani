@@ -10,6 +10,11 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
     <link rel="stylesheet" href="/css/dropify.min.css">
 
     <style>
@@ -269,7 +274,7 @@
     </style>
 </head>
 
-<body>
+<body id="body">
 
     <header>
         <!-- Fixed navbar -->
@@ -296,7 +301,14 @@
     </header>
     
     <main role="main" class="container">
-    
+        <div class="modal fade" id="mediumModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="alert alert-danger" role="alert" id="error-message" style="margin-bottom: 0; font-size: 28px;">
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="page">
             <div class="heading-1">
                 PERJANJIAN KEPESERTAAN PROGRAM BUDIDAYA TEBU INVESTANI
@@ -719,8 +731,14 @@
         <div class="container-fluid" style="display: block; text-align: center; color: white;">
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn btn-outline-secondary btn-lg" type="button" id="edit-button"><span aria-hidden="true" class="spinner-border spinner-border-sm" id="edit-spinner" role="status" style="display: none"></span>Edit Profil</button>
+                    <a class="btn btn-outline-secondary btn-lg" href="/complete-profile" id="edit-button" type="button"><span aria-hidden="true" class="spinner-border spinner-border-sm" id="edit-spinner" role="status" style="display: none"></span>Edit Profil</a>
                     <button class="btn btn-outline-primary btn-lg" id="sending-contract" type="button" disabled><span aria-hidden="true" class="spinner-border spinner-border-sm" id="sending-spinner" role="status" style="display: none"></span>KirimDokumen</button>
+                    <!-- Button trigger modal -->
+                    
+
+                <button class="btn btn-secondary mb-1" data-target="#mediumModal" data-toggle="modal" id="modal-button" style="display: none" type="button">
+                </button>
+                
                 </div>
             </div>
         </div>
@@ -734,6 +752,7 @@
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="/js/dropify.min.js"></script>
     <script>
         var months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
@@ -767,16 +786,22 @@
             $('#sending-contract').click(function (e) {
                 e.preventDefault();
                 var formData = new FormData($('#signature-form')[0]);
-                $('#sending-button').attr('disabled', 'disabled');
+                document.getElementById('edit-button').className = "btn btn-outline-secondary btn-lg disabled";
+                $('#sending-contract').attr('disabled', 'disabled');
 			    $('#sending-spinner').show();
                 $.ajax({
                     type: "POST",
                     url: '/contract',
                     data: formData,
                     success: function (data) {
-                        console.log(data)
-                        if (data.success == true) {
-                            window.location = "http://localhost:3000/";
+                        if (data.success == false) {
+                            document.getElementById('modal-button').click();
+                            document.getElementById('sending-spinner').style.display = 'none';
+                            document.getElementById('edit-button').className = "btn btn-outline-secondary btn-lg";
+                            document.getElementById('error-message').innerHTML = data.message;
+                        }
+                        else {
+                            window.location = "/";
                         }
                     },
                     cache: false,

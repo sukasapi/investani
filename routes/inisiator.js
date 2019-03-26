@@ -51,7 +51,7 @@ router.get('/start-project', isLoggedIn, isInisiator, function (req, res) {
 router.get('/project/:project_id/edit', isLoggedIn, isInisiator, function (req, res) {
     let error_message;
     request({
-            url: 'https://kodepos-2d475.firebaseio.com/list_propinsi.json', //URL to hit
+            url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
             method: 'GET', // specify the request type
         },
         function (error, response, body) {
@@ -168,7 +168,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, function (req, 
                                         user_id: req.user._id,
                                         project_id: project._id,
                                         title: project.basic[0].title,
-                                        province: JSON.parse(body),
+                                        province: JSON.parse(body).semuaprovinsi,
                                         province_id: province_id,
                                         city_id: city_id,
                                         category: category,
@@ -222,7 +222,7 @@ router.get('/:user_id/started-project', isLoggedIn, isInisiator, function (req, 
     });
 });
 
-router.post('/start-project', isLoggedIn, isInisiator, function (req, res, next) {
+router.post('/start-project', isLoggedIn, isInisiator, function (req, res) {
     let error_message;
     let success_message;
     let data = {
@@ -279,7 +279,7 @@ router.post('/start-project', isLoggedIn, isInisiator, function (req, res, next)
     }
 
 });
-router.post('/project/:project_id/basic', isLoggedIn, isInisiator, function (req, res, next) {
+router.post('/project/:project_id/basic', isLoggedIn, isInisiator, function (req, res) {
     let error_message;
     let success_message;
 
@@ -381,7 +381,7 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, function (req
         });
     }
 });
-router.post('/project/:project_id/budget', isLoggedIn, isInisiator, function (req, res, next) {
+router.post('/project/:project_id/budget', isLoggedIn, isInisiator, function (req, res) {
     let error_message;
     let success_message;
     let budget = [
@@ -468,7 +468,7 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, function (re
         });
     }
 });
-router.post('/project/:project_id/project', isLoggedIn, isInisiator, prospectusUpload.single('prospectus'), async function (req, res, next) {
+router.post('/project/:project_id/project', isLoggedIn, isInisiator, prospectusUpload.single('prospectus'), async function (req, res) {
     let error_message;
     let success_message;
     req.checkBody('abstract', 'Abstrak proyek wajib diisi.').notEmpty();

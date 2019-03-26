@@ -239,6 +239,30 @@ router.post('/user/inisiator/individual/verify/:id', isLoggedIn, isAdmin, functi
         }
     });
 });
+router.post('/project/waiting/verify/:project_id', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    let success_message;
+    let data = {
+        status: "verified"
+    };
+    updateProject(req.params.project_id, data, function(error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/project/waiting');
+        }
+        if (!project) {
+            error_message = "Proyek tidak tersedia";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/project/waiting');
+        }
+        else {
+            success_message = "Berhasil memverifikasi proyek";
+            req.flash('success_message', success_message);
+            return res.redirect('/admin/project/waiting');
+        }
+    });
+});
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         next();

@@ -9,16 +9,26 @@ const router = express.Router();
 const LocalStrategy = require('passport-local').Strategy;
 
 router.get('/', function (req, res) {
-    res.render('pages/users');
+    res.redirect('/auth/login');
 });
 router.get('/register', notLoggedIn, function (req, res) {
     res.render('pages/auth/register');
 });
+router.get('/login', notLoggedIn, function (req, res) {
+    res.render('pages/auth/login');
+});
+router.get('/logout', isLoggedIn, function (req, res) {
+    req.logOut();
+    req.flash('success_message', 'Anda berhasil keluar');
+    res.redirect('/auth/login');
+});
+
 router.post('/register', notLoggedIn, function (req, res) {
     let email = req.body.email;
     let user_type = req.body.user_type;
     let password = req.body.password;
     let secretToken = randomstring.generate();
+    let success_message;
     let error_message;
 
     req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
@@ -82,19 +92,25 @@ router.post('/register', notLoggedIn, function (req, res) {
                             user_type: [{
                                 name: user_type,
                                 status: "waiting",
-                                contract: null,
-                                signature: null
                             }],
                             active: false,
                             secretToken: secretToken,
+                            profile: [],
+                            occupation: [],
+                            pic: [],
+                            document: [],
+                            bank: [],
                             contract: ""
                         });
-                        createUser(user, function (err, user) {
+                        createUser(user, function (err) {
                             if (err) {
-                                throw err;
+                                error_message = 'Akun gagal dibuat';
+                                req.flash('error_message', error_message);
+                                res.redirect('/auth/register');
                             }
                             else {
-                                req.flash('success_message', 'Anda sudah terdaftar, silahkan melakukan aktivasi');
+                                success_message = 'Anda sudah terdaftar, silahkan melakukan aktivasi';
+                                req.flash('success_message', success_message);
                                 passport.authenticate('local')(req, res, function () {
                                     res.redirect('/welcome');
                                     return ;
@@ -106,11 +122,6 @@ router.post('/register', notLoggedIn, function (req, res) {
             }
         });
     }
-});
-
-router.get('/login', notLoggedIn, function (req, res) {
-    
-    res.render('pages/auth/login');
 });
 // Passport authenticate middleware
 router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedirect: '/auth/login', failureFlash: true }), function (req, res) {
@@ -168,12 +179,6 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
         }
         
     });
-});
-
-router.get('/logout', isLoggedIn, function (req, res) {
-    req.logOut();
-    req.flash('success_message', 'Anda berhasil keluar');
-    res.redirect('/auth/login');
 });
 
 function isLoggedIn(req, res, next) {
