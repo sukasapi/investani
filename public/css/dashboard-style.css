@@ -356,7 +356,7 @@ p {
   font-family: "Open Sans", sans-serif;
   font-weight: 400;
   line-height: 24px;
-  color: #878787; }
+  color: #000; }
 
 p:focus {
   border: none;
@@ -1630,14 +1630,14 @@ header .form-inline {
   margin-top: 10px;
   width: 100%; }
   .twt-category ul li {
-    color: #bdbdbd;
+    color: #000;
     font-size: 13px; }
 
 .twt-footer {
   padding: 12px 15px; }
 
 .twt-footer, .twt-footer a {
-  color: #d2d2d2; }
+  color: #000; }
 
 /* Button Reset */
 .btn, .button {

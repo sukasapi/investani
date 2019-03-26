@@ -201,9 +201,6 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, function (req, 
 
 
 });
-router.get('/project/:project_id/:filename', function (req, res) {
-    res.download(__dirname + '/../storage/projects/' + req.params.project_id + '/images/' + req.params.filename);
-});
 router.get('/:user_id/started-project', isLoggedIn, isInisiator, function (req, res) {
     getProjectByInisiator(req.params.user_id, function (error, projects) {
         if (error) {

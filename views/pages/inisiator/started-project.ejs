@@ -53,7 +53,7 @@
                             <div class="card">
                                 <a href="/inisiator/project/<%= project._id %>/edit">
                                 <% if (project.image[0]) { %>
-                                    <img class="card-img-top" src="/inisiator/project/<%= project._id %>/<%= project.image[0].filename %>" alt="Card image cap">
+                                    <img class="card-img-top" src="/image/project/<%= project._id %>/<%= project.image[0].filename %>" alt="Card image cap">
                                 <% } %>
                                 <% if (!project.image[0]) { %>
                                     <img class="card-img-top" src="https://picsum.photos/300/169/?random %>" alt="Card image cap">
@@ -69,9 +69,38 @@
                                                 <small><span class="badge badge-warning float-right mt-1">Menunggu</span></small>
                                             <% } %>
                                         </h4>
-                                        <p class="card-text">Dibuat oleh <%= inisiator %></p>
+                                        <p class="card-text">Dibuat oleh <strong><%= inisiator %></strong></p>
+                                    </div>
+                                    <div class="weather-category twt-category">
+                                        <ul>
+                                            <li>
+                                                Imbal Hasil
+                                                <h6><%=project.basic[0].roi%>%</h6>
+                                            </li>
+                                            <li>
+                                                Durasi Proyek
+                                                <h6>
+                                                    <%if (project.basic[0].duration[0]) {%>
+                                                        <%=project.basic[0].duration[0].duration%> 
+                                                    <% } %>
+                                                    Bulan
+                                                </h6>
+                                            </li>
+                                            <li>
+                                                Tersisa
+                                                <h6>36 Hari</h6>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
+                                <footer class="twt-footer">
+                                    Harga Saham: 
+                                    <strong>
+                                        <% if (project.basic[0].stock[0]) { %>
+                                            Rp. <%=project.basic[0].stock[0].price%>
+                                        <% } %>
+                                    </strong>
+                                </footer>
                                 <div class="card-footer" style="font-size: 12px;">
                                     <div class="card-text text-sm-center">
                                         <div class="progress mb-3">
@@ -80,8 +109,11 @@
                                     </div>
                                     <strong class="card-title mb-3">0%</strong> Dana terkumpul
                                     <span class="pull-right">
-                                        Target dana: Rp. 4000000 
-                                    </span>
+                                    Target Dana: Rp. 
+                                    <% if (project.budget[0]) { %>
+                                        <%= project.budget[0].amount+project.budget[1].amount+project.budget[2].amount+project.budget[3].amount+project.budget[4].amount %>
+                                    <% } %>
+                                </span>
                                 </div>
                             </div>
                         </div>

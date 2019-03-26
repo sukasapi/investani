@@ -60,7 +60,7 @@ let ProjectSchema = mongoose.Schema({
             type: Date
         },
         amount: {
-            type: String
+            type: Number
         }
     }],
     project: [{
@@ -101,6 +101,12 @@ export const getProjectByStatus = (status, callback) => {
         status: status
     }
     Project.find(Obj, callback).populate('inisiator').sort({ createdAt: -1 });
+}
+export const getProjectIndex = (status, callback) => {
+    let Obj = {
+        status: status
+    }
+    Project.find(Obj, callback).populate('inisiator').sort({ createdAt: -1 }).limit(3);
 }
 export const getProjectByInisiator = (id, callback) => {
     let Obj = {

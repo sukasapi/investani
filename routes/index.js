@@ -3,7 +3,7 @@ import {
     getUserBySecretToken,
     updateUser
 } from '../models/User';
-import { getProjectByStatus } from '../models/Project';
+import { getProjectIndex } from '../models/Project';
 import upload from '../uploadMiddleware';
 import Resize from '../Resize';
 import path from 'path';
@@ -21,11 +21,12 @@ const compile = async function (templateName, data) {
 router.get('/', function (req, res) {
     let auth = false;
     let user_type = null;
+    let target = []
     if (req.isAuthenticated()) {
         auth = true;
         user_type = req.user.user_type[0].name;
     }
-    getProjectByStatus('verified', function (error, projects) {
+    getProjectIndex('verified', function (error, projects) {
         
         if (error) {
             error_message = "Terjadi kesalahan";
@@ -41,7 +42,6 @@ router.get('/', function (req, res) {
         }
     });
 });
-
 router.get('/activation/:secretToken', function (req, res) {
 
     let secretToken = req.params.secretToken;
@@ -76,10 +76,14 @@ router.get('/activation/:secretToken', function (req, res) {
         }
     });
 });
+router.get('/image/project/:project_id/:filename', function (req, res) {
+    res.download(__dirname + '/../storage/projects/' + req.params.project_id + '/images/' + req.params.filename);
+});
 
 router.get('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract, function (req, res) {
     res.render('pages/contract/contract', req.user);
 });
+
 router.post('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract, upload.single('signature'), async function (req, res) {
 
     const imagePath = path.join(__dirname, `../storage/documents/${req.user._id}`);
@@ -152,6 +156,7 @@ router.post('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract
     });
 
 });
+
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
