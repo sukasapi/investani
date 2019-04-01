@@ -62,7 +62,7 @@ router.get('/user/inisiator/individual/:id', isLoggedIn, isAdmin, function (req,
         res.render('pages/admin/user/inisiator/detail', {user: user});
     });
 });
-router.get('/user/get-image/:filename', isLoggedIn, isAdmin, function (req, res) {
+router.get('/user/get-image/:user_id/:filename', isLoggedIn, isAdmin, function (req, res) {
     res.download(__dirname+'/../storage/documents/'+req.params.filename);
 });
 router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {

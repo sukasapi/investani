@@ -3,7 +3,19 @@ import express from 'express';
 const router = express.Router();
 
 router.get('/dashboard', isLoggedIn, isInvestor, function (req, res) {
-    res.render('pages/investor/dashboard');
+    let data = {
+        user_id: req.user._id,
+        url: "dashboard"
+    }
+    res.render('pages/investor/dashboard', data);
+});
+
+router.get('/:user_id/backed-project', isLoggedIn, isInvestor, function (req, res) {
+    let data = {
+        user_id: req.user._id,
+        url: "backed-project"
+    }
+    res.render('pages/investor/backed-project', data);
 });
 
 function isLoggedIn(req, res, next) {

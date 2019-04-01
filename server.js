@@ -20,6 +20,7 @@ import profile from './routes/profile';
 import admin from './routes/admin';
 import investor from './routes/investor';
 import inisiator from './routes/inisiator';
+import project from './routes/project';
 
 // Connect with Mongo database
 mongoose.Promise = global.Promise;
@@ -75,6 +76,7 @@ app.use('/complete-profile', profile);
 app.use('/admin', admin);
 app.use('/investor', investor);
 app.use('/inisiator', inisiator);
+app.use('/project', project);
 
 app.listen(PORT, function(){
     console.log('Server is running on port:', PORT);

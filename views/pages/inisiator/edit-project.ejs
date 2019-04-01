@@ -155,7 +155,7 @@
                                                         style="display: none">
                                                 </div>
                                                 <div class="col col-sm-6">
-                                                    <label for="cc-name" class="control-label mb-1">Kategori Tanaman</label>
+                                                    <label for="cc-name" class="control-label mb-1">Kategori Proyek</label>
                                                     <select name="category" id="category" class="form-control">
                                                         <option selected disabled>Pilih kategori</option>
                                                         <option value="tg-ii" <% if(category=='tg-ii' ) {%> selected
@@ -338,28 +338,28 @@
                                             <% } %>
                                             <div class="row form-group">
                                                 <div class="col col-sm-2">
-                                                    <input type="file" class="dropify" <% if (image[0] != null) { %>data-default-file="/inisiator/project/<%=project_id %>/<%= image[0] %>"<% } %> name="project_image0" accept="image/*" />
+                                                    <input type="file" class="dropify" <% if (image[0] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[0] %>"<% } %> name="project_image0" accept="image/*" />
                                                     <% if (image[0] != null) { %> 
                                                         <input type="text" name="project_image0_input" value="<%= image[0] %>"
                                                         style="display: none">
                                                     <% } %>
                                                 </div>
                                                 <div class="col col-sm-2">
-                                                    <input type="file" class="dropify" <% if (image[1] != null) { %>data-default-file="/inisiator/project/<%=project_id %>/<%= image[1] %>"<% } %> name="project_image1" accept="image/*" />
+                                                    <input type="file" class="dropify" <% if (image[1] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[1] %>"<% } %> name="project_image1" accept="image/*" />
                                                     <% if (image[1] != null) { %> 
                                                         <input type="text" name="project_image1_input" value="<%= image[1] %>"
                                                         style="display: none">
                                                     <% } %>
                                                 </div>
                                                 <div class="col col-sm-2">
-                                                    <input type="file" class="dropify" <% if (image[2] != null) { %>data-default-file="/inisiator/project/<%=project_id %>/<%= image[2] %>"<% } %> name="project_image2" accept="image/*" />
+                                                    <input type="file" class="dropify" <% if (image[2] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[2] %>"<% } %> name="project_image2" accept="image/*" />
                                                     <% if (image[2] != null) { %> 
                                                         <input type="text" name="project_image2_input" value="<%= image[2] %>"
                                                         style="display: none">
                                                     <% } %>
                                                 </div>
                                                 <div class="col col-sm-2">
-                                                    <input type="file" class="dropify" <% if (image[3] != null) { %>data-default-file="/inisiator/project/<%=project_id %>/<%= image[3] %>"<% } %> name="project_image3" accept="image/*" />
+                                                    <input type="file" class="dropify" <% if (image[3] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[3] %>"<% } %> name="project_image3" accept="image/*" />
                                                     <% if (image[3] != null) { %> 
                                                         <input type="text" name="project_image3_input" value="<%= image[3] %>"
                                                         style="display: none">

@@ -53,7 +53,7 @@
                             <div class="card">
                                 <a href="/inisiator/project/<%= project._id %>/edit">
                                 <% if (project.image[0]) { %>
-                                    <img class="card-img-top" src="/image/project/<%= project._id %>/<%= project.image[0].filename %>" alt="Card image cap">
+                                    <img alt="Card image cap" class="card-img-top" src="/image/project/<%= project._id %>/<%= project.image[0].filename %>" style="height: 178px;">
                                 <% } %>
                                 <% if (!project.image[0]) { %>
                                     <img class="card-img-top" src="https://picsum.photos/300/169/?random %>" alt="Card image cap">

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Site made with Mobirise Website Builder v4.9.5, https://mobirise.com -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Mobirise v4.9.5, mobirise.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <link rel="shortcut icon" href="/assets/images/logo-85x38.png" type="image/x-icon">
+    <meta name="description" content="">
+    <title>Home</title>
+    <link rel="stylesheet" href="/assets/web/assets/mobirise-icons/mobirise-icons.css">
+    <link rel="stylesheet" href="/assets/tether/tether.min.css">
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="/assets/dropdown/css/style.css">
+    <link rel="stylesheet" href="/assets/socicon/css/styles.css">
+    <link rel="stylesheet" href="/assets/theme/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="/assets/mobirise/css/mbr-additional.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="/css/jquery-ui1.css">
+    <link href="/css/easy-responsive-tabs.css" rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="/css/flexslider.css" type="text/css" media="screen" />
+    <link href="/css/project-style.css" rel='stylesheet' type='text/css' media="all">
+    <!--Shoping cart-->
+    <link rel="stylesheet" href="/css/project-shop.css" type="text/css" />
+    <style>
+        .twt-category {
+            margin-bottom: 0;
+        }
+        .twt-category {
+            display: inline-block;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .weather-category ul {
+            padding-left: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        .twt-category ul li {
+            font-size: 12px;
+        }
+        .weather-category ul li {
+            width: 32%;
+            text-align: center;
+            border-right: 1px solid #e6e6e6;
+            display: inline-block;
+        }
+        .twt-footer {
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="menu cid-rjUNHLN0jf" once="menu" id="menu2-0">
+
+
+
+        <nav class="navbar navbar-expand beta-menu navbar-dropdown align-items-center navbar-fixed-top navbar-toggleable-sm">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+            <div class="menu-logo">
+                <div class="navbar-brand">
+                    <span class="navbar-logo">
+                        <a href="#top">
+                            <img src="/assets/images/logo-85x38.png" alt="Investani" title="Investani" style="height: 3.8rem;">
+                        </a>
+                    </span>
+
+                </div>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav nav-dropdown" data-app-modern-menu="true">
+                    <li class="nav-item">
+                        <a class="nav-link link text-black display-4" href="https://mobirise.co"><span class="mbri-target mbr-iconfont mbr-iconfont-btn"></span>
+                            Explore</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link link text-black display-4" href="https://mobirise.co"><span class="mbri-idea mbr-iconfont mbr-iconfont-btn"></span>
+                            Cara Kerja</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link link text-black display-4" href="https://mobirise.co"><span
+                                class="mbri-info mbr-iconfont mbr-iconfont-btn"></span>Tentang Kami</a></li>
+                    <li class="nav-item"><a class="nav-link link text-black display-4" href="https://mobirise.co"><span
+                                class="mbri-question mbr-iconfont mbr-iconfont-btn"></span>FaQ</a></li>
+                </ul>
+                <div class="navbar-buttons mbr-section-btn">
+                <% if (!auth) {%>
+                    <a class="btn btn-sm btn-success-outline display-4" href="/auth/login">Masuk</a>
+                    <a class="btn btn-sm btn-success display-4" href="/auth/register">Daftar</a></div>
+                <% } %>
+                <% if (auth && user_type == 'inisiator') {%>
+                    <a class="btn btn-sm btn-success-outline display-4" href="/inisiator/dashboard">Dashboard</a>
+                    <a class="btn btn-sm btn-success display-4" href="/auth/logout">Keluar</a></div>
+                <% } %>
+                <% if (auth && user_type == 'investor') {%>
+                    <a class="btn btn-sm btn-success-outline display-4" href="/investor/dashboard">Dashboard</a>
+                    <a class="btn btn-sm btn-success display-4" href="/auth/logout">Keluar</a></div>
+                <% } %>
+            </div>
+        </nav>
+    </section>
+
+    <section class="engine"><a href="https://mobirise.info/e">how to make a site for free</a></section>
+    
+    <section class="header7 cid-rjVcf4aN9u" id="header7-r">
+        <div class="container">
+            <div class="media-container-row">
+
+                <div class="media-content align-right">
+                    <h1 class="mbr-section-title mbr-white pb-3 mbr-fonts-style display-5"><%= project.basic[0].title %></h1>
+                    <div class="mbr-section-text mbr-white pb-3">
+                        <p class="mbr-text mbr-fonts-style display-7">
+                            <%= project.basic[0].city[0].city_name %>, <%= project.basic[0].province[0].province_name %>
+                        </p>
+                    </div>
+
+                </div>
+
+                
+
+            </div>
+        </div>
+    </section>
+    <section class="features3 cid-rjV8Ehgxi9" id="features3-i">
+        <div class="container">
+            <div class="media-container-row">
+            <div class="inner-sec-shop pt-lg-4 pt-3">
+            <div class="row">
+               <div class="col-lg-4 single-right-left ">
+                  <div class="grid images_3_of_2">
+                     <div class="flexslider1">
+                        <ul class="slides">
+                            <% project.image.forEach((image) => { %>
+                                <% if (image.filename) { %>
+                                    <li data-thumb="/image/project/<%= project._id %>/<%= image.filename %>">
+                                        <div class="thumb-image"> <img src="/image/project/<%= project._id %>/<%= image.filename %>" data-imagezoom="true" class="img-fluid" alt=" " style="width: 350px; height: 300px;"> </div>
+                                    </li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                        <div class="clearfix"></div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-lg-8 single-right-left simpleCart_shelfItem">
+                <div class="description">
+                    <h5>Dana Terkumpul</h5>
+                    <p>
+                        <span class="item_price">Rp. </span>
+                    </p>
+                    <h5>dari </h5>
+                </div>
+                <div class="description">
+                    <h5>Durasi Proyek</h5>
+                    <p>
+                        <span class="item_price"><%= project.basic[0].duration[0].duration %> Bulan</span>
+                    </p>
+                    <h5></h5>
+                </div>
+               <div class="description">
+                </div>
+               <h3><%= project.basic[0].title %></h3>
+               <div class="description">
+                  <h5><%= project.basic[0].city[0].city_name %>, <%= project.basic[0].province[0].province_name %></h5>
+               </div>
+                  <div class="color-quality">
+                     <div class="color-quality-right">
+                        <h5>Size :</h5>
+                        <select id="country1" onchange="change_country(this.value)" class="frm-field required sect">
+                           <option value="null">2 Feet</option>
+                           <option value="null">3 Feet</option>
+                           <option value="null">4 Feet</option>
+                           <option value="null">5 Feet</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="occasional">
+                     <h5>Types :</h5>
+                     <div class="colr ert">
+                        <label class="radio"><input type="radio" name="radio" checked=""><i></i> Soft Teddy Bear (Black)</label>
+                     </div>
+                     <div class="colr">
+                        <label class="radio"><input type="radio" name="radio"><i></i>Soft Teddy Bear (Brown)</label>
+                     </div>
+                     <div class="colr">
+                        <label class="radio"><input type="radio" name="radio"><i></i>Pink Teddy Bear (Pink)</label>
+                     </div>
+                     <div class="clearfix"> </div>
+                  </div>
+                  <div class="occasion-cart">
+                     <div class="toys single-item singlepage">
+                        <form action="#" method="post">
+                           <input type="hidden" name="cmd" value="_cart">
+                           <input type="hidden" name="add" value="1">
+                           <input type="hidden" name="toys_item" value="Farenheit">
+                           <input type="hidden" name="amount" value="575.00">
+                           <button type="submit" class="toys-cart ptoys-cart add">
+                           Add to Cart
+                           </button>
+                        </form>
+                     </div>
+                  </div>
+                  <ul class="footer-social text-left mt-lg-4 mt-3">
+                     <li>Share On : </li>
+                     <li class="mx-1">
+                        <a href="#">
+                        <span class="fab fa-facebook-f"></span>
+                        </a>
+                     </li>
+                     <li class="">
+                        <a href="#">
+                        <span class="fab fa-twitter"></span>
+                        </a>
+                     </li>
+                     <li class="mx-1">
+                        <a href="#">
+                        <span class="fab fa-google-plus-g"></span>
+                        </a>
+                     </li>
+                     <li class="">
+                        <a href="#">
+                        <span class="fab fa-linkedin-in"></span>
+                        </a>
+                     </li>
+                     <li class="mx-1">
+                        <a href="#">
+                        <span class="fas fa-rss"></span>
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+               <div class="clearfix"> </div>
+               <!--/tabs-->
+               <div class="responsive_tabs">
+                  <div id="horizontalTab">
+                     <ul class="resp-tabs-list">
+                        <li>Description</li>
+                        <li>Reviews</li>
+                        <li>Information</li>
+                     </ul>
+                     <div class="resp-tabs-container">
+                        <!--/tab_one-->
+                        <div class="tab1">
+                           <div class="single_page">
+                              <h6>Lorem ipsum dolor sit amet</h6>
+                              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elPellentesque vehicula augue eget nisl ullamcorper, molestie
+                                 blandit ipsum auctor. Mauris volutpat augue dolor.Consectetur adipisicing elit, sed do eiusmod tempor incididunt
+                                 ut lab ore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco. labore et dolore
+                                 magna aliqua.
+                              </p>
+                              <p class="para">Lorem ipsum dolor sit amet, consectetur adipisicing elPellentesque vehicula augue eget nisl ullamcorper, molestie
+                                 blandit ipsum auctor. Mauris volutpat augue dolor.Consectetur adipisicing elit, sed do eiusmod tempor incididunt
+                                 ut lab ore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco. labore et dolore
+                                 magna aliqua.
+                              </p>
+                           </div>
+                        </div>
+                        <!--//tab_one-->
+                        <div class="tab2">
+                           <div class="single_page">
+                              <div class="bootstrap-tab-text-grids">
+                                 <div class="bootstrap-tab-text-grid">
+                                    <div class="bootstrap-tab-text-grid-left">
+                                       <img src="images/team1.jpg" alt=" " class="img-fluid">
+                                    </div>
+                                    <div class="bootstrap-tab-text-grid-right">
+                                       <ul>
+                                          <li><a href="#">Admin</a></li>
+                                          <li><a href="#"><i class="fa fa-reply-all" aria-hidden="true"></i> Reply</a></li>
+                                       </ul>
+                                       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elPellentesque vehicula augue eget.Ut enim ad minima veniam,
+                                          quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis
+                                          autem vel eum iure reprehenderit.
+                                       </p>
+                                    </div>
+                                    <div class="clearfix"> </div>
+                                 </div>
+                                 <div class="add-review">
+                                    <h4>add a review</h4>
+                                    <form action="#" method="post">
+                                       <div class="row">
+                                          <div class="col-md-6">
+                                             <input type="text" name="Name" required="">
+                                          </div>
+                                          <div class="col-md-6">
+                                             <input type="email" name="Email" required="">
+                                          </div>
+                                       </div>
+                                       <textarea name="Message" required=""></textarea>
+                                       <input type="submit" value="SEND">
+                                    </form>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="tab3">
+                           <div class="single_page">
+                              <h6>Teddy Bear(Blue)</h6>
+                              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elPellentesque vehicula augue eget nisl ullamcorper, molestie
+                                 blandit ipsum auctor. Mauris volutpat augue dolor.Consectetur adipisicing elit, sed do eiusmod tempor incididunt
+                                 ut lab ore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco. labore et dolore
+                                 magna aliqua.
+                              </p>
+                              <p class="para">Lorem ipsum dolor sit amet, consectetur adipisicing elPellentesque vehicula augue eget nisl ullamcorper, molestie
+                                 blandit ipsum auctor. Mauris volutpat augue dolor.Consectetur adipisicing elit, sed do eiusmod tempor incididunt
+                                 ut lab ore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco. labore et dolore
+                                 magna aliqua.
+                              </p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!--//tabs-->
+            </div>
+         </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="footer4 cid-rjV9L3meqN" id="footer4-o">
+        <div class="container">
+            <div class="media-container-row content mbr-white">
+                <div class="col-md-3 col-sm-4">
+                    <div class="mb-3 img-logo">
+                        <a href="/">
+                            <img src="/assets/images/logo-85x38.png" alt="Investani" title="Investani">
+                        </a>
+                    </div>
+                    <p class="mb-3 mbr-fonts-style foot-title display-7">
+                        Produk</p>
+                    <p class="mbr-text mbr-fonts-style mbr-links-column display-7">Eksplor<br><a href="#" class="text-white">C</a>ara
+                        Kerja<br>FaQ<br></p>
+                </div>
+                <div class="col-md-4 col-sm-8">
+                    <p class="mb-4 foot-title mbr-fonts-style display-7">
+                        PERUSAHAAN<br>
+                    </p>
+                    <p class="mbr-text mbr-fonts-style foot-text display-7">Tentang Kami<br>Syarat dan Ketentuan<br>Kebijakan
+                        Privasi<br>Persetujuan Pembiayaan</p>
+                </div>
+                <div class="col-md-4 offset-md-1 col-sm-12">
+                    <p class="mb-4 foot-title mbr-fonts-style display-7">
+                        KONTAK</p>
+                    <p class="mbr-text mbr-fonts-style form-text display-7">Butuh bantuan kami ? Hubungi kami:
+                        <br>
+                        <br>Jl. Jembatan Merah No 3-11, Surabaya&nbsp;<br>Senin-Jumat 08.00-16.00<br><br>contact@ptpn10.co.id<br></p>
+                    <div class="media-container-column" data-form-type="formoid">
+                        <!---Formbuilder Form--->
+                        <form action="https://mobirise.com/" method="POST" class="mbr-form form-with-styler"
+                            data-form-title="Mobirise Form"><input type="hidden" name="email" data-form-email="true"
+                                value="eA6uqSTF1jjN9VF2kIPSaUbGa7FoshlRHPG1ckElA1QqcSYGEjSucmtaEHFvUQ/isvtBPewXH3ANd9kqnkNXZbL4ohCPMdfE9akqGSR4cARpIYCdSUGUthkU2jREypxw">
+                            <div class="row form-inline justify-content-center">
+                                <div hidden="hidden" data-form-alert="" class="alert alert-success col-12">Thanks for
+                                    filling out the form!</div>
+                                <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">
+                                </div>
+                            </div>
+                            <div class="dragArea row form-inline justify-content-center">
+                                <div class="col-auto  form-group " data-for="email">
+                                    <input type="email" name="email" placeholder="Email" data-form-field="Email"
+                                        required="required" class="form-control input-sm input-inverse my-2 display-7"
+                                        id="email-footer4-o">
+                                </div>
+                                <div class="col-auto  input-group-btn  m-2"><button type="submit" class="btn btn-primary m-0 display-4">Subscribe</button></div>
+                            </div>
+                        </form>
+                        <!---Formbuilder Form--->
+                    </div>
+                    <p class="mb-4 mbr-fonts-style foot-title display-7">CONNECT WITH US</p>
+                    <div class="social-list pl-0 mb-0">
+                        <div class="soc-item">
+
+                            <span class="mbr-iconfont mbr-iconfont-social socicon-instagram socicon"></span>
+
+                        </div>
+                        <div class="soc-item">
+
+                            <span class="mbr-iconfont mbr-iconfont-social socicon-linkedin socicon"></span>
+
+                        </div>
+                        <div class="soc-item">
+
+                            <span class="mbr-iconfont mbr-iconfont-social socicon-instagram socicon"></span>
+
+                        </div>
+                        <div class="soc-item">
+                            <a href="https://instagram.com/mobirise" target="_blank">
+                                <span class="mbr-iconfont mbr-iconfont-social socicon-twitter socicon"></span>
+                            </a>
+                        </div>
+                        <div class="soc-item">
+                            <a href="https://plus.google.com/u/0/+Mobirise" target="_blank">
+                                <span class="socicon-googleplus socicon mbr-iconfont mbr-iconfont-social"></span>
+                            </a>
+                        </div>
+                        <div class="soc-item">
+                            <a href="https://www.behance.net/Mobirise" target="_blank">
+                                <span class="socicon-behance socicon mbr-iconfont mbr-iconfont-social"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-lower">
+                <div class="media-container-row">
+                    <div class="col-sm-12">
+                        <hr>
+                    </div>
+                </div>
+                <div class="media-container-row mbr-white">
+                    <div class="col-sm-12 copyright">
+                        <p class="mbr-text mbr-fonts-style display-7">
+                            © Investani 2019.&nbsp;Hak cipta dilindungi undang-undang</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mbr-section article content11 cid-rjVaSQDsxD" id="content11-q">
+
+
+        <div class="container">
+            <div class="media-container-row">
+                <div class="mbr-text counter-container col-12 col-md-8 mbr-fonts-style display-7">
+                    <ol>
+                        <li><strong>MOBILE FRIENDLY</strong> - no special actions required, all sites you make with
+                            Mobirise are mobile-friendly. You don't have to create a special mobile version of your
+                            site, it will adapt automagically. <a href="https://mobirise.co/">Try it now!</a></li>
+                        <li><strong>EASY AND SIMPLE</strong> - cut down the development time with drag-and-drop website
+                            builder. Drop the blocks into the page, edit content inline and publish - no technical
+                            skills required. <a href="https://mobirise.co/">Try it now!</a></li>
+                        <li><strong>UNIQUE STYLES</strong> - choose from the large selection of latest pre-made blocks
+                            - full-screen intro, bootstrap carousel, content slider, responsive image gallery with
+                            lightbox, parallax scrolling, video backgrounds, hamburger menu, sticky header and more. <a
+                                href="https://mobirise.co/">Try it now!</a></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script src="/assets/web/assets/jquery/jquery.min.js"></script>
+    <script src="/assets/popper/popper.min.js"></script>
+    <script src="/assets/tether/tether.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/smoothscroll/smooth-scroll.js"></script>
+    <script src="/assets/dropdown/js/script.min.js"></script>
+    <script src="/assets/touchswipe/jquery.touch-swipe.min.js"></script>
+    <script src="/assets/ytplayer/jquery.mb.ytplayer.min.js"></script>
+    <script src="/assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>
+    <script src="/assets/bootstrapcarouselswipe/bootstrap-carousel-swipe.js"></script>
+    <script src="/assets/mbr-testimonials-slider/mbr-testimonials-slider.js"></script>
+    <script src="/assets/mbr-clients-slider/mbr-clients-slider.js"></script>
+    <script src="/assets/theme/js/script.js"></script>
+    <script src="/assets/slidervideo/script.js"></script>
+    <script src="/assets/formoid/formoid.min.js"></script>
+    <script src="/js/jquery-ui.js"></script>
+    <!-- price range (top products) -->
+    <script src="/js/jquery-ui.js"></script>
+    <script>
+       //<![CDATA[ 
+       $(window).load(function () {
+           $("#slider-range").slider({
+               range: true,
+               min: 0,
+               max: 9000,
+               values: [50, 6000],
+               slide: function (event, ui) {
+                   $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+               }
+           });
+           $("#amount").val("$" + $("#slider-range").slider("values", 0) + " - $" + $("#slider-range").slider("values", 1));
+       
+       }); //]]>
+    </script>
+    <!-- //price range (top products) -->
+    <!-- single -->
+    <script src="/js/imagezoom.js"></script>
+    <!-- single -->
+    <!-- script for responsive tabs -->
+    <script src="/js/easy-responsive-tabs.js"></script>
+    <script>
+       $(document).ready(function () {
+           $('#horizontalTab').easyResponsiveTabs({
+               type: 'default', //Types: default, vertical, accordion           
+               width: 'auto', //auto or any width like 600px
+               fit: true, // 100% fit in a container
+               closed: 'accordion', // Start closed if in accordion view
+               activate: function (event) { // Callback function if tab is switched
+                   var $tab = $(this);
+                   var $info = $('#tabInfo');
+                   var $name = $('span', $info);
+                   $name.text($tab.text());
+                   $info.show();
+               }
+           });
+           $('#verticalTab').easyResponsiveTabs({
+               type: 'vertical',
+               width: 'auto',
+               fit: true
+           });
+       });
+    </script>
+    <!-- FlexSlider -->
+    <script src="/js/jquery.flexslider.js"></script>
+    <script>
+       // Can also be used with $(document).ready()
+       $(window).load(function () {
+           $('.flexslider1').flexslider({
+               animation: "slide",
+               controlNav: "thumbnails"
+           });
+       });
+    </script>
+    <!-- //FlexSlider-->
+
+
+</body>
+
+</html>

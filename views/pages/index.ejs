@@ -209,12 +209,12 @@
                 <% projects.forEach((project) => { %> 
                     <div class="col-md-4">
                         <div class="card">
-                            <a href="#">
-                                <img class="card-img-top" src="/image/project/<%= project._id %>/<%= project.image[0].filename %>" alt="Card image cap">
+                            <a href="/project/<%= project._id %>">
+                                <img alt="Card image cap" class="card-img-top" src="/image/project/<%= project._id %>/<%= project.image[0].filename %>" style="max-height: 178px;">
                             </a>
                             <div class="card-body">
                                 <div class="mx-auto d-block">
-                                    <h6 class="card-title mb-3"><a href="#"><%= project.basic[0].title %></a> 
+                                    <h6 class="card-title mb-3"><a href="/project/<%= project._id %>"><%= project.basic[0].title %></a> 
                                     </h6>
                                     <p class="card-text" style="padding-top: 0px">Dibuat oleh <strong><%= project.inisiator.profile[0].name %></strong></p>
                                 </div>

@@ -14,7 +14,7 @@ class Resize {
         const filepath = this.filepath(filename);
         // Resize image and upload to filepath
         await sharp(buffer).resize(300, 300, {
-            fit: sharp.fit.inside,
+            fil: sharp.fit.inside,
             withoutEnlargement: true
         }).toFile(filepath);
         // Return filenamet to user

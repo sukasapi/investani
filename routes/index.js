@@ -38,6 +38,7 @@ router.get('/', function (req, res) {
                 user_type: user_type,
                 projects: projects
             };
+            console.log(data)
             res.render('pages/index', data);
         }
     });

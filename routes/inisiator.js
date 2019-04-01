@@ -73,124 +73,104 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, function (req, 
                         return res.redirect('/inisiator/start-project');
                     } else {
                         if (req.user._id.equals(project.inisiator)) {
-                            let new_data = {
-                                status: "draft"
-                            }
-                            if (project.basic.length != 0 && project.budget.length != 0 && project.project.length != 0 && project.image.length != 0) {
-                                new_data.status = "waiting";
-                            }
-                            updateProject(project._id, new_data, function (error, project) {
-                                if (error) {
-                                    error_message = "Terjadi kesalahan";
-                                    req.flash('error_message', error_message);
-                                    return res.redirect(`/inisiator/project/${project._id}/edit`);
+                            let province_id, city_id, category, area, goal, campaign, start_date, roi, duration, stock_price, total_stock = null;
+                            let budget = [
+                                // budget 0
+                                {
+                                    description: "",
+                                    activity_date: "",
+                                    amount: 0
+                                },
+                                // budget 1
+                                {
+                                    description: "",
+                                    activity_date: "",
+                                    amount: 0
+                                },
+                                // budget 2
+                                {
+                                    description: "",
+                                    activity_date: "",
+                                    amount: 0
+                                },
+                                // budget 3
+                                {
+                                    description: "",
+                                    activity_date: "",
+                                    amount: 0
+                                },
+                                // budget 4
+                                {
+                                    description: "",
+                                    activity_date: "",
+                                    amount: 0
                                 }
-                                if (!project) {
-                                    error_message = "Proyek tidak tersedia";
-                                    req.flash('error_message', error_message);
-                                    return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                            ];
+                            let budget_not_null = 0;
+                            let abstract, prospectus = null;
+                            let activity_date = [];
+                            let image = [];
+                            if (project.basic[0].province.length != 0) {
+                                province_id = project.basic[0].province[0].province_id;
+                                city_id = project.basic[0].city[0].city_id;
+                                category = project.basic[0].category;
+                                area = project.basic[0].area;
+                                goal = project.basic[0].goal;
+                                campaign = project.basic[0].duration[0].campaign;
+                                start_date = project.basic[0].duration[0].start_date.toLocaleDateString();
+                                roi = project.basic[0].roi;
+                                duration = project.basic[0].duration[0].duration;
+                                stock_price = project.basic[0].stock[0].price;
+                                total_stock = project.basic[0].stock[0].total;
+                            }
+                            for (let i = 0; i < project.budget.length; i++) {
+                                if (project.budget[i].activity_date === undefined) {
+                                    activity_date[i] = null;
                                 } else {
-                                    let province_id, city_id, category, area, goal, campaign, start_date, roi, duration, stock_price, total_stock = null;
-                                    let budget = [
-                                        // budget 0
-                                        {
-                                            description: "",
-                                            activity_date: "",
-                                            amount: 0
-                                        },
-                                        // budget 1
-                                        {
-                                            description: "",
-                                            activity_date: "",
-                                            amount: 0
-                                        },
-                                        // budget 2
-                                        {
-                                            description: "",
-                                            activity_date: "",
-                                            amount: 0
-                                        },
-                                        // budget 3
-                                        {
-                                            description: "",
-                                            activity_date: "",
-                                            amount: 0
-                                        },
-                                        // budget 4
-                                        {
-                                            description: "",
-                                            activity_date: "",
-                                            amount: 0
-                                        }
-                                    ];
-                                    let budget_not_null = 0;
-                                    let abstract, prospectus = null;
-                                    let activity_date = [];
-                                    let image = [];
-                                    if (project.basic[0].province.length != 0) {
-                                        province_id = project.basic[0].province[0].province_id;
-                                        city_id = project.basic[0].city[0].city_id;
-                                        category = project.basic[0].category;
-                                        area = project.basic[0].area;
-                                        goal = project.basic[0].goal;
-                                        campaign = project.basic[0].duration[0].campaign;
-                                        start_date = project.basic[0].duration[0].start_date.toLocaleDateString();
-                                        roi = project.basic[0].roi;
-                                        duration = project.basic[0].duration[0].duration;
-                                        stock_price = project.basic[0].stock[0].price;
-                                        total_stock = project.basic[0].stock[0].total;
-                                    }
-                                    for (let i = 0; i < project.budget.length; i++) {
-                                        if (project.budget[i].activity_date === undefined) {
-                                            activity_date[i] = null;
-                                        } else {
-                                            activity_date[i] = project.budget[i].activity_date.toLocaleDateString();
-                                        }
-                                        budget[i] = {
-                                            description: project.budget[i].description,
-                                            activity_date: activity_date[i],
-                                            amount: project.budget[i].amount
-                                        };
-                                        if (budget[i].description != "") {
-                                            budget_not_null++
-                                        }
-                                    }
-                                    if (project.project.length != 0) {
-                                        abstract = project.project[0].abstract.replace('&', '&amp;');
-                                        prospectus = project.project[0].prospectus;
-                                    }
-                                    for (let i = 0; i < project.image.length; i++) {
-                                        if (project.image[i].filename !== undefined) {
-                                            image[i] = project.image[i].filename;
-                                        }
-                                    }
-                                    let data = {
-                                        user_id: req.user._id,
-                                        project_id: project._id,
-                                        title: project.basic[0].title,
-                                        province: JSON.parse(body).semuaprovinsi,
-                                        province_id: province_id,
-                                        city_id: city_id,
-                                        category: category,
-                                        area: area,
-                                        goal: goal,
-                                        campaign: campaign,
-                                        start_date: start_date,
-                                        roi: roi,
-                                        duration: duration,
-                                        stock_price: stock_price,
-                                        total_stock: total_stock,
-                                        budget: budget,
-                                        budget_not_null: budget_not_null,
-                                        abstract: abstract,
-                                        prospectus: prospectus,
-                                        image: image,
-                                        url: "edit"
-                                    }
-                                    res.render('pages/inisiator/edit-project', data);
+                                    activity_date[i] = project.budget[i].activity_date.toLocaleDateString();
                                 }
-                            });
-
+                                budget[i] = {
+                                    description: project.budget[i].description,
+                                    activity_date: activity_date[i],
+                                    amount: project.budget[i].amount
+                                };
+                                if (budget[i].description != "") {
+                                    budget_not_null++
+                                }
+                            }
+                            if (project.project.length != 0) {
+                                abstract = project.project[0].abstract.replace('&', '&amp;');
+                                prospectus = project.project[0].prospectus;
+                            }
+                            for (let i = 0; i < project.image.length; i++) {
+                                if (project.image[i].filename !== undefined) {
+                                    image[i] = project.image[i].filename;
+                                }
+                            }
+                            let data = {
+                                user_id: req.user._id,
+                                project_id: project._id,
+                                title: project.basic[0].title,
+                                province: JSON.parse(body).semuaprovinsi,
+                                province_id: province_id,
+                                city_id: city_id,
+                                category: category,
+                                area: area,
+                                goal: goal,
+                                campaign: campaign,
+                                start_date: start_date,
+                                roi: roi,
+                                duration: duration,
+                                stock_price: stock_price,
+                                total_stock: total_stock,
+                                budget: budget,
+                                budget_not_null: budget_not_null,
+                                abstract: abstract,
+                                prospectus: prospectus,
+                                image: image,
+                                url: "edit"
+                            }
+                            res.render('pages/inisiator/edit-project', data);
                         } else {
                             res.redirect('/inisiator/dashboard');
                         }
