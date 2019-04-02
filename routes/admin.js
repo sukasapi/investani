@@ -1,6 +1,7 @@
 import express from 'express';
-import { User, getUserByID, updateUser } from '../models/User';
+import { User, getUserByID } from '../models/User';
 import { getProjectByStatus, getProjectByID, updateProject } from '../models/Project';
+import { Category, createCategory } from '../models/Category';
 import fs from 'fs-extra';
 import puppeteer from 'puppeteer';
 import ejs from 'ejs';
@@ -105,8 +106,6 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
             return res.redirect('/admin/dashboard');
         }
         else {
-            let province_id = project.basic[0].province[0].province_id;
-            let city_id = project.basic[0].city[0].city_id;
             let category = project.basic[0].category;
             let area = project.basic[0].area;
             let goal = project.basic[0].goal;
@@ -165,11 +164,12 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
         }
     });
 });
+router.get('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
+    res.render('pages/admin/project/add-category');
+});
 router.get('/project/get-prospectus/:filename', isLoggedIn, isAdmin, function (req, res) {
     res.download(__dirname+'/../storage/prospectus/'+req.params.filename);
 });
-
-
 router.post('/user/investor/individual/verify/:id', isLoggedIn, isAdmin, function (req, res) {
     User.findByIdAndUpdate(req.params.id, {
         user_type: [{
@@ -263,6 +263,68 @@ router.post('/project/waiting/verify/:project_id', isLoggedIn, isAdmin, function
         }
     });
 });
+router.post('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    let success_message;
+
+    let sub_category = [
+        {
+            name: null
+        },
+        {
+            name: null
+        },
+        {
+            name: null
+        },
+        {
+            name: null
+        },
+        {
+            name: null
+        }
+    ];
+
+    for (let i = 0; i < req.body.sub_category.sub_category.length; i++) {
+        sub_category[i] = {
+            name: req.body.sub_category.sub_category[i].name,
+        }
+    }
+
+    req.checkBody('description', 'Deskripsi kategori wajib diisi.').notEmpty();
+    req.checkBody('unit', 'Unit kategori wajib diisi.').notEmpty();
+    req.checkBody('title', 'Judul kategori wajib diisi.').notEmpty();
+
+    let errors = req.validationErrors();
+
+    if (errors) {
+        error_message = errors[errors.length - 1].msg;
+        req.flash('error_message', error_message);
+        return res.redirect('/admin/project/add-category');
+    }
+    else {
+        let data = {
+            title: req.body.title,
+            unit: req.body.unit,
+            description: req.body.description,
+            sub_category: sub_category
+        }
+        let category = new Category(data);
+        createCategory(category, function(error) {
+            if (error) {
+                error_message = "Terjadi kesalahan";
+                req.flash('error_message', error_message);
+                return res.redirect('/admin/project/add-category');
+            }
+            else {
+                success_message = "Berhasil menambah kategori proyek.";
+                req.flash('success_message', success_message);
+                return res.redirect('/admin/project/add-category');
+            }
+        });
+    }
+});
+
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         next();

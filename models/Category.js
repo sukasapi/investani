@@ -1,14 +1,20 @@
 import mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
-
 let CategorySchema = mongoose.Schema({
-    name: {
+    title: {
+        type: String
+    },
+    unit: {
         type: String
     },
     description: {
         type: String
-    }
+    },
+    sub_category: [{
+        name: {
+            type: String
+        }
+    }]
 },
 {
     timestamps: true

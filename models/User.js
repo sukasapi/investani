@@ -157,7 +157,7 @@ let UserSchema = mongoose.Schema({
       type: String
     },
     account_number: {
-      type: Number
+      type: String
     },
     branch: {
       type: String

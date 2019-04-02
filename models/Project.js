@@ -7,9 +7,6 @@ let ProjectSchema = mongoose.Schema({
         title: {
             type: String
         },
-        category: {
-            type: String
-        },
         province: [{
             province_id: {
               type: String
@@ -26,7 +23,7 @@ let ProjectSchema = mongoose.Schema({
                 type: String
             }
         }],
-        area: {
+        unit_value: {
             type: Number
         },
         duration: [{
@@ -79,6 +76,10 @@ let ProjectSchema = mongoose.Schema({
     status: {
         type: String
     },
+    category: { type: Schema.Types.ObjectId, ref: 'Category' },
+    sub_category: {
+        type: Schema.Types.ObjectId
+    },
     inisiator: { type: Schema.Types.ObjectId, ref: 'User' }
 },
 {
@@ -94,7 +95,7 @@ export const updateProject = (project_id, updateValue, callback) => {
     Project.findByIdAndUpdate(project_id, updateValue, callback);
   }
 export const getProjectByID = (id, callback) => {
-    Project.findById(id, callback);
+    Project.findById(id, callback).populate('category');
 }
 export const getProjectByStatus = (status, callback) => {
     let Obj = {

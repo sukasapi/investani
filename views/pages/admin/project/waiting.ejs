@@ -76,12 +76,12 @@
 
                         <div class="col-md-12">
                             <% if (success_message != '') { %>
-                                <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
-                                    <%= success_message %>
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
+                            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                <%= success_message %>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                             <% } %>
                             <% if (error_message != '') {%>
                             <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
@@ -99,14 +99,14 @@
                     <div class="col-md-4">
                         <div class="card">
                             <a href="/admin/project/waiting/<%= project._id %>">
-                                <img class="card-img-top"
-                                    src="/inisiator/project/<%= project._id %>/<%= project.image[0].filename %>"
-                                    alt="Card image cap">
+                                <img alt="Card image cap" class="card-img-top"
+                                    src="/image/project/<%= project._id %>/<%= project.image[0].filename %>"
+                                    style="height: 178px;">
                             </a>
                             <div class="card-body">
                                 <div class="mx-auto d-block">
                                     <h4 class="card-title mb-3"><a
-                                            href="/admin/project/waiting/<%= project._id %>"><%= project.basic[0].title %></a>
+                                            href="/inisiator/project/<%= project._id %>/edit"><%= project.basic[0].title %></a>
                                         <% if (project.status == "draft") { %>
                                         <small><span class="badge badge-light float-right mt-1">Draft</span></small>
                                         <% } %>
@@ -115,9 +115,38 @@
                                                 class="badge badge-warning float-right mt-1">Menunggu</span></small>
                                         <% } %>
                                     </h4>
-                                    <p class="card-text">Dibuat oleh <%= project.inisiator.profile[0].name %></p>
+                                    <p class="card-text">Dibuat oleh <strong><%= project.inisiator.profile[0].name %></strong></p>
+                                </div>
+                                <div class="weather-category twt-category">
+                                    <ul>
+                                        <li>
+                                            Imbal Hasil
+                                            <h6><%=project.basic[0].roi%>%</h6>
+                                        </li>
+                                        <li>
+                                            Durasi Proyek
+                                            <h6>
+                                                <%if (project.basic[0].duration[0]) {%>
+                                                <%=project.basic[0].duration[0].duration%>
+                                                <% } %>
+                                                Bulan
+                                            </h6>
+                                        </li>
+                                        <li>
+                                            Tersisa
+                                            <h6>36 Hari</h6>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
+                            <footer class="twt-footer">
+                                Harga Saham:
+                                <strong>
+                                    <% if (project.basic[0].stock[0]) { %>
+                                    Rp. <%=project.basic[0].stock[0].price%>
+                                    <% } %>
+                                </strong>
+                            </footer>
                             <div class="card-footer" style="font-size: 12px;">
                                 <div class="card-text text-sm-center">
                                     <div class="progress mb-3">
@@ -127,7 +156,10 @@
                                 </div>
                                 <strong class="card-title mb-3">0%</strong> Dana terkumpul
                                 <span class="pull-right">
-                                    Target dana: Rp. 4000000
+                                    Target Dana: Rp.
+                                    <% if (project.budget[0]) { %>
+                                    <%= project.budget[0].amount+project.budget[1].amount+project.budget[2].amount+project.budget[3].amount+project.budget[4].amount %>
+                                    <% } %>
                                 </span>
                             </div>
                         </div>

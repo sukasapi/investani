@@ -138,7 +138,7 @@
                                                         <% }%>	
                                                     </select>
                                                     <input class="form-control" id="province-name" name="province_name"
-                                                        type="text" style="display: none">
+                                                        type="text" style="display: none" value="<%= province_name %>">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -152,22 +152,29 @@
                                                         <i class="zmdi zmdi-chevron-down"></i>
                                                     </span>
                                                     <input class="form-control" id="city-name" name="city_name" type="text"
-                                                        style="display: none">
+                                                        style="display: none" value="<%= city_name %>">
                                                 </div>
-                                                <div class="col col-sm-6">
+                                                <div class="col col-sm-3">
                                                     <label for="cc-name" class="control-label mb-1">Kategori Proyek</label>
                                                     <select name="category" id="category" class="form-control">
-                                                        <option selected disabled>Pilih kategori</option>
-                                                        <option value="tg-ii" <% if(category=='tg-ii' ) {%> selected
-                                                            <%}%> >TG-II</option>
+                                                        <option disabled>Pilih kategori</option>
+                                                        <% all_category.forEach((all_category) => { %> 
+                                                            <option value="<%= all_category._id %>" <% if (category == all_category._id) { %> selected <% } %> ><%= all_category.title %></option>
+                                                        <% }) %>
+                                                    </select>
+                                                </div>
+                                                <div class="col col-sm-3">
+                                                    <label for="cc-name" class="control-label mb-1">Sub-kategori Proyek</label>
+                                                    <select name="sub_category" id="sub-category" class="form-control">
+                                                        <option selected disabled>Pilih Sub-kategori</option>
+                                                        
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col col-sm-6">
-                                                    <label class="control-label mb-1">Luas Lahan (ha)</label>
-                                                    <input class="form-control" id="area" name="area" placeholder="Luas Lahan (ha)"
-                                                        step=0.001 type="number" value="<%= area %>">
+                                                    <label class="control-label mb-1" id="unit-value-label">Satuan Unit</label>
+                                                    <input class="form-control" id="unit_value" name="unit_value" step=0.001 type="number" value="<%= unit_value %>">
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Durasi Kampanye (hari)</label>
@@ -209,7 +216,7 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <button id="project-basic-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                                <button id="project-basic-button" type="submit" class="btn btn-lg btn-info btn-block" <% if (status == 'verified') { %> disabled <% } %> >
                                                     <span aria-hidden="true" class="spinner-border spinner-border-sm"
                                                         id="project-basic-spinner" role="status" style="display: none"></span>
                                                     <span id="project-basic -button-placeholder">Simpan dan Lanjutkan</span>
@@ -264,7 +271,7 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <button id="project-budget-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                                <button id="project-budget-button" type="submit" class="btn btn-lg btn-info btn-block" <% if (status == 'verified') { %> disabled <% } %>>
                                                     <span aria-hidden="true" class="spinner-border spinner-border-sm"
                                                         id="project-budget-spinner" role="status" style="display: none"></span>
                                                     <span id="project-budget-button-placeholder">Simpan dan Lanjutkan</span>
@@ -310,7 +317,7 @@
                                             </div>
 
                                             <div>
-                                                <button id="project-project-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                                <button id="project-project-button" type="submit" class="btn btn-lg btn-info btn-block" <% if (status == 'verified') { %> disabled <% } %>>
                                                     <span aria-hidden="true" class="spinner-border spinner-border-sm"
                                                         id="project-project-spinner" role="status" style="display: none"></span>
                                                     <span id="project-project-button-placeholder">Simpan dan Lanjutkan</span>
@@ -331,7 +338,7 @@
                                             <% if (error_message != '') { %>
                                             <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
                                                 <%= error_message %>
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close" <% if (status == 'verified') { %> disabled <% } %>>
                                                     <span aria-hidden="true">×</span>
                                                 </button>
                                             </div>
@@ -366,7 +373,7 @@
                                                     <% } %>
                                                 </div>
                                                 <div class="col col-sm-2">
-                                                    <input type="file" class="dropify" <% if (image[4] != null) { %>data-default-file="/inisiator/project/<%=project_id %>/<%= image[4] %>"<% } %> name="project_image4" accept="image/*" />
+                                                    <input type="file" class="dropify" <% if (image[4] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[4] %>"<% } %> name="project_image4" accept="image/*" />
                                                     <% if (image[4] != null) { %> 
                                                         <input type="text" name="project_image4_input" value="<%= image[4] %>"
                                                         style="display: none">
@@ -374,7 +381,7 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <button id="project-image-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                                <button id="project-image-button" type="submit" class="btn btn-lg btn-info btn-block" <% if (status == 'verified') { %> disabled <% } %>>
                                                     <span aria-hidden="true" class="spinner-border spinner-border-sm"
                                                         id="project-image-spinner" role="status" style="display: none"></span>
                                                     <span>Simpan dan Lanjutkan</span>
@@ -469,6 +476,18 @@
             }	
         });	
     <% } %>
+    <% if (category != null) { %>
+        $('#unit-value-label').text("<%= category.unit %>");
+
+        <% category.sub_category.forEach((sub_category_data) => { %> 
+            <% if (sub_category_data.id == sub_category) { %>
+                $('#sub-category').append('<option class="sub-category-option" value="<%= sub_category_data._id %>" selected><%= sub_category_data.name %></option>');
+            <% } %>
+            <% if ((sub_category_data.id != sub_category) && (sub_category_data.name != null)) { %>
+                $('#sub-category').append('<option class="sub-category-option" value="<%= sub_category_data._id %>"><%= sub_category_data.name %></option>');
+            <% } %>
+        <% }) %>
+    <% } %>
         var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap4',
@@ -477,6 +496,24 @@
         document.getElementById("my-project").className = "menu-item-has-children dropdown active show";
         document.getElementById("my-project-link").click();
         document.getElementById("started-project-sub").style.color= '#03a9f3';
+
+        $('#category').on('change', function (event) {
+            event.preventDefault();
+
+            var category = $(this).val();
+            $('.sub-category-option').remove();
+            <% all_category.forEach((category_list) => { %> 
+                if (category == "<%= category_list._id %>") {
+                    $('#unit-value-label').text("<%= category_list.unit %>");
+                    <% category_list.sub_category.forEach((sub_category) => { %>
+                        <% if (sub_category.name) { %>
+                            $('#sub-category').append('<option class="sub-category-option" value="<%= sub_category._id %>"><%= sub_category.name %></option>');
+                        <% } %>
+                    <% }) %>
+                }
+            <% }) %>
+        });
+
         $('#province').on('change', function (event) {
             event.preventDefault();
             var province_id = $(this).val();
@@ -508,7 +545,7 @@
             $('#city-name').val(city_name);
         });
 
-        document.getElementById('area').addEventListener('keydown', function (e) {
+        document.getElementById('unit_value').addEventListener('keydown', function (e) {
             if (e.which === 38 || e.which === 40) {
                 e.preventDefault();
             }
