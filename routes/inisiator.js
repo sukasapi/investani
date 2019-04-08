@@ -17,7 +17,6 @@ import Resize from '../Resize';
 import upload from '../uploadMiddleware';
 import fs from 'fs';
 
-
 const router = express.Router();
 const prospectusFilePath = path.join(__dirname, '../storage/prospectus');
 
@@ -77,7 +76,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                     } else {
 
                         if (req.user._id.equals(project.inisiator)) {
-                            let province_id, province_name, city_id, city_name, category, sub_category, unit_value, goal, campaign, start_date, roi, duration, stock_price, total_stock = null;
+                            let province_id, province_name, city_id, city_name, category, sub_category, unit_value, goal, start_campaign, due_campaign, campaign, start_date, roi, duration, stock_price, total_stock = null;
                             let budget = [
                                 // budget 0
                                 {
@@ -194,6 +193,8 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                                                 sub_category: sub_category,
                                                 unit_value: unit_value,
                                                 goal: goal,
+                                                start_campaign: start_campaign,
+                                                due_campaign: due_campaign,
                                                 campaign: campaign,
                                                 start_date: start_date,
                                                 roi: roi,
@@ -387,8 +388,11 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                             },
                             unit_value: req.body.unit_value,
                             duration: {
+                                start_campaign: null,
+                                due_campaign: null,
                                 campaign: req.body.campaign,
                                 start_date: req.body.start_date,
+                                due_date: null,
                                 duration: req.body.duration
                             },
                             roi: req.body.roi,
@@ -479,9 +483,6 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
                         activity_date: req.body.budget_items.budget_items[i].activity_date,
                         amount: req.body.budget_items.budget_items[i].amount
                     };
-                    req.checkBody(`budget_items[budget_items][${i}][amount]`, 'Anggaran tidak boleh lebih dari 100 Juta Rupiah').isInt({
-                        max: 100000000
-                    });
                     req.checkBody(`budget_items[budget_items][${i}][amount]`, 'Anggaran tidak boleh kurang dari 1 Rupiah').isInt({
                         min: 1
                     });
@@ -490,8 +491,8 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
                     req.checkBody(`budget_items[budget_items][${i}][description]`, `Nama Kegiatan ${i+1} tidak boleh lebih dari 250 karakter`).isLength({
                         max: 250
                     });
-                    req.checkBody(`budget_items[budget_items][${i}][description]`, `Nama Kegiatan ${i+1} tidak boleh kurang dari 10 karakter`).isLength({
-                        min: 10
+                    req.checkBody(`budget_items[budget_items][${i}][description]`, `Nama Kegiatan ${i+1} tidak boleh kurang dari 5 karakter`).isLength({
+                        min: 5
                     });
                     req.checkBody(`budget_items[budget_items][${i}][description]`, `Nama Kegiatan ${i+1} wajib diisi`).notEmpty();
                 }

@@ -79,6 +79,9 @@ router.get('/activation/:secretToken', function (req, res) {
 router.get('/image/project/:project_id/:filename', function (req, res) {
     res.download(__dirname + '/../storage/projects/' + req.params.project_id + '/images/' + req.params.filename);
 });
+router.get('/project/get-prospectus/:filename', function (req, res) {
+    res.download(__dirname+'/../storage/prospectus/'+req.params.filename);
+});
 
 router.get('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract, function (req, res) {
     res.render('pages/contract/contract', req.user);

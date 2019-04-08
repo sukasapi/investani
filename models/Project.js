@@ -28,13 +28,22 @@ let ProjectSchema = mongoose.Schema({
         },
         duration: [{
             campaign: {
-                type: String
+                type: Number
             },
-            start_date: {
+            start_campaign: {
+                type: Date
+            },
+            due_campaign: {
                 type: Date
             },
             duration: {
                 type: Number
+            },
+            start_date: {
+                type: Date
+            },
+            due_date: {
+                type: Date
             }
         }],
         roi: {

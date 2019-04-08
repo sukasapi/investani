@@ -1,10 +1,11 @@
 import express from 'express';
 import { User, getUserByID } from '../models/User';
-import { getProjectByStatus, getProjectByID, updateProject } from '../models/Project';
+import { getProjectByStatus, getProjectByID } from '../models/Project';
 import { Category, createCategory } from '../models/Category';
 import fs from 'fs-extra';
 import puppeteer from 'puppeteer';
 import ejs from 'ejs';
+import moment from 'moment';
 
 const router = express.Router();
 
@@ -64,7 +65,7 @@ router.get('/user/inisiator/individual/:id', isLoggedIn, isAdmin, function (req,
     });
 });
 router.get('/user/get-image/:user_id/:filename', isLoggedIn, isAdmin, function (req, res) {
-    res.download(__dirname+'/../storage/documents/'+req.params.filename);
+    res.download(__dirname+'/../storage/documents/'+req.params.user_id+'/'+req.params.filename);
 });
 router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
@@ -116,9 +117,9 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
             let stock_price = project.basic[0].stock[0].price;
             let total_stock = project.basic[0].stock[0].total;
             let budget = [];
-            let budget_not_null = 0;
             let image = [];
             let activity_date = [];
+            let budget_not_null = 0;
             for (let i = 0; i < project.budget.length; i++) {
                 if (project.budget[i].activity_date === undefined) {
                     activity_date[i] = null;
@@ -166,9 +167,6 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
 });
 router.get('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
     res.render('pages/admin/project/add-category');
-});
-router.get('/project/get-prospectus/:filename', isLoggedIn, isAdmin, function (req, res) {
-    res.download(__dirname+'/../storage/prospectus/'+req.params.filename);
 });
 router.post('/user/investor/individual/verify/:id', isLoggedIn, isAdmin, function (req, res) {
     User.findByIdAndUpdate(req.params.id, {
@@ -242,10 +240,8 @@ router.post('/user/inisiator/individual/verify/:id', isLoggedIn, isAdmin, functi
 router.post('/project/waiting/verify/:project_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
-    let data = {
-        status: "verified"
-    };
-    updateProject(req.params.project_id, data, function(error, project) {
+    
+    getProjectByID(req.params.project_id, function(error, project) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -257,9 +253,19 @@ router.post('/project/waiting/verify/:project_id', isLoggedIn, isAdmin, function
             return res.redirect('/admin/project/waiting');
         }
         else {
-            success_message = "Berhasil memverifikasi proyek";
-            req.flash('success_message', success_message);
-            return res.redirect('/admin/project/waiting');
+            project.basic[0].duration[0].start_campaign = moment().format();
+            project.basic[0].duration[0].due_campaign = moment().add(project.basic[0].duration[0].campaign, 'days');
+            project.basic[0].duration[0].due_date = moment(project.basic[0].duration[0].start_date).add(project.basic[0].duration[0].duration, 'months');
+            project.status = "verified";
+            project.save().then(project => {
+                success_message = "Berhasil memverifikasi proyek";
+                req.flash('success_message', success_message);
+                return res.redirect('/admin/project/waiting');
+            }).catch(error => {
+                error_message = "Terjadi kesalahan";
+                req.flash('error_message', error_message);
+                return res.redirect('/admin/project/waiting');
+            });
         }
     });
 });

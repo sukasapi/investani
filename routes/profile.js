@@ -620,7 +620,6 @@ async function (req, res) {
                 }
                 else {
                     if (req.user.document.length == 0) {
-                        console.log(req.files)
                         if (!req.files['identity_image']) {
                             req.flash('error_message', 'Foto KTP/ Paspor wajib diunggah.');
                             return res.redirect('/complete-profile');
