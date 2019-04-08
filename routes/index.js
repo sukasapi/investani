@@ -84,7 +84,12 @@ router.get('/project/get-prospectus/:filename', function (req, res) {
 });
 
 router.get('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract, function (req, res) {
-    res.render('pages/contract/contract', req.user);
+    if (req.user.profile[0].registration_type == 'individual') {
+        return res.render('pages/contract/individual', req.user);
+    }
+    else {
+        return res.render('pages/contract/company', req.user);
+    }
 });
 
 router.post('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract, upload.single('signature'), async function (req, res) {
@@ -127,6 +132,7 @@ router.post('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract
                 email: req.user.email,
                 profile: [req.user.profile[0]],
                 occupation: [req.user.occupation[0]],
+                pic: [req.user.pic[0]],
                 document: [req.user.document[0]],
                 bank: [req.user.bank[0]],
                 contract: req.user.contract
@@ -134,7 +140,13 @@ router.post('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract
             try {
                 const browser = await puppeteer.launch();
                 const page = await browser.newPage();
-                const content = await compile('contract-template', data_pdf);
+                let content = null;
+                if (req.user.profile[0].registration_type == 'individual') {
+                    content = await compile('individual-contract-template', data_pdf);
+                }
+                else {
+                    content = await compile('company-contract-template', data_pdf);
+                }
                 await page.setContent(content);
                 await page.emulateMedia('screen');
                 await page.pdf({

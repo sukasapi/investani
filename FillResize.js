@@ -3,7 +3,7 @@ import sharp from 'sharp';
 import uuidv4 from 'uuid/v4';
 import path from 'path';
 
-class Resize {
+class FillResize {
     // Folder path up to images
     constructor(folder) {
         this.folder = folder;
@@ -14,7 +14,7 @@ class Resize {
         const filepath = this.filepath(filename);
         // Resize image and upload to filepath
         await sharp(buffer).resize(300, 300, {
-            fit: sharp.fit.inside,
+            fil: sharp.fit.fill,
             withoutEnlargement: true
         }).toFile(filepath);
         // Return filenamet to user
@@ -30,4 +30,4 @@ class Resize {
     }
 }
 
-export default Resize;
+export default FillResize;
