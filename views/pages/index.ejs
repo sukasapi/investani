@@ -206,7 +206,7 @@
     <section class="features3 cid-rjV8Ehgxi9" id="features3-i">
         <div class="container">
             <div class="media-container-row">
-                <% projects.forEach((project) => { %> 
+                <% projects.forEach((project, index) => { %> 
                     <div class="col-md-4">
                         <div class="card">
                             <a href="/project/<%= project._id %>">
@@ -230,7 +230,7 @@
                                         </li>
                                         <li>
                                             Tersisa
-                                            <h6>36 Hari</h6>
+                                            <h6><%= durations[index] %> hari</h6>
                                         </li>
                                     </ul>
                                 </div>

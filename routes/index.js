@@ -10,6 +10,9 @@ import path from 'path';
 import puppeteer from 'puppeteer';
 import fs from 'fs-extra';
 import ejs from 'ejs';
+import moment from 'moment';
+
+moment.locale('id');
 
 const router = express.Router();
 const compile = async function (templateName, data) {
@@ -21,22 +24,25 @@ const compile = async function (templateName, data) {
 router.get('/', function (req, res) {
     let auth = false;
     let user_type = null;
-    let target = []
+    let durations = [];
     if (req.isAuthenticated()) {
         auth = true;
         user_type = req.user.user_type[0].name;
     }
     getProjectIndex('verified', function (error, projects) {
-        
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
             return res.redirect('/inisiator/started-project');
         } else {
+            projects.forEach((project, index) => {
+                durations[index] = moment(project.basic[0].duration[0].due_campaign).diff(moment(), 'days')
+            });
             let data = {
                 auth: auth,
                 user_type: user_type,
-                projects: projects
+                projects: projects,
+                durations: durations
             };
             res.render('pages/index', data);
         }

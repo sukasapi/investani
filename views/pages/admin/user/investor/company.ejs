@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
     <link rel="stylesheet" href="/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="/css/lib/datatable/dataTables.bootstrap.min.css">
@@ -25,12 +26,21 @@
 
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
     <style>
-        #bootstrap-data-table-1_filter, #bootstrap-data-table-1_paginate, #bootstrap-data-table-2_filter, #bootstrap-data-table-2_paginate, #bootstrap-data-table-3_filter, #bootstrap-data-table-3_paginate{
+        #bootstrap-data-table-1_filter,
+        #bootstrap-data-table-1_paginate,
+        #bootstrap-data-table-2_filter,
+        #bootstrap-data-table-2_paginate,
+        #bootstrap-data-table-3_filter,
+        #bootstrap-data-table-3_paginate {
             text-align: right
         }
-        #bootstrap-data-table-1_filter label, #bootstrap-data-table-2_filter label, #bootstrap-data-table-3_filter label{
+
+        #bootstrap-data-table-1_filter label,
+        #bootstrap-data-table-2_filter label,
+        #bootstrap-data-table-3_filter label {
             text-align: left;
         }
+
         .pagination {
             display: -webkit-inline-box;
         }
@@ -66,52 +76,55 @@
                                 <table id="bootstrap-data-table-1" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Nama Lengkap</th>
+                                            <th>Nama Perusahaan</th>
                                             <th>Email</th>
-                                            <th>Alamat Korespondendsi</th>
-                                            <th>No Handphone</th>
+                                            <th>Alamat Perusahaan</th>
+                                            <th>No Handphone Penanggungjawab</th>
                                             <th>Nomor Rekening</th>
-                                            <th>Nomor NPWP</th>
+                                            <th>Nomor NPWP Perusahaan</th>
                                             <th>Detail</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% for(var i=0; i<users.length; i++) { %>
-                                        <tr>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                <%= users[i].profile[0].name%>
-                                                <%}%>
-                                            </td>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                <%= users[i].email %>
-                                            </td>
-                                            <%}%>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                <%= users[i].profile[0].address %>
-                                            </td>
-                                            <%}%>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                <%= users[i].profile[0].phone %>
-                                            </td>
-                                            <%}%>
-                                            <td>
-                                                <%if (users[i].bank.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                <%= users[i].bank[0].account_name%>
-                                                <%}%>
-                                            </td>
-                                            <td>
-                                                <%if (users[i].document.length != 0 && users[i].user_type[0].status == 'verified') { %>
-                                                <%= users[i].document[0].npwp_number%>
-                                                <%}%>
-                                            </td>
-                                            <td>
-                                            </td>
-                                        </tr>
-                                        <% }%>
+                                    <% investors.forEach((investor) => { %>
+                                    <% if (investor.user_type[0].status == 'verified') {%>
+                                    <tr>
+                                        <td>
+                                            <%= investor.profile[0].name%>
+                                        </td>
+                                        <td>
+
+                                            <%= investor.email %>
+                                        </td>
+                                        <td>
+
+                                            <%= investor.profile[0].address %>
+                                        </td>
+                                        <td>
+
+                                            <%= investor.profile[0].phone %>
+                                        </td>
+                                        <td>
+
+                                            <%= investor.bank[0].account_name%>
+                                        </td>
+                                        <td>
+
+                                            <%= investor.document[0].npwp_number%>
+                                        </td>
+                                        <td>
+
+                                            <div class="input-group-btn">
+                                                <a class="detail-link"
+                                                    href="/admin/user/investor/company/<%= investor._id %>"
+                                                    target="_blank"><button class="btn btn-primary">Lihat
+                                                        Detail</button></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+
+                                    <% }) %>
                                     </tbody>
                                 </table>
                             </div>
@@ -130,53 +143,56 @@
                                 <table id="bootstrap-data-table-2" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Nama Lengkap</th>
+                                            <th>Nama Perusahaan</th>
                                             <th>Email</th>
-                                            <th>Alamat Korespondendsi</th>
-                                            <th>No Handphone</th>
+                                            <th>Alamat Perusahaan</th>
+                                            <th>No Handphone Penanggungjawab</th>
                                             <th>Nomor Rekening</th>
-                                            <th>Nomor NPWP</th>
+                                            <th>Nomor NPWP Perusahaan</th>
                                             <th>Detail</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% for(var i=0; i<users.length; i++) { %>
+                                        <% investors.forEach((investor) => { %>
+                                        <% if (investor.user_type[0].status == 'waiting') {%>
                                         <tr>
                                             <td>
-                                                <%if (users[i].profile.length != 0 && users[i].bank.length != 0) { %>
-                                                <%= users[i].profile[0].name%>
-                                                <%}%>
-                                            </td>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].bank.length != 0) { %>
-                                                <%= users[i].email %>
-                                            </td>
-                                            <%}%>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].bank.length != 0) { %>
-                                                <%= users[i].profile[0].address %>
-                                            </td>
-                                            <%}%>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].bank.length != 0) { %>
-                                                <%= users[i].profile[0].phone %>
-                                            </td>
-                                            <%}%>
-                                            <td>
-                                                <%if (users[i].bank.length != 0 && users[i].bank.length != 0) { %>
-                                                <%= users[i].bank[0].account_name%>
-                                                <%}%>
-                                            </td>
-                                            <td>
-                                                <%if (users[i].document.length != 0 && users[i].bank.length != 0) { %>
-                                                <%= users[i].document[0].npwp_number%>
-                                                <%}%>
+                                                <%= investor.profile[0].name%>
                                             </td>
                                             <td>
 
+                                                <%= investor.email %>
+                                            </td>
+                                            <td>
+
+                                                <%= investor.profile[0].address %>
+                                            </td>
+                                            <td>
+
+                                                <%= investor.profile[0].phone %>
+                                            </td>
+                                            <td>
+
+                                                <%= investor.bank[0].account_name%>
+                                            </td>
+                                            <td>
+
+                                                <%= investor.document[0].npwp_number%>
+                                            </td>
+                                            <td>
+
+                                                <div class="input-group-btn">
+                                                    <a class="detail-link"
+                                                        href="/admin/user/investor/company/<%= investor._id %>"
+                                                        target="_blank"><button class="btn btn-primary">Lihat
+                                                            Detail</button></a>
+                                                </div>
                                             </td>
                                         </tr>
-                                        <% }%>
+                                        <% } %>
+
+                                        <% }) %>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -195,53 +211,53 @@
                                 <table id="bootstrap-data-table-3" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Nama Lengkap</th>
+                                            <th>Nama Perusahaan</th>
                                             <th>Email</th>
-                                            <th>Alamat Korespondendsi</th>
-                                            <th>No Handphone</th>
+                                            <th>Alamat Perusahaan</th>
+                                            <th>No Handphone Penanggungjawab</th>
                                             <th>Nomor Rekening</th>
-                                            <th>Nomor NPWP</th>
+                                            <th>Nomor NPWP Perusahaan</th>
                                             <th>Detail</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% for(var i=0; i<users.length; i++) { %>
-                                        <tr>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
-                                                <%= users[i].profile[0].name%>
-                                                <%}%>
-                                            </td>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
-                                                <%= users[i].email %>
-                                            </td>
-                                            <%}%>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
-                                                <%= users[i].profile[0].address %>
-                                            </td>
-                                            <%}%>
-                                            <td>
-                                                <%if (users[i].profile.length != 0 && users[i].bank.length == 0) { %>
-                                                <%= users[i].profile[0].phone %>
-                                            </td>
-                                            <%}%>
-                                            <td>
-                                                <%if (users[i].bank.length != 0 && users[i].bank.length == 0) { %>
-                                                <%= users[i].bank[0].account_name%>
-                                                <%}%>
-                                            </td>
-                                            <td>
-                                                <%if (users[i].document.length != 0 && users[i].bank.length == 0) { %>
-                                                <%= users[i].document[0].npwp_number%>
-                                                <%}%>
-                                            </td>
-                                            <td>
-                                                
-                                            </td>
-                                        </tr>
-                                        <% }%>
+                                    <% investors.forEach((investor) => { %>
+                                    <% if (investor.bank.length == 0) {%>
+                                    <tr>
+                                        <td>
+                                            <%= investor.profile[0].name%>
+                                        </td>
+                                        <td>
+
+                                            <%= investor.email %>
+                                        </td>
+                                        <td>
+
+                                            <%= investor.profile[0].address %>
+                                        </td>
+                                        <td>
+
+                                            <%= investor.profile[0].phone %>
+                                        </td>
+                                        <td>
+                                        </td>
+                                        <td>
+
+                                            <%= investor.document[0].npwp_number%>
+                                        </td>
+                                        <td>
+
+                                            <div class="input-group-btn">
+                                                <a class="detail-link"
+                                                    href="/admin/user/investor/company/<%= investor._id %>"
+                                                    target="_blank"><button class="btn btn-primary">Lihat
+                                                        Detail</button></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+
+                                    <% }) %>
                                     </tbody>
                                 </table>
                             </div>
@@ -269,7 +285,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="/js/individual-main.js"></script>
-
+    <script src="/js/dashboard-main.js"></script>
     <script src="/js/datatables.min.js"></script>
     <script src="/js/dataTables.bootstrap.min.js"></script>
     <script src="/js/dataTables.buttons.min.js"></script>
@@ -280,6 +296,11 @@
     <script src="/js/buttons.print.min.js"></script>
     <script src="/js/buttons.colVis.min.js"></script>
     <script src="/js/datatables-init.js"></script>
+    <script>
+        document.getElementById("investor").className = "menu-item-has-children dropdown active show";
+        document.getElementById("investor-link").click();
+        document.getElementById("company-investor-sub").style.color= '#03a9f3';
+    </script>
 </body>
 
 </html>

@@ -2,18 +2,18 @@ import express from 'express';
 import { User, getUserByID } from '../models/User';
 import { getProjectByStatus, getProjectByID } from '../models/Project';
 import { Category, createCategory } from '../models/Category';
-import fs from 'fs-extra';
-import puppeteer from 'puppeteer';
-import ejs from 'ejs';
 import moment from 'moment';
 
 const router = express.Router();
 
 router.get('/', isLoggedIn, isAdmin, function (req, res) {
-    res.redirect('/admin/user/investor/individual');
+    res.redirect('/admin/dashboard');
 });
 router.get('/dashboard', isLoggedIn, isAdmin, function (req, res) {
-    res.send('dashboard');
+    let data = {
+        url: "dashboard"
+    }
+    res.render('pages/admin/dashboard', data);
 });
 router.get('/user', isLoggedIn, isAdmin, function (req, res) {
     res.redirect('/admin/user/investor/individual');
@@ -22,12 +22,13 @@ router.get('/user/investor', isLoggedIn, isAdmin, function (req, res) {
     res.redirect('/admin/user/investor/individual');
 });
 router.get('/user/investor/individual', isLoggedIn, isAdmin, function (req, res) {
+    let url = "individual-investor";
     User.find({'active': true, 'user_type.name': 'investor', 'profile.registration_type': "individual"}, function (error, users) {
         if (error) {
             console.log(error);
         }
         else {
-            res.render('pages/admin/user/investor/individual', {users: users});
+            res.render('pages/admin/user/investor/individual', {investors: users, url: url});
         }
     });
 });
@@ -37,31 +38,42 @@ router.get('/user/investor/individual/:id', isLoggedIn, isAdmin, function (req, 
     });
 });
 router.get('/user/investor/company', isLoggedIn, isAdmin, function (req, res) {
+    let url = "company-investor";
     User.find({'active': true, 'user_type.name': 'investor', 'profile.registration_type': "company"}, function (error, users) {
         if (error) {
             console.log(error);
         }
         else {
-            res.render('pages/admin/user/investor/company', {users: users});
+            res.render('pages/admin/user/investor/company', {investors: users, url: url});
         }
+    });
+});
+router.get('/user/investor/company/:id', isLoggedIn, isAdmin, function (req, res) {
+    let url = "company-investor";
+
+    getUserByID(req.params.id, function (error, user) {    
+        res.render('pages/admin/user/investor/detail', {user: user, url: url});
     });
 });
 router.get('/user/inisiator', isLoggedIn, isAdmin, function (req, res) {
     res.redirect('/admin/user/inisiator/individual');
 });
 router.get('/user/inisiator/individual', isLoggedIn, isAdmin, function (req, res) {
+    let url = "individual-inisiator";
+
     User.find({'active': true, 'user_type.name': 'inisiator', 'profile.registration_type': "individual"}, function (error, users) {
         if (error) {
             console.log(error);
         }
         else {
-            res.render('pages/admin/user/inisiator/individual', {users: users});
+            res.render('pages/admin/user/inisiator/individual', {users: users, url: url});
         }
     });
 });
 router.get('/user/inisiator/individual/:id', isLoggedIn, isAdmin, function (req, res) {
+    let url = "individual-inisiator";
     getUserByID(req.params.id, function (error, user) {        
-        res.render('pages/admin/user/inisiator/detail', {user: user});
+        res.render('pages/admin/user/inisiator/detail', {user: user, url: url});
     });
 });
 router.get('/user/get-image/:user_id/:filename', isLoggedIn, isAdmin, function (req, res) {
@@ -70,6 +82,7 @@ router.get('/user/get-image/:user_id/:filename', isLoggedIn, isAdmin, function (
 router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
+
     getProjectByStatus("waiting", function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
@@ -84,7 +97,7 @@ router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {
         else {
             let data = {
                 projects: projects,
-                url: "started-project"
+                url: "waiting-project",
             }
             success_message = "Silahakan verifikasi proyek yang tersedia";
             req.flash('success_message', success_message);
@@ -165,8 +178,31 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
         }
     });
 });
+router.get('/project/category', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    let success_message;
+    Category.find(function(error, categories) {
+        let data = {
+            url: "category",
+            categories: categories
+        }
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            success_message = "Silahakan verifikasi proyek yang tersedia";
+            req.flash('success_message', success_message);
+            res.render('pages/admin/project/category', data);
+        }
+    });
+});
 router.get('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
-    res.render('pages/admin/project/add-category');
+    let data = {
+        url: "add-category",
+    }
+    res.render('pages/admin/project/add-category', data);
 });
 router.post('/user/investor/individual/verify/:id', isLoggedIn, isAdmin, function (req, res) {
     User.findByIdAndUpdate(req.params.id, {
@@ -182,33 +218,27 @@ router.post('/user/investor/individual/verify/:id', isLoggedIn, isAdmin, functio
             res.json({success: false, message: "User tidak tersedia"});
 
         }
+        else {
+            return res.json({success: true, message: "Berhasil mengaktivasi investor"});
+        }
+    });
+});
+router.post('/user/investor/company/verify/:id', isLoggedIn, isAdmin, function (req, res) {
+    User.findByIdAndUpdate(req.params.id, {
+        user_type: [{
+            name: 'investor',
+            status: 'verified',
+        }]
+    }, function (error, user) {
+        if (error) {
+            return res.json({success: false, message: "Terjadi kesalahan"});
+        }
+        if (!user) {
+            res.json({success: false, message: "User tidak tersedia"});
+
+        }
         else {            
-            const compile = async function(templateName, data) {
-                const html = await fs.readFile(`storage/contracts/template/${templateName}.ejs`, 'utf-8');
-                return ejs.compile(html)(data);
-            }; 
-            (async function() {
-                try {            
-                    const browser = await puppeteer.launch();
-                    const page = await browser.newPage()
-        
-                    const content = await compile('contract-template', user);
-                    
-                    await page.setContent(content);
-                    await page.emulateMedia('screen');
-                    await page.pdf({
-                        path: `storage/contracts/${user.contract}.pdf`,
-                        format: 'A4',
-                        printBackground: true,
-                        timeout: 0
-                    });
-                    await browser.close();
-                    return res.json({success: true, message: "Berhasil mengaktivasi investor"});
-                }
-                catch (e){
-                    return res.json({success: false, message: "Terjadi kesalahan"});
-                }
-            })();
+            return res.json({success: true, message: "Berhasil mengaktivasi investor"});
         }
     });
 });
@@ -221,16 +251,11 @@ router.post('/user/inisiator/individual/verify/:id', isLoggedIn, isAdmin, functi
         }]
     }, function (error, user) {
         if (error) {
-            error_message = "Terjadi kesalahan"; 
-            req.flash('error_message', error_message);
-            res.redirect('/complete-profile');
-            return ;
+            return res.json({success: false, message: "Terjadi kesalahan"});
         }
         if (!user) {
-            error_message = "User tidak tersedia"; 
-            req.flash('error_message', error_message);
-            res.redirect('/complete-profile');
-            return ;
+            res.json({success: false, message: "User tidak tersedia"});
+
         }
         else {    
             res.json({success: true});

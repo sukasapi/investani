@@ -1,6 +1,7 @@
 import express from 'express';
 import { getProjectByID } from '../models/Project';
 import moment from 'moment';
+
 moment.locale('id');
 
 const router = express.Router();
@@ -9,7 +10,6 @@ router.get('/:project_id', function (req, res) {
     let error_message;
     let auth = false;
     let user_type = null;
-    let target = [];
     if (req.isAuthenticated()) {
         auth = true;
         user_type = req.user.user_type[0].name;
@@ -33,7 +33,7 @@ router.get('/:project_id', function (req, res) {
                     project: project,
                     start_date: moment(project.basic[0].duration[0].start_date).format('LL'),
                     due_date: moment(project.basic[0].duration[0].due_date).format('LL'),
-                    duration: moment(project.basic[0].duration[0].due_campaign).diff(moment(project.basic[0].duration[0].start_campaign), 'days')
+                    duration: moment(project.basic[0].duration[0].due_campaign).diff(moment(), 'days')
                 };
                 return res.render('pages/project/project', data);
             }

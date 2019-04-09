@@ -4,7 +4,12 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Dashboard</h1>
+                        <% if (url == 'individual-inisiator' || url == 'company-inisiator' || url == 'individual-investor' || url == 'company-investor' ) { %>
+                        <h1>User</h1>
+                        <% } %>
+                        <% if (url == 'waiting-project') { %>
+                            <h1>Proyek</h1>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -12,9 +17,31 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li><a href="#">Dashboard</a></li>
-                            <li><a href="#">Table</a></li>
-                            <li class="active">Data table</li>
+                            <% if (url == 'individual-inisiator' || url == 'company-inisiator' || url == 'individual-investor' || url == 'company-investor' ) { %>
+                                <li><a href="#">User</a></li>
+                                <% if (url == 'individual-inisiator' || url == 'company-inisiator') { %>
+                                    <li><a href="#">Inisiator</a></li>
+                                    <% if (url == 'individual-inisiator') { %>
+                                        <li class="active">Perseorangan</li>
+                                    <% } %>
+                                    <% if (url == 'company-inisiator') { %>
+                                        <li class="active">Perusahaan</li>
+                                    <% } %>
+                                <% } %>
+                                <% if (url == 'individual-investor' || url == 'company-investor') { %>
+                                    <li><a href="#">Investor</a></li>
+                                    <% if (url == 'individual-investor') { %>
+                                        <li class="active">Perseorangan</li>
+                                    <% } %>
+                                    <% if (url == 'company-investor') { %>
+                                        <li class="active">Perusahaan</li>
+                                    <% } %>
+                                <% } %>
+                            <% } %>
+                            <% if (url == 'waiting-project') { %>
+                                <li><a href="#">Proyek</a></li>
+                                <li><a href="#">Menunggu Verifikasi</a></li>
+                            <% } %>
                         </ol>
                     </div>
                 </div>
