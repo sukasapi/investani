@@ -66,7 +66,7 @@ router.get('/user/inisiator/individual', isLoggedIn, isAdmin, function (req, res
             console.log(error);
         }
         else {
-            res.render('pages/admin/user/inisiator/individual', {users: users, url: url});
+            res.render('pages/admin/user/inisiator/individual', {inisiators: users, url: url});
         }
     });
 });

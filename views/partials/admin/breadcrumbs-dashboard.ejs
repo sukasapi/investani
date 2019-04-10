@@ -7,7 +7,7 @@
                         <% if (url == 'individual-inisiator' || url == 'company-inisiator' || url == 'individual-investor' || url == 'company-investor' ) { %>
                         <h1>User</h1>
                         <% } %>
-                        <% if (url == 'waiting-project') { %>
+                        <% if (url == 'waiting-project' || url == 'category' || url == 'add-category') { %>
                             <h1>Proyek</h1>
                         <% } %>
                     </div>
@@ -38,9 +38,17 @@
                                     <% } %>
                                 <% } %>
                             <% } %>
-                            <% if (url == 'waiting-project') { %>
+                            <% if (url == 'waiting-project' || url == 'category' || url == 'add-category') { %>
                                 <li><a href="#">Proyek</a></li>
-                                <li><a href="#">Menunggu Verifikasi</a></li>
+                                <% if (url == 'waiting-project') { %>
+                                    <li><a href="#">Menunggu Verifikasi</a></li>
+                                <% } %>
+                                <% if (url == 'category') { %>
+                                    <li><a href="#">Daftar Kategori</a></li>
+                                <% } %>
+                                <% if (url == 'add-category') { %>
+                                    <li><a href="#">Tambah Kategori</a></li>
+                                <% } %>
                             <% } %>
                         </ol>
                     </div>

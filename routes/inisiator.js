@@ -16,6 +16,7 @@ import uuidv4 from 'uuid/v4';
 import Resize from '../Resize';
 import upload from '../uploadMiddleware';
 import fs from 'fs';
+import moment from 'moment';
 
 const router = express.Router();
 const prospectusFilePath = path.join(__dirname, '../storage/prospectus');
@@ -229,7 +230,14 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
 
 });
 router.get('/:user_id/started-project', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let durations = [];
+
     getProjectByInisiator(req.params.user_id, function (error, projects) {
+        projects.forEach((project, index) => {
+            if (project.status == 'verified') {
+                durations[index] = moment(project.basic[0].duration[0].due_campaign).diff(moment(), 'days')
+            }
+        });
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -239,6 +247,7 @@ router.get('/:user_id/started-project', isLoggedIn, isInisiator, isVerified, fun
                 user_id: req.user._id,
                 inisiator: req.user.profile[0].name,
                 projects: projects,
+                durations: durations,
                 url: "started-project"
             }
             res.render('pages/inisiator/started-project', data);

@@ -154,7 +154,7 @@
                                     </thead>
                                     <tbody>
                                         <% investors.forEach((investor) => { %>
-                                        <% if (investor.user_type[0].status == 'waiting') {%>
+                                        <% if (investor.user_type[0].status == 'waiting' && investor.bank.length != 0) {%>
                                         <tr>
                                             <td>
                                                 <%= investor.profile[0].name%>
