@@ -1,12 +1,13 @@
 import express from 'express';
 // Import User model
-import { User, createUser, getUserByEmail, comparePassword, getUserByID } from '../models/User';
+import { User, createUser, getUserByEmail, comparePassword, getUserByID, getUserBySecretToken } from '../models/User';
 import passport from 'passport';
 import nodemailer from 'nodemailer';
 import randomstring from 'randomstring';
 import path from 'path';
 import fs from 'fs-extra';
 import ejs from 'ejs';
+import bcrypt from 'bcryptjs';
 
 const router = express.Router();
 const LocalStrategy = require('passport-local').Strategy;
@@ -26,6 +27,15 @@ router.get('/register', notLoggedIn, function (req, res) {
 router.get('/login', notLoggedIn, function (req, res) {
     res.render('pages/auth/login');
 });
+router.get('/forgot-password', notLoggedIn, function (req, res) {
+    res.render('pages/auth/forgot-password');
+});
+router.get('/change-password/:secretToken', notLoggedIn, function (req, res) {
+    let data = {
+        secretToken: req.params.secretToken
+    }
+    res.render('pages/auth/change-password', data);
+});
 router.get('/logout', isLoggedIn, function (req, res) {
     req.logOut();
     req.flash('success_message', 'Anda berhasil keluar');
@@ -40,13 +50,13 @@ router.post('/register', notLoggedIn, function (req, res) {
     let success_message;
     let error_message;
 
-    req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
-    req.checkBody('email', 'Email wajib diisi.').notEmpty();
+    req.checkBody('cfm_pwd', 'Konfirmasi Password tidak cocok dengan password.').equals(password);
+    req.checkBody('cfm_pwd', 'Konfirmasi Password wajib diisi.').notEmpty();
     req.checkBody('password', 'Password tidak boleh lebih dari 50 karakter.').isLength({ max: 50 });
     req.checkBody('password', 'Password minimal mengandung 8 karakter.').isLength({ min: 8 });
     req.checkBody('password', 'Password wajib diisi.').notEmpty();
-    req.checkBody('cfm_pwd', 'Konfirmasi Password tidak cocok dengan password.').equals(password);
-    req.checkBody('cfm_pwd', 'Konfirmasi Password wajib diisi.').notEmpty();
+    req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
+    req.checkBody('email', 'Email wajib diisi.').notEmpty();
     
     let errors = req.validationErrors();
     
@@ -193,6 +203,133 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
         }
         
     });
+});
+router.post('/forgot-password', notLoggedIn, function (req, res) {
+    let email = req.body.email;
+    let secretToken = randomstring.generate();
+    let error_message;
+    let success_message;
+
+    req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
+    req.checkBody('email', 'Email wajib diisi.').notEmpty();
+
+    let errors = req.validationErrors();
+
+    if (errors) {
+        error_message = errors[errors.length-1].msg;
+        req.flash('error_message', error_message);
+        return res.redirect('/auth/forgot-password');
+    }
+    else {
+        getUserByEmail(email, async function (err, user) {
+            if (err) {
+                error_message = "Terjadi kesalahan"; 
+                req.flash('error_message', error_message);
+                return res.redirect('/auth/forgot-password');
+            }
+            if (!user) {
+                error_message = "User tidak ada"; 
+                req.flash('error_message', error_message);
+                return res.redirect('/auth/forgot-password');
+            }
+            else {
+                let transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: 'investaninx@gmail.com',
+                        pass: 'investani2019'
+                    }
+                });
+                let data =  {
+                    user: user,
+                    secretToken: secretToken
+                }
+                const content = await compile('forgot-password', data);
+                let mailOptions = {
+                    from: '"Investani" <investaninx@gmail.com>',
+                    to: email,
+                    subject: "Ubah Password Anda",
+                    html: content
+                };
+        
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        error_message = "Email gagal terkirim"; 
+                        req.flash('error_message', error_message);
+                        return res.redirect('/auth/forgot-password');
+                    }
+                    else {
+                        user.secretToken = secretToken;
+                        user.save()
+                        .then(user => {
+                            success_message = "Email ubah password berhasil terkirim";
+                            req.flash('success_message', success_message);
+                            return res.redirect('/auth/forgot-password');
+                        })
+                        .catch(error => {
+                            error_message = "Terjadi kesalahan";
+                            req.flash('error_message', error_message);
+                            return res.redirect('/auth/forgot-password');
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
+router.post('/change-password/:secretToken', notLoggedIn, function (req, res) {
+    let password = req.body.password;
+    let error_message;
+    let success_message;
+
+    req.checkBody('repassword', 'Password tidak cocok.').equals(password);
+    req.checkBody('repassword', 'Password wajib diisi.').notEmpty();
+    req.checkBody('password', 'Password tidak boleh lebih dari 50 karakter.').isLength({ max: 50 });
+    req.checkBody('password', 'Password minimal mengandung 8 karakter.').isLength({ min: 8 });
+    req.checkBody('password', 'Password wajib diisi.').notEmpty();
+
+    let errors = req.validationErrors();
+    
+    if (errors) {
+        error_message = errors[errors.length-1].msg;
+        req.flash('error_message', error_message);
+        return res.redirect(`/auth/change-password/${req.params.secretToken}`);
+    }
+    else {
+        getUserBySecretToken(req.params.secretToken, function (error, user) {
+            if (error) {
+                error_message = "Terjadi kesalahan";
+                req.flash('error_message', error_message);
+                return res.redirect(`/auth/change-password/${req.params.secretToken}`);
+            }
+            if (!user) {
+                error_message = "User tidak ada"; 
+                req.flash('error_message', error_message);
+                return res.redirect(`/auth/change-password/${req.params.secretToken}`);
+            }
+            else {
+                bcrypt.genSalt(10, function(err, salt) {
+                    bcrypt.hash(password, salt, function(err, hash) {
+                        user.secretToken = "";
+                        user.password = hash;
+                        user.save()
+                        .then(user => {
+                            success_message = "Password berhasil diubah";
+                            req.flash('success_message', success_message);
+                            return res.redirect('/auth/login');
+                        })
+                        .catch(error => {
+                            error_message = "Terjadi kesalahan";
+                            req.flash('error_message', error_message);
+                            return res.redirect('/auth/login');
+                        });
+                    });
+                  });
+            }
+        });
+    }
 });
 
 function isLoggedIn(req, res, next) {

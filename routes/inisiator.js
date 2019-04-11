@@ -123,12 +123,6 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                                 city_name = project.basic[0].city[0].city_name;
                                 category = project.category;
                                 sub_category = project.sub_category;
-                                unit_value = project.basic[0].unit_value;
-                                goal = project.basic[0].goal;
-                                campaign = project.basic[0].duration[0].campaign;
-                                start_date = project.basic[0].duration[0].start_date.toLocaleDateString();
-                                roi = project.basic[0].roi;
-                                duration = project.basic[0].duration[0].duration;
                                 stock_price = project.basic[0].stock[0].price;
                                 total_stock = project.basic[0].stock[0].total;
                             }
@@ -149,6 +143,12 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                                 }
                             }
                             if (project.project.length != 0) {
+                                unit_value = project.project[0].unit_value;
+                                goal = project.project[0].goal;
+                                campaign = project.project[0].duration[0].campaign;
+                                start_date = project.project[0].duration[0].start_date.toLocaleDateString();
+                                roi = project.project[0].roi;
+                                duration = project.project[0].duration[0].duration;
                                 abstract = project.project[0].abstract.replace('&', '&amp;');
                                 prospectus = project.project[0].prospectus;
                             }
@@ -346,26 +346,6 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                     min: 1
                 });
                 req.checkBody('total_stock', 'Jumlah saham wajib diisi').notEmpty();
-                req.checkBody('duration', 'Durasi proyek tidak boleh lebih dari 12 bulan').isInt({
-                    max: 12
-                });
-                req.checkBody('duration', 'Durasi proyek tidak boleh kurang dari 1 bulan').isInt({
-                    min: 1
-                });
-                req.checkBody('duration', 'Durasi proyek wajib diisi').notEmpty();
-                req.checkBody('roi', 'Imbal hasil tidak boleh lebih dari 100%').isInt({
-                    max: 100
-                });
-                req.checkBody('roi', 'Imbal hasil tidak boleh kurang dari 0%').isInt({
-                    min: 0
-                });
-                req.checkBody('roi', 'Imbal hasil wajib diisi').notEmpty();
-                req.checkBody('start_date', 'Tanggal proyek dimulai wajib diisi').notEmpty();
-                req.checkBody('campaign', 'Durasi Kampanye proyek wajib dipilih').notEmpty();
-                req.checkBody('unit_value', 'Nilai Satuan tidak boleh kurang dari 1.').isNumeric({
-                    min: 1
-                });
-                req.checkBody('unit_value', 'Luas Lahan wajib diisi.').notEmpty();
                 req.checkBody('category', 'Kategori tanaman wajib dipilih.').notEmpty();
                 req.checkBody('city', 'Kota wajib dipilih.').notEmpty();
                 req.checkBody('province', 'Provinsi wajib dipilih.').notEmpty();
@@ -395,20 +375,10 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                                 city_id: req.body.city,
                                 city_name: req.body.city_name
                             },
-                            unit_value: req.body.unit_value,
-                            duration: {
-                                start_campaign: null,
-                                due_campaign: null,
-                                campaign: req.body.campaign,
-                                start_date: req.body.start_date,
-                                due_date: null,
-                                duration: req.body.duration
-                            },
-                            roi: req.body.roi,
                             stock: {
                                 total: req.body.total_stock,
                                 price: req.body.stock_price
-                            }
+                            },
                         },
                         category: req.body.category,
                         sub_category: req.body.sub_category
@@ -429,7 +399,6 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                             return res.redirect(`/inisiator/project/${project._id}/edit`);
                         }
                     });
-
                 }
             }
         }
@@ -438,38 +407,8 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
 router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let success_message;
-    let budget = [
-        // budget 0
-        {
-            description: "",
-            date: null,
-            amount: 0
-        },
-        // budget 1
-        {
-            description: "",
-            date: null,
-            amount: 0
-        },
-        // budget 2
-        {
-            description: "",
-            date: null,
-            amount: 0
-        },
-        // budget 3
-        {
-            description: "",
-            date: null,
-            amount: 0
-        },
-        // budget 4
-        {
-            description: "",
-            date: null,
-            amount: 0
-        }
-    ];
+    let budget = [];
+    let total_budget = 0;
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             error_message = "Terjadi kesalahan";
@@ -486,29 +425,27 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
                 req.flash('error_message', error_message);
                 return res.redirect('/inisiator/start-project');
             } else {
-                for (let i = req.body.budget_items.budget_items.length - 1; i >= 0; i--) {
-                    budget[i] = {
-                        description: req.body.budget_items.budget_items[i].description,
-                        activity_date: req.body.budget_items.budget_items[i].activity_date,
-                        amount: req.body.budget_items.budget_items[i].amount
-                    };
-                    req.checkBody(`budget_items[budget_items][${i}][amount]`, 'Anggaran tidak boleh kurang dari 1 Rupiah').isInt({
+                req.body.budget_items.budget_items.forEach((budget_item, index) => {
+                    budget[index] = {
+                        description: budget_item.description,
+                        activity_date: budget_item.activity_date,
+                        amount: budget_item.amount
+                    }
+                    total_budget = total_budget + parseInt(budget_item.amount);
+                    req.checkBody(`budget_items[budget_items][${index}][amount]`, 'Anggaran tidak boleh kurang dari 1 Rupiah').isInt({
                         min: 1
                     });
-                    req.checkBody(`budget_items[budget_items][${i}][amount]`, 'Anggaran wajib diisi').notEmpty();
-                    req.checkBody(`budget_items[budget_items][${i}][activity_date]`, `Tanggal Kegiatan ${i+1} wajib diisi`).notEmpty();
-                    req.checkBody(`budget_items[budget_items][${i}][description]`, `Nama Kegiatan ${i+1} tidak boleh lebih dari 250 karakter`).isLength({
+                    req.checkBody(`budget_items[budget_items][${index}][amount]`, 'Anggaran wajib diisi').notEmpty();
+                    req.checkBody(`budget_items[budget_items][${index}][activity_date]`, `Tanggal Kegiatan ${index+1} wajib diisi`).notEmpty();
+                    req.checkBody(`budget_items[budget_items][${index}][description]`, `Nama Kegiatan ${index+1} tidak boleh lebih dari 250 karakter`).isLength({
                         max: 250
                     });
-                    req.checkBody(`budget_items[budget_items][${i}][description]`, `Nama Kegiatan ${i+1} tidak boleh kurang dari 5 karakter`).isLength({
+                    req.checkBody(`budget_items[budget_items][${index}][description]`, `Nama Kegiatan ${index+1} tidak boleh kurang dari 5 karakter`).isLength({
                         min: 5
                     });
-                    req.checkBody(`budget_items[budget_items][${i}][description]`, `Nama Kegiatan ${i+1} wajib diisi`).notEmpty();
-                }
+                    req.checkBody(`budget_items[budget_items][${index}][description]`, `Nama Kegiatan ${index+1} wajib diisi`).notEmpty();
+                });
 
-                let data = {
-                    budget: budget
-                };
 
                 let errors = req.validationErrors();
 
@@ -516,7 +453,17 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
                     error_message = errors[errors.length - 1].msg;
                     req.flash('error_message', error_message);
                     return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
-                } else {
+                }
+                if (total_budget != project.basic[0].stock[0].price*project.basic[0].stock[0].total) {
+                    error_message = "Anggaran proyek tidak sesuai dengan perhitungan saham";
+                    req.flash('error_message', error_message);
+                    return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                }
+                else {
+                    let data = {
+                        budget: budget
+                    };
+
                     updateProject(req.params.project_id, data, function (error, project) {
                         if (error) {
                             error_message = "Terjadi kesalahan";
@@ -542,6 +489,27 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
 router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified, prospectusUpload.single('prospectus'), async function (req, res) {
     let error_message;
     let success_message;
+
+    req.checkBody('duration', 'Durasi proyek tidak boleh lebih dari 12 bulan').isInt({
+        max: 12
+    });
+    req.checkBody('duration', 'Durasi proyek tidak boleh kurang dari 1 bulan').isInt({
+        min: 1
+    });
+    req.checkBody('duration', 'Durasi proyek wajib diisi').notEmpty();
+    req.checkBody('roi', 'Imbal hasil tidak boleh lebih dari 100%').isInt({
+        max: 100
+    });
+    req.checkBody('roi', 'Imbal hasil tidak boleh kurang dari 0%').isInt({
+        min: 0
+    });
+    req.checkBody('roi', 'Imbal hasil wajib diisi').notEmpty();
+    req.checkBody('start_date', 'Tanggal proyek dimulai wajib diisi').notEmpty();
+    req.checkBody('campaign', 'Durasi Kampanye proyek wajib dipilih').notEmpty();
+    req.checkBody('unit_value', 'Nilai Satuan tidak boleh kurang dari 1.').isNumeric({
+        min: 1
+    });
+    req.checkBody('unit_value', 'Nilai Satuan wajib diisi.').notEmpty();
 
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
@@ -580,6 +548,16 @@ router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified,
                     }
                     let data = {
                         project: [{
+                            unit_value: req.body.unit_value,
+                            duration: {
+                                start_campaign: null,
+                                due_campaign: null,
+                                campaign: req.body.campaign,
+                                start_date: req.body.start_date,
+                                due_date: null,
+                                duration: req.body.duration
+                            },
+                            roi: req.body.roi,
                             abstract: req.body.abstract,
                             prospectus: prospectus
                         }]
@@ -608,7 +586,8 @@ router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified,
 
 
 });
-let cpUpload = upload.fields([{
+let cpUpload = upload.fields([
+    {
         name: 'project_image0',
         maxCount: 1
     },
@@ -619,15 +598,7 @@ let cpUpload = upload.fields([{
     {
         name: 'project_image2',
         maxCount: 1
-    },
-    {
-        name: 'project_image3',
-        maxCount: 1
-    },
-    {
-        name: 'project_image4',
-        maxCount: 1
-    },
+    }
 ]);
 router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, function (req, res) {
     cpUpload(req, res, function (err) {

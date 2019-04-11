@@ -23,6 +23,27 @@ let ProjectSchema = mongoose.Schema({
                 type: String
             }
         }],
+        stock: [{
+            price: {
+                type: Number
+            },
+            total: {
+                type: Number
+            }
+        }],
+    }],
+    budget: [{
+        description: {
+            type: String
+        },
+        activity_date: {
+            type: Date
+        },
+        amount: {
+            type: Number
+        }
+    }],
+    project: [{
         unit_value: {
             type: Number
         },
@@ -49,27 +70,6 @@ let ProjectSchema = mongoose.Schema({
         roi: {
             type: Number
         },
-        stock: [{
-            price: {
-                type: Number
-            },
-            total: {
-                type: Number
-            }
-        }],
-    }],
-    budget: [{
-        description: {
-            type: String
-        },
-        activity_date: {
-            type: Date
-        },
-        amount: {
-            type: Number
-        }
-    }],
-    project: [{
         abstract: {
             type: String
         },
