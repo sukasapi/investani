@@ -102,7 +102,7 @@
                                 <div class="tab-content" id="pills-tabContent">
                                     <div class="tab-pane fade active show" id="basic" role="tabpanel"
                                         aria-labelledby="basic-tab">
-                                        <form action="/admin/project/waiting/verify/<%= project_id %>"
+                                        <form action="/admin/project/waiting/verify/<%= project._id %>"
                                             id="project-basic-form" method="post">
                                             <% if (success_message != '') { %>
                                             <div
@@ -128,13 +128,14 @@
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Judul Proyek</label>
                                                     <input name="title" type="text" class="form-control"
-                                                        placeholder="Judul Proyek" value="<%= title %>" disabled>
+                                                        placeholder="Judul Proyek" value="<%= project.basic[0].title %>"
+                                                        disabled>
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Provinsi</label>
                                                     <select name="province" id="province" class="form-control" disabled>
                                                         <option selected>
-                                                            <%= province %>
+                                                            <%= project.basic[0].province[0].province_name %>
                                                         </option>
                                                     </select>
                                                     <span class="select-btn">
@@ -146,83 +147,70 @@
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Kota</label>
                                                     <select name="city" id="city" class="form-control" disabled>
-                                                        <option selected><%= city %></option>
+                                                        <option selected><%= project.basic[0].city[0].city_name %>
+                                                        </option>
                                                     </select>
                                                     <span class="select-btn">
                                                         <i class="zmdi zmdi-chevron-down"></i>
                                                     </span>
                                                 </div>
-                                                <div class="col col-sm-6">
+                                                <div class="col col-sm-3">
                                                     <label for="cc-name" class="control-label mb-1">Kategori
-                                                        Tanaman</label>
+                                                        Proyek</label>
                                                     <select name="category" id="category" class="form-control" disabled>
-                                                        <option value="tg-ii" selected>TG-II</option>
+                                                        <option value="<%= project.category._id %>" selected>
+                                                            <%= project.category.title %></option>
                                                     </select>
                                                 </div>
-                                            </div>
-                                            <div class="row form-group">
-                                                <div class="col col-sm-6">
-                                                    <label class="control-label mb-1">Luas Lahan (ha)</label>
-                                                    <input class="form-control" id="area" name="area"
-                                                        placeholder="Luas Lahan (ha)" type="number" value="<%= area %>"
+                                                <div class="col col-sm-3">
+                                                    <label for="cc-name" class="control-label mb-1">Sub-kategori
+                                                        Proyek</label>
+                                                    <select name="sub_category" id="sub-category" class="form-control"
                                                         disabled>
-                                                </div>
-                                                <div class="col col-sm-6">
-                                                    <label class="control-label mb-1">Durasi Kampanye (hari)</label>
-                                                    <select name="campaign" id="campaign" class="form-control" disabled>
-                                                        <option value="30" selected>30</option>
+                                                        <% project.category.sub_category.forEach((sub_category) => { %>
+                                                        <% if (project.sub_category.equals(sub_category._id)) { %>
+                                                        <option value="<%= project.sub_category %>" selected>
+                                                            <%= sub_category.name %></option>
+                                                        <% } %>
+                                                        <% }) %>
                                                     </select>
                                                 </div>
-                                            </div>
-                                            <div class="row form-group">
-                                                <div class="col col-sm-6">
-                                                    <label class="control-label mb-1">Imbal Hasil/RoI (%)</label>
-                                                    <input class="form-control" id="roi" name="roi"
-                                                        placeholder="Imbal Hasil (RoI)" type="number" value="<%= roi %>"
-                                                        disabled>
-                                                </div>
-                                                <div class="col col-sm-6">
-                                                    <label class="control-label mb-1">Durasi Proyek (Bulan)</label>
-                                                    <input class="form-control" id="duration" name="duration"
-                                                        placeholder="Durasi Proyek (Bulan)" type="number"
-                                                        value="<%= duration %>" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label mb-1" id="date-picker-label">Tanggal Proyek
-                                                    Dimulai</label>
-                                                <input type="text" name="start_date" class="date form-control"
-                                                    id="datepicker" placeholder="Tanggal Proyek Dimulai"
-                                                    value="<%= start_date %>" disabled>
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Harga Saham</label>
                                                     <input class="form-control" id="stock-price" name="stock_price"
                                                         placeholder="Harga Saham" type="number"
-                                                        value="<%= stock_price %>" disabled>
+                                                        value="<%= project.basic[0].stock_price %>" disabled>
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Jumlah Saham</label>
                                                     <input class="form-control" id="total-stock" name="total_stock"
                                                         placeholder="Jumlah Saham" type="number"
-                                                        value="<%= total_stock %>" disabled>
+                                                        value="<%= project.basic[0].total_stock %>" disabled>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <button id="project-basic-button" type="submit"
-                                                    class="btn btn-lg btn-info btn-block">
-                                                    <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                        id="project-basic-spinner" role="status"
-                                                        style="display: none"></span>
-                                                    <span id="project-basic -button-placeholder">Verifikasi
-                                                        Proyek</span>
-                                                </button>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <button type="button" class="btn btn-lg btn-info btn-block">
+                                                        <span>Ubah Data</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <button id="project-image-button" type="submit"
+                                                        class="btn btn-lg btn-info btn-block">
+                                                        <span aria-hidden="true"
+                                                            class="spinner-border spinner-border-sm"
+                                                            id="project-image-spinner" role="status"
+                                                            style="display: none"></span>
+                                                        <span>Verifikasi Proyek</span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
-                                        <form action="/admin/project/waiting/verify/<%= project_id %>"
+                                        <form action="/admin/project/waiting/verify/<%= project._id %>"
                                             id="project-budget-form" method="post">
                                             <% if (success_message != '') { %>
                                             <div
@@ -244,7 +232,7 @@
                                                 </button>
                                             </div>
                                             <% } %>
-                                            <% budget.forEach((budget) => { %>
+                                            <% project.budget.forEach((budget) => { %>
                                             <% if (budget.description != "") {%>
                                             <div class="row form-group dynamic-row" id="dynamic_form">
                                                 <div class="col col-sm-3">
@@ -270,21 +258,28 @@
                                             <% } %>
                                             <% }) %>
 
-                                            <div>
-                                                <button id="project-budget-button" type="submit"
-                                                    class="btn btn-lg btn-info btn-block">
-                                                    <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                        id="project-budget-spinner" role="status"
-                                                        style="display: none"></span>
-                                                    <span id="project-budget-button-placeholder">Verifikasi
-                                                        Proyek</span>
-                                                </button>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <button type="button" class="btn btn-lg btn-info btn-block">
+                                                        <span>Ubah Data</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <button id="project-image-button" type="submit"
+                                                        class="btn btn-lg btn-info btn-block">
+                                                        <span aria-hidden="true"
+                                                            class="spinner-border spinner-border-sm"
+                                                            id="project-image-spinner" role="status"
+                                                            style="display: none"></span>
+                                                        <span>Verifikasi Proyek</span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="project" role="tabpanel"
                                         aria-labelledby="project-tab">
-                                        <form action="/admin/project/waiting/verify/<%= project_id %>"
+                                        <form action="/admin/project/waiting/verify/<%= project._id %>"
                                             enctype="multipart/form-data" id="project-project-form" method="post">
                                             <% if (success_message != '') { %>
                                             <div
@@ -306,36 +301,84 @@
                                                 </button>
                                             </div>
                                             <% } %>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label
+                                                        class="control-label mb-1"><%= project.category.unit %></label>
+                                                    <input class="form-control" id="area" name="area"
+                                                        placeholder="<%= project.category.unit %>" type="number"
+                                                        value="<%= project.project[0].unit_value %>" disabled>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Durasi Kampanye (hari)</label>
+                                                    <select name="campaign" id="campaign" class="form-control" disabled>
+                                                        <option value="<%= project.project[0].duration[0].campaign %>"
+                                                            selected><%= project.project[0].duration[0].campaign %>
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Imbal Hasil/RoI (%)</label>
+                                                    <input class="form-control" id="roi" name="roi"
+                                                        placeholder="Imbal Hasil (RoI)" type="number"
+                                                        value="<%= project.project[0].roi %>" disabled>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Durasi Proyek (Bulan)</label>
+                                                    <input class="form-control" id="duration" name="duration"
+                                                        placeholder="Durasi Proyek (Bulan)" type="number"
+                                                        value="<%= project.project[0].duration[0].duration %>" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label mb-1" id="date-picker-label">Tanggal Proyek
+                                                    Dimulai</label>
+                                                <input type="text" name="start_date" class="date form-control"
+                                                    id="datepicker" placeholder="Tanggal Proyek Dimulai"
+                                                    value="<%= project.project[0].duration[0].start_date.toLocaleDateString() %>"
+                                                    disabled>
+                                            </div>
                                             <div class="form-group">
                                                 <label class="control-label mb-1">Abstrak Proyek</label>
                                                 <textarea name="abstract" id="editor">
-                                                <%= abstract %>
+                                                <%= project.project[0].abstract %>
                                                 </textarea>
                                             </div>
                                             <div class="form-group">
-                                                <label class="control-label mb-1">Prospektus: <%= prospectus %> </label>
-                                                <a href="/project/get-prospectus/<%= prospectus %>" style="color: #ffffff">
+                                                <label class="control-label mb-1">Prospektus:
+                                                    <%= project.project[0].prospectus %> </label>
+                                                <a href="/project/get-prospectus/<%= project.project[0].prospectus %>"
+                                                    style="color: #ffffff">
                                                     <button class="btn btn-success btn-sm" type="button">
                                                         Unduh
                                                     </button>
                                                 </a>
-                                                
+
                                             </div>
 
-                                            <div>
-                                                <button id="project-project-button" type="submit"
-                                                    class="btn btn-lg btn-info btn-block">
-                                                    <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                        id="project-project-spinner" role="status"
-                                                        style="display: none"></span>
-                                                    <span id="project-project-button-placeholder">Verifikasi
-                                                        Proyek</span>
-                                                </button>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <button type="button" class="btn btn-lg btn-info btn-block">
+                                                        <span>Ubah Data</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <button id="project-image-button" type="submit"
+                                                        class="btn btn-lg btn-info btn-block">
+                                                        <span aria-hidden="true"
+                                                            class="spinner-border spinner-border-sm"
+                                                            id="project-image-spinner" role="status"
+                                                            style="display: none"></span>
+                                                        <span>Verifikasi Proyek</span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
-                                        <form action="/admin/project/waiting/verify/<%= project_id %>"
+                                        <form action="/admin/project/waiting/verify/<%= project._id %>"
                                             enctype="multipart/form-data" id="project-image-form" method="post">
                                             <% if (success_message != '') { %>
                                             <div
@@ -358,24 +401,32 @@
                                             </div>
                                             <% } %>
                                             <div class="row form-group">
-                                                <% image.forEach((image) => { %>
+                                                <% project.image.forEach((image) => { %>
                                                 <% if (image != null) { %>
                                                 <div class="col col-sm-2">
                                                     <input type="file" class="dropify"
-                                                        data-default-file="/image/project/<%=project_id %>/<%= image %>"
+                                                        data-default-file="/image/project/<%=project._id %>/<%= image.filename %>"
                                                         accept="image/*" disabled />
                                                 </div>
                                                 <% } %>
                                                 <% }); %>
                                             </div>
-                                            <div>
-                                                <button id="project-image-button" type="submit"
-                                                    class="btn btn-lg btn-info btn-block">
-                                                    <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                        id="project-image-spinner" role="status"
-                                                        style="display: none"></span>
-                                                    <span>Verifikasi Proyek</span>
-                                                </button>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <button type="button" class="btn btn-lg btn-info btn-block">
+                                                        <span>Ubah Data</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <button id="project-image-button" type="submit"
+                                                        class="btn btn-lg btn-info btn-block">
+                                                        <span aria-hidden="true"
+                                                            class="spinner-border spinner-border-sm"
+                                                            id="project-image-spinner" role="status"
+                                                            style="display: none"></span>
+                                                        <span>Verifikasi Proyek</span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>

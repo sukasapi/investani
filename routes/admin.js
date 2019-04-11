@@ -82,8 +82,14 @@ router.get('/user/get-image/:user_id/:filename', isLoggedIn, isAdmin, function (
 router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
+    let durations = [];
 
     getProjectByStatus("waiting", function (error, projects) {
+        projects.forEach((project, index) => {
+            if (project.status == 'verified') {
+                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
+            }
+        });
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -97,6 +103,7 @@ router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {
         else {
             let data = {
                 projects: projects,
+                durations: durations,
                 url: "waiting-project",
             }
             success_message = "Silahakan verifikasi proyek yang tersedia";
@@ -121,12 +128,12 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
         }
         else {
             let category = project.basic[0].category;
-            let area = project.basic[0].area;
-            let goal = project.basic[0].goal;
-            let campaign = project.basic[0].duration[0].campaign;
-            let start_date = project.basic[0].duration[0].start_date.toLocaleDateString();
-            let roi = project.basic[0].roi;
-            let duration = project.basic[0].duration[0].duration;
+            let unit_value = project.project[0].unit_value;
+            let goal = project.project[0].goal;
+            let campaign = project.project[0].duration[0].campaign;
+            let start_date = project.project[0].duration[0].start_date.toLocaleDateString();
+            let roi = project.project[0].roi;
+            let duration = project.project[0].duration[0].duration;
             let stock_price = project.basic[0].stock[0].price;
             let total_stock = project.basic[0].stock[0].total;
             let budget = [];
@@ -154,23 +161,25 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
                 image[i] = project.image[i].filename;
             }
             let data = {
-                project_id: project._id,
-                title: project.basic[0].title,
-                province: project.basic[0].province[0].province_name,
-                city: project.basic[0].city[0].city_name,
-                category: category,
-                area: area,
-                goal: goal,
-                campaign: campaign,
-                start_date: start_date,
-                roi: roi,
-                duration: duration,
-                stock_price: stock_price,
-                total_stock: total_stock,
-                budget: budget,
-                abstract: abstract,
-                prospectus: prospectus,
-                image: image,
+                // project_id: project._id,
+                // title: project.basic[0].title,
+                // province: project.basic[0].province[0].province_name,
+                // city: project.basic[0].city[0].city_name,
+                // category: category,
+                // area: area,
+                // goal: goal,
+                // campaign: campaign,
+                // start_date: start_date,
+                // roi: roi,
+                // duration: duration,
+                // stock_price: stock_price,
+                // total_stock: total_stock,
+                // budget: budget,
+                // abstract: abstract,
+                // prospectus: prospectus,
+                // image: image,
+                url: 'detail-project',
+                project: project
             }
             success_message = "Silahakan verifikasi proyek yang tersedia";
             req.flash('success_message', success_message);

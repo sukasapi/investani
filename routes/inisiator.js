@@ -235,7 +235,7 @@ router.get('/:user_id/started-project', isLoggedIn, isInisiator, isVerified, fun
     getProjectByInisiator(req.params.user_id, function (error, projects) {
         projects.forEach((project, index) => {
             if (project.status == 'verified') {
-                durations[index] = moment(project.basic[0].duration[0].due_campaign).diff(moment(), 'days')
+                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
             }
         });
         if (error) {
