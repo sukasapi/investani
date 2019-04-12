@@ -271,9 +271,9 @@ router.post('/project/waiting/verify/:project_id', isLoggedIn, isAdmin, function
             return res.redirect('/admin/project/waiting');
         }
         else {
-            project.basic[0].duration[0].start_campaign = moment().format();
-            project.basic[0].duration[0].due_campaign = moment().add(project.basic[0].duration[0].campaign, 'days');
-            project.basic[0].duration[0].due_date = moment(project.basic[0].duration[0].start_date).add(project.basic[0].duration[0].duration, 'months');
+            project.project[0].duration[0].start_campaign = moment().format();
+            project.project[0].duration[0].due_campaign = moment().add(project.project[0].duration[0].campaign, 'days');
+            project.project[0].duration[0].due_date = moment(project.project[0].duration[0].start_date).add(project.project[0].duration[0].duration, 'months');
             project.status = "verified";
             project.save().then(project => {
                 success_message = "Berhasil memverifikasi proyek";

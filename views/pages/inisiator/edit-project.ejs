@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
     <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
@@ -26,20 +27,23 @@
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
     <style>
-        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
-			-webkit-appearance: none; 
-			margin: 0; 
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
-        .form-control-file{
+
+        .form-control-file {
             width: 100%;
             padding: 5px 10px;
             border: 1px solid #e5e5e5;
             border-radius: 5px;
         }
+
         .ck-editor__editable {
             min-height: 300px;
         }
-	</style>
+    </style>
 </head>
 
 <body>
@@ -78,8 +82,9 @@
                             <div class="card-body">
                                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active show" id="pills-basic-tab" data-toggle="pill" href="#basic"
-                                            role="tab" aria-controls="basic" aria-selected="true">Dasar</a>
+                                        <a class="nav-link active show" id="pills-basic-tab" data-toggle="pill"
+                                            href="#basic" role="tab" aria-controls="basic"
+                                            aria-selected="true">Dasar</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" id="pills-budget-tab" data-toggle="pill" href="#budget"
@@ -91,26 +96,31 @@
                                             role="tab" aria-controls="project" aria-selected="false">Detail</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="pills-image-tab" data-toggle="pill" href="#image" role="tab"
-                                            aria-controls="image" aria-selected="false">Gambar</a>
+                                        <a class="nav-link" id="pills-image-tab" data-toggle="pill" href="#image"
+                                            role="tab" aria-controls="image" aria-selected="false">Gambar</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content" id="pills-tabContent">
-                                    <div class="tab-pane fade active show" id="basic" role="tabpanel" aria-labelledby="basic-tab">
-                                        <form action="/inisiator/project/<%= project_id %>/basic" id="project-basic-form"
-                                            method="post">
+                                    <div class="tab-pane fade active show" id="basic" role="tabpanel"
+                                        aria-labelledby="basic-tab">
+                                        <form action="/inisiator/project/<%= project_id %>/basic"
+                                            id="project-basic-form" method="post">
                                             <% if (success_message != '') { %>
-                                            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
                                                 <%= success_message %>
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">×</span>
                                                 </button>
                                             </div>
                                             <% } %>
                                             <% if (error_message != '') { %>
-                                            <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
                                                 <%= error_message %>
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">×</span>
                                                 </button>
                                             </div>
@@ -118,24 +128,24 @@
                                             <div class="row form-group">
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Judul Proyek</label>
-                                                    <input name="title" type="text" class="form-control" placeholder="Judul Proyek"
-                                                        value="<%= title %>">
+                                                    <input name="title" type="text" class="form-control"
+                                                        placeholder="Judul Proyek" value="<%= title %>">
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Provinsi</label>
                                                     <select name="province" id="province" class="form-control">
                                                         <option disabled selected>Pilih provinsi</option>
                                                         <% for(var i = 0; i < province.length; i++) {%>
-                                                            <% if (province[i].id == province_id) { %>
-                                                                <option value="<%= province[i].id %>" selected>
-                                                                    <%= province[i].nama %>
-                                                                </option>
-                                                                <% } else { %>
-                                                                    <option value="<%= province[i].id %>">
-                                                                        <%= province[i].nama %>
-                                                                    </option>
-                                                            <% }%>	
-                                                        <% }%>	
+                                                        <% if (province[i].id == province_id) { %>
+                                                        <option value="<%= province[i].id %>" selected>
+                                                            <%= province[i].nama %>
+                                                        </option>
+                                                        <% } else { %>
+                                                        <option value="<%= province[i].id %>">
+                                                            <%= province[i].nama %>
+                                                        </option>
+                                                        <% }%>
+                                                        <% }%>
                                                     </select>
                                                     <input class="form-control" id="province-name" name="province_name"
                                                         type="text" style="display: none" value="<%= province_name %>">
@@ -151,26 +161,32 @@
                                                     <span class="select-btn">
                                                         <i class="zmdi zmdi-chevron-down"></i>
                                                     </span>
-                                                    <input class="form-control" id="city-name" name="city_name" type="text"
-                                                        style="display: none" value="<%= city_name %>">
+                                                    <input class="form-control" id="city-name" name="city_name"
+                                                        type="text" style="display: none" value="<%= city_name %>">
                                                 </div>
                                                 <div class="col col-sm-3">
-                                                    <label for="cc-name" class="control-label mb-1">Kategori Proyek</label>
+                                                    <label for="cc-name" class="control-label mb-1">Kategori
+                                                        Proyek</label>
                                                     <select name="category" id="category" class="form-control">
                                                         <option disabled>Pilih kategori</option>
-                                                        <% all_category.forEach((all_category) => { %> 
-                                                            <option value="<%= all_category._id %>" <% if (category == all_category._id) { %> selected <% } %> ><%= all_category.title %></option>
+                                                        <% all_category.forEach((all_category) => { %>
+                                                        <option value="<%= all_category._id %>"
+                                                            <% if (category == all_category._id) { %> selected <% } %>>
+                                                            <%= all_category.title %></option>
                                                         <% }) %>
                                                     </select>
                                                 </div>
                                                 <div class="col col-sm-3">
-                                                    <label for="cc-name" class="control-label mb-1">Sub-kategori Proyek</label>
+                                                    <label for="cc-name" class="control-label mb-1">Sub-kategori
+                                                        Proyek</label>
                                                     <select name="sub_category" id="sub-category" class="form-control">
                                                         <option selected disabled>Pilih Sub-kategori</option>
                                                         <% all_category[0].sub_category.forEach((sub_category) => { %>
-                                                            <% if (sub_category.name != null){ %>
-                                                                <option class="sub-category-option" value="<%= sub_category._id %>"><%= sub_category.name %></option>
-                                                            <% } %>
+                                                        <% if (sub_category.name != null){ %>
+                                                        <option class="sub-category-option"
+                                                            value="<%= sub_category._id %>"><%= sub_category.name %>
+                                                        </option>
+                                                        <% } %>
                                                         <% }) %>
                                                     </select>
                                                 </div>
@@ -179,38 +195,48 @@
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Harga Saham</label>
                                                     <input class="form-control" id="stock-price" name="stock_price"
-                                                        placeholder="Harga Saham" type="number" value="<%= stock_price %>">
+                                                        placeholder="Harga Saham" type="number"
+                                                        value="<%= stock_price %>">
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Jumlah Saham</label>
                                                     <input class="form-control" id="total-stock" name="total_stock"
-                                                        placeholder="Jumlah Saham" type="number" value="<%= total_stock %>">
+                                                        placeholder="Jumlah Saham" type="number"
+                                                        value="<%= total_stock %>">
                                                 </div>
                                             </div>
                                             <div>
-                                                <button id="project-basic-button" type="submit" class="btn btn-lg btn-info btn-block" <% if (status == 'verified') { %> disabled <% } %> >
+                                                <button id="project-basic-button" type="submit"
+                                                    class="btn btn-lg btn-info btn-block"
+                                                    <% if (status == 'verified') { %> disabled <% } %>>
                                                     <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                        id="project-basic-spinner" role="status" style="display: none"></span>
-                                                    <span id="project-basic -button-placeholder">Simpan dan Lanjutkan</span>
+                                                        id="project-basic-spinner" role="status"
+                                                        style="display: none"></span>
+                                                    <span id="project-basic -button-placeholder">Simpan dan
+                                                        Lanjutkan</span>
                                                 </button>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
-                                        <form action="/inisiator/project/<%= project_id %>/budget" id="project-budget-form"
-                                            method="post">
+                                        <form action="/inisiator/project/<%= project_id %>/budget"
+                                            id="project-budget-form" method="post">
                                             <% if (success_message != '') { %>
-                                            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
                                                 <%= success_message %>
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">×</span>
                                                 </button>
                                             </div>
                                             <% } %>
                                             <% if (error_message != '') { %>
-                                            <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
                                                 <%= error_message %>
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">×</span>
                                                 </button>
                                             </div>
@@ -218,13 +244,14 @@
                                             <div class="row form-group dynamic-row" id="dynamic_form">
                                                 <div class="col col-sm-3">
                                                     <label class="control-label mb-1 item-label">Nama Kegiatan</label>
-                                                    <input class="form-control budget-description" id="budget-items-description"
-                                                        name="description" placeholder="Kegiatan Baru" type="text"
-                                                        value="">
+                                                    <input class="form-control budget-description"
+                                                        id="budget-items-description" name="description"
+                                                        placeholder="Kegiatan Baru" type="text" value="">
                                                 </div>
                                                 <div class="col col-sm-4">
                                                     <label class="control-label mb-1">Tanggal Kegiatan</label>
-                                                    <input type="text" name="activity_date" class="form-control activity-datepicker"
+                                                    <input type="text" name="activity_date"
+                                                        class="form-control activity-datepicker"
                                                         id="budget-items-activity-date" placeholder="Tanggal Kegiatan"
                                                         style="width: 80%">
                                                 </div>
@@ -236,51 +263,63 @@
                                                 <div class="col col-sm-3">
                                                     <label class="control-label mb-1">Aksi</label>
                                                     <div class="button-group">
-                                                        <button class="btn btn-primary btn-sm plus" id="plus5" type="button">Tambah
+                                                        <button class="btn btn-primary btn-sm plus" id="plus5"
+                                                            type="button">Tambah
                                                             Kegiatan</button>
-                                                        <button class="btn btn-danger btn-sm minus" id="minus5" type="button">Hapus</button>
+                                                        <button class="btn btn-danger btn-sm minus" id="minus5"
+                                                            type="button">Hapus</button>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div>
-                                                <button id="project-budget-button" type="submit" class="btn btn-lg btn-info btn-block" <% if (status == 'verified') { %> disabled <% } %>>
+                                                <button id="project-budget-button" type="submit"
+                                                    class="btn btn-lg btn-info btn-block"
+                                                    <% if (status == 'verified') { %> disabled <% } %>>
                                                     <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                        id="project-budget-spinner" role="status" style="display: none"></span>
-                                                    <span id="project-budget-button-placeholder">Simpan dan Lanjutkan</span>
+                                                        id="project-budget-spinner" role="status"
+                                                        style="display: none"></span>
+                                                    <span id="project-budget-button-placeholder">Simpan dan
+                                                        Lanjutkan</span>
                                                 </button>
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="tab-pane fade" id="project" role="tabpanel" aria-labelledby="project-tab">
-                                        <form action="/inisiator/project/<%= project_id %>/project" enctype="multipart/form-data"
-                                            id="project-project-form" method="post">
+                                    <div class="tab-pane fade" id="project" role="tabpanel"
+                                        aria-labelledby="project-tab">
+                                        <form action="/inisiator/project/<%= project_id %>/project"
+                                            enctype="multipart/form-data" id="project-project-form" method="post">
                                             <% if (success_message != '') { %>
-                                            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
                                                 <%= success_message %>
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">×</span>
                                                 </button>
                                             </div>
                                             <% } %>
                                             <% if (error_message != '') { %>
-                                            <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
                                                 <%= error_message %>
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">×</span>
                                                 </button>
                                             </div>
                                             <% } %>
                                             <div class="row form-group">
                                                 <div class="col col-sm-6">
-                                                    <label class="control-label mb-1" id="unit-value-label">Satuan Unit</label>
-                                                    <input class="form-control" id="unit_value" name="unit_value" step=0.001 type="number" value="<%= unit_value %>">
+                                                    <label class="control-label mb-1" id="unit-value-label">Satuan
+                                                        Unit</label>
+                                                    <input class="form-control" id="unit_value" name="unit_value"
+                                                        step=0.001 type="number" value="<%= unit_value %>">
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Durasi Kampanye (hari)</label>
                                                     <select name="campaign" id="campaign" class="form-control">
                                                         <option selected disabled>Pilih Durasi Kampanye</option>
-                                                        <option value="30" <% if(campaign=='30' ) {%> selected
-                                                            <%}%>>30</option>
+                                                        <option value="30" <% if(campaign=='30' ) {%> selected <%}%>>30</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -293,14 +332,16 @@
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Durasi Proyek (Bulan)</label>
                                                     <input class="form-control" id="duration" name="duration"
-                                                        placeholder="Durasi Proyek (Bulan)" type="number" value="<%= duration %>">
+                                                        placeholder="Durasi Proyek (Bulan)" type="number"
+                                                        value="<%= duration %>">
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label mb-1" id="date-picker-label">Tanggal Proyek
                                                     Dimulai</label>
                                                 <input type="text" name="start_date" class="date" id="datepicker"
-                                                    placeholder="Tanggal Proyek Dimulai" style="width: 89%" value="<%= start_date %>">
+                                                    placeholder="Tanggal Proyek Dimulai" style="width: 89%"
+                                                    value="<%= start_date %>">
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label mb-1">Abstrak Proyek</label>
@@ -310,8 +351,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label mb-1">Prospektus</label>
-                                                <input accept=".pdf" class="form-control-file" id="prospectus" name="prospectus"
-                                                    type="file">
+                                                <input accept=".pdf" class="form-control-file" id="prospectus"
+                                                    name="prospectus" type="file">
                                                 <% if (prospectus != null) { %>
                                                 <input type="text" name="prospectus_input" value="<%= prospectus %>"
                                                     style="display: none">
@@ -321,59 +362,81 @@
                                             </div>
 
                                             <div>
-                                                <button id="project-project-button" type="submit" class="btn btn-lg btn-info btn-block" <% if (status == 'verified') { %> disabled <% } %>>
+                                                <button id="project-project-button" type="submit"
+                                                    class="btn btn-lg btn-info btn-block"
+                                                    <% if (status == 'verified') { %> disabled <% } %>>
                                                     <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                        id="project-project-spinner" role="status" style="display: none"></span>
-                                                    <span id="project-project-button-placeholder">Simpan dan Lanjutkan</span>
+                                                        id="project-project-spinner" role="status"
+                                                        style="display: none"></span>
+                                                    <span id="project-project-button-placeholder">Simpan dan
+                                                        Lanjutkan</span>
                                                 </button>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
-                                        <form action="/inisiator/project/<%= project_id %>/image" enctype="multipart/form-data" id="project-image-form" method="post">
+                                        <form action="/inisiator/project/<%= project_id %>/image"
+                                            enctype="multipart/form-data" id="project-image-form" method="post">
                                             <% if (success_message != '') { %>
-                                            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
                                                 <%= success_message %>
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
                                                     <span aria-hidden="true">×</span>
                                                 </button>
                                             </div>
                                             <% } %>
                                             <% if (error_message != '') { %>
-                                            <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
                                                 <%= error_message %>
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close" <% if (status == 'verified') { %> disabled <% } %>>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close" <% if (status == 'verified') { %> disabled
+                                                    <% } %>>
                                                     <span aria-hidden="true">×</span>
                                                 </button>
                                             </div>
                                             <% } %>
                                             <div class="row form-group">
                                                 <div class="col col-sm-4">
-                                                    <input type="file" class="dropify" <% if (image[0] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[0] %>"<% } %> data-height="304.66" name="project_image0" accept="image/*" />
-                                                    <% if (image[0] != null) { %> 
-                                                        <input type="text" name="project_image0_input" value="<%= image[0] %>"
-                                                        style="display: none">
+                                                    <input type="file" class="dropify"
+                                                        <% if (image[0] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[0] %>"
+                                                        <% } %> data-height="304.66" name="project_image0"
+                                                        accept="image/*" />
+                                                    <% if (image[0] != null) { %>
+                                                    <input type="text" name="project_image0_input"
+                                                        value="<%= image[0] %>" style="display: none">
                                                     <% } %>
                                                 </div>
                                                 <div class="col col-sm-4">
-                                                    <input type="file" class="dropify" <% if (image[1] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[1] %>"<% } %> data-height="304.66" name="project_image1" accept="image/*" />
-                                                    <% if (image[1] != null) { %> 
-                                                        <input type="text" name="project_image1_input" value="<%= image[1] %>"
-                                                        style="display: none">
+                                                    <input type="file" class="dropify"
+                                                        <% if (image[1] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[1] %>"
+                                                        <% } %> data-height="304.66" name="project_image1"
+                                                        accept="image/*" />
+                                                    <% if (image[1] != null) { %>
+                                                    <input type="text" name="project_image1_input"
+                                                        value="<%= image[1] %>" style="display: none">
                                                     <% } %>
                                                 </div>
                                                 <div class="col col-sm-4">
-                                                    <input type="file" class="dropify" <% if (image[2] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[2] %>"<% } %> data-height="304.66" name="project_image2" accept="image/*" />
-                                                    <% if (image[2] != null) { %> 
-                                                        <input type="text" name="project_image2_input" value="<%= image[2] %>"
-                                                        style="display: none">
+                                                    <input type="file" class="dropify"
+                                                        <% if (image[2] != null) { %>data-default-file="/image/project/<%=project_id %>/<%= image[2] %>"
+                                                        <% } %> data-height="304.66" name="project_image2"
+                                                        accept="image/*" />
+                                                    <% if (image[2] != null) { %>
+                                                    <input type="text" name="project_image2_input"
+                                                        value="<%= image[2] %>" style="display: none">
                                                     <% } %>
                                                 </div>
                                             </div>
                                             <div>
-                                                <button id="project-image-button" type="submit" class="btn btn-lg btn-info btn-block" <% if (status == 'verified') { %> disabled <% } %>>
+                                                <button id="project-image-button" type="submit"
+                                                    class="btn btn-lg btn-info btn-block"
+                                                    <% if (status == 'verified') { %> disabled <% } %>>
                                                     <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                        id="project-image-spinner" role="status" style="display: none"></span>
+                                                        id="project-image-spinner" role="status"
+                                                        style="display: none"></span>
                                                     <span>Simpan dan Lanjutkan</span>
                                                 </button>
                                             </div>
@@ -398,10 +461,12 @@
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="/js/dashboard-main.js"></script>
 
@@ -427,57 +492,52 @@
                 formPrefix: "budget_items",
                 normalizeFullForm: false
             });
-            
+
             $('.dropify').dropify();
         });
     </script>
     <script type="text/javascript">
-        $(function () {
-            var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-
-            $(document).on('focus', '.activity-datepicker', function () {
-                $(this).datepicker({
-                    uiLibrary: 'bootstrap4',
-                    minDate: today
-                })
-            });
-        });
+        
     </script>
     <script type="text/javascript">
-    <% if (province_id != null) {%>	        
-        $.ajax({	
-            type: 'get',	
-            url: '/complete-profile/get-city',	
-            data: {	
+        <% if (province_id != null) {%>
+        $.ajax({
+            type: 'get',
+            url: '/complete-profile/get-city',
+            data: {
                 'province_id': <%= province_id %>
-            },	
-            success: function (data, status) {	
-                if (data.success == true) {	
-                    for (let index = 0; index < data.city.length; index++) {	
-                        if (data.city[index].id == <%= city_id %>) {	
-                            $('#city').append('<option class="city-option" value="' + data.city[index].id +	
-                                '" selected>' + data.city[index].nama + '</option>');	
-                        } else {	
-                            $('#city').append('<option class="city-option" value="' + data.city[index].id +	
-                                '">' + data.city[index].nama + '</option>');	
-                        }	
-                    }	
-                }	
-            }	
-        });	
-    <% } %>
-    <% if (category != null) { %>
+            },
+            success: function (data, status) {
+                if (data.success == true) {
+                    for (let index = 0; index < data.city.length; index++) {
+                        if (data.city[index].id == <%= city_id %>) {
+                            $('#city').append('<option class="city-option" value="' + data.city[index].id +
+                                '" selected>' + data.city[index].nama + '</option>');
+                        } else {
+                            $('#city').append('<option class="city-option" value="' + data.city[index].id +
+                                '">' + data.city[index].nama + '</option>');
+                        }
+                    }
+                }
+            }
+        });
+        <% } %>
+        <% if (category != null) { %>
         $('#unit-value-label').text("<%= category.unit %>");
 
-        <% category.sub_category.forEach((sub_category_data) => { %> 
-            <% if (sub_category_data.id == sub_category) { %>
-                $('#sub-category').append('<option class="sub-category-option" value="<%= sub_category_data._id %>" selected><%= sub_category_data.name %></option>');
-            <% } %>
-            <% if ((sub_category_data.id != sub_category) && (sub_category_data.name != null)) { %>
-                $('#sub-category').append('<option class="sub-category-option" value="<%= sub_category_data._id %>"><%= sub_category_data.name %></option>');
-            <% } %>
+        <% category.sub_category.forEach((sub_category_data) => { %>
+        <% if (sub_category_data.id == sub_category) { %>
+        $('#sub-category').append(
+            '<option class="sub-category-option" value="<%= sub_category_data._id %>" selected><%= sub_category_data.name %></option>'
+            );
+        <% } %>
+        <% if ((sub_category_data.id != sub_category) && (sub_category_data.name != null)) { %>
+        $('#sub-category').append(
+            '<option class="sub-category-option" value="<%= sub_category_data._id %>"><%= sub_category_data.name %></option>'
+            );
+        <% } %>
         <% }) %>
-    <% } %>
+        <% } %>
         var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap4',
@@ -485,22 +545,24 @@
         });
         document.getElementById("my-project").className = "menu-item-has-children dropdown active show";
         document.getElementById("my-project-link").click();
-        document.getElementById("started-project-sub").style.color= '#03a9f3';
+        document.getElementById("started-project-sub").style.color = '#03a9f3';
 
         $('#category').on('change', function (event) {
             event.preventDefault();
 
             var category = $(this).val();
             $('.sub-category-option').remove();
-            <% all_category.forEach((category_list) => { %> 
-                if (category == "<%= category_list._id %>") {
-                    $('#unit-value-label').text("<%= category_list.unit %>");
-                    <% category_list.sub_category.forEach((sub_category) => { %>
-                        <% if (sub_category.name) { %>
-                            $('#sub-category').append('<option class="sub-category-option" value="<%= sub_category._id %>"><%= sub_category.name %></option>');
-                        <% } %>
-                    <% }) %>
-                }
+            <% all_category.forEach((category_list) => { %>
+            if (category == "<%= category_list._id %>") {
+                $('#unit-value-label').text("<%= category_list.unit %>");
+                <% category_list.sub_category.forEach((sub_category) => { %>
+                <% if (sub_category.name) { %>
+                $('#sub-category').append(
+                    '<option class="sub-category-option" value="<%= sub_category._id %>"><%= sub_category.name %></option>'
+                    );
+                <% } %>
+                <% }) %>
+            }
             <% }) %>
         });
 
@@ -522,7 +584,8 @@
                         $('#city-placeholder').attr('selected');
                         $('#city-placeholder').attr('disabled');
                         for (let index = 0; index < data.city.length; index++) {
-                            $('#city').append('<option class="city-option" value="' + data.city[index].id + '">' + data.city[index].nama + '</option>');
+                            $('#city').append('<option class="city-option" value="' + data.city[
+                                index].id + '">' + data.city[index].nama + '</option>');
                         }
                     }
                 }
@@ -587,13 +650,15 @@
             event.preventDefault();
             $('.minus').click();
         });
+
         function loopingButton(i) {
             setTimeout(function () {
                 var labels = [];
                 var data = [];
                 var budget = 0;
                 $('.budget-description')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].description;
-                $('.activity-datepicker')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].activity_date;
+                $('.activity-datepicker')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i]
+                    .activity_date;
                 $('.budget-amount')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].amount;
                 i++;
                 if (i < '<%= budget_not_null %>') {
@@ -613,8 +678,13 @@
 
                 }
             }, 1000);
-
         }
+        var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+            $('.activity-datepicker').datepicker({
+                uiLibrary: 'bootstrap4',
+                minDate: today
+            })
         $('#project-basic-form').on('submit', function () {
             $('#project-basic-button').attr('disabled', 'disabled');
             $('#project-basic-spinner').show();

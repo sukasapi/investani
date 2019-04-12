@@ -527,7 +527,7 @@ router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified,
                                 duration: req.body.duration
                             },
                             roi: req.body.roi,
-                            abstract: req.body.abstract,
+                            abstract: req.body.abstract.replace('&', '&amp;'),
                             prospectus: prospectus
                         }]
                     };

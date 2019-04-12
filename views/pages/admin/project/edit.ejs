@@ -443,18 +443,6 @@
         });
     </script>
     <script type="text/javascript">
-        $(function () {
-            var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-
-            $(document).on('focus', '.activity-datepicker', function () {
-                $(this).datepicker({
-                    uiLibrary: 'bootstrap4',
-                    minDate: today
-                })
-            });
-        });
-    </script>
-    <script type="text/javascript">
     <% if (project.basic[0].province[0].province_id != null) {%>	        
         $.ajax({	
             type: 'get',	
@@ -603,7 +591,8 @@
                 var budget = 0;
 
                 $('.budget-description')[i].value = JSON.parse('<%- JSON.stringify(project.budget) %>')[i].description;
-                $('.activity-datepicker')[i].value = JSON.parse('<%- JSON.stringify(project.budget) %>')[i].activity_date;
+                $('.activity-datepicker')[i].value = new Date(JSON.parse('<%- JSON.stringify(project.budget) %>')[i].activity_date).toLocaleDateString();
+                console.log($('.activity-datepicker')[i].value);
                 $('.budget-amount')[i].value = JSON.parse('<%- JSON.stringify(project.budget) %>')[i].amount;
                 i++;
                 if (i < '<%= project.budget.length %>') {
@@ -623,8 +612,13 @@
 
                 }
             }, 1000);
-
         }
+        var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+            $('.activity-datepicker').datepicker({
+                uiLibrary: 'bootstrap4',
+                minDate: today
+            })
         $('#project-basic-form').on('submit', function () {
             $('#project-basic-button').attr('disabled', 'disabled');
             $('#project-basic-spinner').show();

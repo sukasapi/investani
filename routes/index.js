@@ -36,7 +36,7 @@ router.get('/', function (req, res) {
             return res.redirect('/inisiator/started-project');
         } else {
             projects.forEach((project, index) => {
-                durations[index] = moment(project.basic[0].duration[0].due_campaign).diff(moment(), 'days')
+                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
             });
             let data = {
                 auth: auth,

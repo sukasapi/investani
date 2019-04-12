@@ -222,11 +222,11 @@
                                     <ul>
                                         <li>
                                             Imbal Hasil
-                                            <h6><%=project.basic[0].roi%>%</h6>
+                                            <h6><%=project.project[0].roi%>%</h6>
                                         </li>
                                         <li>
                                             Durasi Proyek
-                                            <h6><%=project.basic[0].duration[0].duration%> Bulan</h6>
+                                            <h6><%=project.project[0].duration[0].duration%> Bulan</h6>
                                         </li>
                                         <li>
                                             Tersisa
@@ -246,7 +246,11 @@
                                 </div>
                                 <strong class="card-title mb-3">0%</strong> Dana terkumpul
                                 <span class="pull-right">
-                                    Target Dana: Rp. <%= project.budget[0].amount+project.budget[1].amount+project.budget[2].amount+project.budget[3].amount+project.budget[4].amount %>
+                                    <% let goal = 0 %>
+                                    <% project.budget.forEach((budget) => { %>
+                                        <% goal = goal + budget.amount %>
+                                    <% }) %>
+                                    Target Dana: Rp. <%= goal %>
                                 </span>
                             </div>
                         </div>

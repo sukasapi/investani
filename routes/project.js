@@ -31,9 +31,9 @@ router.get('/:project_id', function (req, res) {
                     auth: auth,
                     user_type: user_type,
                     project: project,
-                    start_date: moment(project.basic[0].duration[0].start_date).format('LL'),
-                    due_date: moment(project.basic[0].duration[0].due_date).format('LL'),
-                    duration: moment(project.basic[0].duration[0].due_campaign).diff(moment(), 'days')
+                    start_date: moment(project.project[0].duration[0].start_date).format('LL'),
+                    due_date: moment(project.project[0].duration[0].due_date).format('LL'),
+                    duration: moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
                 };
                 return res.render('pages/project/project', data);
             }
