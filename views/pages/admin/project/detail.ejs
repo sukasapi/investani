@@ -76,7 +76,7 @@
                     <div class="col-lg-12">
                         <div id="basic-card" class="card">
                             <div class="card-header">
-                                <strong class="card-title">Mengubah Proyek</strong>
+                                <strong class="card-title">Memverifikasi Proyek</strong>
                             </div>
                             <div class="card-body">
                                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -181,27 +181,27 @@
                                                     <label class="control-label mb-1">Harga Saham</label>
                                                     <input class="form-control" id="stock-price" name="stock_price"
                                                         placeholder="Harga Saham" type="number"
-                                                        value="<%= project.basic[0].stock_price %>" disabled>
+                                                        value="<%= project.basic[0].stock[0].price %>" disabled>
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Jumlah Saham</label>
                                                     <input class="form-control" id="total-stock" name="total_stock"
                                                         placeholder="Jumlah Saham" type="number"
-                                                        value="<%= project.basic[0].total_stock %>" disabled>
+                                                        value="<%= project.basic[0].stock[0].total %>" disabled>
                                                 </div>
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col col-sm-6">
-                                                    <button type="button" class="btn btn-lg btn-info btn-block">
-                                                        <span>Ubah Data</span>
-                                                    </button>
+                                                    <a href="/admin/project/waiting/<%= project._id %>/edit">
+                                                        <button type="button" class="btn btn-warning btn-lg btn-block">Ubah Proyek </button>
+                                                    </a>
                                                 </div>
                                                 <div class="col col-sm-6">
-                                                    <button id="project-image-button" type="submit"
+                                                    <button id="project-basic-button" type="submit"
                                                         class="btn btn-lg btn-info btn-block">
                                                         <span aria-hidden="true"
                                                             class="spinner-border spinner-border-sm"
-                                                            id="project-image-spinner" role="status"
+                                                            id="project-basic-spinner" role="status"
                                                             style="display: none"></span>
                                                         <span>Verifikasi Proyek</span>
                                                     </button>
@@ -246,7 +246,7 @@
                                                     <label class="control-label mb-1">Tanggal Kegiatan</label>
                                                     <input type="text" name="activity_date" class="form-control"
                                                         id="budget-items-activity-date" placeholder="Tanggal Kegiatan"
-                                                        value="<%= budget.activity_date %>" disabled>
+                                                        value="<%= budget.activity_date.toLocaleDateString() %>" disabled>
                                                 </div>
                                                 <div class="col col-sm-2">
                                                     <label class="control-label mb-1">Rp</label>
@@ -260,16 +260,16 @@
 
                                             <div class="row form-group">
                                                 <div class="col col-sm-6">
-                                                    <button type="button" class="btn btn-lg btn-info btn-block">
-                                                        <span>Ubah Data</span>
-                                                    </button>
+                                                    <a href="/admin/project/waiting/<%= project._id %>/edit">
+                                                        <button type="button" class="btn btn-warning btn-lg btn-block">Ubah Proyek </button>
+                                                    </a>
                                                 </div>
                                                 <div class="col col-sm-6">
-                                                    <button id="project-image-button" type="submit"
+                                                    <button id="project-budget-button" type="submit"
                                                         class="btn btn-lg btn-info btn-block">
                                                         <span aria-hidden="true"
                                                             class="spinner-border spinner-border-sm"
-                                                            id="project-image-spinner" role="status"
+                                                            id="project-budget-spinner" role="status"
                                                             style="display: none"></span>
                                                         <span>Verifikasi Proyek</span>
                                                     </button>
@@ -360,16 +360,16 @@
 
                                             <div class="row form-group">
                                                 <div class="col col-sm-6">
-                                                    <button type="button" class="btn btn-lg btn-info btn-block">
-                                                        <span>Ubah Data</span>
-                                                    </button>
+                                                    <a href="/admin/project/waiting/<%= project._id %>/edit">
+                                                        <button type="button" class="btn btn-warning btn-lg btn-block">Ubah Proyek </button>
+                                                    </a>
                                                 </div>
                                                 <div class="col col-sm-6">
-                                                    <button id="project-image-button" type="submit"
+                                                    <button id="project-project-button" type="submit"
                                                         class="btn btn-lg btn-info btn-block">
                                                         <span aria-hidden="true"
                                                             class="spinner-border spinner-border-sm"
-                                                            id="project-image-spinner" role="status"
+                                                            id="project-project-spinner" role="status"
                                                             style="display: none"></span>
                                                         <span>Verifikasi Proyek</span>
                                                     </button>
@@ -403,19 +403,19 @@
                                             <div class="row form-group">
                                                 <% project.image.forEach((image) => { %>
                                                 <% if (image != null) { %>
-                                                <div class="col col-sm-2">
-                                                    <input type="file" class="dropify"
+                                                <div class="col col-sm-4">
+                                                    <input accept="image/*" class="dropify"
                                                         data-default-file="/image/project/<%=project._id %>/<%= image.filename %>"
-                                                        accept="image/*" disabled />
+                                                        data-height="304.66" type="file" disabled />
                                                 </div>
                                                 <% } %>
                                                 <% }); %>
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col col-sm-6">
-                                                    <button type="button" class="btn btn-lg btn-info btn-block">
-                                                        <span>Ubah Data</span>
-                                                    </button>
+                                                    <a href="/admin/project/waiting/<%= project._id %>/edit">
+                                                        <button type="button" class="btn btn-warning btn-lg btn-block">Ubah Proyek </button>
+                                                    </a>
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <button id="project-image-button" type="submit"

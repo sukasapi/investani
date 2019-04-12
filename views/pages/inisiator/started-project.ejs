@@ -81,12 +81,17 @@
                                     <ul>
                                         <li>
                                             Imbal Hasil
-                                            <h6><%=project.project[0].roi%>%</h6>
+                                            <h6>
+                                            <% if (project.project[0]) { %>
+                                                <%=project.project[0].roi%>
+                                            <% } %>
+                                            %
+                                            </h6>
                                         </li>
                                         <li>
                                             Durasi Proyek
                                             <h6>
-                                                <% if (project.project[0].duration[0]) { %>
+                                                <% if (project.project[0]) { %>
                                                     <%= project.project[0].duration[0].duration %>
                                                 <% } %>
                                                 Bulan

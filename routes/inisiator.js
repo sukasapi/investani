@@ -78,38 +78,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
 
                         if (req.user._id.equals(project.inisiator)) {
                             let province_id, province_name, city_id, city_name, category, sub_category, unit_value, goal, start_campaign, due_campaign, campaign, start_date, roi, duration, stock_price, total_stock = null;
-                            let budget = [
-                                // budget 0
-                                {
-                                    description: "",
-                                    activity_date: "",
-                                    amount: 0
-                                },
-                                // budget 1
-                                {
-                                    description: "",
-                                    activity_date: "",
-                                    amount: 0
-                                },
-                                // budget 2
-                                {
-                                    description: "",
-                                    activity_date: "",
-                                    amount: 0
-                                },
-                                // budget 3
-                                {
-                                    description: "",
-                                    activity_date: "",
-                                    amount: 0
-                                },
-                                // budget 4
-                                {
-                                    description: "",
-                                    activity_date: "",
-                                    amount: 0
-                                }
-                            ];
+                            let budget = [];
                             let budget_not_null = 0;
                             let abstract, prospectus = null;
                             let activity_date = [];
@@ -651,12 +620,6 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
                                         if (req.files['project_image2']) {
                                             project_image.push(await imageUpload.save(req.files['project_image2'][0].buffer));
                                         }
-                                        if (req.files['project_image3']) {
-                                            project_image.push(await imageUpload.save(req.files['project_image3'][0].buffer));
-                                        }
-                                        if (req.files['project_image4']) {
-                                            project_image.push(await imageUpload.save(req.files['project_image4'][0].buffer));
-                                        }
                                         let image = [{
                                                 filename: project_image[0]
                                             },
@@ -665,13 +628,7 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
                                             },
                                             {
                                                 filename: project_image[2]
-                                            },
-                                            {
-                                                filename: project_image[3]
-                                            },
-                                            {
-                                                filename: project_image[4]
-                                            },
+                                            }
                                         ];
                                         let data = {
                                             image: image
@@ -715,16 +672,6 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
                             } else {
                                 project_image.push(req.body.project_image2_input);
                             }
-                            if (req.files['project_image3']) {
-                                project_image.push(await imageUpload.save(req.files['project_image3'][0].buffer));
-                            } else {
-                                project_image.push(req.body.project_image3_input);
-                            }
-                            if (req.files['project_image4']) {
-                                project_image.push(await imageUpload.save(req.files['project_image4'][0].buffer));
-                            } else {
-                                project_image.push(req.body.project_image4_input);
-                            }
                             let image = [{
                                     filename: project_image[0]
                                 },
@@ -733,13 +680,7 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
                                 },
                                 {
                                     filename: project_image[2]
-                                },
-                                {
-                                    filename: project_image[3]
-                                },
-                                {
-                                    filename: project_image[4]
-                                },
+                                }
                             ];
                             let data = {
                                 image: image
