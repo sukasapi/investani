@@ -3,7 +3,7 @@ import {
     getUserBySecretToken,
     updateUser
 } from '../models/User';
-import { getProjectIndex } from '../models/Project';
+import { getProjectIndex, getProjectByStatus } from '../models/Project';
 import upload from '../uploadMiddleware';
 import Resize from '../Resize';
 import path from 'path';
@@ -25,15 +25,22 @@ router.get('/', function (req, res) {
     let auth = false;
     let user_type = null;
     let durations = [];
+    let open_projects = [];
     if (req.isAuthenticated()) {
         auth = true;
         user_type = req.user.user_type[0].name;
     }
     getProjectIndex('verified', function (error, projects) {
+        projects.forEach((project, index) => {
+            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0) {
+                open_projects[index] = project
+                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
+            }
+        });
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
-            return res.redirect('/inisiator/started-project');
+            return res.redirect('/');
         } else {
             projects.forEach((project, index) => {
                 durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
@@ -41,7 +48,7 @@ router.get('/', function (req, res) {
             let data = {
                 auth: auth,
                 user_type: user_type,
-                projects: projects,
+                projects: open_projects,
                 durations: durations
             };
             res.render('pages/index', data);
@@ -88,7 +95,6 @@ router.get('/image/project/:project_id/:filename', function (req, res) {
 router.get('/project/get-prospectus/:filename', function (req, res) {
     res.download(__dirname+'/../storage/prospectus/'+req.params.filename);
 });
-
 router.get('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract, function (req, res) {
     if (req.user.profile[0].registration_type == 'individual') {
         return res.render('pages/contract/individual', req.user);
@@ -96,6 +102,43 @@ router.get('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract,
     else {
         return res.render('pages/contract/company', req.user);
     }
+});
+router.get('/explore', function (req, res) {
+    let auth = false;
+    let user_type = null;
+    let durations = [];
+    let open_projects = [];
+
+    if (req.isAuthenticated()) {
+        auth = true;
+        user_type = req.user.user_type[0].name;
+    }
+
+    getProjectByStatus('verified', function (error, projects) {
+        projects.forEach((project, index) => {
+            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0) {
+                open_projects[index] = project
+                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
+            }
+        });
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/');
+        }
+        else {
+            projects.forEach((project, index) => {
+                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
+            });
+            let data = {
+                auth: auth,
+                user_type: user_type,
+                projects: open_projects,
+                durations: durations
+            };
+            return res.render('pages/project/explore', data);
+        }
+    });
 });
 
 router.post('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract, upload.single('signature'), async function (req, res) {

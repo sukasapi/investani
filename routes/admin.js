@@ -85,11 +85,6 @@ router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {
     let durations = [];
 
     getProjectByStatus("waiting", function (error, projects) {
-        projects.forEach((project, index) => {
-            if (project.status == 'verified') {
-                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
-            }
-        });
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -109,6 +104,73 @@ router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {
             success_message = "Silahakan verifikasi proyek yang tersedia";
             req.flash('success_message', success_message);
             return res.render('pages/admin/project/waiting', data);
+        }
+    });
+});
+router.get('/project/rejected', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    let success_message;
+    let durations = [];
+    
+    getProjectByStatus("rejected", function (error, projects) {
+        // projects.forEach((project, index) => {
+        //     durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
+        // });
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        if (!projects) {
+            error_message = "Proyek tidak tersedia";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            let data = {
+                projects: projects,
+                durations: durations,
+                url: "rejected-project",
+            }
+            success_message = "Daftar proyek yang ditolak";
+            req.flash('success_message', success_message);
+            return res.render('pages/admin/project/rejected', data);
+        }
+    });
+});
+router.get('/project/open', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    let success_message;
+    let durations = [];
+    let open_projects = [];
+    
+    getProjectByStatus("verified", function (error, projects) {
+        projects.forEach((project, index) => {
+            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0) {
+                open_projects[index] = project
+                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
+            }
+        });
+
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        if (!projects) {
+            error_message = "Proyek tidak tersedia";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            let data = {
+                projects: open_projects,
+                durations: durations,
+                url: "rejected-project",
+            }
+            success_message = "Daftar proyek yang ditolak";
+            req.flash('success_message', success_message);
+            return res.render('pages/admin/project/open', data);
         }
     });
 });
@@ -171,6 +233,31 @@ router.get('/project/waiting/:project_id/edit', isLoggedIn, isAdmin, function (r
         }
     });
 });
+router.get('/project/waiting/:project_id/reject', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    let success_message;
+    let data = {
+        status: "rejected"
+    }
+    updateProject(req.params.project_id, data, function (error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
+        }
+        if (!project) {
+            error_message = "Proyek tidak tersedia";
+            req.flash('error_message', error_message);
+            return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
+        }
+        else {
+            success_message = "Proyek berhasil ditolak";
+            req.flash('success_message', success_message);
+            return res.redirect(`/admin/project/rejected/`);
+        }
+    });
+});
+
 router.get('/project/category', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
@@ -197,6 +284,7 @@ router.get('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
     }
     res.render('pages/admin/project/add-category', data);
 });
+
 router.post('/user/investor/individual/verify/:id', isLoggedIn, isAdmin, function (req, res) {
     User.findByIdAndUpdate(req.params.id, {
         user_type: [{

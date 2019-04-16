@@ -85,19 +85,21 @@
 							<h2 id="form-total-h-0" tabindex="-1" class="title current">1</h2>
 							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false">
 								<div class="inner">
+									<% if (registration_type == 'investor') { %>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Tipe Pendaftaran</label>
 											<select name="registration_type" id="registration_type" class="form-control">
 												<option disabled>Tipe Pendaftaran</option>
 												<option id="registration_type_individual" value="individual" selected>Perseorangan</option>
-												<option id="registration_type_company" value="company">Perusahaan</option>
+													<option id="registration_type_company" value="company">Perusahaan</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
 										</div>
 									</div>
+									<% } %>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1" id="name-label">Nama Lengkap</label>
