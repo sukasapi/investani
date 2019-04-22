@@ -92,7 +92,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                                 city_name = project.basic[0].city[0].city_name;
                                 category = project.category;
                                 sub_category = project.sub_category;
-                                stock_price = project.basic[0].stock[0].price;
+                                stock_price = project.basic[0].stock[0].temp;
                                 total_stock = project.basic[0].stock[0].total;
                             }
 
@@ -346,7 +346,8 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                             },
                             stock: {
                                 total: req.body.total_stock,
-                                price: req.body.stock_price
+                                price: req.body.stock_price,
+                                temp: req.body.stock_price
                             },
                         },
                         category: req.body.category,

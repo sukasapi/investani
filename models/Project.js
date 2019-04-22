@@ -29,6 +29,9 @@ let ProjectSchema = mongoose.Schema({
             },
             total: {
                 type: Number
+            },
+            temp: {
+                type: Number
             }
         }],
     }],

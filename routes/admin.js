@@ -145,13 +145,6 @@ router.get('/project/open', isLoggedIn, isAdmin, function (req, res) {
     let open_projects = [];
     
     getProjectByStatus("verified", function (error, projects) {
-        projects.forEach((project, index) => {
-            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0) {
-                open_projects[index] = project
-                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
-            }
-        });
-
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -163,11 +156,19 @@ router.get('/project/open', isLoggedIn, isAdmin, function (req, res) {
             return res.redirect('/admin/dashboard');
         }
         else {
+            projects.forEach((project, index) => {
+                if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0) {
+                    open_projects[index] = project
+                    durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
+                }
+            });
+
             let data = {
                 projects: open_projects,
                 durations: durations,
                 url: "rejected-project",
             }
+            
             success_message = "Daftar proyek yang ditolak";
             req.flash('success_message', success_message);
             return res.render('pages/admin/project/open', data);

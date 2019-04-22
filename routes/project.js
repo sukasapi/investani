@@ -26,7 +26,7 @@ router.get('/:project_id', function (req, res) {
             return res.redirect('/');
         }
         else {
-            if (project.status == 'verified') {
+            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0 && project.status == 'verified') {
                 let data = {
                     auth: auth,
                     user_type: user_type,

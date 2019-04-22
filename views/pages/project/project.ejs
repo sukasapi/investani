@@ -212,14 +212,14 @@
                             <div class="description">
                                 <h5>Saham Tersedia</h5>
                                 <p>
-                                    <span class="item_price"><%= project.basic[0].stock[0].total %></span>
+                                    <span class="item_price"><%= project.basic[0].stock[0].temp %></span>
                                 </p>
                                 <h5>dari <%= project.basic[0].stock[0].total %> lembar</h5>
                             </div>
                         </div>
                         <div class="col-lg-4 single-right-left checkout-left-basket">
                             <div class="description">
-                                <form action="#" id="invest-now" method="post">
+                                <form action="/investor/project/<%= project._id %>" id="invest-now" method="post">
                                     <% if (success_message != '') { %>
                                     <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
                                         <%= success_message %>
@@ -238,20 +238,20 @@
                                     <% } %>
                                     <div class="form-group">
                                         <label class="control-label mb-1">Jumlah Saham</label>
-                                        <input class="form-control" id="stock-input" min=0 name="stock" type="number" value=0>
+                                        <input class="form-control" id="stock-input" min=0 name="stock" type="number">
                                     </div>
                                     <div>
                                         <button id="invest-now-button" type="submit"
                                             class="btn btn-md btn-success btn-block" style="margin: 0px !important">
                                             <span aria-hidden="true" class="spinner-border spinner-border-sm"
                                                 id="invest-now-spinner" role="status" style="display: none"></span>
-                                            <span id="invest-now-button-placeholder">Invest Sekarang</span>
+                                            <span id="invest-now-button-placeholder">Investasi Sekarang</span>
                                         </button>
                                     </div>
                                 </form>
                             </div>
                             <ul>
-                              <li>Saham <i>:</i> <span>xRp. <%= project.basic[0].stock[0].price %></span><span id="stock-quantity">0</span> </li>
+                              <li>Saham <i>:</i> <span>&nbsp x Rp. <%= project.basic[0].stock[0].price %></span><span id="stock-quantity">0</span> </li>
                               <li>Total <i>:</i> <span id="stock-total">0</span></li>
                            </ul>
                         </div>
