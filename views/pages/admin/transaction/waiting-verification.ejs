@@ -26,7 +26,7 @@
 <body>
     <!-- Left Panel -->
 
-    <% include ../../../partials/investor/aside-dashboard %>
+    <% include ../../../partials/admin/aside-dashboard %>
 
     <!-- Left Panel -->
 
@@ -35,7 +35,7 @@
     <div id="right-panel" class="right-panel">
 
         <!-- Header-->
-        <% include ../../../partials/investor/header-dashboard %>
+        <% include ../../../partials/admin/header-dashboard %>
         <!-- Header-->
 
         <% if (url != "dashboard") { %>
@@ -49,7 +49,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Transaksi Menunggu Pembayaran</strong>
+                                <strong class="card-title">Transaksi Menunggu Verifikasi</strong>
                             </div>
                             <div class="card-body">
                                 <table id="bootstrap-data-table-3" class="table table-striped table-bordered">
@@ -60,7 +60,8 @@
                                             <th>Saham yang Dibeli</th>
                                             <th>Total Pembayaran</th>
                                             <th>Tanggal Kadaluarsa</th>
-                                            <th>Konfirmasi Pembayaran</th>
+                                            <th>Tanggal Pembayaran</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -79,16 +80,46 @@
                                             <td><%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>
                                             </td>
                                             <td><%= due_date %></td>
+                                            <td><%= payment_date %></td>
                                             <td>
                                                 <div class="input-group-btn">
-                                                    <a class="detail-link" href="/investor/transaction/waiting-payment/<%= transaction._id %>">
-                                                        <button class="btn btn-primary">
-                                                            Konfirmasi
-                                                        </button>
-                                                    </a>
+                                                    <button type="button" class="btn btn-primary mb-1"
+                                                        data-toggle="modal" data-target="#detail-modal">
+                                                        Lihat
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
+                                        <div class="modal fade" id="detail-modal" tabindex="-1" role="dialog"
+                    aria-labelledby="smallmodalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="smallmodalLabel">Detail Transaksi</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                        <% if (transaction.receipt) { %>
+                                        <img class="card-img-top"
+                                        src="/admin/transaction/get-receipt/<%= transaction.project._id %>/<%= transaction.receipt %>"
+                                        alt="Card image cap">
+                                        <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                <button type="button" class="btn btn-primary">Verifikasi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                                         <% }) %>
                                     </tbody>
                                 </table>
@@ -98,6 +129,7 @@
 
 
                 </div>
+                
             </div>
             <!-- .animated -->
         </div>
@@ -105,7 +137,7 @@
 
         <div class="clearfix"></div>
 
-        <% include ../../../partials/investor/footer-dashboard %>
+        <% include ../../../partials/admin/footer-dashboard %>
 
     </div><!-- /#right-panel -->
 
@@ -126,8 +158,8 @@
         document.getElementById("my-transaction").className = "menu-item-has-children dropdown show";
         document.getElementById("my-transaction-link").setAttribute('aria-expanded', 'true');
         document.getElementById("my-transaction-sub-menu").className = "sub-menu children dropdown-menu show";
-        document.getElementById("waiting-payment-icon").setAttribute('style', 'color: #03a9f3');
-        document.getElementById("waiting-payment-link").setAttribute('style', 'color: #03a9f3');
+        document.getElementById("waiting-verification-icon").setAttribute('style', 'color: #03a9f3');
+        document.getElementById("waiting-verification-link").setAttribute('style', 'color: #03a9f3');
     </script>
 </body>
 

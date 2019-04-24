@@ -75,7 +75,6 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                         req.flash('error_message', error_message);
                         return res.redirect('/inisiator/start-project');
                     } else {
-
                         if (req.user._id.equals(project.inisiator)) {
                             let province_id, province_name, city_id, city_name, category, sub_category, unit_value, goal, start_campaign, due_campaign, campaign, start_date, roi, duration, stock_price, total_stock = null;
                             let budget = [];
@@ -92,7 +91,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                                 city_name = project.basic[0].city[0].city_name;
                                 category = project.category;
                                 sub_category = project.sub_category;
-                                stock_price = project.basic[0].stock[0].temp;
+                                stock_price = project.basic[0].stock[0].price;
                                 total_stock = project.basic[0].stock[0].total;
                             }
 
@@ -189,8 +188,6 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                         } else {
                             res.redirect('/inisiator/dashboard');
                         }
-
-
                     }
                 });
             }
@@ -200,10 +197,12 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
 });
 router.get('/:user_id/started-project', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let durations = [];
+    let inisiated_project = [];
 
     getProjectByInisiator(req.params.user_id, function (error, projects) {
         projects.forEach((project, index) => {
-            if (project.status == 'verified') {
+            if (req.user._id == req.params.user_id && project.status == 'verified') {
+                inisiated_project[index] = project;
                 durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
             }
         });
@@ -300,7 +299,13 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                 error_message = "Proyek yang sudah terverifikasi tidak dapat diubah";
                 req.flash('error_message', error_message);
                 return res.redirect('/inisiator/start-project');
-            } else {
+            }
+            if (project.inisiator != req.user._id) {
+                error_message = "Proyek tidak tersedia";
+                req.flash('error_message', error_message);
+                return res.redirect('/inisiator/start-project');
+            }
+            else {
                 req.checkBody('stock_price', 'Harga saham tidak boleh lebih dari 1 Juta Rupiah').isInt({
                     max: 1000000
                 });
@@ -394,7 +399,13 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
                 error_message = "Proyek yang sudah terverifikasi tidak dapat diubah";
                 req.flash('error_message', error_message);
                 return res.redirect('/inisiator/start-project');
-            } else {
+            }
+            if (project.inisiator != req.user._id) {
+                error_message = "Proyek tidak tersedia";
+                req.flash('error_message', error_message);
+                return res.redirect('/inisiator/start-project');
+            }
+            else {
                 req.body.budget_items.budget_items.forEach((budget_item, index) => {
                     budget[index] = {
                         description: budget_item.description,
@@ -491,7 +502,13 @@ router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified,
             error_message = "Proyek tidak tersedia";
             req.flash('error_message', error_message);
             return res.redirect('/inisiator/start-project');
-        } else {
+        }
+        else {
+            if (project.inisiator != req.user._id) {
+                error_message = "Proyek tidak tersedia";
+                req.flash('error_message', error_message);
+                return res.redirect('/inisiator/start-project');
+            }
             if (project.status == 'verified') {
                 error_message = "Proyek yang sudah terverifikasi tidak dapat diubah";
                 req.flash('error_message', error_message);
@@ -572,6 +589,10 @@ let cpUpload = upload.fields([
 ]);
 router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, function (req, res) {
     cpUpload(req, res, function (err) {
+        let error_message;
+        let success_message;
+        let project_image = [];
+        const dir = path.join(__dirname, `../storage/projects/${req.params.project_id}/images`);
         if (err instanceof multer.MulterError) {
             error_message = "Ukuran gambar terlalu besar";
             req.flash('error_message', error_message);
@@ -581,10 +602,7 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
             req.flash('error_message', error_message);
             return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
         }
-        let error_message;
-        let success_message;
-        let project_image = [];
-        const dir = path.join(__dirname, `../storage/projects/${req.params.project_id}/images`);
+        
         getProjectByID(req.params.project_id, function (error, project) {
             if (error) {
                 error_message = "Terjadi kesalahan";
@@ -596,6 +614,11 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
                 req.flash('error_message', error_message);
                 return res.redirect('/inisiator/start-project');
             } else {
+                if (project.inisiator != req.user._id) {
+                    error_message = "Proyek tidak tersedia";
+                    req.flash('error_message', error_message);
+                    return res.redirect('/inisiator/start-project');
+                }
                 if (project.status == 'verified') {
                     error_message = "Proyek yang sudah terverifikasi tidak dapat diubah";
                     req.flash('error_message', error_message);
@@ -611,7 +634,7 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
                                     req.flash('error_message', error_message);
                                     return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
                                 } else {
-                                    if (req.files['project_image0'] || req.files['project_image1'] || req.files['project_image2'] || req.files['project_image3'] || req.files['project_image4']) {
+                                    if (req.files['project_image0'] || req.files['project_image1'] || req.files['project_image2']) {
                                         if (req.files['project_image0']) {
                                             project_image.push(await imageUpload.save(req.files['project_image0'][0].buffer));
                                         }

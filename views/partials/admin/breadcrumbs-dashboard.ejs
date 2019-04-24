@@ -38,7 +38,7 @@
                                     <% } %>
                                 <% } %>
                             <% } %>
-                            <% if (url == 'waiting-project' || url == 'rejected-project' || url == 'category' || url == 'add-category') { %>
+                            <% if (url == 'waiting-project' || url == 'rejected-project' || url == 'open-project' || url == 'category' || url == 'add-category') { %>
                                 <li><a href="#">Proyek</a></li>
                                 <% if (url == 'waiting-project' || url == 'detail-project') { %>
                                     <li><a href="#">Menunggu Verifikasi</a></li>
@@ -46,6 +46,9 @@
                                 <% if (url == 'rejected-project' || url == 'detail-project') { %>
                                     <li><a href="#">Ditolak</a></li>
                                 <% } %>
+                                <% if (url == 'open-project' || url == 'detail-project') { %>
+                                    <li><a href="#">Sedang Berlangsung</a></li>
+                                <% } %> 
                                 <% if (url == 'category') { %>
                                     <li><a href="#">Daftar Kategori</a></li>
                                 <% } %>

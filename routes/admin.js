@@ -2,6 +2,7 @@ import express from 'express';
 import { User, getUserByID } from '../models/User';
 import { getProjectByStatus, getProjectByID, updateProject } from '../models/Project';
 import { Category, createCategory } from '../models/Category';
+import { Transaction, getTransactionByStatus } from '../models/Transaction';
 import moment from 'moment';
 
 const router = express.Router();
@@ -113,9 +114,6 @@ router.get('/project/rejected', isLoggedIn, isAdmin, function (req, res) {
     let durations = [];
     
     getProjectByStatus("rejected", function (error, projects) {
-        // projects.forEach((project, index) => {
-        //     durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
-        // });
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -166,7 +164,7 @@ router.get('/project/open', isLoggedIn, isAdmin, function (req, res) {
             let data = {
                 projects: open_projects,
                 durations: durations,
-                url: "rejected-project",
+                url: "open-project",
             }
             
             success_message = "Daftar proyek yang ditolak";
@@ -258,7 +256,31 @@ router.get('/project/waiting/:project_id/reject', isLoggedIn, isAdmin, function 
         }
     });
 });
-
+router.get('/project/open/:project_id', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    let success_message;
+    getProjectByID(req.params.project_id, function (error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        if (!project) {
+            error_message = "Proyek tidak tersedia.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            let data = {
+                url: 'open-detail-project',
+                project: project
+            }
+            success_message = "Menampilkan proyek yang tersedia.";
+            req.flash('success_message', success_message);
+            return res.render('pages/admin/project/detail', data);
+        }
+    });
+});
 router.get('/project/category', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
@@ -284,6 +306,34 @@ router.get('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
         url: "add-category",
     }
     res.render('pages/admin/project/add-category', data);
+});
+router.get('/transaction/waiting', isLoggedIn, isAdmin, function (req, res) {
+    let success_message;
+    let createdAt = [];
+    let due_date = [];
+    let payment_date = [];
+    getTransactionByStatus('waiting_verification', function (error, transactions) {
+        transactions.forEach((transaction, index) => {
+            createdAt[index] = moment(transaction.createdAt).format('LL');
+            due_date[index] = moment(transaction.due_date).format('lll');
+            payment_date[index] = moment(transaction.payment_date).format('lll');
+        });
+
+        let data = {
+            user_id: req.user._id,
+            transactions: transactions,
+            createdAt: createdAt,
+            due_date: due_date,
+            payment_date: payment_date,
+            url: "waiting_verification"
+        }
+        success_message = "Daftar transaksi yang menunggu verifikasi.";
+        req.flash('success_message', success_message);
+        return res.render('pages/admin/transaction/waiting-verification', data);
+    });
+});
+router.get('/transaction/get-receipt/:project_id/:filename', isLoggedIn, isAdmin, function (req, res) {
+    res.download(__dirname+'/../storage/projects/'+req.params.project_id+'/transactions/'+req.params.filename);
 });
 
 router.post('/user/investor/individual/verify/:id', isLoggedIn, isAdmin, function (req, res) {

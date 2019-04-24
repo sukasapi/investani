@@ -76,7 +76,7 @@
                     <div class="col-lg-12">
                         <div id="basic-card" class="card">
                             <div class="card-header">
-                                <strong class="card-title">Memverifikasi Proyek</strong>
+                                <strong class="card-title">Detail Proyek</strong>
                             </div>
                             <div class="card-body">
                                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -190,6 +190,7 @@
                                                         value="<%= project.basic[0].stock[0].total %>" disabled>
                                                 </div>
                                             </div>
+                                            <% if (url == 'detail-proyek') { %>
                                             <div class="row form-group">
                                                 <div class="col col-sm-4">
                                                     <a href="/admin/project/waiting/<%= project._id %>/edit">
@@ -212,6 +213,7 @@
                                                     </a>
                                                 </div>
                                             </div>
+                                            <% } %>
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
@@ -263,6 +265,7 @@
                                             <% } %>
                                             <% }) %>
 
+                                            <% if (url == 'detail-proyek') { %>
                                             <div class="row form-group">
                                                 <div class="col col-sm-4">
                                                     <a href="/admin/project/waiting/<%= project._id %>/edit">
@@ -285,6 +288,7 @@
                                                     </a>
                                                 </div>
                                             </div>
+                                            <% } %>
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="project" role="tabpanel"
@@ -365,9 +369,8 @@
                                                         Unduh
                                                     </button>
                                                 </a>
-
                                             </div>
-
+                                            <% if (url == 'detail-proyek') { %>
                                             <div class="row form-group">
                                                 <div class="col col-sm-4">
                                                     <a href="/admin/project/waiting/<%= project._id %>/edit">
@@ -390,6 +393,7 @@
                                                     </a>
                                                 </div>
                                             </div>
+                                            <% } %>
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
@@ -426,6 +430,7 @@
                                                 <% } %>
                                                 <% }); %>
                                             </div>
+                                            <% if (url == 'detail-proyek') { %>
                                             <div class="row form-group">
                                                 <div class="col col-sm-4">
                                                     <a href="/admin/project/waiting/<%= project._id %>/edit">
@@ -448,6 +453,7 @@
                                                     </a>
                                                 </div>
                                             </div>
+                                            <% } %>
                                         </form>
                                     </div>
                                 </div>
