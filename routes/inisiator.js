@@ -54,144 +54,144 @@ router.get('/start-project', isLoggedIn, isInisiator, function (req, res) {
 router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     request({
-            url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
-            method: 'GET', // specify the request type
-        },
-        function (error, response, body) {
-            if (error) {
-                res.json({
-                    success: false,
-                    province: null
-                });
-            } else {
-                getProjectByID(req.params.project_id, function (error, project) {
-                    if (error) {
-                        error_message = "Terjadi kesalahan";
-                        req.flash('error_message', error_message);
-                        return res.redirect('/inisiator/start-project');
-                    }
-                    if (!project) {
-                        error_message = "Proyek tidak tersedia";
-                        req.flash('error_message', error_message);
-                        return res.redirect('/inisiator/start-project');
-                    } else {
-                        if (req.user._id.equals(project.inisiator)) {
-                            let province_id, province_name, city_id, city_name, category, sub_category, unit_value, goal, start_campaign, due_campaign, campaign, start_date, roi, duration, stock_price, total_stock = null;
-                            let budget = [];
-                            let budget_not_null = 0;
-                            let abstract, prospectus = null;
-                            let activity_date = [];
-                            let image = [];
-                            let new_data = {};
+        url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
+        method: 'GET', // specify the request type
+    },
+    function (error, response, body) {
+        if (error) {
+            res.json({
+                success: false,
+                province: null
+            });
+        } else {
+            getProjectByID(req.params.project_id, function (error, project) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    return res.redirect('/inisiator/start-project');
+                }
+                if (!project) {
+                    error_message = "Proyek tidak tersedia";
+                    req.flash('error_message', error_message);
+                    return res.redirect('/inisiator/start-project');
+                } else {
+                    if (req.user._id.equals(project.inisiator)) {
+                        let province_id, province_name, city_id, city_name, category, sub_category, unit_value, goal, start_campaign, due_campaign, campaign, start_date, roi, duration, stock_price, total_stock = null;
+                        let budget = [];
+                        let budget_not_null = 0;
+                        let abstract, prospectus = null;
+                        let activity_date = [];
+                        let image = [];
+                        let new_data = {};
 
-                            if (project.basic[0].province.length != 0) {
-                                province_id = project.basic[0].province[0].province_id;
-                                province_name = project.basic[0].province[0].province_name;
-                                city_id = project.basic[0].city[0].city_id;
-                                city_name = project.basic[0].city[0].city_name;
-                                category = project.category;
-                                sub_category = project.sub_category;
-                                stock_price = project.basic[0].stock[0].price;
-                                total_stock = project.basic[0].stock[0].total;
-                            }
-
-                            for (let i = 0; i < project.budget.length; i++) {
-                                if (project.budget[i].activity_date === undefined) {
-                                    activity_date[i] = null;
-                                } else {
-                                    activity_date[i] = project.budget[i].activity_date.toLocaleDateString();
-                                }
-                                budget[i] = {
-                                    description: project.budget[i].description,
-                                    activity_date: activity_date[i],
-                                    amount: project.budget[i].amount
-                                };
-                                if (budget[i].description != "") {
-                                    budget_not_null++
-                                }
-                            }
-                            if (project.project.length != 0) {
-                                unit_value = project.project[0].unit_value;
-                                goal = project.project[0].goal;
-                                campaign = project.project[0].duration[0].campaign;
-                                start_date = project.project[0].duration[0].start_date.toLocaleDateString();
-                                roi = project.project[0].roi;
-                                duration = project.project[0].duration[0].duration;
-                                abstract = project.project[0].abstract.replace('&', '&amp;');
-                                prospectus = project.project[0].prospectus;
-                            }
-                            for (let i = 0; i < project.image.length; i++) {
-                                if (project.image[i].filename !== undefined) {
-                                    image[i] = project.image[i].filename;
-                                }
-                            }
-
-                            if (project.status == "draft") {
-                                if (project.basic.length != 0 && project.budget.length != 0 && project.project.length != 0 && project.image.length != 0) {
-                                    new_data.status = "waiting";
-                                }
-                            }
-
-                            updateProject(project._id, new_data, function (error, project) {
-                                if (error) {
-                                    error_message = "Terjadi kesalahan";
-                                    req.flash('error_message', error_message);
-                                    return res.redirect(`/inisiator/project/${project._id}/edit`);
-                                }
-                                if (!project) {
-                                    error_message = "Proyek tidak tersedia";
-                                    req.flash('error_message', error_message);
-                                    return res.redirect(`/inisiator/project/${project._id}/edit`);
-                                } else {
-                                    Category.find(function (error, all_category) {
-                                        if (error) {
-                                            error_message = "Terjadi kesalahan";
-                                            req.flash('error_message', error_message);
-                                            return res.redirect(`/inisiator/project/${project._id}/edit`);
-                                        } else {
-                                            let data = {
-                                                user_id: req.user._id,
-                                                project_id: project._id,
-                                                title: project.basic[0].title,
-                                                province: JSON.parse(body).semuaprovinsi,
-                                                province_id: province_id,
-                                                province_name: province_name,
-                                                city_id: city_id,
-                                                city_name: city_name,
-                                                category: category,
-                                                sub_category: sub_category,
-                                                unit_value: unit_value,
-                                                goal: goal,
-                                                start_campaign: start_campaign,
-                                                due_campaign: due_campaign,
-                                                campaign: campaign,
-                                                start_date: start_date,
-                                                roi: roi,
-                                                duration: duration,
-                                                stock_price: stock_price,
-                                                total_stock: total_stock,
-                                                budget: budget,
-                                                budget_not_null: budget_not_null,
-                                                abstract: abstract,
-                                                prospectus: prospectus,
-                                                image: image,
-                                                status: project.status,
-                                                url: "edit",
-                                                all_category: all_category,
-
-                                            }
-                                            res.render('pages/inisiator/edit-project', data);
-                                        }
-                                    });
-                                }
-                            });
-                        } else {
-                            res.redirect('/inisiator/dashboard');
+                        if (project.basic[0].province.length != 0) {
+                            province_id = project.basic[0].province[0].province_id;
+                            province_name = project.basic[0].province[0].province_name;
+                            city_id = project.basic[0].city[0].city_id;
+                            city_name = project.basic[0].city[0].city_name;
+                            category = project.category;
+                            sub_category = project.sub_category;
+                            stock_price = project.basic[0].stock[0].price;
+                            total_stock = project.basic[0].stock[0].total;
                         }
+
+                        for (let i = 0; i < project.budget.length; i++) {
+                            if (project.budget[i].activity_date === undefined) {
+                                activity_date[i] = null;
+                            } else {
+                                activity_date[i] = project.budget[i].activity_date.toLocaleDateString();
+                            }
+                            budget[i] = {
+                                description: project.budget[i].description,
+                                activity_date: activity_date[i],
+                                amount: project.budget[i].amount
+                            };
+                            if (budget[i].description != "") {
+                                budget_not_null++
+                            }
+                        }
+                        if (project.project.length != 0) {
+                            unit_value = project.project[0].unit_value;
+                            goal = project.project[0].goal;
+                            campaign = project.project[0].duration[0].campaign;
+                            start_date = project.project[0].duration[0].start_date.toLocaleDateString();
+                            roi = project.project[0].roi;
+                            duration = project.project[0].duration[0].duration;
+                            abstract = project.project[0].abstract.replace('&', '&amp;');
+                            prospectus = project.project[0].prospectus;
+                        }
+                        for (let i = 0; i < project.image.length; i++) {
+                            if (project.image[i].filename !== undefined) {
+                                image[i] = project.image[i].filename;
+                            }
+                        }
+
+                        if (project.status == "draft") {
+                            if (project.basic.length != 0 && project.budget.length != 0 && project.project.length != 0 && project.image.length != 0) {
+                                new_data.status = "waiting";
+                            }
+                        }
+
+                        updateProject(project._id, new_data, function (error, project) {
+                            if (error) {
+                                error_message = "Terjadi kesalahan";
+                                req.flash('error_message', error_message);
+                                return res.redirect(`/inisiator/project/${project._id}/edit`);
+                            }
+                            if (!project) {
+                                error_message = "Proyek tidak tersedia";
+                                req.flash('error_message', error_message);
+                                return res.redirect(`/inisiator/project/${project._id}/edit`);
+                            } else {
+                                Category.find(function (error, all_category) {
+                                    if (error) {
+                                        error_message = "Terjadi kesalahan";
+                                        req.flash('error_message', error_message);
+                                        return res.redirect(`/inisiator/project/${project._id}/edit`);
+                                    } else {
+                                        let data = {
+                                            user_id: req.user._id,
+                                            project_id: project._id,
+                                            title: project.basic[0].title,
+                                            province: JSON.parse(body).semuaprovinsi,
+                                            province_id: province_id,
+                                            province_name: province_name,
+                                            city_id: city_id,
+                                            city_name: city_name,
+                                            category: category,
+                                            sub_category: sub_category,
+                                            unit_value: unit_value,
+                                            goal: goal,
+                                            start_campaign: start_campaign,
+                                            due_campaign: due_campaign,
+                                            campaign: campaign,
+                                            start_date: start_date,
+                                            roi: roi,
+                                            duration: duration,
+                                            stock_price: stock_price,
+                                            total_stock: total_stock,
+                                            budget: budget,
+                                            budget_not_null: budget_not_null,
+                                            abstract: abstract,
+                                            prospectus: prospectus,
+                                            image: image,
+                                            status: project.status,
+                                            url: "edit",
+                                            all_category: all_category,
+
+                                        }
+                                        res.render('pages/inisiator/edit-project', data);
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        res.redirect('/inisiator/dashboard');
                     }
-                });
-            }
-        });
+                }
+            });
+        }
+    });
 
 
 });
@@ -300,7 +300,7 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                 req.flash('error_message', error_message);
                 return res.redirect('/inisiator/start-project');
             }
-            if (project.inisiator != req.user._id) {
+            if (!project.inisiator._id.equals(req.user._id)) {
                 error_message = "Proyek tidak tersedia";
                 req.flash('error_message', error_message);
                 return res.redirect('/inisiator/start-project');
@@ -400,7 +400,7 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
                 req.flash('error_message', error_message);
                 return res.redirect('/inisiator/start-project');
             }
-            if (project.inisiator != req.user._id) {
+            if (!project.inisiator._id.equals(req.user._id)) {
                 error_message = "Proyek tidak tersedia";
                 req.flash('error_message', error_message);
                 return res.redirect('/inisiator/start-project');
@@ -504,7 +504,7 @@ router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified,
             return res.redirect('/inisiator/start-project');
         }
         else {
-            if (project.inisiator != req.user._id) {
+            if (!project.inisiator._id.equals(req.user._id)) {
                 error_message = "Proyek tidak tersedia";
                 req.flash('error_message', error_message);
                 return res.redirect('/inisiator/start-project');
@@ -614,7 +614,7 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
                 req.flash('error_message', error_message);
                 return res.redirect('/inisiator/start-project');
             } else {
-                if (project.inisiator != req.user._id) {
+                if (!project.inisiator._id.equals(req.user._id)) {
                     error_message = "Proyek tidak tersedia";
                     req.flash('error_message', error_message);
                     return res.redirect('/inisiator/start-project');

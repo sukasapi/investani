@@ -2,8 +2,14 @@ import express from 'express';
 import { User, getUserByID } from '../models/User';
 import { getProjectByStatus, getProjectByID, updateProject } from '../models/Project';
 import { Category, createCategory } from '../models/Category';
-import { Transaction, getTransactionByStatus } from '../models/Transaction';
+import { getTransactionByStatus, getTransactionById } from '../models/Transaction';
 import moment from 'moment';
+import request from 'request';
+import upload from '../uploadMiddleware';
+import path from 'path';
+import multer from 'multer';
+import fs from 'fs';
+import Resize from '../Resize';
 
 const router = express.Router();
 
@@ -201,36 +207,56 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
 router.get('/project/waiting/:project_id/edit', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
-    getProjectByID(req.params.project_id, function (error, project) {
+    let province_id = null;
+    request({
+        url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
+        method: 'GET', // specify the request type
+    }, function (error, response, body) {
         if (error) {
-            error_message = "Terjadi kesalahan";
-            req.flash('error_message', error_message);
-            return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
-        }
-        if (!project) {
-            error_message = "Proyek tidak tersedia";
-            req.flash('error_message', error_message);
-            return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
-        }
-        else {
-            Category.find(function (error, all_category) {
+            res.json({
+                success: false,
+                province: null
+            });
+        } else {
+            getProjectByID(req.params.project_id, function (error, project) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
                     return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
                 }
-                let data = {
-                    url: 'edit-project',
-                    project: project, 
-                    all_category: all_category
+                if (!project) {
+                    error_message = "Proyek tidak tersedia";
+                    req.flash('error_message', error_message);
+                    return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
                 }
-                success_message = "Silahakan verifikasi proyek yang tersedia";
-                req.flash('success_message', success_message);
-                return res.render('pages/admin/project/edit', data);
-            })
-            
+                else {
+                    if (project.basic[0].province.length != 0) {
+                        province_id = project.basic[0].province[0].province_id;
+                    }
+                    Category.find(function (error, all_category) {
+                        if (error) {
+                            error_message = "Terjadi kesalahan";
+                            req.flash('error_message', error_message);
+                            return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
+                        }
+                        
+                        let data = {
+                            url: 'edit-project',
+                            project: project, 
+                            all_category: all_category,
+                            province: JSON.parse(body).semuaprovinsi,
+                            province_id: province_id
+                        }
+                        success_message = "Silahakan verifikasi proyek yang tersedia";
+                        req.flash('success_message', success_message);
+                        return res.render('pages/admin/project/edit', data);
+                    })
+                    
+                }
+            });
         }
     });
+    
 });
 router.get('/project/waiting/:project_id/reject', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
@@ -309,29 +335,82 @@ router.get('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
 });
 router.get('/transaction/waiting', isLoggedIn, isAdmin, function (req, res) {
     let success_message;
+    let error_message = null;
     let createdAt = [];
     let due_date = [];
     let payment_date = [];
     getTransactionByStatus('waiting_verification', function (error, transactions) {
-        transactions.forEach((transaction, index) => {
-            createdAt[index] = moment(transaction.createdAt).format('LL');
-            due_date[index] = moment(transaction.due_date).format('lll');
-            payment_date[index] = moment(transaction.payment_date).format('lll');
-        });
-
-        let data = {
-            user_id: req.user._id,
-            transactions: transactions,
-            createdAt: createdAt,
-            due_date: due_date,
-            payment_date: payment_date,
-            url: "waiting_verification"
+        if (error) {
+            error_message = "Terjadi kesalahan.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/transaction/waiting');
         }
-        success_message = "Daftar transaksi yang menunggu verifikasi.";
-        req.flash('success_message', success_message);
-        return res.render('pages/admin/transaction/waiting-verification', data);
+        else {
+            transactions.forEach((transaction, index) => {
+                createdAt[index] = moment(transaction.createdAt).format('LL');
+                due_date[index] = moment(transaction.due_date).format('lll');
+                payment_date[index] = moment(transaction.payment_date).format('lll');
+            });
+    
+            let data = {
+                user_id: req.user._id,
+                transactions: transactions,
+                createdAt: createdAt,
+                due_date: due_date,
+                payment_date: payment_date,
+                url: "waiting_verification"
+            }
+            success_message = "Daftar transaksi yang menunggu verifikasi.";
+            req.flash('success_message', success_message);
+            return res.render('pages/admin/transaction/waiting-verification', data);
+        } 
     });
 });
+router.get('/transaction/waiting/verify/:transaction_id', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    let success_message;
+    getTransactionById(req.params.transaction_id, function (error, transaction) {
+        if (error) {
+            error_message = "Terjadi kesalahan.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/transaction/waiting');
+        }
+        if (!transaction) {
+            error_message = "Transaksi tidak tersedia.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/transaction/waiting');
+        }
+        else {
+            transaction.status = 'verified';
+            transaction.save().then(transaction => {
+                getProjectByID(transaction.project._id, function (error, project) {
+                    if (error) {
+                        error_message = "Terjadi kesalahan.";
+                        req.flash('error_message', error_message);
+                        return res.redirect('/admin/transaction/waiting');
+                    }
+                    else {
+                        project.basic[0].stock[0].total = project.basic[0].stock[0].total-transaction.stock_quantity;
+                        project.save().then(project => {
+                            success_message = "Berhasil melakukan verifikasi transaksi."
+                            req.flash('success_message', success_message);
+                            return res.redirect('/admin/transaction/waiting');
+                        }).catch(project => {
+                            error_message = "Terjadi kesalahan.";
+                            req.flash('error_message', error_message);
+                            return res.redirect('/admin/transaction/waiting');
+                        }); 
+                    }
+                });
+            }).catch(transaction => {
+                error_message = "Terjadi kesalahan.";
+                req.flash('error_message', error_message);
+                return res.redirect('/admin/transaction/waiting');
+            });
+
+        }
+    });
+})
 router.get('/transaction/get-receipt/:project_id/:filename', isLoggedIn, isAdmin, function (req, res) {
     res.download(__dirname+'/../storage/projects/'+req.params.project_id+'/transactions/'+req.params.filename);
 });
@@ -602,7 +681,7 @@ router.post('/project/waiting/:project_id/budget', isLoggedIn, isAdmin, function
 router.post('/project/waiting/:project_id/project', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
-
+    console.log(req.body)
     req.checkBody('duration', 'Durasi proyek tidak boleh lebih dari 12 bulan').isInt({
         max: 12
     });
@@ -648,17 +727,19 @@ router.post('/project/waiting/:project_id/project', isLoggedIn, isAdmin, functio
                     return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
                 } else {
                     let prospectus = "";
-                    if (req.body.prospectus_input === undefined) {
-                        if (!req.file) {
-                            error_message = "Prospektus proyek wajib diunggah.";
-                            req.flash('error_message', error_message);
-                            return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
-                        } else {
-                            prospectus = req.file.filename;
-                        }
-                    } else {
-                        prospectus = req.body.prospectus_input;
-                    }
+                    // if (req.body.prospectus_input === undefined) {
+                    //     if (!req.file) {
+                    //         error_message = "Prospektus proyek wajib diunggah.";
+                    //         req.flash('error_message', error_message);
+                    //         return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
+                    //     } else {
+                    //         prospectus = req.file.filename;
+                    //     }
+                    // } else {
+                    //     prospectus = req.body.prospectus_input;
+                    // }
+                    prospectus = req.body.prospectus_input;
+
                     let data = {
                         project: [{
                             unit_value: req.body.unit_value,
@@ -695,6 +776,160 @@ router.post('/project/waiting/:project_id/project', isLoggedIn, isAdmin, functio
                 }
             }
         }
+    });
+});
+let ImageUpload = upload.fields([
+    {
+        name: 'project_image0',
+        maxCount: 1
+    },
+    {
+        name: 'project_image1',
+        maxCount: 1
+    },
+    {
+        name: 'project_image2',
+        maxCount: 1
+    }
+]);
+router.post('/project/waiting/:project_id/image', isLoggedIn, isAdmin, function (req, res) {
+    ImageUpload(req, res, function (err) {
+        let error_message;
+        let success_message;
+        let project_image = [];
+        const dir = path.join(__dirname, `../storage/projects/${req.params.project_id}/images`);
+        if (err instanceof multer.MulterError) {
+            error_message = "Ukuran gambar terlalu besar";
+            req.flash('error_message', error_message);
+            return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+        } else if (err) {
+            error_message = "Terjadi Kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+        }
+        
+        getProjectByID(req.params.project_id, function (error, project) {
+            if (error) {
+                error_message = "Terjadi kesalahan";
+                req.flash('error_message', error_message);
+                return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+            }
+            if (!project) {
+                error_message = "Proyek tidak tersedia";
+                req.flash('error_message', error_message);
+                return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+            } else {
+                if (project.status == 'verified') {
+                    error_message = "Proyek yang sudah terverifikasi tidak dapat diubah";
+                    req.flash('error_message', error_message);
+                    return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+                } else {
+                    fs.access(dir, async (err) => {
+                        const imagePath = path.join(__dirname, `../storage/projects/${req.params.project_id}/images`);
+                        const imageUpload = new Resize(imagePath);
+                        if (err) {
+                            fs.mkdir(dir, async (err) => {
+                                if (err) {
+                                    error_message = "Terjadi Kesalahan";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+                                } else {
+                                    if (req.files['project_image0'] || req.files['project_image1'] || req.files['project_image2']) {
+                                        if (req.files['project_image0']) {
+                                            project_image.push(await imageUpload.save(req.files['project_image0'][0].buffer));
+                                        }
+                                        if (req.files['project_image1']) {
+                                            project_image.push(await imageUpload.save(req.files['project_image1'][0].buffer));
+                                        }
+                                        if (req.files['project_image2']) {
+                                            project_image.push(await imageUpload.save(req.files['project_image2'][0].buffer));
+                                        }
+                                        let image = [{
+                                                filename: project_image[0]
+                                            },
+                                            {
+                                                filename: project_image[1]
+                                            },
+                                            {
+                                                filename: project_image[2]
+                                            }
+                                        ];
+                                        let data = {
+                                            image: image
+                                        };
+                                        updateProject(req.params.project_id, data, function (error, project) {
+                                            if (error) {
+                                                error_message = "Terjadi kesalahan";
+                                                req.flash('error_message', error_message);
+                                                return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+                                            }
+                                            if (!project) {
+                                                error_message = "Proyek tidak tersedia";
+                                                req.flash('error_message', error_message);
+                                                return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+                                            } else {
+                                                success_message = "Berhasil memperbarui proyek";
+                                                req.flash('success_message', success_message);
+                                                return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+                                            }
+                                        });
+                                    } else {
+                                        error_message = "Gambar proyek wajib diunggah";
+                                        req.flash('error_message', error_message);
+                                        return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+                                    }
+                                }
+                            });
+                        } else {
+                            if (req.files['project_image0']) {
+                                project_image.push(await imageUpload.save(req.files['project_image0'][0].buffer));
+                            } else {
+                                project_image.push(req.body.project_image0_input);
+                            }
+                            if (req.files['project_image1']) {
+                                project_image.push(await imageUpload.save(req.files['project_image1'][0].buffer));
+                            } else {
+                                project_image.push(req.body.project_image1_input);
+                            }
+                            if (req.files['project_image2']) {
+                                project_image.push(await imageUpload.save(req.files['project_image2'][0].buffer));
+                            } else {
+                                project_image.push(req.body.project_image2_input);
+                            }
+                            let image = [{
+                                    filename: project_image[0]
+                                },
+                                {
+                                    filename: project_image[1]
+                                },
+                                {
+                                    filename: project_image[2]
+                                }
+                            ];
+                            let data = {
+                                image: image
+                            };
+                            updateProject(req.params.project_id, data, function (error, project) {
+                                if (error) {
+                                    error_message = "Terjadi kesalahan";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+                                }
+                                if (!project) {
+                                    error_message = "Proyek tidak tersedia";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+                                } else {
+                                    success_message = "Berhasil memperbarui proyek";
+                                    req.flash('success_message', success_message);
+                                    return res.redirect(`/admin/project/waiting/${req.params.project_id}/edit`);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
     });
 });
 router.post('/project/add-category', isLoggedIn, isAdmin, function (req, res) {

@@ -250,9 +250,8 @@
                                                 </div>
                                                 <div class="col col-sm-4">
                                                     <label class="control-label mb-1">Tanggal Kegiatan</label>
-                                                    <input type="text" name="activity_date"
-                                                        class="form-control activity-datepicker"
-                                                        id="budget-items-activity-date" placeholder="Tanggal Kegiatan"
+                                                    <input type="text" id="budget-items-activity-date" name="activity_date"
+                                                        class="form-control activity-datepicker" placeholder="Tanggal Kegiatan"
                                                         style="width: 80%">
                                                 </div>
                                                 <div class="col col-sm-2">
@@ -497,9 +496,6 @@
         });
     </script>
     <script type="text/javascript">
-        
-    </script>
-    <script type="text/javascript">
         <% if (province_id != null) {%>
         $.ajax({
             type: 'get',
@@ -637,6 +633,14 @@
             $('#budget-chart-col').show();
             var i = 0;
             loopingButton(i);
+            var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+            $('.activity-datepicker').each(function () {
+                $(this).datepicker({
+                    uiLibrary: 'bootstrap4',
+                    minDate: today
+                });
+            });
         });
         $('#pills-project-tab').on('click', function (event) {
             event.preventDefault();
@@ -657,8 +661,7 @@
                 var data = [];
                 var budget = 0;
                 $('.budget-description')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].description;
-                $('.activity-datepicker')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i]
-                    .activity_date;
+                $('.activity-datepicker')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].activity_date;
                 $('.budget-amount')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].amount;
                 i++;
                 if (i < '<%= budget_not_null %>') {
@@ -675,16 +678,10 @@
                     }
                     $('#funding-target').text(budget);
                     updateItem(labels, data);
-
                 }
             }, 1000);
         }
-        var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-
-            $('.activity-datepicker').datepicker({
-                uiLibrary: 'bootstrap4',
-                minDate: today
-            })
+        
         $('#project-basic-form').on('submit', function () {
             $('#project-basic-button').attr('disabled', 'disabled');
             $('#project-basic-spinner').show();
@@ -757,8 +754,15 @@
                     }
                 }
                 updateItem(labels, data);
-            }, delay);
+                var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
 
+                $('.activity-datepicker').each(function () {
+                    $(this).datepicker({
+                        uiLibrary: 'bootstrap4',
+                        minDate: today
+                    });
+                });
+            }, delay);
         });
         $('.minus').on('click', function (event) {
             event.preventDefault();

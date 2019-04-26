@@ -129,9 +129,18 @@
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Provinsi</label>
                                                     <select name="province" id="province" class="form-control">
-                                                        <option value="project.basic[0].province[0].province_id" selected>
-                                                            <%= project.basic[0].province[0].province_name %>
+                                                        <option disabled selected>Pilih provinsi</option>
+                                                        <% for(var i = 0; i < province.length; i++) {%>
+                                                        <% if (province[i].id == province_id) { %>
+                                                        <option value="<%= province[i].id %>" selected>
+                                                            <%= province[i].nama %>
                                                         </option>
+                                                        <% } else { %>
+                                                        <option value="<%= province[i].id %>">
+                                                            <%= province[i].nama %>
+                                                        </option>
+                                                        <% }%>
+                                                        <% }%>
                                                     </select>
                                                     <input class="form-control" id="province-name" name="province_name"
                                                         type="text" style="display: none" value="<%= project.basic[0].province[0].province_name %>">
@@ -144,7 +153,7 @@
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Kota</label>
                                                     <select name="city" id="city" class="form-control">
-                                                        <option value="<%= project.basic[0].city[0].city_id %>" selected><%= project.basic[0].city[0].city_name %>
+                                                        <option class="city-option" value="<%= project.basic[0].city[0].city_id %>" selected><%= project.basic[0].city[0].city_name %>
                                                         </option>
                                                     </select>
                                                     <input class="form-control" id="city-name" name="city_name" type="text"
@@ -256,8 +265,7 @@
                                     </div>
                                     <div class="tab-pane fade" id="project" role="tabpanel"
                                         aria-labelledby="project-tab">
-                                        <form action="/admin/project/waiting/<%= project._id %>/project"
-                                            enctype="multipart/form-data" id="project-project-form" method="post">
+                                        <form action="/admin/project/waiting/<%= project._id %>/project" id="project-project-form" method="post">
                                             <% if (success_message != '') { %>
                                             <div
                                                 class="sufee-alert alert with-close alert-success alert-dismissible fade show">
@@ -346,7 +354,7 @@
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
-                                        <form action="#"
+                                        <form action="/admin/project/waiting/<%=project._id%>/image"
                                             enctype="multipart/form-data" id="project-image-form" method="post">
                                             <% if (success_message != '') { %>
                                             <div
@@ -369,12 +377,14 @@
                                             </div>
                                             <% } %>
                                             <div class="row form-group">
-                                                <% project.image.forEach((image) => { %>
+                                                <% project.image.forEach((image, index) => { %>
                                                 <% if (image != null) { %>
                                                 <div class="col col-sm-4">
                                                     <input accept="image/*" class="dropify"
                                                         data-default-file="/image/project/<%=project._id %>/<%= image.filename %>"
-                                                        data-height="304.66" type="file" disabled />
+                                                        data-height="304.66" name="project_image<%=index%>" type="file" />
+                                                    <input type="text" name="project_image<%=index%>_input"
+                                                    value="<%= image.filename %>" style="display: none">
                                                 </div>
                                                 <% } %>
                                                 <% }); %>
@@ -571,6 +581,14 @@
             $('#budget-chart-col').show();
             var i = 0;
             loopingButton(i);
+            var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+            $('.activity-datepicker').each(function () {
+                $(this).datepicker({
+                    uiLibrary: 'bootstrap4',
+                    minDate: today
+                });
+            });
         });
         $('#pills-project-tab').on('click', function (event) {
             event.preventDefault();
@@ -592,7 +610,6 @@
 
                 $('.budget-description')[i].value = JSON.parse('<%- JSON.stringify(project.budget) %>')[i].description;
                 $('.activity-datepicker')[i].value = new Date(JSON.parse('<%- JSON.stringify(project.budget) %>')[i].activity_date).toLocaleDateString();
-                console.log($('.activity-datepicker')[i].value);
                 $('.budget-amount')[i].value = JSON.parse('<%- JSON.stringify(project.budget) %>')[i].amount;
                 i++;
                 if (i < '<%= project.budget.length %>') {
@@ -612,13 +629,9 @@
 
                 }
             }, 1000);
+            var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
         }
-        var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-
-            $('.activity-datepicker').datepicker({
-                uiLibrary: 'bootstrap4',
-                minDate: today
-            })
+        
         $('#project-basic-form').on('submit', function () {
             $('#project-basic-button').attr('disabled', 'disabled');
             $('#project-basic-spinner').show();
@@ -691,6 +704,14 @@
                     }
                 }
                 updateItem(labels, data);
+                var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+                $('.activity-datepicker').each(function () {
+                    $(this).datepicker({
+                        uiLibrary: 'bootstrap4',
+                        minDate: today
+                    });
+                });
             }, delay);
 
         });

@@ -84,8 +84,7 @@ router.get('/transaction/waiting-verification', isLoggedIn, isInvestor, function
 router.get('/transaction/waiting-payment/:transaction_id', isLoggedIn, isInvestor, function (req, res) {
     let success_message;
     let error_message;
-
-    getTransactionById(req.params.transaction_id, req.user._id, function (error, transaction) {
+    getTransactionById(req.params.transaction_id, function (error, transaction) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -94,17 +93,23 @@ router.get('/transaction/waiting-payment/:transaction_id', isLoggedIn, isInvesto
         if (!transaction) {
             error_message = "Transaksi tidak tersedia";
             req.flash('error_message', error_message);
-            console.log(error_message)
             return res.redirect('/investor/transaction/waiting-payment');
         } else {
-            success_message = "Menampilkan detail transaksi.";
-            req.flash('success_message', success_message);
-            let data = {
-                user_id: req.user._id,
-                transaction: transaction,
-                url: "detail_transaction"
+            if (transaction.investor._id.equals(req.user._id)) {
+                success_message = "Menampilkan detail transaksi.";
+                req.flash('success_message', success_message);
+                let data = {
+                    user_id: req.user._id,
+                    transaction: transaction,
+                    url: "detail_transaction"
+                }
+                return res.render('pages/investor/transaction/detail', data);
             }
-            return res.render('pages/investor/transaction/detail', data);
+            else {
+                error_message = "Transaksi tidak tersedia";
+                req.flash('error_message', error_message);
+                return res.redirect('/investor/transaction/waiting-payment');
+            }
         }
     });
 });
@@ -115,6 +120,14 @@ router.get('/:user_id/backed-project', isLoggedIn, isInvestor, function (req, re
     }
     res.render('pages/investor/backed-project', data);
 });
+router.get('/transaction/get-receipt/:transaction_id/:filename', isLoggedIn, isInvestor, function (req, res) {
+    getTransactionById(req.params.transaction_id, function (error, transaction) {
+        if (transaction.investor._id.equals(req.user._id)) {
+            res.download(__dirname+'/../storage/projects/'+transaction.project._id+'/transactions/'+req.params.filename);
+        }
+    });
+});
+
 router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) {
     let error_message;
     let success_message;
@@ -185,13 +198,11 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) 
         }
     });
 });
-
 let receiptUpload = upload.fields([{
     name: 'receipt',
     maxCount: 1
 }]);
 router.post('/transaction/waiting-payment/:transaction_id/:project_id', isLoggedIn, isInvestor, function (req, res) {
-
     receiptUpload(req, res, function (err) {
         let error_message;
         let success_message;
@@ -200,6 +211,7 @@ router.post('/transaction/waiting-payment/:transaction_id/:project_id', isLogged
         let receipt;
         if (err instanceof multer.MulterError) {
             error_message = "Ukuran gambar terlalu besar";
+
             req.flash('error_message', error_message);
             return res.redirect(`/transaction/waiting-payment/${req.params.transaction_id}`);
         } else if (err) {
@@ -207,51 +219,60 @@ router.post('/transaction/waiting-payment/:transaction_id/:project_id', isLogged
             req.flash('error_message', error_message);
             return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
         }
-        getTransactionById(req.params.transaction_id, req.user._id, async function (error, transaction) {
+        getTransactionById(req.params.transaction_id, async function (error, transaction) {
             if (error) {
                 error_message = "Terjadi Kesalahan";
                 req.flash('error_message', error_message);
                 return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
             }
             if (!transaction) {
-                error_message = "Proyek tidak tersedia";
+                error_message = "Transaksi tidak tersedia";
                 req.flash('error_message', error_message);
                 return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
-            } else {                
-                if (moment.duration(moment(transaction.due_date).diff(moment()))._milliseconds > 0) {
-                    if (req.files['receipt']) {
-                        receipt = await imageUpload.save(req.files['receipt'][0].buffer);
-                        let data = {
-                            status: 'waiting_verification',
-                            receipt: receipt,
-                            payment_date: moment().format()
+            } else {
+
+                if (transaction.investor._id.equals(req.user._id)) {
+                    if (moment.duration(moment(transaction.due_date).diff(moment()))._milliseconds > 0) {
+                        if (req.files['receipt']) {
+                            receipt = await imageUpload.save(req.files['receipt'][0].buffer);
+                            let data = {
+                                status: 'waiting_verification',
+                                receipt: receipt,
+                                payment_date: moment().format()
+                            }
+                            updateTransaction(req.params.transaction_id, data, function (error, transaction) {
+                                if (error) {
+                                    error_message = "Terjadi kesalahan";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
+                                }
+                                if (!transaction) {
+                                    error_message = "Proyek tidak tersedia";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
+                                } else {
+                                    success_message = "Berhasil memperbarui transaksi";
+                                    req.flash('success_message', success_message);
+                                    return res.redirect('/investor/transaction/waiting-verification/');
+                                }
+                            });
+                        } else {
+                            error_message = "Bukti transaksi wajib diunggah.";
+                            req.flash('error_message', error_message);
+                            return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
                         }
-                        updateTransaction(req.params.transaction_id, data, function (error, transaction) {
-                            if (error) {
-                                error_message = "Terjadi kesalahan";
-                                req.flash('error_message', error_message);
-                                return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
-                            }
-                            if (!transaction) {
-                                error_message = "Proyek tidak tersedia";
-                                req.flash('error_message', error_message);
-                                return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
-                            } else {
-                                success_message = "Berhasil memperbarui transaksi";
-                                req.flash('success_message', success_message);
-                                return res.redirect('/investor/transaction/waiting-verification/');
-                            }
-                        });
                     } else {
-                        error_message = "Bukti transaksi wajib diunggah.";
+                        error_message = "Transaksi sudah kadaluarsa.";
                         req.flash('error_message', error_message);
                         return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
                     }
-                } else {
-                    error_message = "Transaksi sudah kadaluarsa.";
+                }
+                else {
+                    error_message = "Transaksi tidak tersedia";
                     req.flash('error_message', error_message);
                     return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
                 }
+                
             }
         });
 

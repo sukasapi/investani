@@ -29,12 +29,8 @@ export const Transaction = mongoose.model('Transaction', TransactionSchema);
 export const createTransaction = (newTransaction, callback) => {
     newTransaction.save(callback);
 }
-export const getTransactionById = (id, investor_id, callback) => {
-    let obj = {
-        _id: id,
-        investor: investor_id
-    }
-    Transaction.findOne(obj, callback).populate('project').populate('investor').sort({ createdAt: -1 });
+export const getTransactionById = (id, callback) => {
+    Transaction.findById(id, callback).populate('project').populate('investor').sort({ createdAt: -1 });
 }
 export const getTransactionByStatus = (status, callback) => {
     let obj = {

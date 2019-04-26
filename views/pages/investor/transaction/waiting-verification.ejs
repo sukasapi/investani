@@ -61,6 +61,8 @@
                                             <th>Total Pembayaran</th>
                                             <th>Tanggal Kadaluarsa</th>
                                             <th>Tanggal Pembayaran</th>
+                                            <th>Aksi</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -80,7 +82,52 @@
                                             </td>
                                             <td><%= due_date %></td>
                                             <td><%= payment_date %></td>
+                                            <td>
+                                                <div class="input-group-btn">
+                                                    <button type="button" class="btn btn-primary mb-1"
+                                                        data-toggle="modal" data-target="#detail-modal">
+                                                        Lihat
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            
                                         </tr>
+                                        <div class="modal fade" id="detail-modal" tabindex="-1" role="dialog"
+                                            aria-labelledby="smallmodalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-md" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="smallmodalLabel">Bukti Transaksi
+                                                        </h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="card">
+                                                                    <% if (transaction.receipt) { %>
+                                                                    <img class="card-img-top"
+                                                                        src="/investor/transaction/get-receipt/<%= transaction._id %>/<%= transaction.receipt %>"
+                                                                        alt="Card image cap">
+                                                                    <% } %>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Tutup</button>
+                                                        <a class="detail-link" href="/investor/transaction/waiting-payment/<%= transaction._id %>">
+                                                            <button type="button"
+                                                                class="btn btn-warning">Upload Ulang</button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <% }) %>
                                     </tbody>
                                 </table>
