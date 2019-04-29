@@ -194,6 +194,7 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
             return res.redirect('/admin/dashboard');
         }
         else {
+
             let data = {
                 url: 'detail-project',
                 project: project
@@ -335,7 +336,7 @@ router.get('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
 });
 router.get('/transaction/waiting', isLoggedIn, isAdmin, function (req, res) {
     let success_message;
-    let error_message = null;
+    let error_message;
     let createdAt = [];
     let due_date = [];
     let payment_date = [];

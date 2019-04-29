@@ -1,0 +1,570 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ela Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="/css/dashboard-style.css">
+    <link rel="stylesheet" href="/css/dropify.min.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+    <style>
+        #bootstrap-data-table-1_filter,
+        #bootstrap-data-table-1_paginate,
+        #bootstrap-data-table-2_filter,
+        #bootstrap-data-table-2_paginate,
+        #bootstrap-data-table-3_filter,
+        #bootstrap-data-table-3_paginate {
+            text-align: right
+        }
+
+        #bootstrap-data-table-1_filter label,
+        #bootstrap-data-table-2_filter label,
+        #bootstrap-data-table-3_filter label {
+            text-align: left;
+        }
+
+        .pagination {
+            display: -webkit-inline-box;
+        }
+
+        .detail-link,
+        .detail-link:hover,
+        .detail-link:focus {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Left Panel -->
+
+    <% include ../../partials/investor/aside-dashboard %>
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <% include ../../partials/investor/header-dashboard %>
+        <!-- Header-->
+
+        <% include ../../partials/investor/breadcrumbs-dashboard %>
+
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="basic-card" class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Detail Proyek</strong>
+                            </div>
+                            <div class="card-body">
+                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active show" id="pills-basic-tab" data-toggle="pill"
+                                            href="#basic" role="tab" aria-controls="basic"
+                                            aria-selected="true">Dasar</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-budget-tab" data-toggle="pill" href="#budget"
+                                            role="tab" aria-controls="budget" aria-selected="false">Kegiatan dan
+                                            Anggaran</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-project-tab" data-toggle="pill" href="#project"
+                                            role="tab" aria-controls="project" aria-selected="false">Proyek</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-image-tab" data-toggle="pill" href="#image"
+                                            role="tab" aria-controls="image" aria-selected="false">Gambar</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade active show" id="basic" role="tabpanel"
+                                        aria-labelledby="basic-tab">
+                                        <form action="/admin/project/waiting/verify/<%= project._id %>"
+                                            id="project-basic-form" method="post">
+                                            <% if (success_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                <%= success_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <% if (error_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                <%= error_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Judul Proyek</label>
+                                                    <input name="title" type="text" class="form-control"
+                                                        placeholder="Judul Proyek" value="<%= project.basic[0].title %>"
+                                                        disabled>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Provinsi</label>
+                                                    <select name="province" id="province" class="form-control" disabled>
+                                                        <option selected>
+                                                            <%= project.basic[0].province[0].province_name %>
+                                                        </option>
+                                                    </select>
+                                                    <span class="select-btn">
+                                                        <i class="zmdi zmdi-chevron-down"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Kota</label>
+                                                    <select name="city" id="city" class="form-control" disabled>
+                                                        <option selected><%= project.basic[0].city[0].city_name %>
+                                                        </option>
+                                                    </select>
+                                                    <span class="select-btn">
+                                                        <i class="zmdi zmdi-chevron-down"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="col col-sm-3">
+                                                    <label for="cc-name" class="control-label mb-1">Kategori
+                                                        Proyek</label>
+                                                    <select name="category" id="category" class="form-control" disabled>
+                                                        <option value="<%= project.category._id %>" selected>
+                                                            <%= project.category.title %></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col col-sm-3">
+                                                    <label for="cc-name" class="control-label mb-1">Sub-kategori
+                                                        Proyek</label>
+                                                    <select name="sub_category" id="sub-category" class="form-control"
+                                                        disabled>
+                                                        <% project.category.sub_category.forEach((sub_category) => { %>
+                                                        <% if (project.sub_category.equals(sub_category._id)) { %>
+                                                        <option value="<%= project.sub_category %>" selected>
+                                                            <%= sub_category.name %></option>
+                                                        <% } %>
+                                                        <% }) %>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Harga Saham</label>
+                                                    <input class="form-control" id="stock-price" name="stock_price"
+                                                        placeholder="Harga Saham" type="number"
+                                                        value="<%= project.basic[0].stock[0].price %>" disabled>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Jumlah Saham</label>
+                                                    <input class="form-control" id="total-stock" name="total_stock"
+                                                        placeholder="Jumlah Saham" type="number"
+                                                        value="<%= project.basic[0].stock[0].total %>" disabled>
+                                                </div>
+                                            </div>
+                                            <% if (url == 'detail-project') { %>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-4">
+                                                    <a href="/admin/project/waiting/<%= project._id %>/edit">
+                                                        <button type="button" class="btn btn-warning btn-lg btn-block">Ubah Proyek </button>
+                                                    </a>
+                                                </div>
+                                                <div class="col col-sm-4">
+                                                    <button id="project-basic-button" type="submit"
+                                                        class="btn btn-lg btn-info btn-block">
+                                                        <span aria-hidden="true"
+                                                            class="spinner-border spinner-border-sm"
+                                                            id="project-basic-spinner" role="status"
+                                                            style="display: none"></span>
+                                                        <span>Verifikasi Proyek</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col col-sm-4">
+                                                    <a href="/admin/project/waiting/<%= project._id %>/reject">
+                                                        <button type="button" class="btn btn-danger btn-lg btn-block">Tolak Proyek </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <% } %>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
+                                        <form action="/admin/project/waiting/verify/<%= project._id %>"
+                                            id="project-budget-form" method="post">
+                                            <% if (success_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                <%= success_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <% if (error_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                <%= error_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <% project.budget.forEach((budget) => { %>
+                                            <% if (budget.description != "") {%>
+                                            <div class="row form-group dynamic-row" id="dynamic_form">
+                                                <div class="col col-sm-3">
+                                                    <label class="control-label mb-1 item-label">Nama Kegiatan</label>
+                                                    <input class="form-control budget-description"
+                                                        id="budget-items-description" name="description"
+                                                        placeholder="Kegiatan Baru" type="text"
+                                                        value="<%= budget.description %>" disabled>
+                                                </div>
+                                                <div class="col col-sm-4">
+                                                    <label class="control-label mb-1">Tanggal Kegiatan</label>
+                                                    <input type="text" name="activity_date" class="form-control"
+                                                        id="budget-items-activity-date" placeholder="Tanggal Kegiatan"
+                                                        value="<%= budget.activity_date.toLocaleDateString() %>" disabled>
+                                                </div>
+                                                <div class="col col-sm-2">
+                                                    <label class="control-label mb-1">Rp</label>
+                                                    <input class="form-control budget-amount" id="budget-items-amount"
+                                                        name="amount" placeholder="Rp" type="number"
+                                                        value="<%= budget.amount %>" disabled>
+                                                </div>
+                                            </div>
+                                            <% } %>
+                                            <% }) %>
+
+                                            <% if (url == 'detail-project') { %>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-4">
+                                                    <a href="/admin/project/waiting/<%= project._id %>/edit">
+                                                        <button type="button" class="btn btn-warning btn-lg btn-block">Ubah Proyek </button>
+                                                    </a>
+                                                </div>
+                                                <div class="col col-sm-4">
+                                                    <button id="project-basic-button" type="submit"
+                                                        class="btn btn-lg btn-info btn-block">
+                                                        <span aria-hidden="true"
+                                                            class="spinner-border spinner-border-sm"
+                                                            id="project-basic-spinner" role="status"
+                                                            style="display: none"></span>
+                                                        <span>Verifikasi Proyek</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col col-sm-4">
+                                                    <a href="/admin/project/waiting/<%= project._id %>/reject">
+                                                        <button type="button" class="btn btn-danger btn-lg btn-block">Tolak Proyek </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <% } %>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="project" role="tabpanel"
+                                        aria-labelledby="project-tab">
+                                        <form action="/admin/project/waiting/verify/<%= project._id %>"
+                                            enctype="multipart/form-data" id="project-project-form" method="post">
+                                            <% if (success_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                <%= success_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <% if (error_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                <%= error_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label
+                                                        class="control-label mb-1"><%= project.category.unit %></label>
+                                                    <input class="form-control" id="area" name="area"
+                                                        placeholder="<%= project.category.unit %>" type="number"
+                                                        value="<%= project.project[0].unit_value %>" disabled>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Durasi Kampanye (hari)</label>
+                                                    <select name="campaign" id="campaign" class="form-control" disabled>
+                                                        <option value="<%= project.project[0].duration[0].campaign %>"
+                                                            selected><%= project.project[0].duration[0].campaign %>
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Imbal Hasil/RoI (%)</label>
+                                                    <input class="form-control" id="roi" name="roi"
+                                                        placeholder="Imbal Hasil (RoI)" type="number"
+                                                        value="<%= project.project[0].roi %>" disabled>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Durasi Proyek (Bulan)</label>
+                                                    <input class="form-control" id="duration" name="duration"
+                                                        placeholder="Durasi Proyek (Bulan)" type="number"
+                                                        value="<%= project.project[0].duration[0].duration %>" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label mb-1" id="date-picker-label">Tanggal Proyek
+                                                    Dimulai</label>
+                                                <input type="text" name="start_date" class="date form-control"
+                                                    id="datepicker" placeholder="Tanggal Proyek Dimulai"
+                                                    value="<%= project.project[0].duration[0].start_date.toLocaleDateString() %>"
+                                                    disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label mb-1">Abstrak Proyek</label>
+                                                <textarea name="abstract" id="editor">
+                                                <%= project.project[0].abstract %>
+                                                </textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label mb-1">Prospektus:
+                                                    <%= project.project[0].prospectus %> </label>
+                                                <a href="/project/get-prospectus/<%= project.project[0].prospectus %>"
+                                                    style="color: #ffffff">
+                                                    <button class="btn btn-success btn-sm" type="button">
+                                                        Unduh
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <% if (url == 'detail-project') { %>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-4">
+                                                    <a href="/admin/project/waiting/<%= project._id %>/edit">
+                                                        <button type="button" class="btn btn-warning btn-lg btn-block">Ubah Proyek </button>
+                                                    </a>
+                                                </div>
+                                                <div class="col col-sm-4">
+                                                    <button id="project-basic-button" type="submit"
+                                                        class="btn btn-lg btn-info btn-block">
+                                                        <span aria-hidden="true"
+                                                            class="spinner-border spinner-border-sm"
+                                                            id="project-basic-spinner" role="status"
+                                                            style="display: none"></span>
+                                                        <span>Verifikasi Proyek</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col col-sm-4">
+                                                    <a href="/admin/project/waiting/<%= project._id %>/reject">
+                                                        <button type="button" class="btn btn-danger btn-lg btn-block">Tolak Proyek </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <% } %>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
+                                        <form action="/admin/project/waiting/verify/<%= project._id %>"
+                                            enctype="multipart/form-data" id="project-image-form" method="post">
+                                            <% if (success_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                <%= success_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <% if (error_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                <%= error_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <div class="row form-group">
+                                                <% project.image.forEach((image) => { %>
+                                                <% if (image != null) { %>
+                                                <div class="col col-sm-4">
+                                                    <input accept="image/*" class="dropify"
+                                                        data-default-file="/image/project/<%=project._id %>/<%= image.filename %>"
+                                                        data-height="304.66" type="file" disabled />
+                                                </div>
+                                                <% } %>
+                                                <% }); %>
+                                            </div>
+                                            <% if (url == 'detail-project') { %>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-4">
+                                                    <a href="/admin/project/waiting/<%= project._id %>/edit">
+                                                        <button type="button" class="btn btn-warning btn-lg btn-block">Ubah Proyek </button>
+                                                    </a>
+                                                </div>
+                                                <div class="col col-sm-4">
+                                                    <button id="project-basic-button" type="submit"
+                                                        class="btn btn-lg btn-info btn-block">
+                                                        <span aria-hidden="true"
+                                                            class="spinner-border spinner-border-sm"
+                                                            id="project-basic-spinner" role="status"
+                                                            style="display: none"></span>
+                                                        <span>Verifikasi Proyek</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col col-sm-4">
+                                                    <a href="/admin/project/waiting/<%= project._id %>/reject">
+                                                        <button type="button" class="btn btn-danger btn-lg btn-block">Tolak Proyek </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <% } %>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Transaksi</strong>
+                            </div>
+                            <div class="card-body">
+                                <table id="bootstrap-data-table-3" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Tanggal Transaksi</th>
+                                            <th>Proyek</th>
+                                            <th>Harga Saham</th>
+                                            <th>Saham yang Dibeli</th>
+                                            <th>Total Pembayaran</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% transactions.forEach((transaction, index) => { %>
+                                        <tr>
+                                            <td><%= index+1 %></td>
+                                            <td><%= createdAt[index] %></td>
+                                            <td>
+                                                <a href="/project/<%= transaction.project._id %>"
+                                                    style="color: #007bff">
+                                                    <%= transaction.project.basic[0].title %>
+                                                </a>
+                                            </td>
+                                            <td>Rp. <%= transaction.project.basic[0].stock[0].price %></td>
+                                            <td>
+                                                <%= transaction.stock_quantity %>
+                                            </td>
+                                            <td>Rp. <%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <div class="clearfix"></div>
+
+        <% include ../../partials/investor/footer-dashboard %>
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
+    <script src="/js/dropify.min.js"></script>
+
+    <script src="/js/dashboard-main.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                toolbar: ['italic', 'link'],
+            })
+            .then(editor => {
+                editor.isReadOnly = true
+            })
+            .catch(error => {
+                // console.error(error);
+            });
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $('.dropify').dropify();
+            $('#project-basic-form').on('submit', function () {
+                $('#project-basic-button').attr('disabled', 'disabled');
+                $('#project-basic-spinner').show();
+            });
+            $('#project-budget-form').on('submit', function () {
+                $('#project-budget-button').attr('disabled', 'disabled');
+                $('#project-budget-spinner').show();
+            });
+            $('#project-project-form').on('submit', function () {
+                $('#project-project-button').attr('disabled', 'disabled');
+                $('#project-project-spinner').show();
+            });
+            $('#project-image-form').on('submit', function () {
+                $('#project-image-button').attr('disabled', 'disabled');
+                $('#project-image-spinner').show();
+            });
+        });
+    </script>
+</body>
+
+</html>

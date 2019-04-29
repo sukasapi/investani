@@ -75,7 +75,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                     req.flash('error_message', error_message);
                     return res.redirect('/inisiator/start-project');
                 } else {
-                    if (req.user._id.equals(project.inisiator)) {
+                    if (req.user._id.equals(project.inisiator._id)) {
                         let province_id, province_name, city_id, city_name, category, sub_category, unit_value, goal, start_campaign, due_campaign, campaign, start_date, roi, duration, stock_price, total_stock = null;
                         let budget = [];
                         let budget_not_null = 0;
@@ -352,7 +352,7 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                             stock: {
                                 total: req.body.total_stock,
                                 price: req.body.stock_price,
-                                temp: req.body.stock_price
+                                temp: req.body.total_stock
                             },
                         },
                         category: req.body.category,

@@ -64,9 +64,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% transactions.forEach((transaction) => { %>
+                                        <% transactions.forEach((transaction, index) => { %>
                                         <tr>
-                                            <td><%= createdAt %></td>
+                                            <td><%= createdAt[index] %></td>
                                             <td>
                                                 <a href="/project/<%= transaction.project._id %>"
                                                     style="color: #007bff">
@@ -78,7 +78,7 @@
                                             </td>
                                             <td><%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>
                                             </td>
-                                            <td><%= due_date %></td>
+                                            <td><%= due_date[index] %></td>
                                             <td>
                                                 <div class="input-group-btn">
                                                     <a class="detail-link" href="/investor/transaction/waiting-payment/<%= transaction._id %>">

@@ -44,7 +44,84 @@
         <div class="content">
             <!-- Animated -->
             <div class="animated fadeIn">
-                
+                <div class="row">
+                    <% projects.forEach((project, index) => { %>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <a href="/investor/<%= project._id %>/backed-project/transaction">
+                                <% if (project.image[0]) { %>
+                                <img alt="Card image cap" class="card-img-top"
+                                    src="/image/project/<%= project._id %>/<%= project.image[0].filename %>"
+                                    style="height: 178px;">
+                                <% } %>
+                                <% if (!project.image[0]) { %>
+                                <img class="card-img-top" src="https://picsum.photos/300/169/?random %>"
+                                    alt="Card image cap">
+                                <% } %>
+                            </a>
+                            <div class="card-body">
+                                <div class="mx-auto d-block">
+                                    <h4 class="card-title mb-3"><a
+                                            href="/investor/<%= project._id %>/backed-project/transaction"><%= project.basic[0].title %></a>
+                                        <small><span class="badge badge-primary float-right mt-1">Terverifikasi</span></small>
+                                    </h4>
+                                    <p class="card-text">Dibuat oleh <strong><%= project.inisiator.profile[0].name %></strong></p>
+                                </div>
+                                <div class="weather-category twt-category">
+                                    <ul>
+                                        <li>
+                                            Imbal Hasil
+                                            <h6>
+                                            <% if (project.project[0]) { %>
+                                                <%=project.project[0].roi%>
+                                            <% } %>
+                                            %
+                                            </h6>
+                                        </li>
+                                        <li>
+                                            Durasi Proyek
+                                            <h6>
+                                                <% if (project.project[0]) { %>
+                                                    <%= project.project[0].duration[0].duration %>
+                                                <% } %>
+                                                Bulan
+                                            </h6>
+                                        </li>
+                                        <li>
+                                            Tersisa
+                                            <h6><%= durations[index] %> Hari</h6>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <footer class="twt-footer">
+                                Harga Saham:
+                                <strong>
+                                    <% if (project.basic[0].stock[0]) { %>
+                                        Rp. <%= project.basic[0].stock[0].price %>
+                                    <% } %>
+                                </strong>
+                            </footer>
+                            <div class="card-footer" style="font-size: 12px;">
+                                <div class="card-text text-sm-center">
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 0%"
+                                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <strong class="card-title mb-3">0%</strong> Dana terkumpul
+                                <span class="pull-right">
+                                    Target Dana: Rp.
+                                    <% let total_budget = 0 %>
+                                    <% project.budget.forEach((budget, index) => { %>
+                                        <% total_budget = total_budget + budget.amount %>
+                                    <% }) %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
             </div>
             <!-- .animated -->
         </div>

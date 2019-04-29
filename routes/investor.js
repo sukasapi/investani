@@ -7,6 +7,8 @@ import {
     createTransaction,
     getTransactionById,
     getTransactionByStatus,
+    getBackedProjectTransaction,
+    getTransactionByInvestorandProject,
     updateTransaction
 } from '../models/Transaction';
 import moment from 'moment';
@@ -14,6 +16,7 @@ import multer from 'multer';
 import path from 'path';
 import Resize from '../Resize';
 import upload from '../uploadMiddleware';
+import fs from 'fs';
 
 const router = express.Router();
 
@@ -95,7 +98,7 @@ router.get('/transaction/waiting-payment/:transaction_id', isLoggedIn, isInvesto
             req.flash('error_message', error_message);
             return res.redirect('/investor/transaction/waiting-payment');
         } else {
-            if (transaction.investor._id.equals(req.user._id)) {
+            if (transaction.investor._id.equals(req.user._id) && transaction.status != 'verified') {
                 success_message = "Menampilkan detail transaksi.";
                 req.flash('success_message', success_message);
                 let data = {
@@ -104,8 +107,7 @@ router.get('/transaction/waiting-payment/:transaction_id', isLoggedIn, isInvesto
                     url: "detail_transaction"
                 }
                 return res.render('pages/investor/transaction/detail', data);
-            }
-            else {
+            } else {
                 error_message = "Transaksi tidak tersedia";
                 req.flash('error_message', error_message);
                 return res.redirect('/investor/transaction/waiting-payment');
@@ -114,36 +116,100 @@ router.get('/transaction/waiting-payment/:transaction_id', isLoggedIn, isInvesto
     });
 });
 router.get('/:user_id/backed-project', isLoggedIn, isInvestor, function (req, res) {
-    let data = {
-        user_id: req.user._id,
-        url: "backed-project"
-    }
-    res.render('pages/investor/backed-project', data);
+    let error_message;
+    let success_message;
+    let durations = [];
+
+    getBackedProjectTransaction(req.user._id, function (error, projects) {
+
+        if (error) {
+            error_message = "Terjadi Kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect(`/investor/${req.params.user_id}/backed-project`);
+        } else {
+            projects.forEach((project, index) => {
+                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
+            });
+            let data = {
+                user_id: req.user._id,
+                url: "backed-project",
+                projects: projects,
+                durations: durations,
+            }
+            success_message = "Menampilkan proyek yang didanai.";
+            req.flash('success_message', success_message);
+            res.render('pages/investor/backed-project', data);
+        }
+    });
+
+});
+router.get('/:project_id/backed-project/transaction', isLoggedIn, isInvestor, function (req, res) {
+    let error_message;
+    let success_message;
+    let createdAt = [];
+    let due_date = [];
+    let payment_date = [];
+    getProjectByID(req.params.project_id, function (error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect(`/investor/${req.params.user_id}/backed-project/transaction`);
+        }
+        if (!project) {
+            error_message = "Proyek tidak tersedia";
+            req.flash('error_message', error_message);
+            return res.redirect(`/investor/${req.params.user_id}/backed-project/transaction`);
+        }
+        else {
+            getTransactionByInvestorandProject(req.user._id, req.params.project_id, function (error, transactions) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    return res.redirect(`/investor/${req.params.user_id}/backed-project/transaction`);
+                }
+                else {
+                    transactions.forEach((transaction, index) => {
+                        createdAt[index] = moment(transaction.createdAt).format('LL');
+                        due_date[index] = moment(transaction.due_date).format('lll');
+                        payment_date[index] = moment(transaction.payment_date).format('lll');
+                    });
+                    let data = {
+                        url: 'backed-project',
+                        project: project,
+                        transactions: transactions,
+                        createdAt: createdAt,
+                        due_date: due_date,
+                        payment_date: payment_date,
+                        user_id: req.user._id
+                    }
+                    success_message = "Menampilkan transaksi proyek yang didanai.";
+                    req.flash('success_message', success_message);
+                    return res.render('pages/investor/backed-project-transaction', data);
+                }
+            });
+            
+        }
+    });
+
 });
 router.get('/transaction/get-receipt/:transaction_id/:filename', isLoggedIn, isInvestor, function (req, res) {
     getTransactionById(req.params.transaction_id, function (error, transaction) {
         if (transaction.investor._id.equals(req.user._id)) {
-            res.download(__dirname+'/../storage/projects/'+transaction.project._id+'/transactions/'+req.params.filename);
+            res.download(__dirname + '/../storage/projects/' + transaction.project._id + '/transactions/' + req.params.filename);
         }
     });
 });
 
 router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) {
+    const dir = path.join(__dirname, `../storage/projects/${req.params.project_id}/transactions`);
+
     let error_message;
     let success_message;
-    let data = {
-        stock_quantity: req.body.stock,
-        status: 'waiting_payment',
-        receipt: null,
-        due_date: moment().add(2, 'days'),
-        payment_date: null,
-        project: req.params.project_id,
-        investor: req.user._id
-    }
+
 
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
-            error_message = "Terjadi kesalahan";
+            error_message = "Terjadi kesalahan1";
             req.flash('error_message', error_message);
             return res.redirect('/project/' + req.params.project_id);
         }
@@ -152,49 +218,123 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) 
             req.flash('error_message', error_message);
             return res.redirect('/project/' + req.params.project_id);
         } else {
-            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0 && project.status == 'verified') {
-                req.checkBody('stock', 'Jumlah saham tidak boleh lebih dari ' + project.basic[0].stock[0].temp).isInt({
-                    max: project.basic[0].stock[0].temp
-                });
-                req.checkBody('stock', 'Jumlah saham tidak boleh kurang dari 1').isInt({
-                    min: 1
-                });
-                req.checkBody('stock', 'Jumlah saham wajib diisi').notEmpty();
-
-                let errors = req.validationErrors();
-
-                if (errors) {
-                    error_message = errors[errors.length - 1].msg;
-                    req.flash('error_message', error_message);
-                    return res.redirect('/project/' + req.params.project_id);
-                } else {
-                    let transaction = new Transaction(data);
-                    createTransaction(transaction, function (error) {
-                        if (error) {
-                            error_message = "Terjadi kesalahan.";
+            fs.access(dir, (err) => {
+                if (err) {
+                    fs.mkdir(dir, async (err) => {
+                        if (err) {
+                            error_message = "Terjadi Kesalahan2";
                             req.flash('error_message', error_message);
                             return res.redirect('/project/' + req.params.project_id);
                         } else {
-                            project.basic[0].stock[0].temp = project.basic[0].stock[0].temp - req.body.stock;
-                            project.save().then(project => {
-                                success_message = "Berhasil melakukan transaksi";
-                                req.flash('success_message', success_message);
-                                return res.redirect('/investor/transaction/waiting-payment');
-                            }).catch(error => {
-                                error_message = "Terjadi kesalahan";
+                            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0 && project.status == 'verified') {
+                                req.checkBody('stock', 'Jumlah saham tidak boleh lebih dari ' + project.basic[0].stock[0].temp).isInt({
+                                    max: project.basic[0].stock[0].temp
+                                });
+                                req.checkBody('stock', 'Jumlah saham tidak boleh kurang dari 1').isInt({
+                                    min: 1
+                                });
+                                req.checkBody('stock', 'Jumlah saham wajib diisi').notEmpty();
+
+                                let errors = req.validationErrors();
+
+                                if (errors) {
+                                    error_message = errors[errors.length - 1].msg;
+                                    req.flash('error_message', error_message);
+                                    return res.redirect('/project/' + req.params.project_id);
+                                } else {
+                                    let data = {
+                                        stock_quantity: req.body.stock,
+                                        status: 'waiting_payment',
+                                        receipt: null,
+                                        due_date: moment().add(2, 'days'),
+                                        payment_date: null,
+                                        project: req.params.project_id,
+                                        investor: req.user._id,
+                                        inisiator: project.inisiator._id
+                                    }
+                                    let transaction = new Transaction(data);
+                                    createTransaction(transaction, function (error) {
+                                        if (error) {
+                                            error_message = "Terjadi kesalahan.";
+                                            req.flash('error_message', error_message);
+                                            return res.redirect('/project/' + req.params.project_id);
+                                        } else {
+                                            project.basic[0].stock[0].temp = project.basic[0].stock[0].temp - req.body.stock;
+                                            project.save().then(project => {
+                                                success_message = "Berhasil melakukan transaksi";
+                                                req.flash('success_message', success_message);
+                                                return res.redirect('/investor/transaction/waiting-payment');
+                                            }).catch(error => {
+                                                error_message = "Terjadi kesalahan";
+                                                req.flash('error_message', error_message);
+                                                return res.redirect('/investor/transaction/waiting-payment');
+                                            });
+
+                                        }
+                                    });
+                                }
+                            } else {
+                                error_message = "Durasi kampanye proyek berakhir";
                                 req.flash('error_message', error_message);
                                 return res.redirect('/investor/transaction/waiting-payment');
-                            });
-
+                            }
                         }
                     });
-                }
-            } else {
-                error_message = "Durasi kampanye proyek berakhir";
-                req.flash('error_message', error_message);
-                return res.redirect('/investor/transaction/waiting-payment');
-            }
+                } else {
+                    if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0 && project.status == 'verified') {
+                        req.checkBody('stock', 'Jumlah saham tidak boleh lebih dari ' + project.basic[0].stock[0].temp).isInt({
+                            max: project.basic[0].stock[0].temp
+                        });
+                        req.checkBody('stock', 'Jumlah saham tidak boleh kurang dari 1').isInt({
+                            min: 1
+                        });
+                        req.checkBody('stock', 'Jumlah saham wajib diisi').notEmpty();
 
+                        let errors = req.validationErrors();
+
+                        if (errors) {
+                            error_message = errors[errors.length - 1].msg;
+                            req.flash('error_message', error_message);
+                            return res.redirect('/project/' + req.params.project_id);
+                        } else {
+                            let data = {
+                                stock_quantity: req.body.stock,
+                                status: 'waiting_payment',
+                                receipt: null,
+                                due_date: moment().add(2, 'days'),
+                                payment_date: null,
+                                project: req.params.project_id,
+                                investor: req.user._id,
+                                inisiator: project.inisiator._id
+                            }
+                            let transaction = new Transaction(data);
+                            createTransaction(transaction, function (error) {
+                                if (error) {
+                                    error_message = "Terjadi kesalahan.";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect('/project/' + req.params.project_id);
+                                } else {
+                                    project.basic[0].stock[0].temp = project.basic[0].stock[0].temp - req.body.stock;
+                                    project.save().then(project => {
+                                        success_message = "Berhasil melakukan transaksi";
+                                        req.flash('success_message', success_message);
+                                        return res.redirect('/investor/transaction/waiting-payment');
+                                    }).catch(error => {
+                                        error_message = "Terjadi kesalahan";
+                                        req.flash('error_message', error_message);
+                                        return res.redirect('/investor/transaction/waiting-payment');
+                                    });
+
+                                }
+                            });
+                        }
+                    } else {
+                        error_message = "Durasi kampanye proyek berakhir";
+                        req.flash('error_message', error_message);
+                        return res.redirect('/investor/transaction/waiting-payment');
+                    }
+                }
+            });
         }
     });
 });
@@ -230,7 +370,6 @@ router.post('/transaction/waiting-payment/:transaction_id/:project_id', isLogged
                 req.flash('error_message', error_message);
                 return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
             } else {
-
                 if (transaction.investor._id.equals(req.user._id)) {
                     if (moment.duration(moment(transaction.due_date).diff(moment()))._milliseconds > 0) {
                         if (req.files['receipt']) {
@@ -266,13 +405,12 @@ router.post('/transaction/waiting-payment/:transaction_id/:project_id', isLogged
                         req.flash('error_message', error_message);
                         return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
                     }
-                }
-                else {
+                } else {
                     error_message = "Transaksi tidak tersedia";
                     req.flash('error_message', error_message);
                     return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
                 }
-                
+
             }
         });
 

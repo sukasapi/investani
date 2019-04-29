@@ -74,6 +74,10 @@
                                         <small><span
                                                 class="badge badge-warning float-right mt-1">Menunggu</span></small>
                                         <% } %>
+                                        <% if (project.status == "verified") { %>
+                                            <small><span class="badge badge-primary float-right mt-1">Terverifikasi</span></small>
+                                        <% } %>
+
                                     </h4>
                                     <p class="card-text">Dibuat oleh <strong><%= inisiator %></strong></p>
                                 </div>

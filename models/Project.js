@@ -107,7 +107,7 @@ export const updateProject = (project_id, updateValue, callback) => {
     Project.findByIdAndUpdate(project_id, updateValue, callback);
   }
 export const getProjectByID = (id, callback) => {
-    Project.findById(id, callback).populate('category');
+    Project.findById(id, callback).populate('category').populate('inisiator');
 }
 export const getProjectByStatus = (status, callback) => {
     let Obj = {
