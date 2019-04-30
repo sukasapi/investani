@@ -1598,47 +1598,36 @@ header .form-inline {
   padding: 10px 0 0 35px;
   color: #fff; }
 
-.twt-feed .wtt-mark {
-  color: rgba(255, 255, 255, 0.15);
-  font-size: 160px;
-  position: absolute;
-  top: 10px;
-  left: 40%; }
-
-.twt-feed {
-  -webkit-border-radius: 4px 4px 0 0;
-  color: #FFFFFF;
-  padding: 40px 10px 10px;
-  position: relative;
-  min-height: 170px; }
-
-.weather-category {
-  padding: 15px 0;
-  color: #74829C; }
-  .weather-category ul li {
+  .twt-category {
+    margin-bottom: 0;
+}
+.twt-category {
+    display: inline-block;
+    margin-top: 10px;
+    width: 100%;
+}
+.weather-category ul {
+    padding-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.twt-category ul li {
+    font-size: 12px;
+}
+.weather-category ul li {
     width: 32%;
     text-align: center;
     border-right: 1px solid #e6e6e6;
-    display: inline-block; }
-
-.twt-feed.blue-bg {
-  background: #58C9F3; }
-
-.twt-category {
-  display: inline-block;
-  margin-bottom: 11px;
-  margin-top: 10px;
-  width: 100%; }
-  .twt-category ul li {
-    color: #000;
-    font-size: 13px; }
-
+    display: inline-block;
+}
 .twt-footer {
-  padding: 12px 15px; }
-
-.twt-footer, .twt-footer a {
-  color: #000; }
-
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+.card h4 {
+    font-size: 1.1rem;
+    padding-top: 0px;
+}
 /* Button Reset */
 .btn, .button {
   display: inline-block;

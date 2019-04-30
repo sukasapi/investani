@@ -64,7 +64,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Transaksi Menunggu Verifikasi</strong>
+                                <strong class="card-title">Transaksi yang Ditolak</strong>
                             </div>
                             <div class="card-body">
                                 <table id="bootstrap-data-table-3" class="table table-striped table-bordered">
@@ -102,14 +102,26 @@
                                             <td><%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>
                                             </td>
                                             <td><%= due_date[index] %></td>
-                                            <td><%= payment_date[index] %></td>
                                             <td>
-                                                <div class="input-group-btn">
-                                                    <button type="button" class="btn btn-primary mb-1"
-                                                        data-toggle="modal" data-target="#detail-modal">
-                                                        Lihat
-                                                    </button>
-                                                </div>
+                                            <% if (payment_date[index] == null) { %>
+                                                Belum Bayar
+                                            <% } %>
+                                            <% if (payment_date[index] != null) { %>
+                                                <%= payment_date %></td>
+                                            <% } %>
+                                            <td>
+                                                <% if (payment_date[index] == null) { %>
+                                                    Kadaluarsa
+                                                <% } %>
+                                                <% if (payment_date[index] != null) { %>
+                                                    <div class="input-group-btn">
+                                                        <button type="button" class="btn btn-primary mb-1"
+                                                            data-toggle="modal" data-target="#detail-modal">
+                                                            Lihat
+                                                        </button>
+                                                    </div>
+                                                <% } %>
+                                                
                                             </td>
                                         </tr>
                                         <div class="modal fade" id="detail-modal" tabindex="-1" role="dialog"
@@ -138,10 +150,6 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <a class="detail-link" href="/admin/transaction/waiting/<%= transaction._id %>/reject">
-                                                            <button type="button"
-                                                                class="btn btn-danger">Tolak</button>
-                                                        </a>
                                                         <a class="detail-link" href="/admin/transaction/waiting/<%= transaction._id %>/verify">
                                                             <button type="button"
                                                                 class="btn btn-primary">Verifikasi</button>

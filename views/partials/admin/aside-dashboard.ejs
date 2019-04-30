@@ -28,7 +28,7 @@
                     <a href="/admin/project/open"><i class="menu-icon fa fa-laptop"></i>Sedang Berlangsung </a>
                 </li>
                 <li>
-                    <a href="/admin/project/done"><i class="menu-icon fa fa-laptop"></i>Sudah Selesai </a>
+                    <a href="/admin/project/done"><i class="menu-icon fa fa-laptop"></i>Selesai </a>
                 </li>
                 <li class="menu-item-has-children dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -40,8 +40,16 @@
                 </li>
     
                 <li class="menu-title">Transaksi</li><!-- /.menu-title -->
+                <li class="menu-item-has-children dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="menu-icon fa fa-tasks"></i>Menunggu</a>
+                    <ul class="sub-menu children dropdown-menu">
+                        <li><i class="menu-icon fa fa-fort-awesome"></i><a href="/admin/transaction/waiting-payment">Pembayaran</a></li>
+                        <li><i class="menu-icon ti-themify-logo"></i><a href="/admin/transaction/waiting-verification">Verifikasi</a></li>
+                    </ul>
+                </li>
                 <li>
-                    <a href="/admin/transaction/waiting"><i class="menu-icon fa fa-laptop"></i>Menunggu Verifikasi</a>
+                    <a href="/admin/transaction/rejected"><i class="menu-icon fa fa-laptop"></i>Ditolak</a>
                 </li>
             </ul>
         </div><!-- /.navbar-collapse -->

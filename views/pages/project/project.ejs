@@ -177,7 +177,7 @@
                             <div class="description">
                                 <h5>Dana Terkumpul</h5>
                                 <p>
-                                    <span class="item_price">Rp. 0</span>
+                                    <span class="item_price">Rp. <%= (project.basic[0].stock[0].total-project.basic[0].stock[0].remain)*project.basic[0].stock[0].price %></span>
                                 </p>
                                 <% let goal = 0; project.budget.forEach( (budget) => { %>
                                 <% goal = goal + budget.amount %>
@@ -269,7 +269,6 @@
                                     <div class="tab1">
                                         <div class="single_page">
                                             <%- project.project[0].abstract %>
-
                                             <h4>Unduh Prospektus</h4>
                                             <a href="/project/get-prospectus/<%= project.project[0].prospectus %>"
                                                 style="color: #ffffff">

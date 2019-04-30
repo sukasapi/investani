@@ -11,6 +11,7 @@ import {
 import {
     Category
 } from '../models/Category';
+import { getTransactionByProject } from '../models/Transaction'
 import path from 'path';
 import uuidv4 from 'uuid/v4';
 import Resize from '../Resize';
@@ -50,6 +51,33 @@ router.get('/start-project', isLoggedIn, isInisiator, function (req, res) {
         url: "start-project"
     }
     res.render('pages/inisiator/start-project', data);
+});
+router.get('/:user_id/started-project', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let durations = [];
+    let inisiated_project = [];
+
+    getProjectByInisiator(req.params.user_id, function (error, projects) {
+        projects.forEach((project, index) => {
+            if (req.user._id == req.params.user_id && project.status == 'verified') {
+                inisiated_project[index] = project;
+                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
+            }
+        });
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/inisiator/started-project');
+        } else {
+            let data = {
+                user_id: req.user._id,
+                inisiator: req.user.profile[0].name,
+                projects: projects,
+                durations: durations,
+                url: "started-project"
+            }
+            res.render('pages/inisiator/started-project', data);
+        }
+    });
 });
 router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
@@ -192,36 +220,44 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
             });
         }
     });
-
-
 });
-router.get('/:user_id/started-project', isLoggedIn, isInisiator, isVerified, function (req, res) {
-    let durations = [];
-    let inisiated_project = [];
-
-    getProjectByInisiator(req.params.user_id, function (error, projects) {
-        projects.forEach((project, index) => {
-            if (req.user._id == req.params.user_id && project.status == 'verified') {
-                inisiated_project[index] = project;
-                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
-            }
-        });
+router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let success_message;
+    let verified_transaction = [];
+    let createdAt = [];
+    let due_date = [];
+    let payment_date = [];
+    getTransactionByProject(req.params.project_id, function (error, transactions) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
-            return res.redirect('/inisiator/started-project');
-        } else {
+            return res.redirect(`/inisiator/${req.user._id}/started-project`);
+        }
+        else {
+            transactions.forEach((transaction, index) => {
+                if (transaction.status == 'verified') {
+                    verified_transaction[index] = transaction;
+                    createdAt[index] = moment(transaction.createdAt).format('LL');
+                    due_date[index] = moment(transaction.due_date).format('lll');
+                    payment_date[index] = moment(transaction.payment_date).format('lll');
+                }
+            });
             let data = {
-                user_id: req.user._id,
-                inisiator: req.user.profile[0].name,
-                projects: projects,
-                durations: durations,
-                url: "started-project"
+                url: 'backed-project',
+                transactions: verified_transaction,
+                createdAt: createdAt,
+                due_date: due_date,
+                payment_date: payment_date,
+                user_id: req.user._id
             }
-            res.render('pages/inisiator/started-project', data);
+            success_message = "Menampilkan transaksi proyek yang didanai.";
+            req.flash('success_message', success_message);
+            return res.render('pages/inisiator/started-project-transaction', data);
         }
     });
 });
+
 
 router.post('/start-project', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
@@ -352,6 +388,7 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                             stock: {
                                 total: req.body.total_stock,
                                 price: req.body.stock_price,
+                                remain: req.body.total_stock,
                                 temp: req.body.total_stock
                             },
                         },

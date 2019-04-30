@@ -198,7 +198,7 @@ h2.resp-accordion { display: block; }
 .resp-vtabs .resp-tab-content:last-child { border-bottom: 1px solid #c1c1c1 !important; }
 
 h2.resp-tab-active {
-    background: #fc636b !important;
+    background: #ffcb2d !important;
 }
 }
 @media only screen and (max-width: 568px) {

@@ -37,7 +37,7 @@ router.get('/transaction/waiting-payment', isLoggedIn, isInvestor, function (req
     getTransactionByStatus('waiting_payment', function (error, transactions) {
         transactions.forEach((transaction, index) => {
             if (transaction.investor._id.equals(req.user._id) && moment.duration(moment(transaction.due_date).diff(moment()))._milliseconds > 0) {
-                waiting_transactions[index] = transaction
+                waiting_transactions[index] = transaction;
                 createdAt[index] = moment(transaction.createdAt).format('LL');
                 due_date[index] = moment(transaction.due_date).format('lll');
             }
@@ -146,48 +146,36 @@ router.get('/:user_id/backed-project', isLoggedIn, isInvestor, function (req, re
 router.get('/:project_id/backed-project/transaction', isLoggedIn, isInvestor, function (req, res) {
     let error_message;
     let success_message;
+    let verified_transaction = [];
     let createdAt = [];
     let due_date = [];
     let payment_date = [];
-    getProjectByID(req.params.project_id, function (error, project) {
+    getTransactionByInvestorandProject(req.user._id, req.params.project_id, function (error, transactions) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
             return res.redirect(`/investor/${req.params.user_id}/backed-project/transaction`);
         }
-        if (!project) {
-            error_message = "Proyek tidak tersedia";
-            req.flash('error_message', error_message);
-            return res.redirect(`/investor/${req.params.user_id}/backed-project/transaction`);
-        }
         else {
-            getTransactionByInvestorandProject(req.user._id, req.params.project_id, function (error, transactions) {
-                if (error) {
-                    error_message = "Terjadi kesalahan";
-                    req.flash('error_message', error_message);
-                    return res.redirect(`/investor/${req.params.user_id}/backed-project/transaction`);
-                }
-                else {
-                    transactions.forEach((transaction, index) => {
-                        createdAt[index] = moment(transaction.createdAt).format('LL');
-                        due_date[index] = moment(transaction.due_date).format('lll');
-                        payment_date[index] = moment(transaction.payment_date).format('lll');
-                    });
-                    let data = {
-                        url: 'backed-project',
-                        project: project,
-                        transactions: transactions,
-                        createdAt: createdAt,
-                        due_date: due_date,
-                        payment_date: payment_date,
-                        user_id: req.user._id
-                    }
-                    success_message = "Menampilkan transaksi proyek yang didanai.";
-                    req.flash('success_message', success_message);
-                    return res.render('pages/investor/backed-project-transaction', data);
+            transactions.forEach((transaction, index) => {
+                if (transaction.status == 'verified') {
+                    verified_transaction[index] = transaction;
+                    createdAt[index] = moment(transaction.createdAt).format('LL');
+                    due_date[index] = moment(transaction.due_date).format('lll');
+                    payment_date[index] = moment(transaction.payment_date).format('lll');
                 }
             });
-            
+            let data = {
+                url: 'backed-project',
+                transactions: verified_transaction,
+                createdAt: createdAt,
+                due_date: due_date,
+                payment_date: payment_date,
+                user_id: req.user._id
+            }
+            success_message = "Menampilkan transaksi proyek yang didanai.";
+            req.flash('success_message', success_message);
+            return res.render('pages/investor/backed-project-transaction', data);
         }
     });
 
@@ -205,7 +193,6 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) 
 
     let error_message;
     let success_message;
-
 
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {

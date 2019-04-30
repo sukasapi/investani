@@ -18,37 +18,30 @@
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="/css/dashboard-style.css">
     <link rel="stylesheet" href="/css/dropify.min.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-
-    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
     <style>
-        #bootstrap-data-table-1_filter,
-        #bootstrap-data-table-1_paginate,
-        #bootstrap-data-table-2_filter,
-        #bootstrap-data-table-2_paginate,
-        #bootstrap-data-table-3_filter,
-        #bootstrap-data-table-3_paginate {
-            text-align: right
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
 
-        #bootstrap-data-table-1_filter label,
-        #bootstrap-data-table-2_filter label,
-        #bootstrap-data-table-3_filter label {
-            text-align: left;
+        .form-control-file {
+            width: 100%;
+            padding: 5px 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
         }
 
-        .pagination {
-            display: -webkit-inline-box;
-        }
-
-        .detail-link,
-        .detail-link:hover,
-        .detail-link:focus {
-            color: #fff;
+        .ck-editor__editable {
+            min-height: 300px;
         }
     </style>
 </head>
@@ -56,7 +49,7 @@
 <body>
     <!-- Left Panel -->
 
-    <% include ../../partials/investor/aside-dashboard %>
+    <% include ../../partials/inisiator/aside-dashboard %>
 
     <!-- Left Panel -->
 
@@ -65,11 +58,10 @@
     <div id="right-panel" class="right-panel">
 
         <!-- Header-->
-        <% include ../../partials/investor/header-dashboard %>
+        <% include ../../partials/inisiator/header-dashboard %>
         <!-- Header-->
 
-        <% include ../../partials/investor/breadcrumbs-dashboard %>
-
+        <% include ../../partials/inisiator/breadcrumbs-dashboard %>
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
@@ -122,9 +114,9 @@
             </div><!-- .animated -->
         </div><!-- .content -->
 
-        <div class="clearfix"></div>
 
-        <% include ../../partials/investor/footer-dashboard %>
+        <div class="clearfix"></div>
+        <% include ../../partials/inisiator/footer-dashboard %>
 
     </div><!-- /#right-panel -->
 
@@ -139,44 +131,7 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
-    <script src="/js/dropify.min.js"></script>
-
     <script src="/js/dashboard-main.js"></script>
-    <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'), {
-                toolbar: ['italic', 'link'],
-            })
-            .then(editor => {
-                editor.isReadOnly = true
-            })
-            .catch(error => {
-                // console.error(error);
-            });
-    </script>
-    <script>
-        $(document).ready(function () {
-
-            $('.dropify').dropify();
-            $('#project-basic-form').on('submit', function () {
-                $('#project-basic-button').attr('disabled', 'disabled');
-                $('#project-basic-spinner').show();
-            });
-            $('#project-budget-form').on('submit', function () {
-                $('#project-budget-button').attr('disabled', 'disabled');
-                $('#project-budget-spinner').show();
-            });
-            $('#project-project-form').on('submit', function () {
-                $('#project-project-button').attr('disabled', 'disabled');
-                $('#project-project-spinner').show();
-            });
-            $('#project-image-form').on('submit', function () {
-                $('#project-image-button').attr('disabled', 'disabled');
-                $('#project-image-spinner').show();
-            });
-        });
-    </script>
 </body>
 
 </html>

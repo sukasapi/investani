@@ -334,7 +334,45 @@ router.get('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
     }
     res.render('pages/admin/project/add-category', data);
 });
-router.get('/transaction/waiting', isLoggedIn, isAdmin, function (req, res) {
+router.get('/transaction/waiting-payment', isLoggedIn, isAdmin, function (req, res) {
+    let success_message;
+    let error_message;
+    let createdAt = [];
+    let due_date = [];
+    let expired = [];
+    getTransactionByStatus('waiting_payment', function (error, transactions) {
+        if (error) {
+            error_message = "Terjadi kesalahan.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/transaction/waiting-payment');
+        }
+        else {
+            transactions.forEach((transaction, index) => {
+                createdAt[index] = moment(transaction.createdAt).format('LL');
+                due_date[index] = moment(transaction.due_date).format('lll');
+                if (moment.duration(moment(transaction.due_date).diff(moment()))._milliseconds > 0) {
+                    expired[index] = false;
+                }
+                else {
+                    expired[index] = true;
+                }
+            });
+    
+            let data = {
+                user_id: req.user._id,
+                transactions: transactions,
+                createdAt: createdAt,
+                due_date: due_date,
+                expired: expired,
+                url: "waiting_payment"
+            }
+            success_message = "Daftar transaksi yang menunggu verifikasi.";
+            req.flash('success_message', success_message);
+            return res.render('pages/admin/transaction/waiting-payment', data);
+        } 
+    });
+});
+router.get('/transaction/waiting-verification', isLoggedIn, isAdmin, function (req, res) {
     let success_message;
     let error_message;
     let createdAt = [];
@@ -344,7 +382,7 @@ router.get('/transaction/waiting', isLoggedIn, isAdmin, function (req, res) {
         if (error) {
             error_message = "Terjadi kesalahan.";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/transaction/waiting');
+            return res.redirect('/admin/transaction/waiting-verification');
         }
         else {
             transactions.forEach((transaction, index) => {
@@ -367,19 +405,57 @@ router.get('/transaction/waiting', isLoggedIn, isAdmin, function (req, res) {
         } 
     });
 });
-router.get('/transaction/waiting/verify/:transaction_id', isLoggedIn, isAdmin, function (req, res) {
+router.get('/transaction/rejected', isLoggedIn, isAdmin, function (req, res) {
+    let success_message;
+    let error_message;
+    let createdAt = [];
+    let due_date = [];
+    let payment_date = [];
+    getTransactionByStatus('rejected', function (error, transactions) {
+        if (error) {
+            error_message = "Terjadi kesalahan.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/transaction/waiting');
+        }
+        else {
+            transactions.forEach((transaction, index) => {
+                createdAt[index] = moment(transaction.createdAt).format('LL');
+                due_date[index] = moment(transaction.due_date).format('lll');
+                if (transaction.payment_date == null) {
+                    payment_date[index] = null;
+                }
+                else {
+                    payment_date[index] = moment(transaction.payment_date).format('lll');
+                }
+            });
+    
+            let data = {
+                user_id: req.user._id,
+                transactions: transactions,
+                createdAt: createdAt,
+                due_date: due_date,
+                payment_date: payment_date,
+                url: "rejected"
+            }
+            success_message = "Daftar transaksi yang ditolak.";
+            req.flash('success_message', success_message);
+            return res.render('pages/admin/transaction/rejected', data);
+        } 
+    });
+});
+router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
     getTransactionById(req.params.transaction_id, function (error, transaction) {
         if (error) {
             error_message = "Terjadi kesalahan.";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/transaction/waiting');
+            return res.redirect('/admin/transaction/waiting-verification');
         }
         if (!transaction) {
             error_message = "Transaksi tidak tersedia.";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/transaction/waiting');
+            return res.redirect('/admin/transaction/waiting-verification');
         }
         else {
             transaction.status = 'verified';
@@ -388,12 +464,57 @@ router.get('/transaction/waiting/verify/:transaction_id', isLoggedIn, isAdmin, f
                     if (error) {
                         error_message = "Terjadi kesalahan.";
                         req.flash('error_message', error_message);
+                        return res.redirect('/admin/transaction/waiting-verification');
+                    }
+                    else {
+                        project.basic[0].stock[0].remain = project.basic[0].stock[0].remain-transaction.stock_quantity;
+                        project.save().then(project => {
+                            success_message = "Berhasil melakukan verifikasi transaksi."
+                            req.flash('success_message', success_message);
+                            return res.redirect('/admin/transaction/waiting-verification');
+                        }).catch(project => {
+                            error_message = "Terjadi kesalahan.";
+                            req.flash('error_message', error_message);
+                            return res.redirect('/admin/transaction/waiting-verification');
+                        }); 
+                    }
+                });
+            }).catch(transaction => {
+                error_message = "Terjadi kesalahan.";
+                req.flash('error_message', error_message);
+                return res.redirect('/admin/transaction/waiting');
+            });
+
+        }
+    });
+});
+router.get('/transaction/waiting/:transaction_id/reject', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    let success_message;
+    getTransactionById(req.params.transaction_id, function (error, transaction) {
+        if (error) {
+            error_message = "Terjadi kesalahan.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/transaction/waiting-payment');
+        }
+        if (!transaction) {
+            error_message = "Transaksi tidak tersedia.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/transaction/waiting-payment');
+        }
+        else {
+            transaction.status = 'rejected';
+            transaction.save().then(transaction => {
+                getProjectByID(transaction.project._id, function (error, project) {
+                    if (error) {
+                        error_message = "Terjadi kesalahan.";
+                        req.flash('error_message', error_message);
                         return res.redirect('/admin/transaction/waiting');
                     }
                     else {
-                        project.basic[0].stock[0].total = project.basic[0].stock[0].total-transaction.stock_quantity;
+                        project.basic[0].stock[0].temp = project.basic[0].stock[0].temp+transaction.stock_quantity;
                         project.save().then(project => {
-                            success_message = "Berhasil melakukan verifikasi transaksi."
+                            success_message = "Berhasil menolak transaksi."
                             req.flash('success_message', success_message);
                             return res.redirect('/admin/transaction/waiting');
                         }).catch(project => {

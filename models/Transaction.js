@@ -55,6 +55,12 @@ export const getTransactionByInvestorandProject = (investor_id, project_id, call
     }
     Transaction.find(obj, callback).populate('project');
 }
+export const getTransactionByProject = (project_id, callback) => {
+    let obj = {
+        project: project_id
+    }
+    Transaction.find(obj, callback).populate('project');
+}
 export const updateTransaction = (transaction_id, updateValue, callback) => {
     Transaction.findByIdAndUpdate(transaction_id, updateValue, callback);
 }
