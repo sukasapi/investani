@@ -85,8 +85,8 @@
                                             <th>No</th>
                                             <th>Tanggal Transaksi</th>
                                             <th>Proyek</th>
-                                            <th>Harga Saham</th>
                                             <th>Saham yang Dibeli</th>
+                                            <th>Harga Saham</th>
                                             <th>Total Pembayaran</th>
                                         </tr>
                                     </thead>
@@ -102,10 +102,10 @@
                                                     <%= transaction.project.basic[0].title %>
                                                 </a>
                                             </td>
-                                            <td>Rp. <%= transaction.project.basic[0].stock[0].price %></td>
                                             <td>
                                                 <%= transaction.stock_quantity %>
                                             </td>
+                                            <td>Rp. <%= transaction.project.basic[0].stock[0].price %></td>
                                             <td>Rp. <%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>
                                             </td>
                                         </tr>

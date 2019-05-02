@@ -30,9 +30,12 @@ router.get('/user/investor', isLoggedIn, isAdmin, function (req, res) {
 });
 router.get('/user/investor/individual', isLoggedIn, isAdmin, function (req, res) {
     let url = "individual-investor";
+    let error_message;
     User.find({'active': true, 'user_type.name': 'investor', 'profile.registration_type': "individual"}, function (error, users) {
         if (error) {
-            console.log(error);
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
         }
         else {
             res.render('pages/admin/user/investor/individual', {investors: users, url: url});
@@ -40,15 +43,26 @@ router.get('/user/investor/individual', isLoggedIn, isAdmin, function (req, res)
     });
 });
 router.get('/user/investor/individual/:id', isLoggedIn, isAdmin, function (req, res) {
-    getUserByID(req.params.id, function (error, user) {        
-        res.render('pages/admin/user/investor/detail', {user: user});
+    let error_message;
+    getUserByID(req.params.id, function (error, user) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            res.render('pages/admin/user/investor/detail', {user: user});
+        }
     });
 });
 router.get('/user/investor/company', isLoggedIn, isAdmin, function (req, res) {
     let url = "company-investor";
+    let error_message;
     User.find({'active': true, 'user_type.name': 'investor', 'profile.registration_type': "company"}, function (error, users) {
         if (error) {
-            console.log(error);
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
         }
         else {
             res.render('pages/admin/user/investor/company', {investors: users, url: url});
@@ -58,8 +72,15 @@ router.get('/user/investor/company', isLoggedIn, isAdmin, function (req, res) {
 router.get('/user/investor/company/:id', isLoggedIn, isAdmin, function (req, res) {
     let url = "company-investor";
 
-    getUserByID(req.params.id, function (error, user) {    
-        res.render('pages/admin/user/investor/detail', {user: user, url: url});
+    getUserByID(req.params.id, function (error, user) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            res.render('pages/admin/user/investor/detail', {user: user, url: url});
+        } 
     });
 });
 router.get('/user/inisiator', isLoggedIn, isAdmin, function (req, res) {
@@ -70,7 +91,9 @@ router.get('/user/inisiator/individual', isLoggedIn, isAdmin, function (req, res
 
     User.find({'active': true, 'user_type.name': 'inisiator', 'profile.registration_type': "individual"}, function (error, users) {
         if (error) {
-            console.log(error);
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
         }
         else {
             res.render('pages/admin/user/inisiator/individual', {inisiators: users, url: url});
@@ -97,11 +120,6 @@ router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {
             req.flash('error_message', error_message);
             return res.redirect('/admin/dashboard');
         }
-        if (!projects) {
-            error_message = "Proyek tidak tersedia";
-            req.flash('error_message', error_message);
-            return res.redirect('/admin/dashboard');
-        }
         else {
             let data = {
                 projects: projects,
@@ -122,11 +140,6 @@ router.get('/project/rejected', isLoggedIn, isAdmin, function (req, res) {
     getProjectByStatus("rejected", function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
-            req.flash('error_message', error_message);
-            return res.redirect('/admin/dashboard');
-        }
-        if (!projects) {
-            error_message = "Proyek tidak tersedia";
             req.flash('error_message', error_message);
             return res.redirect('/admin/dashboard');
         }
@@ -151,11 +164,6 @@ router.get('/project/open', isLoggedIn, isAdmin, function (req, res) {
     getProjectByStatus("verified", function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
-            req.flash('error_message', error_message);
-            return res.redirect('/admin/dashboard');
-        }
-        if (!projects) {
-            error_message = "Proyek tidak tersedia";
             req.flash('error_message', error_message);
             return res.redirect('/admin/dashboard');
         }
@@ -186,12 +194,7 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/dashboard');
-        }
-        if (!project) {
-            error_message = "Proyek tidak tersedia";
-            req.flash('error_message', error_message);
-            return res.redirect('/admin/dashboard');
+            return res.redirect('/admin/project/waiting');
         }
         else {
 
@@ -290,12 +293,12 @@ router.get('/project/open/:project_id', isLoggedIn, isAdmin, function (req, res)
         if (error) {
             error_message = "Terjadi kesalahan.";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/dashboard');
+            return res.redirect('/admin/project/open');
         }
         if (!project) {
             error_message = "Proyek tidak tersedia.";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/dashboard');
+            return res.redirect('/admin/project/open');
         }
         else {
             let data = {
@@ -344,7 +347,7 @@ router.get('/transaction/waiting-payment', isLoggedIn, isAdmin, function (req, r
         if (error) {
             error_message = "Terjadi kesalahan.";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/transaction/waiting-payment');
+            return res.redirect('/admin/dashboard');
         }
         else {
             transactions.forEach((transaction, index) => {
@@ -382,7 +385,7 @@ router.get('/transaction/waiting-verification', isLoggedIn, isAdmin, function (r
         if (error) {
             error_message = "Terjadi kesalahan.";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/transaction/waiting-verification');
+            return res.redirect('/admin/dashboard');
         }
         else {
             transactions.forEach((transaction, index) => {
@@ -415,7 +418,7 @@ router.get('/transaction/rejected', isLoggedIn, isAdmin, function (req, res) {
         if (error) {
             error_message = "Terjadi kesalahan.";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/transaction/waiting');
+            return res.redirect('/admin/dashboard');
         }
         else {
             transactions.forEach((transaction, index) => {
@@ -482,7 +485,7 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAdmin, f
             }).catch(transaction => {
                 error_message = "Terjadi kesalahan.";
                 req.flash('error_message', error_message);
-                return res.redirect('/admin/transaction/waiting');
+                return res.redirect('/admin/transaction/waiting-verification');
             });
 
         }
@@ -509,25 +512,25 @@ router.get('/transaction/waiting/:transaction_id/reject', isLoggedIn, isAdmin, f
                     if (error) {
                         error_message = "Terjadi kesalahan.";
                         req.flash('error_message', error_message);
-                        return res.redirect('/admin/transaction/waiting');
+                        return res.redirect('/admin/transaction/waiting-payment');
                     }
                     else {
                         project.basic[0].stock[0].temp = project.basic[0].stock[0].temp+transaction.stock_quantity;
                         project.save().then(project => {
                             success_message = "Berhasil menolak transaksi."
                             req.flash('success_message', success_message);
-                            return res.redirect('/admin/transaction/waiting');
+                            return res.redirect('/admin/transaction/waiting-payment');
                         }).catch(project => {
                             error_message = "Terjadi kesalahan.";
                             req.flash('error_message', error_message);
-                            return res.redirect('/admin/transaction/waiting');
+                            return res.redirect('/admin/transaction/waiting-payment');
                         }); 
                     }
                 });
             }).catch(transaction => {
                 error_message = "Terjadi kesalahan.";
                 req.flash('error_message', error_message);
-                return res.redirect('/admin/transaction/waiting');
+                return res.redirect('/admin/transaction/waiting-payment');
             });
 
         }
@@ -803,7 +806,6 @@ router.post('/project/waiting/:project_id/budget', isLoggedIn, isAdmin, function
 router.post('/project/waiting/:project_id/project', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
-    console.log(req.body)
     req.checkBody('duration', 'Durasi proyek tidak boleh lebih dari 12 bulan').isInt({
         max: 12
     });
@@ -848,20 +850,6 @@ router.post('/project/waiting/:project_id/project', isLoggedIn, isAdmin, functio
                     req.flash('error_message', error_message);
                     return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
                 } else {
-                    let prospectus = "";
-                    // if (req.body.prospectus_input === undefined) {
-                    //     if (!req.file) {
-                    //         error_message = "Prospektus proyek wajib diunggah.";
-                    //         req.flash('error_message', error_message);
-                    //         return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
-                    //     } else {
-                    //         prospectus = req.file.filename;
-                    //     }
-                    // } else {
-                    //     prospectus = req.body.prospectus_input;
-                    // }
-                    prospectus = req.body.prospectus_input;
-
                     let data = {
                         project: [{
                             unit_value: req.body.unit_value,
@@ -875,7 +863,7 @@ router.post('/project/waiting/:project_id/project', isLoggedIn, isAdmin, functio
                             },
                             roi: req.body.roi,
                             abstract: req.body.abstract,
-                            prospectus: prospectus
+                            prospectus: project.project[0].prospectus
                         }]
                     };
                     updateProject(req.params.project_id, data, function (error, project) {

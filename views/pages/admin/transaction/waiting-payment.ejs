@@ -99,9 +99,9 @@
                                             <td>
                                                 <%= transaction.stock_quantity %>
                                             </td>
+                                            <td><%= transaction.project.basic[0].stock[0].price %></td>
                                             <td><%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>
                                             </td>
-                                            <td><%= transaction.project.basic[0].stock[0].price %></td>
                                             <td><%= due_date[index] %></td>
                                             <td>
                                                 <% if (expired[index]) { %>

@@ -258,7 +258,6 @@ router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerif
     });
 });
 
-
 router.post('/start-project', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let success_message;
