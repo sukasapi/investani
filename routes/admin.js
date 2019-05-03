@@ -178,6 +178,35 @@ router.get('/project/open', isLoggedIn, isAdmin, function (req, res) {
         }
     });
 });
+router.get('/project/done', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    let durations = [];
+    let open_projects = [];
+
+    getProjectByStatus("verified", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            projects.forEach((project, index) => {
+                if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds < 0) {
+                    open_projects[index] = project
+                    durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
+                }
+            });
+
+            let data = {
+                projects: open_projects,
+                durations: durations,
+                url: "done-project",
+            }
+            
+            return res.render('pages/admin/project/done', data);
+        }
+    });
+});
 router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     getProjectByID(req.params.project_id, function (error, project) {

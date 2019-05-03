@@ -40,9 +40,6 @@ router.get('/', function (req, res) {
         if (error) {
             return res.redirect('/');
         } else {
-            projects.forEach((project, index) => {
-                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
-            });
             let data = {
                 auth: auth,
                 user_type: user_type,

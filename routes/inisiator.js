@@ -234,7 +234,18 @@ router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerif
             req.flash('error_message', error_message);
             return res.redirect(`/inisiator/${req.user._id}/started-project`);
         }
-        else {    
+        if (transactions.length == 0) {
+            let data = {
+                url: 'backed-project',
+                transactions: verified_transaction,
+                createdAt: createdAt,
+                due_date: due_date,
+                payment_date: payment_date,
+                user_id: req.user._id
+            }
+            return res.render('pages/inisiator/started-project-transaction', data);
+        }
+        else {
             if (req.user._id.equals(transactions[0].project.inisiator)) {
                 transactions.forEach((transaction, index) => {
                     if (transaction.status == 'verified') {
