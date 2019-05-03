@@ -21,30 +21,13 @@
     <link rel="stylesheet" href="/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="/css/dashboard-style.css">
     <link rel="stylesheet" href="/css/dropify.min.css">
+    <link rel="stylesheet" href="/css/dataTables.bootstrap.min.css">
+
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
     <style>
-        #bootstrap-data-table-1_filter,
-        #bootstrap-data-table-1_paginate,
-        #bootstrap-data-table-2_filter,
-        #bootstrap-data-table-2_paginate,
-        #bootstrap-data-table-3_filter,
-        #bootstrap-data-table-3_paginate {
-            text-align: right
-        }
-
-        #bootstrap-data-table-1_filter label,
-        #bootstrap-data-table-2_filter label,
-        #bootstrap-data-table-3_filter label {
-            text-align: left;
-        }
-
-        .pagination {
-            display: -webkit-inline-box;
-        }
-
         .detail-link,
         .detail-link:hover,
         .detail-link:focus {
@@ -156,8 +139,11 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
     <script src="/js/dropify.min.js"></script>
-
     <script src="/js/dashboard-main.js"></script>
+    <script src="/js/datatables.min.js"></script>
+    <script src="/js/dataTables.bootstrap.min.js"></script>
+    <script src="/js/dataTables.buttons.min.js"></script>
+    <script src="/js/datatables-init.js"></script>
     <script>
         ClassicEditor
             .create(document.querySelector('#editor'), {
