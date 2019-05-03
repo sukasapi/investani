@@ -38,8 +38,6 @@ router.get('/', function (req, res) {
             }
         });
         if (error) {
-            error_message = "Terjadi kesalahan";
-            req.flash('error_message', error_message);
             return res.redirect('/');
         } else {
             projects.forEach((project, index) => {
@@ -56,17 +54,19 @@ router.get('/', function (req, res) {
     });
 });
 router.get('/activation/:secretToken', function (req, res) {
-
-    let secretToken = req.params.secretToken;
+    let success_message;
     let error_message;
+    let secretToken = req.params.secretToken;
     getUserBySecretToken(secretToken, function (err, user) {
         if (err) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
+            res.redirect('/auth/login');
         }
         if (!user) {
             error_message = "Token tidak valid";
             req.flash('error_message', error_message);
+            res.redirect('/auth/login');
         } else {
             let updateValue = {
                 active: true,
@@ -83,6 +83,8 @@ router.get('/activation/:secretToken', function (req, res) {
                     req.flash('error_message', error_message);
                     res.redirect('/auth/login');
                 } else {
+                    success_message = "Berhasil melakukan aktivasi.";
+                    req.flash('success_message', success_message);
                     res.redirect('/auth/login');
                 }
             });
@@ -122,8 +124,6 @@ router.get('/explore', function (req, res) {
             }
         });
         if (error) {
-            error_message = "Terjadi kesalahan";
-            req.flash('error_message', error_message);
             return res.redirect('/');
         }
         else {

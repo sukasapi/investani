@@ -55,6 +55,7 @@ router.get('/start-project', isLoggedIn, isInisiator, function (req, res) {
 router.get('/:user_id/started-project', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let durations = [];
     let inisiated_project = [];
+    let error_message;
 
     getProjectByInisiator(req.params.user_id, function (error, projects) {
         projects.forEach((project, index) => {
@@ -223,7 +224,6 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
 });
 router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
-    let success_message;
     let verified_transaction = [];
     let createdAt = [];
     let due_date = [];
@@ -251,8 +251,6 @@ router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerif
                 payment_date: payment_date,
                 user_id: req.user._id
             }
-            success_message = "Menampilkan transaksi proyek yang didanai.";
-            req.flash('success_message', success_message);
             return res.render('pages/inisiator/started-project-transaction', data);
         }
     });
@@ -463,7 +461,6 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
                     req.checkBody(`budget_items[budget_items][${index}][description]`, `Nama Kegiatan ${index+1} wajib diisi`).notEmpty();
                 });
 
-
                 let errors = req.validationErrors();
 
                 if (errors) {
@@ -494,7 +491,7 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
                         } else {
                             success_message = "Berhasil memperbarui proyek";
                             req.flash('success_message', success_message);
-                            return res.redirect(`/inisiator/project/${project._id}/edit`);
+                            return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
                         }
                     });
                 }
@@ -706,7 +703,7 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
                                             } else {
                                                 success_message = "Berhasil memperbarui proyek";
                                                 req.flash('success_message', success_message);
-                                                return res.redirect(`/inisiator/project/${project._id}/edit`);
+                                                return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
                                             }
                                         });
                                     } else {

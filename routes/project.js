@@ -16,13 +16,9 @@ router.get('/:project_id', function (req, res) {
     }
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
-            error_message = "Terjadi kesalahan";
-            req.flash('error_message', error_message);
             return res.redirect('/');
         }
         if (!project) {
-            error_message = "Proyek tidak tersedia";
-            req.flash('error_message', error_message);
             return res.redirect('/');
         }
         else {

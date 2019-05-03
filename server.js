@@ -78,6 +78,10 @@ app.use('/investor', investor);
 app.use('/inisiator', inisiator);
 app.use('/project', project);
 
+app.get('*', function(req, res){
+    res.send('what???', 404);
+});
+
 app.listen(PORT, function(){
     console.log('Server is running on port:', PORT);
 });

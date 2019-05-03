@@ -30,7 +30,6 @@ router.get('/dashboard', isLoggedIn, isInvestor, function (req, res) {
     res.render('pages/investor/dashboard', data);
 });
 router.get('/transaction/waiting-payment', isLoggedIn, isInvestor, function (req, res) {
-    let success_message;
     let waiting_transactions = [];
     let createdAt = [];
     let due_date = [];
@@ -50,13 +49,10 @@ router.get('/transaction/waiting-payment', isLoggedIn, isInvestor, function (req
             due_date: due_date,
             url: "waiting_transaction"
         }
-        success_message = "Daftar transaksi yang menunggu pembayaran.";
-        req.flash('success_message', success_message);
         return res.render('pages/investor/transaction/waiting-payment', data);
     });
 });
 router.get('/transaction/waiting-verification', isLoggedIn, isInvestor, function (req, res) {
-    let success_message;
     let waiting_transactions = [];
     let createdAt = [];
     let due_date = [];
@@ -79,13 +75,10 @@ router.get('/transaction/waiting-verification', isLoggedIn, isInvestor, function
             payment_date: payment_date,
             url: "waiting_verification"
         }
-        success_message = "Daftar transaksi yang menunggu verifikasi.";
-        req.flash('success_message', success_message);
         return res.render('pages/investor/transaction/waiting-verification', data);
     });
 });
 router.get('/transaction/waiting-payment/:transaction_id', isLoggedIn, isInvestor, function (req, res) {
-    let success_message;
     let error_message;
     getTransactionById(req.params.transaction_id, function (error, transaction) {
         if (error) {
@@ -99,8 +92,6 @@ router.get('/transaction/waiting-payment/:transaction_id', isLoggedIn, isInvesto
             return res.redirect('/investor/transaction/waiting-payment');
         } else {
             if (transaction.investor._id.equals(req.user._id) && transaction.status != 'verified') {
-                success_message = "Menampilkan detail transaksi.";
-                req.flash('success_message', success_message);
                 let data = {
                     user_id: req.user._id,
                     transaction: transaction,
@@ -117,7 +108,6 @@ router.get('/transaction/waiting-payment/:transaction_id', isLoggedIn, isInvesto
 });
 router.get('/:user_id/backed-project', isLoggedIn, isInvestor, function (req, res) {
     let error_message;
-    let success_message;
     let durations = [];
 
     getBackedProjectTransaction(req.user._id, function (error, projects) {
@@ -136,8 +126,6 @@ router.get('/:user_id/backed-project', isLoggedIn, isInvestor, function (req, re
                 projects: projects,
                 durations: durations,
             }
-            success_message = "Menampilkan proyek yang didanai.";
-            req.flash('success_message', success_message);
             res.render('pages/investor/backed-project', data);
         }
     });
@@ -145,7 +133,6 @@ router.get('/:user_id/backed-project', isLoggedIn, isInvestor, function (req, re
 });
 router.get('/:project_id/backed-project/transaction', isLoggedIn, isInvestor, function (req, res) {
     let error_message;
-    let success_message;
     let verified_transaction = [];
     let createdAt = [];
     let due_date = [];
@@ -173,8 +160,6 @@ router.get('/:project_id/backed-project/transaction', isLoggedIn, isInvestor, fu
                 payment_date: payment_date,
                 user_id: req.user._id
             }
-            success_message = "Menampilkan transaksi proyek yang didanai.";
-            req.flash('success_message', success_message);
             return res.render('pages/investor/backed-project-transaction', data);
         }
     });
@@ -338,7 +323,6 @@ router.post('/transaction/waiting-payment/:transaction_id/:project_id', isLogged
         let receipt;
         if (err instanceof multer.MulterError) {
             error_message = "Ukuran gambar terlalu besar";
-
             req.flash('error_message', error_message);
             return res.redirect(`/transaction/waiting-payment/${req.params.transaction_id}`);
         } else if (err) {
@@ -377,7 +361,7 @@ router.post('/transaction/waiting-payment/:transaction_id/:project_id', isLogged
                                     req.flash('error_message', error_message);
                                     return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
                                 } else {
-                                    success_message = "Berhasil memperbarui transaksi";
+                                    success_message = "Berhasil mengunggah bukti transaksi.";
                                     req.flash('success_message', success_message);
                                     return res.redirect('/investor/transaction/waiting-verification/');
                                 }

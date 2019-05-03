@@ -133,8 +133,6 @@ router.post('/register', notLoggedIn, function (req, res) {
                                 res.redirect('/auth/register');
                             }
                             else {
-                                success_message = 'Anda sudah terdaftar, silahkan melakukan aktivasi';
-                                req.flash('success_message', success_message);
                                 passport.authenticate('local')(req, res, function () {
                                     res.redirect('/welcome');
                                     return ;

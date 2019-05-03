@@ -111,7 +111,6 @@ router.get('/user/get-image/:user_id/:filename', isLoggedIn, isAdmin, function (
 });
 router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
-    let success_message;
     let durations = [];
 
     getProjectByStatus("waiting", function (error, projects) {
@@ -126,15 +125,12 @@ router.get('/project/waiting', isLoggedIn, isAdmin, function (req, res) {
                 durations: durations,
                 url: "waiting-project",
             }
-            success_message = "Silahakan verifikasi proyek yang tersedia";
-            req.flash('success_message', success_message);
             return res.render('pages/admin/project/waiting', data);
         }
     });
 });
 router.get('/project/rejected', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
-    let success_message;
     let durations = [];
     
     getProjectByStatus("rejected", function (error, projects) {
@@ -149,15 +145,12 @@ router.get('/project/rejected', isLoggedIn, isAdmin, function (req, res) {
                 durations: durations,
                 url: "rejected-project",
             }
-            success_message = "Daftar proyek yang ditolak";
-            req.flash('success_message', success_message);
             return res.render('pages/admin/project/rejected', data);
         }
     });
 });
 router.get('/project/open', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
-    let success_message;
     let durations = [];
     let open_projects = [];
     
@@ -181,15 +174,12 @@ router.get('/project/open', isLoggedIn, isAdmin, function (req, res) {
                 url: "open-project",
             }
             
-            success_message = "Daftar proyek yang ditolak";
-            req.flash('success_message', success_message);
             return res.render('pages/admin/project/open', data);
         }
     });
 });
 router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
-    let success_message;
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             error_message = "Terjadi kesalahan";
@@ -202,8 +192,6 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
                 url: 'detail-project',
                 project: project
             }
-            success_message = "Silahakan verifikasi proyek yang tersedia";
-            req.flash('success_message', success_message);
             return res.render('pages/admin/project/detail', data);
         }
     });
@@ -251,8 +239,6 @@ router.get('/project/waiting/:project_id/edit', isLoggedIn, isAdmin, function (r
                             province: JSON.parse(body).semuaprovinsi,
                             province_id: province_id
                         }
-                        success_message = "Silahakan verifikasi proyek yang tersedia";
-                        req.flash('success_message', success_message);
                         return res.render('pages/admin/project/edit', data);
                     })
                     
@@ -288,7 +274,6 @@ router.get('/project/waiting/:project_id/reject', isLoggedIn, isAdmin, function 
 });
 router.get('/project/open/:project_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
-    let success_message;
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             error_message = "Terjadi kesalahan.";
@@ -305,15 +290,12 @@ router.get('/project/open/:project_id', isLoggedIn, isAdmin, function (req, res)
                 url: 'open-detail-project',
                 project: project
             }
-            success_message = "Menampilkan proyek yang tersedia.";
-            req.flash('success_message', success_message);
             return res.render('pages/admin/project/detail', data);
         }
     });
 });
 router.get('/project/category', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
-    let success_message;
     Category.find(function(error, categories) {
         let data = {
             url: "category",
@@ -325,8 +307,6 @@ router.get('/project/category', isLoggedIn, isAdmin, function (req, res) {
             return res.redirect('/admin/dashboard');
         }
         else {
-            success_message = "Silahakan verifikasi proyek yang tersedia";
-            req.flash('success_message', success_message);
             res.render('pages/admin/project/category', data);
         }
     });
@@ -338,7 +318,6 @@ router.get('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
     res.render('pages/admin/project/add-category', data);
 });
 router.get('/transaction/waiting-payment', isLoggedIn, isAdmin, function (req, res) {
-    let success_message;
     let error_message;
     let createdAt = [];
     let due_date = [];
@@ -369,14 +348,11 @@ router.get('/transaction/waiting-payment', isLoggedIn, isAdmin, function (req, r
                 expired: expired,
                 url: "waiting_payment"
             }
-            success_message = "Daftar transaksi yang menunggu verifikasi.";
-            req.flash('success_message', success_message);
             return res.render('pages/admin/transaction/waiting-payment', data);
         } 
     });
 });
 router.get('/transaction/waiting-verification', isLoggedIn, isAdmin, function (req, res) {
-    let success_message;
     let error_message;
     let createdAt = [];
     let due_date = [];
@@ -402,14 +378,11 @@ router.get('/transaction/waiting-verification', isLoggedIn, isAdmin, function (r
                 payment_date: payment_date,
                 url: "waiting_verification"
             }
-            success_message = "Daftar transaksi yang menunggu verifikasi.";
-            req.flash('success_message', success_message);
             return res.render('pages/admin/transaction/waiting-verification', data);
         } 
     });
 });
 router.get('/transaction/rejected', isLoggedIn, isAdmin, function (req, res) {
-    let success_message;
     let error_message;
     let createdAt = [];
     let due_date = [];
@@ -440,8 +413,6 @@ router.get('/transaction/rejected', isLoggedIn, isAdmin, function (req, res) {
                 payment_date: payment_date,
                 url: "rejected"
             }
-            success_message = "Daftar transaksi yang ditolak.";
-            req.flash('success_message', success_message);
             return res.render('pages/admin/transaction/rejected', data);
         } 
     });
