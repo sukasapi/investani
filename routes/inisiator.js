@@ -56,7 +56,7 @@ router.get('/:user_id/started-project', isLoggedIn, isInisiator, isVerified, fun
     let durations = [];
     let inisiated_project = [];
     let error_message;
-
+    
     getProjectByInisiator(req.params.user_id, function (error, projects) {
         projects.forEach((project, index) => {
             if (req.user._id == req.params.user_id && project.status == 'verified') {
@@ -234,24 +234,30 @@ router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerif
             req.flash('error_message', error_message);
             return res.redirect(`/inisiator/${req.user._id}/started-project`);
         }
-        else {
-            transactions.forEach((transaction, index) => {
-                if (transaction.status == 'verified') {
-                    verified_transaction[index] = transaction;
-                    createdAt[index] = moment(transaction.createdAt).format('LL');
-                    due_date[index] = moment(transaction.due_date).format('lll');
-                    payment_date[index] = moment(transaction.payment_date).format('lll');
+        else {    
+            if (req.user._id.equals(transactions[0].project.inisiator)) {
+                transactions.forEach((transaction, index) => {
+                    if (transaction.status == 'verified') {
+                        verified_transaction[index] = transaction;
+                        createdAt[index] = moment(transaction.createdAt).format('LL');
+                        due_date[index] = moment(transaction.due_date).format('lll');
+                        payment_date[index] = moment(transaction.payment_date).format('lll');
+                    }
+                });
+                let data = {
+                    url: 'backed-project',
+                    transactions: verified_transaction,
+                    createdAt: createdAt,
+                    due_date: due_date,
+                    payment_date: payment_date,
+                    user_id: req.user._id
                 }
-            });
-            let data = {
-                url: 'backed-project',
-                transactions: verified_transaction,
-                createdAt: createdAt,
-                due_date: due_date,
-                payment_date: payment_date,
-                user_id: req.user._id
+                return res.render('pages/inisiator/started-project-transaction', data);
             }
-            return res.render('pages/inisiator/started-project-transaction', data);
+            else {
+                res.redirect('/inisiator/dashboard');
+            }
+            
         }
     });
 });

@@ -46,7 +46,7 @@ export const getBackedProjectTransaction = (investor_id, callback) => {
     }
     Transaction.find(obj).distinct('project', function (error, projects_id) {
         Project.find({'_id': {$in: projects_id}}, callback).populate('category').populate('inisiator');
-    });
+    }).populate('investor');
 }
 export const getTransactionByInvestorandProject = (investor_id, project_id, callback) => {
     let obj = {

@@ -79,7 +79,7 @@ app.use('/inisiator', inisiator);
 app.use('/project', project);
 
 app.get('*', function(req, res){
-    res.send('what???', 404);
+    res.status(404).send('404 Not Found');
 });
 
 app.listen(PORT, function(){

@@ -221,7 +221,6 @@ router.post('/contract', isLoggedIn, isInvestor, isCompleteProfile, isNoContract
 
 });
 
-
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         next();

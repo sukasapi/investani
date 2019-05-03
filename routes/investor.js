@@ -111,7 +111,6 @@ router.get('/:user_id/backed-project', isLoggedIn, isInvestor, function (req, re
     let durations = [];
 
     getBackedProjectTransaction(req.user._id, function (error, projects) {
-
         if (error) {
             error_message = "Terjadi Kesalahan";
             req.flash('error_message', error_message);
@@ -181,7 +180,7 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) 
 
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
-            error_message = "Terjadi kesalahan1";
+            error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
             return res.redirect('/project/' + req.params.project_id);
         }
@@ -194,7 +193,7 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) 
                 if (err) {
                     fs.mkdir(dir, async (err) => {
                         if (err) {
-                            error_message = "Terjadi Kesalahan2";
+                            error_message = "Terjadi Kesalahan";
                             req.flash('error_message', error_message);
                             return res.redirect('/project/' + req.params.project_id);
                         } else {
