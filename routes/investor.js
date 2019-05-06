@@ -73,7 +73,7 @@ router.get('/transaction/waiting-verification', isLoggedIn, isInvestor, function
             createdAt: createdAt,
             due_date: due_date,
             payment_date: payment_date,
-            url: "waiting_verification"
+            url: "waiting-verification"
         }
         return res.render('pages/investor/transaction/waiting-verification', data);
     });
