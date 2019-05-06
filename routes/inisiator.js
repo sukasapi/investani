@@ -205,7 +205,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                                             prospectus: prospectus,
                                             image: image,
                                             status: project.status,
-                                            url: "edit",
+                                            url: "edit-project",
                                             all_category: all_category,
 
                                         }
@@ -236,7 +236,7 @@ router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerif
         }
         if (transactions.length == 0) {
             let data = {
-                url: 'backed-project',
+                url: 'started-project-transaction',
                 transactions: verified_transaction,
                 createdAt: createdAt,
                 due_date: due_date,
@@ -256,7 +256,7 @@ router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerif
                     }
                 });
                 let data = {
-                    url: 'backed-project',
+                    url: 'started-project-transaction',
                     transactions: verified_transaction,
                     createdAt: createdAt,
                     due_date: due_date,

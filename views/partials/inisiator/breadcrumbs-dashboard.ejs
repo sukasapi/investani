@@ -4,7 +4,9 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Dashboard</h1>
+                        <% if (url == "start-project" || url == "started-project" || url == "edit-project" ||url == "started-project-transaction") { %>
+                            <h1>Proyek</h1>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -12,14 +14,20 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                     <ol class="breadcrumb text-right">
-                        <li><a href="/inisiator/dashboard">Dashboard</a></li>
+                        <% if (url == "start-project" || url == "started-project" || url == "edit-project" ||url == "started-project-transaction") { %>
+                            <li><a href="/inisiator/<% user_id %>/started-project">Proyek</a></li>
+                        <% } %>
                         <% if (url == "start-project") { %>
-                            <li><a href="#">Proyek</a></li>
+                            <li class="active">Mulai Proyek</li>
+                        <% } %>
+                        <% if (url == "started-project") { %>
                             <li class="active">Proyek yang Dimulai</li>
                         <% } %>
-                        <% if (url == "started-project" || url == "edit" || url == "backed-project") { %>
-                            <li><a href="#">Proyek</a></li>
-                            <li class="active">Proyek yang Dimulai</li>
+                        <% if (url == "edit-project") { %>
+                            <li class="active">Ubah Proyek</li>
+                        <% } %>
+                        <% if (url == "started-project-transaction") { %>
+                            <li class="active">Transaksi</li>
                         <% } %>
                     </ol>
                     </div>

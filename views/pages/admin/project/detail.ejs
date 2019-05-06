@@ -520,6 +520,20 @@
             });
         });
     </script>
+    <script>
+        <% if (url == 'waiting-detail-project') { %>
+            document.getElementById("waiting-project").className = "active";
+        <% } %>
+        <% if (url == 'rejected-detail-project') { %>
+            document.getElementById("rejected-project").className = "active";
+        <% } %>
+        <% if (url == 'open-detail-project') { %>
+            document.getElementById("open-project").className = "active";
+        <% } %>
+        <% if (url == 'done-detail-project') { %>
+            document.getElementById("done-project").className = "active";
+        <% } %>
+    </script>
 </body>
 
 </html>

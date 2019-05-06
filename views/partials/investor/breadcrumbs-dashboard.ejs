@@ -4,7 +4,9 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Dashboard</h1>
+                        <% if (url == "backed-project" || url == "backed-project-transaction") { %>
+                            <h1>Proyek</h1>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -12,10 +14,24 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                     <ol class="breadcrumb text-right">
-                        <li><a href="/inisiator/dashboard">Dashboard</a></li>
-                        <% if (url == "backed-project") { %>
+                        <% if (url == "backed-project" || url == "backed-project-transaction") { %>
                             <li><a href="#">Proyek</a></li>
-                            <li class="active">Proyek yang Didanai</li>
+                            <li <% if (url == "backed-project") {%>class="active"<% } %>>Proyek yang Didanai</li>
+                            <% if (url == "backed-project-transaction") { %>
+                                <li class="active">Transaksi</li>
+                            <% } %>                            
+                        <% } %>
+                        <%if (url == "waiting-payment" || url == "waiting-verification" || url == "detail-transaction") {%>
+                            <li><a href="#">Transaksi</a></li>
+                            <%if (url == "waiting-payment" || url == "detail-transaction") {%>
+                                <li <% if (url == "waiting-payment") { %> class="active" <% } %>>Menunggu Pembayaran</li>
+                                <%if (url == "detail-transaction") {%>
+                                    <li class="active">Detail Pembayaran</li>
+                                <% } %>
+                            <% } %>
+                            <%if (url == "waiting-verification") {%>
+                                <li class="active">Menunggu Verifikasi</li>
+                            <% } %>
                         <% } %>
                     </ol>
                     </div>

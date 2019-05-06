@@ -44,6 +44,7 @@ router.get('/user/investor/individual', isLoggedIn, isAdmin, function (req, res)
 });
 router.get('/user/investor/individual/:id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
+    let url = "individual-investor-detail";
     getUserByID(req.params.id, function (error, user) {
         if (error) {
             error_message = "Terjadi kesalahan";
@@ -51,7 +52,7 @@ router.get('/user/investor/individual/:id', isLoggedIn, isAdmin, function (req, 
             return res.redirect('/admin/dashboard');
         }
         else {
-            res.render('pages/admin/user/investor/detail', {user: user});
+            res.render('pages/admin/user/investor/detail', {user: user, url: url});
         }
     });
 });
@@ -70,7 +71,7 @@ router.get('/user/investor/company', isLoggedIn, isAdmin, function (req, res) {
     });
 });
 router.get('/user/investor/company/:id', isLoggedIn, isAdmin, function (req, res) {
-    let url = "company-investor";
+    let url = "company-investor-detail";
 
     getUserByID(req.params.id, function (error, user) {
         if (error) {
@@ -87,7 +88,7 @@ router.get('/user/inisiator', isLoggedIn, isAdmin, function (req, res) {
     res.redirect('/admin/user/inisiator/individual');
 });
 router.get('/user/inisiator/individual', isLoggedIn, isAdmin, function (req, res) {
-    let url = "individual-inisiator";
+    let url = "inisiator";
 
     User.find({'active': true, 'user_type.name': 'inisiator', 'profile.registration_type': "individual"}, function (error, users) {
         if (error) {
@@ -101,7 +102,7 @@ router.get('/user/inisiator/individual', isLoggedIn, isAdmin, function (req, res
     });
 });
 router.get('/user/inisiator/individual/:id', isLoggedIn, isAdmin, function (req, res) {
-    let url = "individual-inisiator";
+    let url = "inisiator-detail";
     getUserByID(req.params.id, function (error, user) {        
         res.render('pages/admin/user/inisiator/detail', {user: user, url: url});
     });
@@ -218,7 +219,7 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
         else {
 
             let data = {
-                url: 'detail-project',
+                url: 'waiting-detail-project',
                 project: project
             }
             return res.render('pages/admin/project/detail', data);
@@ -301,6 +302,24 @@ router.get('/project/waiting/:project_id/reject', isLoggedIn, isAdmin, function 
         }
     });
 });
+router.get('/project/rejected/:project_id', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    getProjectByID(req.params.project_id, function (error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/project/waiting');
+        }
+        else {
+
+            let data = {
+                url: 'rejected-detail-project',
+                project: project
+            }
+            return res.render('pages/admin/project/detail', data);
+        }
+    });
+});
 router.get('/project/open/:project_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     getProjectByID(req.params.project_id, function (error, project) {
@@ -317,6 +336,24 @@ router.get('/project/open/:project_id', isLoggedIn, isAdmin, function (req, res)
         else {
             let data = {
                 url: 'open-detail-project',
+                project: project
+            }
+            return res.render('pages/admin/project/detail', data);
+        }
+    });
+});
+router.get('/project/done/:project_id', isLoggedIn, isAdmin, function (req, res) {
+    let error_message;
+    getProjectByID(req.params.project_id, function (error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/project/waiting');
+        }
+        else {
+
+            let data = {
+                url: 'done-detail-project',
                 project: project
             }
             return res.render('pages/admin/project/detail', data);
@@ -375,7 +412,7 @@ router.get('/transaction/waiting-payment', isLoggedIn, isAdmin, function (req, r
                 createdAt: createdAt,
                 due_date: due_date,
                 expired: expired,
-                url: "waiting_payment"
+                url: "waiting-payment-transaction"
             }
             return res.render('pages/admin/transaction/waiting-payment', data);
         } 
@@ -405,7 +442,7 @@ router.get('/transaction/waiting-verification', isLoggedIn, isAdmin, function (r
                 createdAt: createdAt,
                 due_date: due_date,
                 payment_date: payment_date,
-                url: "waiting_verification"
+                url: "waiting-verification-transaction"
             }
             return res.render('pages/admin/transaction/waiting-verification', data);
         } 
@@ -440,7 +477,7 @@ router.get('/transaction/rejected', isLoggedIn, isAdmin, function (req, res) {
                 createdAt: createdAt,
                 due_date: due_date,
                 payment_date: payment_date,
-                url: "rejected"
+                url: "rejected-transaction"
             }
             return res.render('pages/admin/transaction/rejected', data);
         } 

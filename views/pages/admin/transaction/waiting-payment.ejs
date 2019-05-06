@@ -21,6 +21,8 @@
 
     <link rel="stylesheet" href="/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="/css/dashboard-style.css">
+    <link rel="stylesheet" href="/css/dataTables.bootstrap.min.css">
+
 </head>
 
 <body>
@@ -39,7 +41,7 @@
         <!-- Header-->
 
         <% if (url != "dashboard") { %>
-        <% include ../../../partials/investor/breadcrumbs-dashboard %>
+        <% include ../../../partials/admin/breadcrumbs-dashboard %>
         <% } %>
         <% if (success_message != '') { %>
         <div class="sufee-alert alert with-close alert-success alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
@@ -146,13 +148,22 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="/js/dashboard-main.js"></script>
+    <script src="/js/datatables.min.js"></script>
+    <script src="/js/dataTables.bootstrap.min.js"></script>
+    <script src="/js/dataTables.buttons.min.js"></script>
+    <script src="/js/buttons.bootstrap.min.js"></script>
+    <script src="/js/jszip.min.js"></script>
+    <script src="/js/vfs_fonts.js"></script>
+    <script src="/js/buttons.html5.min.js"></script>
+    <script src="/js/buttons.print.min.js"></script>
+    <script src="/js/buttons.colVis.min.js"></script>
+    <script src="/js/datatables-init.js"></script>
 
     <script>
-        document.getElementById("my-transaction").className = "menu-item-has-children dropdown show";
-        document.getElementById("my-transaction-link").setAttribute('aria-expanded', 'true');
-        document.getElementById("my-transaction-sub-menu").className = "sub-menu children dropdown-menu show";
-        document.getElementById("waiting-verification-icon").setAttribute('style', 'color: #03a9f3');
-        document.getElementById("waiting-verification-link").setAttribute('style', 'color: #03a9f3');
+        document.getElementById("transaction").className = "menu-item-has-children dropdown active show";
+        document.getElementById("transaction-link").click();
+        document.getElementById("waiting-payment-icon").style.color= '#03a9f3';
+        document.getElementById("waiting-payment-link").style.color= '#03a9f3';
     </script>
 </body>
 

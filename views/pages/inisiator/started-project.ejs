@@ -125,7 +125,6 @@
                                         <% if (project.status == "verified") { %>
                                             <small><span class="badge badge-primary float-right mt-1">Terverifikasi</span></small>
                                         <% } %>
-
                                     </h4>
                                     <p class="card-text">Dibuat oleh <strong><%= inisiator %></strong></p>
                                 </div>
@@ -141,7 +140,12 @@
                                         </li>
                                         <li>
                                             Tersisa
-                                            <h6><%= durations[index] %> hari</h6>
+                                            <% if (durations[index] < 0) { %>
+                                                <h6>- hari</h6>
+                                            <% } %>
+                                            <% if (durations[index] >= 0) { %>
+                                                <h6><%= durations[index] %> hari</h6>
+                                            <% } %>
                                         </li>
                                     </ul>
                                 </div>

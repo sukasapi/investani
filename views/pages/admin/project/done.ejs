@@ -69,7 +69,7 @@
                     <% projects.forEach((project, index) => { %>
                     <div class="col-md-4">
                         <div class="card">
-                            <a href="/admin/project/open/<%= project._id %>">
+                            <a href="/admin/project/done/<%= project._id %>">
                                 <img alt="Card image cap" class="card-img-top"
                                     src="/image/project/<%= project._id %>/<%= project.image[0].filename %>"
                                     style="height: 178px;">
@@ -77,8 +77,8 @@
                             <div class="card-body">
                                 <div class="mx-auto d-block">
                                     <h4 class="card-title mb-3"><a
-                                            href="/admin/project/waiting/<%= project._id %>"><%= project.basic[0].title %></a>
-                                        <small><span class="badge badge-primary float-right mt-1">Berlangsung</span></small>
+                                            href="/admin/project/done/<%= project._id %>"><%= project.basic[0].title %></a>
+                                        <small><span class="badge badge-success float-right mt-1">Selesai</span></small>
                                     </h4>
                                     <p class="card-text">Dibuat oleh <strong><%= project.inisiator.profile[0].name %></strong></p>
                                 </div>
@@ -99,7 +99,7 @@
                                         </li>
                                         <li>
                                             Tersisa
-                                            <h6><%= durations[index] %> Hari</h6>
+                                            <h6>- Hari</h6>
                                         </li>
                                     </ul>
                                 </div>
@@ -152,8 +152,9 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="/js/dashboard-main.js"></script>
-    <script src="/js/dropify.min.js"></script>
-
+    <script>
+        document.getElementById("done-project").className = "active";
+    </script>
 </body>
 
 </html>

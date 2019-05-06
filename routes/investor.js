@@ -47,7 +47,7 @@ router.get('/transaction/waiting-payment', isLoggedIn, isInvestor, function (req
             transactions: waiting_transactions,
             createdAt: createdAt,
             due_date: due_date,
-            url: "waiting_transaction"
+            url: "waiting-payment"
         }
         return res.render('pages/investor/transaction/waiting-payment', data);
     });
@@ -95,11 +95,11 @@ router.get('/transaction/waiting-payment/:transaction_id', isLoggedIn, isInvesto
                 let data = {
                     user_id: req.user._id,
                     transaction: transaction,
-                    url: "detail_transaction"
+                    url: "detail-transaction"
                 }
                 return res.render('pages/investor/transaction/detail', data);
             } else {
-                error_message = "Transaksi tidak tersedia";
+                error_message = "Transaksi tidak teredia";
                 req.flash('error_message', error_message);
                 return res.redirect('/investor/transaction/waiting-payment');
             }
@@ -152,7 +152,7 @@ router.get('/:project_id/backed-project/transaction', isLoggedIn, isInvestor, fu
                 }
             });
             let data = {
-                url: 'backed-project',
+                url: 'backed-project-transaction',
                 transactions: verified_transaction,
                 createdAt: createdAt,
                 due_date: due_date,

@@ -4,11 +4,14 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <% if (url == 'individual-inisiator' || url == 'company-inisiator' || url == 'individual-investor' || url == 'company-investor' ) { %>
-                        <h1>User</h1>
+                        <% if (url == 'inisiator' || url == 'inisiator-detail' || url == 'individual-investor' || url == 'individual-investor-detail' || url == 'company-investor' || url == 'company-investor-detail') { %>
+                            <h1>User</h1>
                         <% } %>
-                        <% if (url == 'waiting-project' || url == 'category' || url == 'add-category') { %>
+                        <% if (url == 'waiting-project' || url == 'rejected-project' || url == 'open-project' || url == 'done-project' || url == 'category' || url == 'add-category' || url == 'waiting-detail-project' || url == 'rejected-detail-project' || url == 'open-detail-project' || url == 'done-detail-project') { %>
                             <h1>Proyek</h1>
+                        <% } %>
+                        <% if (url == 'waiting-payment-transaction' || url == 'waiting-verification-transaction' || url == 'rejected-transaction') { %>
+                            <h1>Transaksi</h1>
                         <% } %>
                     </div>
                 </div>
@@ -17,46 +20,99 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <% if (url == 'individual-inisiator' || url == 'company-inisiator' || url == 'individual-investor' || url == 'company-investor' ) { %>
+                            <% if (url == 'inisiator' || url == 'inisiator-detail' || url == 'individual-investor' || url == 'individual-investor-detail' || url == 'company-investor' || url == 'company-investor-detail') { %>
                                 <li><a href="#">User</a></li>
-                                <% if (url == 'individual-inisiator' || url == 'company-inisiator') { %>
-                                    <li><a href="#">Inisiator</a></li>
-                                    <% if (url == 'individual-inisiator') { %>
-                                        <li class="active">Perseorangan</li>
+                                <% if (url == 'inisiator' || url == 'inisiator-detail') { %>
+                                    <% if (url == 'inisiator') { %>
+                                        <li class="active">Inisiator</li>
                                     <% } %>
-                                    <% if (url == 'company-inisiator') { %>
-                                        <li class="active">Perusahaan</li>
-                                    <% } %>
+                                    <% if (url == 'inisiator-detail') { %>
+                                            <li><a href="/admin/user/inisiator/individual">Inisiator</a></li>
+                                            <li class="active"> Detail</li>
+                                        <% } %>
                                 <% } %>
-                                <% if (url == 'individual-investor' || url == 'company-investor') { %>
+                                <% if (url == 'individual-investor' || url == 'individual-investor-detail' || url == 'company-investor' || url == 'company-investor-detail') { %>
                                     <li><a href="#">Investor</a></li>
-                                    <% if (url == 'individual-investor') { %>
-                                        <li class="active">Perseorangan</li>
+                                    <% if (url == 'individual-investor' || url == 'individual-investor-detail') { %>
+                                        <% if (url == 'individual-investor') { %> 
+                                            <li class="active">Perseorangan</li>
+                                        <% } %>
+                                        <% if (url == 'individual-investor-detail') { %>
+                                            <li><a href="/admin/user/investor/individual">Perseorangan</a></li>
+                                            <li class="active"> Detail</li>
+                                        <% } %>
                                     <% } %>
-                                    <% if (url == 'company-investor') { %>
-                                        <li class="active">Perusahaan</li>
+                                    <% if (url == 'company-investor' || url == 'company-investor-detail') { %>
+                                        <% if (url == 'company-investor') { %>
+                                            <li class="active">Perusahaan</li>
+                                        <% } %>
+                                        <% if (url == 'company-investor-detail') { %>
+                                            <li><a href="/admin/user/investor/company">Perusahaan</a></li>
+                                            <li class="active"> Detail</li>
+                                        <% } %>
                                     <% } %>
                                 <% } %>
                             <% } %>
-                            <% if (url == 'waiting-project' || url == 'rejected-project' || url == 'open-project' || url == 'category' || url == 'add-category') { %>
+                            <% if (url == 'waiting-project' || url == 'rejected-project' || url == 'open-project' || url == 'done-project' || url == 'category' || url == 'add-category' || url == 'waiting-detail-project' || url == 'rejected-detail-project' || url == 'open-detail-project' || url == 'done-detail-project') { %>
                                 <li><a href="#">Proyek</a></li>
-                                <% if (url == 'waiting-project' || url == 'detail-project') { %>
-                                    <li><a href="#">Menunggu Verifikasi</a></li>
+                                <% if (url == 'waiting-project' || url == 'waiting-detail-project') { %>
+                                    <% if (url == 'waiting-project') { %>
+                                        <li class="active">Menunggu Verifikasi</li>
+                                    <% } %>
+                                    <% if (url == 'waiting-detail-project') { %>
+                                        <li><a href="/admin/project/waiting">Menunggu Verifikasi</a></li>
+                                        <li class="active">Detail</li>
+                                    <% } %>
                                 <% } %>
-                                <% if (url == 'rejected-project' || url == 'detail-project') { %>
-                                    <li><a href="#">Ditolak</a></li>
+                                <% if (url == 'rejected-project' || url == 'rejected-detail-project') { %>
+                                    <% if (url == 'rejected-project') { %>
+                                        <li class="active">Ditolak</li>
+                                    <% } %>
+                                    <% if (url == 'rejected-detail-project') { %>
+                                        <li><a href="/admin/project/rejected">Ditolak</a></li>
+                                        <li class="active">Detail</li>
+                                    <% } %>
                                 <% } %>
-                                <% if (url == 'open-project' || url == 'detail-project') { %>
-                                    <li><a href="#">Sedang Berlangsung</a></li>
-                                <% } %> 
-                                <% if (url == 'done-project' || url == 'detail-project') { %>
-                                    <li><a href="#">Sedang Berlangsung</a></li>
+                                <% if (url == 'open-project' || url == 'open-detail-project') { %>
+                                    <% if (url == 'open-project') { %>
+                                        <li class="active">Sedang Berlangsung</li>
+                                    <% } %>
+                                    <% if (url == 'open-detail-project') { %>
+                                        <li><a href="/admin/project/open">Sedang Berlangsung</a></li>
+                                        <li class="active">Detail</li>
+                                    <% } %>
+                                <% } %>
+                                <% if (url == 'done-project' || url == 'done-detail-project') { %>
+                                    <% if (url == 'done-project') { %>
+                                        <li class="active">Selesai</li>
+                                    <% } %>
+                                    <% if (url == 'done-detail-project') { %>
+                                        <li><a href="/admin/project/done">Selesai</a></li>
+                                        <li class="active">Detail</li>
+                                    <% } %>
                                 <% } %> 
                                 <% if (url == 'category') { %>
-                                    <li><a href="#">Daftar Kategori</a></li>
+                                    <li><a href="#">Kategori</a></li>
+                                    <li class="active">Daftar Kategori</li>
                                 <% } %>
                                 <% if (url == 'add-category') { %>
-                                    <li><a href="#">Tambah Kategori</a></li>
+                                    <li><a href="#">Kategori</a></li>
+                                    <li class="active">Tambah Kategori</li>
+                                <% } %>
+                            <% } %>
+                            <% if (url == 'waiting-payment-transaction' || url == 'waiting-verification-transaction' || url == 'rejected-transaction') { %>
+                                <li><a href="#">Transaksi</a></li>
+                                <% if (url == 'waiting-payment-transaction' || url == 'waiting-verification-transaction') { %>
+                                    <li><a href="#">Menunggu</a></li>
+                                    <% if (url == 'waiting-payment-transaction') { %>
+                                        <li class="active">Pembayaran</li>
+                                    <% } %>
+                                    <% if (url == 'waiting-verification-transaction') { %>
+                                        <li class="active">Verifikasi</li>
+                                    <% } %>
+                                <% } %>
+                                <% if (url == 'rejected-transaction') { %>
+                                    <li class="active">Ditolak</li>
                                 <% } %>
                             <% } %>
                         </ol>

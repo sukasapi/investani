@@ -13,42 +13,42 @@
                     <a href="#" id="investor-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="menu-icon fa fa-table"></i>Investor</a>
                     <ul class="sub-menu children dropdown-menu">
-                        <li><i class="fa fa-table"></i><a href="/admin/user/investor/individual" id="individual-investor-sub">Perseorangan</a></li>
-                        <li><i class="fa fa-table"></i><a href="/admin/user/investor/company" id="company-investor-sub">Perusahaan</a></li>
+                        <li><i class="fa fa-table" id="individual-investor-icon"></i><a href="/admin/user/investor/individual" id="individual-investor-link">Perseorangan</a></li>
+                        <li><i class="fa fa-table" id="company-investor-icon"></i><a href="/admin/user/investor/company" id="company-investor-link">Perusahaan</a></li>
                     </ul>
                 </li>
                 <li class="menu-title">Proyek</li><!-- /.menu-title -->
-                <li>
+                <li id="waiting-project">
                     <a href="/admin/project/waiting"><i class="menu-icon fa fa-laptop"></i>Menunggu Verifikasi </a>
                 </li>
-                <li>
+                <li id="rejected-project">
                     <a href="/admin/project/rejected"><i class="menu-icon fa fa-laptop"></i>Ditolak </a>
                 </li>
-                <li>
+                <li id="open-project">
                     <a href="/admin/project/open"><i class="menu-icon fa fa-laptop"></i>Sedang Berlangsung </a>
                 </li>
-                <li>
+                <li id="done-project">
                     <a href="/admin/project/done"><i class="menu-icon fa fa-laptop"></i>Selesai </a>
                 </li>
-                <li class="menu-item-has-children dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <li class="menu-item-has-children dropdown" id="category">
+                    <a href="#" id="category-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="menu-icon fa fa-tasks"></i>Kategori Proyek</a>
                     <ul class="sub-menu children dropdown-menu">
-                        <li><i class="menu-icon fa fa-fort-awesome"></i><a href="/admin/project/category">Daftar Kategori</a></li>
-                        <li><i class="menu-icon ti-themify-logo"></i><a href="/admin/project/add-category">Tambah Kategori</a></li>
+                        <li><i class="menu-icon fa fa-fort-awesome" id="category-list-icon"></i><a href="/admin/project/category" id="category-list-link">Daftar Kategori</a></li>
+                        <li><i class="menu-icon ti-themify-logo" id="add-category-icon"></i><a href="/admin/project/add-category" id="add-category-link">Tambah Kategori</a></li>
                     </ul>
                 </li>
     
                 <li class="menu-title">Transaksi</li><!-- /.menu-title -->
-                <li class="menu-item-has-children dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <li class="menu-item-has-children dropdown" id="transaction">
+                    <a href="#" id="transaction-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="menu-icon fa fa-tasks"></i>Menunggu</a>
                     <ul class="sub-menu children dropdown-menu">
-                        <li><i class="menu-icon fa fa-fort-awesome"></i><a href="/admin/transaction/waiting-payment">Pembayaran</a></li>
-                        <li><i class="menu-icon ti-themify-logo"></i><a href="/admin/transaction/waiting-verification">Verifikasi</a></li>
+                        <li><i class="menu-icon fa fa-fort-awesome" id="waiting-payment-icon"></i><a href="/admin/transaction/waiting-payment" id="waiting-payment-link">Pembayaran</a></li>
+                        <li><i class="menu-icon ti-themify-logo" id="waiting-verification-icon"></i><a href="/admin/transaction/waiting-verification" id="waiting-verification-link">Verifikasi</a></li>
                     </ul>
                 </li>
-                <li>
+                <li id="rejected-transaction">
                     <a href="/admin/transaction/rejected"><i class="menu-icon fa fa-laptop"></i>Ditolak</a>
                 </li>
             </ul>

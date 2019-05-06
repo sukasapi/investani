@@ -79,13 +79,8 @@
                                 <div class="mx-auto d-block">
                                     <h4 class="card-title mb-3"><a
                                             href="/admin/project/waiting/<%= project._id %>"><%= project.basic[0].title %></a>
-                                        <% if (project.status == "draft") { %>
-                                        <small><span class="badge badge-light float-right mt-1">Draft</span></small>
-                                        <% } %>
-                                        <% if (project.status == "waiting") { %>
                                         <small><span
                                                 class="badge badge-warning float-right mt-1">Menunggu</span></small>
-                                        <% } %>
                                     </h4>
                                     <p class="card-text">Dibuat oleh
                                         <strong><%= project.inisiator.profile[0].name %></strong></p>
@@ -160,8 +155,9 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="/js/dashboard-main.js"></script>
-    <script src="/js/dropify.min.js"></script>
-
+    <script>
+        document.getElementById("waiting-project").className = "active";
+    </script>
 </body>
 
 </html>
