@@ -10,8 +10,17 @@ import path from 'path';
 import multer from 'multer';
 import fs from 'fs';
 import Resize from '../Resize';
+import nodemailer from 'nodemailer';
+import ejs from 'ejs';
+import fsExtra from 'fs-extra';
 
 const router = express.Router();
+
+const compile = async function (templateName, data) {
+    const filePath = path.join(__dirname, '../storage/email/', `${templateName}.ejs`);
+    const html = await fsExtra.readFile(filePath, 'utf-8');
+    return ejs.render(html, data);
+};
 
 router.get('/', isLoggedIn, isAdmin, function (req, res) {
     res.redirect('/admin/dashboard');
@@ -486,9 +495,10 @@ router.get('/transaction/rejected', isLoggedIn, isAdmin, function (req, res) {
 router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
+
     getTransactionById(req.params.transaction_id, function (error, transaction) {
         if (error) {
-            error_message = "Terjadi kesalahan.";
+            error_message = "Terjadi kesalahan1.";
             req.flash('error_message', error_message);
             return res.redirect('/admin/transaction/waiting-verification');
         }
@@ -500,27 +510,68 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAdmin, f
         else {
             transaction.status = 'verified';
             transaction.save().then(transaction => {
-                getProjectByID(transaction.project._id, function (error, project) {
+                getProjectByID(transaction.project._id, async function (error, project) {
                     if (error) {
-                        error_message = "Terjadi kesalahan.";
+                        error_message = "Terjadi kesalahan2.";
                         req.flash('error_message', error_message);
                         return res.redirect('/admin/transaction/waiting-verification');
                     }
                     else {
                         project.basic[0].stock[0].remain = project.basic[0].stock[0].remain-transaction.stock_quantity;
-                        project.save().then(project => {
-                            success_message = "Berhasil melakukan verifikasi transaksi."
-                            req.flash('success_message', success_message);
-                            return res.redirect('/admin/transaction/waiting-verification');
+                        project.save().then( async () => { 
+                            let transporter = nodemailer.createTransport({
+                                host: 'smtp.gmail.com',
+                                port: 465,
+                                secure: true,
+                                auth: {
+                                    user: 'investaninx@gmail.com',
+                                    pass: 'investani2019'
+                                }
+                            });
+                            let data =  {
+                                project_title: project.basic[0].title,
+                                investor: transaction.investor.profile[0].name,
+                                stock_quantity: transaction.stock_quantity,
+                                payment_total: transaction.stock_quantity*project.basic[0].stock[0].price,
+                                verification_date: moment().format('LL')
+                            }
+
+                            const content = await compile('certificate', data);
+    
+                            let mailOptions = {
+                                from: '"Investani" <investaninx@gmail.com>',
+                                to: transaction.investor.email,
+                                subject: "Sertifikat Investasi",
+                                html: content,
+                                attachments: [
+                                    {
+                                        filename: 'sertifikat investani.pdf',
+                                        path: path.join(__dirname, '../storage/certificates/', 'Sertifikat investani.pdf')
+                                    }
+                                ]
+                            };
+                    
+                            transporter.sendMail(mailOptions, (error, info) => {
+                                if (error) {
+                                    error_message = "Email gagal terkirim"; 
+                                    req.flash('error_message', error_message);
+                                    return res.redirect('/admin/transaction/waiting-verification');
+                                }
+                                else {
+                                    success_message = "Berhasil melakukan verifikasi transaksi."
+                                    req.flash('success_message', success_message);
+                                    return res.redirect('/admin/transaction/waiting-verification');    
+                                }
+                            });
                         }).catch(project => {
-                            error_message = "Terjadi kesalahan.";
+                            error_message = "Terjadi kesalahan3.";
                             req.flash('error_message', error_message);
                             return res.redirect('/admin/transaction/waiting-verification');
                         }); 
                     }
                 });
             }).catch(transaction => {
-                error_message = "Terjadi kesalahan.";
+                error_message = "Terjadi kesalahan4.";
                 req.flash('error_message', error_message);
                 return res.redirect('/admin/transaction/waiting-verification');
             });

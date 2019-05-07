@@ -47,7 +47,6 @@ router.post('/register', notLoggedIn, function (req, res) {
     let user_type = req.body.user_type;
     let password = req.body.password;
     let secretToken = randomstring.generate();
-    let success_message;
     let error_message;
 
     req.checkBody('cfm_pwd', 'Konfirmasi Password tidak cocok dengan password.').equals(password);
