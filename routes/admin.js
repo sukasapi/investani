@@ -13,11 +13,12 @@ import Resize from '../Resize';
 import nodemailer from 'nodemailer';
 import ejs from 'ejs';
 import fsExtra from 'fs-extra';
+import puppeteer from 'puppeteer';
 
 const router = express.Router();
 
 const compile = async function (templateName, data) {
-    const filePath = path.join(__dirname, '../storage/email/', `${templateName}.ejs`);
+    const filePath = path.join(__dirname, '../storage/certificates/template/', `${templateName}.ejs`);
     const html = await fsExtra.readFile(filePath, 'utf-8');
     return ejs.render(html, data);
 };
@@ -518,53 +519,74 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAdmin, f
                     }
                     else {
                         project.basic[0].stock[0].remain = project.basic[0].stock[0].remain-transaction.stock_quantity;
-                        project.save().then( async () => { 
-                            let transporter = nodemailer.createTransport({
-                                host: 'smtp.gmail.com',
-                                port: 465,
-                                secure: true,
-                                auth: {
-                                    user: 'investaninx@gmail.com',
-                                    pass: 'investani2019'
+                        project.save().then( async () => {
+                            try {
+                                const browser = await puppeteer.launch();
+                                const page = await browser.newPage();
+
+                                let data = {
+                                    project_title: project.basic[0].title,
+                                    investor: transaction.investor.profile[0].name,
+                                    stock_quantity: transaction.stock_quantity,
+                                    payment_total: transaction.stock_quantity*project.basic[0].stock[0].price,
+                                    verification_date: moment().format('LL')
                                 }
-                            });
-                            let data =  {
-                                project_title: project.basic[0].title,
-                                investor: transaction.investor.profile[0].name,
-                                stock_quantity: transaction.stock_quantity,
-                                payment_total: transaction.stock_quantity*project.basic[0].stock[0].price,
-                                verification_date: moment().format('LL')
+    
+                                const certificate = await compile('certificate', data);
+                                const content = await compile('certificate-email', data);
+
+                                await page.setContent(certificate);
+                                await page.emulateMedia('screen');
+                                await page.pdf({
+                                    path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`,
+                                    width: '725px',
+                                    height: '541px',
+                                    printBackground: true
+                                });
+                                await browser.close();
+
+                                let transporter = nodemailer.createTransport({
+                                    host: 'smtp.gmail.com',
+                                    port: 465,
+                                    secure: true,
+                                    auth: {
+                                        user: 'investaninx@gmail.com',
+                                        pass: 'investani2019'
+                                    }
+                                });
+                                let mailOptions = {
+                                    from: '"Investani" <investaninx@gmail.com>',
+                                    to: transaction.investor.email,
+                                    subject: "Sertifikat Investasi",
+                                    html: content,
+                                    attachments: [
+                                        {
+                                            filename: 'sertifikat investani.pdf',
+                                            path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`
+                                        }
+                                    ]
+                                };
+                        
+                                transporter.sendMail(mailOptions, (error, info) => {
+                                    if (error) {
+                                        error_message = "Email gagal terkirim"; 
+                                        req.flash('error_message', error_message);
+                                        return res.redirect('/admin/transaction/waiting-verification');
+                                    }
+                                    else {
+                                        success_message = "Berhasil melakukan verifikasi transaksi."
+                                        req.flash('success_message', success_message);
+                                        return res.redirect('/admin/transaction/waiting-verification');    
+                                    }
+                                });  
+                            } catch (e) {
+                                error_message = "Terjadi kesalahan3.";
+                                req.flash('error_message', error_message);
+                                return res.redirect('/admin/transaction/waiting-verification');
                             }
 
-                            const content = await compile('certificate', data);
-    
-                            let mailOptions = {
-                                from: '"Investani" <investaninx@gmail.com>',
-                                to: transaction.investor.email,
-                                subject: "Sertifikat Investasi",
-                                html: content,
-                                attachments: [
-                                    {
-                                        filename: 'sertifikat investani.pdf',
-                                        path: path.join(__dirname, '../storage/certificates/', 'Sertifikat investani.pdf')
-                                    }
-                                ]
-                            };
-                    
-                            transporter.sendMail(mailOptions, (error, info) => {
-                                if (error) {
-                                    error_message = "Email gagal terkirim"; 
-                                    req.flash('error_message', error_message);
-                                    return res.redirect('/admin/transaction/waiting-verification');
-                                }
-                                else {
-                                    success_message = "Berhasil melakukan verifikasi transaksi."
-                                    req.flash('success_message', success_message);
-                                    return res.redirect('/admin/transaction/waiting-verification');    
-                                }
-                            });
                         }).catch(project => {
-                            error_message = "Terjadi kesalahan3.";
+                            error_message = "Terjadi kesalahan4.";
                             req.flash('error_message', error_message);
                             return res.redirect('/admin/transaction/waiting-verification');
                         }); 
