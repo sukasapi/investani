@@ -132,18 +132,32 @@
                                     <ul>
                                         <li>
                                             Imbal Hasil
-                                            <h6><%=project.project[0].roi%>%</h6>
+                                            <h6>
+                                            <% if (project.project.length > 0) { %>
+                                                <%=project.project[0].roi%>%
+                                            <% } %>
+                                            <% if (project.project.length == 0) { %>
+                                                - %
+                                            <% } %>
+                                            </h6>
                                         </li>
                                         <li>
                                             Durasi Proyek
-                                            <h6><%=project.project[0].duration[0].duration%> Bulan</h6>
+                                            <h6>
+                                            <% if (project.project.length > 0) { %>
+                                                <%=project.project[0].duration[0].duration%> 
+                                            <% } %>
+                                            <% if (project.project.length == 0) { %>
+                                                - 
+                                            <% } %>
+                                            Bulan</h6>
                                         </li>
                                         <li>
                                             Tersisa
-                                            <% if (durations[index] < 0) { %>
-                                                <h6>- hari</h6>
+                                            <% if (durations[index] == null) { %>
+                                                <h6>-</h6>
                                             <% } %>
-                                            <% if (durations[index] >= 0) { %>
+                                            <% if (durations[index] != null && durations[index] >=0) { %>
                                                 <h6><%= durations[index] %> hari</h6>
                                             <% } %>
                                         </li>
@@ -197,6 +211,7 @@
         document.getElementById("my-project").className = "menu-item-has-children dropdown active show";
         document.getElementById("my-project-link").click();
         document.getElementById("started-project-sub").style.color = '#03a9f3';
+        console.log("<%= durations %>")
     </script>
 
 </body>

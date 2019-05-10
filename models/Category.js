@@ -21,7 +21,6 @@ let CategorySchema = mongoose.Schema({
 });
 
 export const Category = mongoose.model('Category', CategorySchema);
-
 export const createCategory = (newCategory, callback) => {
     newCategory.save(callback);
 }

@@ -24,7 +24,12 @@
     <link rel="stylesheet" href="/css/dropify.min.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-
+    <style>
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
+			-webkit-appearance: none; 
+			margin: 0; 
+        }
+    </style>
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
 </head>
 
@@ -51,10 +56,10 @@
                     <div class="col-lg-12">
                         <div id="basic-card" class="card">
                             <div class="card-header">
-                                <strong class="card-title">Menambah Kategori</strong>
+                                <strong class="card-title">Menambah Pejabat Pengesahan</strong>
                             </div>
                             <div class="card-body">
-                                <form action="/admin/project/add-category" id="add-category-form" method="post">
+                                <form action="/admin/signature/add" enctype="multipart/form-data" id="add-signature-form" method="post">
                                     <% if (success_message != '') { %>
                                     <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
                                         <%= success_message %>
@@ -73,46 +78,32 @@
                                     <% } %>
                                     <div class="row form-group">
                                         <div class="col col-sm-6">
-                                            <label class="control-label mb-1">Judul Kategori</label>
-                                            <input name="title" type="text" class="form-control"
-                                                placeholder="Judul Kategori">
-                                        </div>
-                                        <div class="col col-sm-3">
-                                            <label class="control-label mb-1">Satuan Kategori</label>
-                                            <input name="unit" type="text" class="form-control"
-                                                placeholder="Satuan Kategori">
+                                            <label class="control-label mb-1">Nama Lengkap</label>
+                                            <input name="full_name" type="text" class="form-control"
+                                                placeholder="Nama Lengkap">
                                         </div>
                                         <div class="col col-sm-6">
-                                            <label class="control-label mb-1">Deskripsi Kategori</label>
-                                            <textarea name="description" rows="2" placeholder="Deskripsi Kategori"
-                                                class="form-control"></textarea>
+                                            <label class="control-label mb-1">NIK</label>
+                                            <input id="identity_number" name="identity_number" type="number" class="form-control"
+                                                placeholder="NIK" min=0>
                                         </div>
                                         <div class="col col-sm-6">
-                                            <div class="row form-group dynamic-row" id="dynamic_form">
-                                                <div class="col col-sm-6">
-                                                    <label class="control-label mb-1 item-label">Sub-kategori</label>
-                                                    <input class="form-control sub-category" id="sub-category" name="name"
-                                                        placeholder="Sub-kategori" type="text" value="">
-                                                </div>
-                                                <div class="col col-sm-6">
-                                                    <label class="control-label mb-1">Aksi</label>
-                                                    <div class="button-group">
-                                                        <button class="btn btn-primary btn-sm plus" id="plus5"
-                                                            type="button">Tambah</button>
-                                                        <button class="btn btn-danger btn-sm minus" id="minus5"
-                                                            type="button">Hapus</button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <label class="control-label mb-1">Jabatan</label>
+                                            <input name="position" type="text" class="form-control"
+                                                placeholder="Jabatan">
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">Tanda Tangan</label>
+                                            <input accept="image/*" class="dropify" data-height="304.66" name="signature" type="file"/>
                                         </div>
                                     </div>
                                     
                                     <div>
-                                        <button id="add-category-button" type="submit"
+                                        <button id="add-signature-button" type="submit"
                                             class="btn btn-lg btn-info btn-block">
                                             <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                id="add-category-spinner" role="status" style="display: none"></span>
-                                            <span id="add-category-button-placeholder">Lanjut</span>
+                                                id="add-signature-spinner" role="status" style="display: none"></span>
+                                            <span>Lanjut</span>
                                         </button>
                                     </div>
                                 </form>
@@ -145,27 +136,18 @@
     <script src="/js/dropify.min.js"></script>
     <script src="/js/dashboard-main.js"></script>
     <script src="/js/dynamic-form.js"></script>
-
     <script>
-        $(document).ready(function () {
-            var dynamic_form = $("#dynamic_form").dynamicForm("#dynamic_form", "#plus5", "#minus5", {
-                limit: 5,
-                formPrefix: "sub_category",
-                normalizeFullForm: false
-            });
-
-            $('.dropify').dropify();
+        $('#add-signature-form').on('submit', function () {
+            $('#add-signature-button').attr('disabled', 'disabled');
+            $('#add-signature-spinner').show();
         });
-    </script>
-    <script>
-        $('#add-category-form').on('submit', function () {
-            $('#add-category-button').attr('disabled', 'disabled');
-            $('#add-category-spinner').show();
+        $('.dropify').dropify();
+        document.getElementById("add-signature").className = "active";
+        document.getElementById('identity_number').addEventListener('keydown', function (e) {
+            if (e.which === 38 || e.which === 40) {
+                e.preventDefault();
+            }
         });
-        document.getElementById("category").className = "menu-item-has-children dropdown active show";
-        document.getElementById("category-link").click();
-        document.getElementById("add-category-icon").style.color= '#03a9f3';
-        document.getElementById("add-category-link").style.color= '#03a9f3';
     </script>
 </body>
 

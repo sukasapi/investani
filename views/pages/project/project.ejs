@@ -12,7 +12,8 @@
     <title>Home</title>
     <link rel="stylesheet" href="/assets/web/assets/mobirise-icons/mobirise-icons.css">
     <link rel="stylesheet" href="/assets/tether/tether.min.css">
-    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap-reboot.min.css">
     <link rel="stylesheet" href="/assets/dropdown/css/style.css">
@@ -519,6 +520,10 @@
             document.getElementById("stock-quantity").innerHTML = document.getElementById("stock-input").value
             document.getElementById("stock-total").innerHTML = document.getElementById("stock-input").value*<%= project.basic[0].stock[0].price %>
         })
+        $('#invest-now').on('submit', function (event) {
+            $('#invest-now-button').attr('disabled', 'disabled');
+            $('#invest-now-spinner').show();
+        });
     </script>
     <!-- //FlexSlider-->
 

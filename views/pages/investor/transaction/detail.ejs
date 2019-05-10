@@ -12,7 +12,8 @@
     <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
     <link rel="stylesheet"
@@ -100,10 +101,10 @@
                                                 <input accept="image/*" class="form-control-file" id="receipt" name="receipt" type="file">
                                             </div>
                                             <div>
-                                                <button id="start-project-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                                <button id="payment-form-button" type="submit" class="btn btn-lg btn-info btn-block">
                                                     <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                        id="start-project-spinner" role="status" style="display: none"></span>
-                                                    <span id="start-project-button-placeholder">Lanjut</span>
+                                                        id="payment-form-spinner" role="status" style="display: none"></span>
+                                                    <span>Lanjut</span>
                                                 </button>
                                             </div>
                                         </form>
@@ -144,6 +145,10 @@
         document.getElementById("my-transaction-sub-menu").className = "sub-menu children dropdown-menu show";
         document.getElementById("waiting-payment-icon").setAttribute('style', 'color: #03a9f3');
         document.getElementById("waiting-payment-link").setAttribute('style', 'color: #03a9f3');
+        $('#payment-form').on('submit', function (event) {
+            $('#payment-form-button').attr('disabled', 'disabled');
+            $('#payment-form-spinner').show();
+        });
     </script>
 </body>
 

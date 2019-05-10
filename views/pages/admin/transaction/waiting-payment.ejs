@@ -109,7 +109,7 @@
                                                 <% if (expired[index]) { %>
                                                     <div class="input-group-btn">
                                                         <a class="detail-link" href="/admin/transaction/waiting/<%= transaction._id %>/reject">
-                                                            <button type="button" class="btn btn-danger">Kadaluarsa</button>
+                                                            <button class="btn btn-danger" type="button">Kadaluarsa</button>
                                                         </a>
                                                     </div>
                                                 <% } %>
@@ -164,6 +164,11 @@
         document.getElementById("transaction-link").click();
         document.getElementById("waiting-payment-icon").style.color= '#03a9f3';
         document.getElementById("waiting-payment-link").style.color= '#03a9f3';
+
+        $('#project-basic-form').on('submit', function () {
+                $('#project-basic-button').attr('disabled', 'disabled');
+                $('#project-basic-spinner').show();
+            });
     </script>
 </body>
 

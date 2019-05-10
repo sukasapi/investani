@@ -171,6 +171,13 @@ router.get('/transaction/get-receipt/:transaction_id/:filename', isLoggedIn, isI
         }
     });
 });
+router.get('/transaction/get-certificate/:transaction_id/:filename', isLoggedIn, isInvestor, function (req, res) {
+    getTransactionById(req.params.transaction_id, function (error, transaction) {
+        if (transaction.investor._id.equals(req.user._id)) {
+            res.download(__dirname + '/../storage/projects/' + transaction.project._id + '/transactions/' + req.params.filename.slice(0, -4) + ".pdf");
+        }
+    });
+});
 
 router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) {
     const dir = path.join(__dirname, `../storage/projects/${req.params.project_id}/transactions`);
@@ -383,7 +390,6 @@ router.post('/transaction/waiting-payment/:transaction_id/:project_id', isLogged
 
             }
         });
-
     });
 });
 

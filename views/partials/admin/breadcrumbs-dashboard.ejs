@@ -13,6 +13,9 @@
                         <% if (url == 'waiting-payment-transaction' || url == 'waiting-verification-transaction' || url == 'rejected-transaction') { %>
                             <h1>Transaksi</h1>
                         <% } %>
+                        <% if (url == 'signature-list' || url == 'add-signature') { %>
+                            <h1>Pengesahan</h1>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -113,6 +116,15 @@
                                 <% } %>
                                 <% if (url == 'rejected-transaction') { %>
                                     <li class="active">Ditolak</li>
+                                <% } %>
+                            <% } %>
+                            <% if (url == 'signature-list' || url == 'add-signature') { %>
+                                <li><a href="#">Transaksi</a></li>
+                                <% if (url == 'signature-list') { %>
+                                    <li class="active">Daftar Pengesahan</li>
+                                <% } %>
+                                <% if (url == 'add-signature') { %>
+                                    <li class="active">Tambah Pengesahan</li>
                                 <% } %>
                             <% } %>
                         </ol>

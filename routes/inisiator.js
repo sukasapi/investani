@@ -59,9 +59,14 @@ router.get('/:user_id/started-project', isLoggedIn, isInisiator, isVerified, fun
     
     getProjectByInisiator(req.params.user_id, function (error, projects) {
         projects.forEach((project, index) => {
-            if (req.user._id == req.params.user_id && project.status == 'verified') {
+            if (req.user._id == req.params.user_id) {
                 inisiated_project[index] = project;
-                durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
+                if (project.status == 'draft' || project.status == 'waiting') {
+                    durations[index] = null;
+                }
+                else {
+                    durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days')
+                }
             }
         });
         if (error) {
@@ -72,7 +77,7 @@ router.get('/:user_id/started-project', isLoggedIn, isInisiator, isVerified, fun
             let data = {
                 user_id: req.user._id,
                 inisiator: req.user.profile[0].name,
-                projects: projects,
+                projects: inisiated_project,
                 durations: durations,
                 url: "started-project"
             }

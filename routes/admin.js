@@ -3,6 +3,7 @@ import { User, getUserByID } from '../models/User';
 import { getProjectByStatus, getProjectByID, updateProject } from '../models/Project';
 import { Category, createCategory } from '../models/Category';
 import { getTransactionByStatus, getTransactionById } from '../models/Transaction';
+import { createSignature, Signature } from '../models/Signature';
 import moment from 'moment';
 import request from 'request';
 import upload from '../uploadMiddleware';
@@ -440,21 +441,31 @@ router.get('/transaction/waiting-verification', isLoggedIn, isAdmin, function (r
             return res.redirect('/admin/dashboard');
         }
         else {
-            transactions.forEach((transaction, index) => {
-                createdAt[index] = moment(transaction.createdAt).format('LL');
-                due_date[index] = moment(transaction.due_date).format('lll');
-                payment_date[index] = moment(transaction.payment_date).format('lll');
+            Signature.find({}, function (error, signatures) {
+                if (error) {
+                    error_message = "Terjadi kesalahan.";
+                    req.flash('error_message', error_message);
+                    return res.redirect('/admin/dashboard');
+                }
+                else {
+                    transactions.forEach((transaction, index) => {
+                        createdAt[index] = moment(transaction.createdAt).format('LL');
+                        due_date[index] = moment(transaction.due_date).format('lll');
+                        payment_date[index] = moment(transaction.payment_date).format('lll');
+                    });
+            
+                    let data = {
+                        user_id: req.user._id,
+                        transactions: transactions,
+                        createdAt: createdAt,
+                        due_date: due_date,
+                        payment_date: payment_date,
+                        signatures: signatures,
+                        url: "waiting-verification-transaction"
+                    }
+                    return res.render('pages/admin/transaction/waiting-verification', data);
+                }
             });
-    
-            let data = {
-                user_id: req.user._id,
-                transactions: transactions,
-                createdAt: createdAt,
-                due_date: due_date,
-                payment_date: payment_date,
-                url: "waiting-verification-transaction"
-            }
-            return res.render('pages/admin/transaction/waiting-verification', data);
         } 
     });
 });
@@ -499,7 +510,7 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAdmin, f
 
     getTransactionById(req.params.transaction_id, function (error, transaction) {
         if (error) {
-            error_message = "Terjadi kesalahan1.";
+            error_message = "Terjadi kesalahan.";
             req.flash('error_message', error_message);
             return res.redirect('/admin/transaction/waiting-verification');
         }
@@ -513,7 +524,7 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAdmin, f
             transaction.save().then(transaction => {
                 getProjectByID(transaction.project._id, async function (error, project) {
                     if (error) {
-                        error_message = "Terjadi kesalahan2.";
+                        error_message = "Terjadi kesalahan.";
                         req.flash('error_message', error_message);
                         return res.redirect('/admin/transaction/waiting-verification');
                     }
@@ -648,6 +659,31 @@ router.get('/transaction/waiting/:transaction_id/reject', isLoggedIn, isAdmin, f
 })
 router.get('/transaction/get-receipt/:project_id/:filename', isLoggedIn, isAdmin, function (req, res) {
     res.download(__dirname+'/../storage/projects/'+req.params.project_id+'/transactions/'+req.params.filename);
+});
+router.get('/signature', isLoggedIn, isAdmin, function (req, res) {
+    Signature.find({}, function (error, signatures) {
+        if (error) {
+            let error_message = "Terjadi kesalahan.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            let data = {
+                url: 'signature-list',
+                signatures: signatures
+            }
+            return res.render('pages/admin/signature/signature', data);
+        }
+    });
+});
+router.get('/signature/add', isLoggedIn, isAdmin, function (req, res) {
+    let data = {
+        url: 'add-signature'
+    }
+    res.render('pages/admin/signature/add-signature', data);
+});
+router.get('/signature/get-signature/:filename', isLoggedIn, isAdmin, function (req, res) {
+    res.download(__dirname+'/../storage/signatures/'+req.params.filename);
 });
 
 router.post('/user/investor/individual/verify/:id', isLoggedIn, isAdmin, function (req, res) {
@@ -1212,6 +1248,73 @@ router.post('/project/add-category', isLoggedIn, isAdmin, function (req, res) {
             }
         });
     }
+});
+let signatureUpload = upload.fields([
+    {
+        name: 'signature',
+        maxCount: 1
+    }
+]);
+router.post('/signature/add', isLoggedIn, isAdmin, function (req, res) {
+    signatureUpload(req, res, async function (err) {
+        let success_message;
+        let error_message;
+
+        const dir = path.join(__dirname, '../storage/signatures');
+        const imageUpload = new Resize(dir);
+        
+        req.checkBody('position', 'Jabatan wajib diisi.').notEmpty();
+        req.checkBody('identity_number', 'NIK wajib diisi.').notEmpty();
+        req.checkBody('full_name', 'Nama lengkap wajib diisi.').notEmpty();
+        
+        let errors = req.validationErrors();
+
+        if (errors) {
+            error_message = errors[errors.length - 1].msg;
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/signature/add');
+        }
+        else {
+            if (err instanceof multer.MulterError) {
+                error_message = "Ukuran gambar terlalu besar";
+                req.flash('error_message', error_message);
+                return res.redirect(`/admin/signature/add`);
+            } else if (err) {
+                error_message = "Terjadi Kesalahan";
+                req.flash('error_message', error_message);
+                return res.redirect('/admin/signature/add');
+            }
+            else {
+                if (req.files['signature']) {
+                    let signature = await imageUpload.save(req.files['signature'][0].buffer);
+                    let data = {
+                        full_name: req.body.full_name,
+                        identity_number: req.body.identity_number,
+                        position: req.body.position,
+                        signature: signature
+                    }
+                    let create_signature = new Signature(data);
+                    createSignature(create_signature, function (error) {
+                        if (error) {
+                            error_message = "Terjadi Kesalahan";
+                            req.flash('error_message', error_message);
+                            return res.redirect(`/admin/signature/add`);
+                        }
+                        else {
+                            success_message = "Berhasil menambah tanda tangan.";
+                            req.flash('success_message', success_message);
+                            return res.redirect(`/admin/signature/add`);
+                        }
+                    });
+                }
+                else {
+                    error_message = "Tanda tangan wajib diunggah.";
+                    req.flash('error_message', error_message);
+                    return res.redirect(`/admin/signature/add`);
+                }
+            }
+        }
+    });
 });
 
 function isLoggedIn(req, res, next) {
