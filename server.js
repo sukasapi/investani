@@ -24,7 +24,7 @@ import project from './routes/project';
 
 // Connect with Mongo database
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://admin:admin@127.0.0.1:27017/investani?authSource=admin', {useNewUrlParser: true});
+mongoose.connect('mongodb://admin:PjQC7AgCr9KLnpC@ds155916.mlab.com:55916/investani', {useNewUrlParser: true});
 
 let db = mongoose.connect;
 
@@ -55,6 +55,7 @@ app.use(expressValidator());
 // Set express flash message
 app.use(flash());
 app.use(function(req, res, next){
+    res.locals.request = req.flash('request')
     res.locals.success_message = req.flash('success_message');
     res.locals.error_message = req.flash('error_message');
     res.locals.error = req.flash('error');

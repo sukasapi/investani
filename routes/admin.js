@@ -101,7 +101,7 @@ router.get('/user/inisiator', isLoggedIn, isAdmin, function (req, res) {
 router.get('/user/inisiator/individual', isLoggedIn, isAdmin, function (req, res) {
     let url = "inisiator";
 
-    User.find({'active': true, 'user_type.name': 'inisiator', 'profile.registration_type': "individual"}, function (error, users) {
+    User.find({'active': true, 'user_type.name': 'inisiator'}, function (error, users) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);

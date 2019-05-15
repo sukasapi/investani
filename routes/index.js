@@ -80,9 +80,7 @@ router.get('/activation/:secretToken', function (req, res) {
                     req.flash('error_message', error_message);
                     res.redirect('/auth/login');
                 } else {
-                    success_message = "Berhasil melakukan aktivasi.";
-                    req.flash('success_message', success_message);
-                    res.redirect('/auth/login');
+                    res.redirect('/welcome/email-activated');
                 }
             });
         }

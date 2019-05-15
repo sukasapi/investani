@@ -48,6 +48,12 @@ router.post('/register', notLoggedIn, function (req, res) {
     let password = req.body.password;
     let secretToken = randomstring.generate();
     let error_message;
+    let request = {
+        'email': email,
+        'user_type': user_type,
+        'password': password,
+        'cfm_pwd': req.body.cfm_pwd
+    }
 
     req.checkBody('cfm_pwd', 'Konfirmasi Password tidak cocok dengan password.').equals(password);
     req.checkBody('cfm_pwd', 'Konfirmasi Password wajib diisi.').notEmpty();
@@ -62,25 +68,24 @@ router.post('/register', notLoggedIn, function (req, res) {
     if (errors) {
         error_message = errors[errors.length-1].msg;
         req.flash('error_message', error_message);
-        res.redirect('/auth/register');
-        return ;
+        req.flash('request', request);
+        return res.redirect('/auth/register');
     }
     else {
         getUserByEmail(email, async function (err, user) {
             if (err) {
                 error_message = "Terjadi kesalahan"; 
                 req.flash('error_message', error_message);
-                res.redirect('/auth/register');
-                return ;
+                req.flash('request', request);
+                return res.redirect('/auth/register');
             }
             if (user) {
                 error_message = "User sudah ada"; 
                 req.flash('error_message', error_message);
-                res.redirect('/auth/register');
-                return ;
+                req.flash('request', request);
+                return res.redirect('/auth/register');
             }
             else {
-                
                 let transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
                     port: 465,
@@ -101,12 +106,12 @@ router.post('/register', notLoggedIn, function (req, res) {
                     html: content
                 };
         
-                transporter.sendMail(mailOptions, (error, info) => {
+                transporter.sendMail(mailOptions, (error) => {
                     if (error) {
                         error_message = "Email gagal terkirim"; 
                         req.flash('error_message', error_message);
-                        res.redirect('/auth/register');
-                        return ;
+                        req.flash('request', request);
+                        return res.redirect('/auth/register');
                     }
                     else {
                         let user = new User({
@@ -129,12 +134,12 @@ router.post('/register', notLoggedIn, function (req, res) {
                             if (err) {
                                 error_message = 'Akun gagal dibuat';
                                 req.flash('error_message', error_message);
-                                res.redirect('/auth/register');
+                                req.flash('request', request);
+                                return res.redirect('/auth/register');
                             }
                             else {
                                 passport.authenticate('local')(req, res, function () {
-                                    res.redirect('/welcome');
-                                    return ;
+                                    return res.redirect('/welcome');
                                 });
                             }
                         });
@@ -147,31 +152,27 @@ router.post('/register', notLoggedIn, function (req, res) {
 // Passport authenticate middleware
 router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedirect: '/auth/login', failureFlash: true }), function (req, res) {
     let email = req.body.email;
-    
+
     getUserByEmail(email, function (error, user) {
         if (error) {
             error_message = "Terjadi kesalahan"; 
             req.flash('error_message', error_message);
-            res.redirect('/auth/login');
-            return ;
+            return res.redirect('/auth/login');
         }
         if (!user) {
             error_message = "User tidak tersedia"; 
             req.flash('error_message', error_message);
-            res.redirect('/auth/login');
-            return ;
+            return res.redirect('/auth/login');
         }
         if (user.active == false) {
-            res.redirect('/welcome');
-            return ;
+            return res.redirect('/welcome');
         }
         if (user.active == true && user.profile.length == 0) {
             if (user.user_type[0].name == 'super_user') {
-                res.redirect('/admin');
+                return res.redirect('/admin');
             }
             else {
-                res.redirect('/welcome/email-activated');
-                return ;
+                return res.redirect('/complete-profile');
             }
         }
         if (user.active == true && user.profile.length != 0 && user.bank.length == 0) {
@@ -181,25 +182,23 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
             if (user.active == true && user.user_type[0].status == 'verified') {
                 if (user.user_type[0].name == 'investor') {
                     if (user.contract == '') {
-                        res.redirect('/contract');
+                        return res.redirect('/contract');
                     }
                     else {
-                        res.redirect('/');
-                        return ;
+                        return res.redirect('/');
                     }
                 }
                 else {                    
-                    res.redirect('/');
-                    return ;
+                    return res.redirect('/');
                 }  
             }
             else {
-                res.redirect('/');
-                return ;
+                return res.redirect('/');
             }
         }
         
     });
+    
 });
 router.post('/forgot-password', notLoggedIn, function (req, res) {
     let email = req.body.email;
@@ -355,23 +354,33 @@ passport.use(new LocalStrategy({
     passReqToCallback: true
 },
 function (req, email, password, done) {
+    let request = {
+        'email': email,
+        'password': password,
+    }
+
     getUserByEmail(email, function (err, user) {
-       
-        if (err) {            
+        if (err) {
+            req.flash('request', request);
             return done(err);
         }
         if (!user) {
-            return done(null, false, req.flash('error_message', 'Email tidak ditemukan'));
+            req.flash('error_message', 'Email tidak ditemukan');
+            req.flash('request', request);
+            return done(null, false);
         }
         comparePassword(password, user.password, function (err, isMatch) {
             if (err) {
+                req.flash('request', request);
                 return done(err);
             }
             if (isMatch) {
                 return done(null, user, req.flash('success_message', 'Anda berhasil masuk!!'));
             }
             else {
-                return done(null, false, req.flash('error_message', 'Password salah'));
+                req.flash('error_message', 'Password salah');
+                req.flash('request', request);
+                return done(null, false);
             }
         });
     });

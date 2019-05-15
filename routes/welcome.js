@@ -11,7 +11,7 @@ router.get('/', isLoggedIn, function (req, res) {
     }
 });
 
-router.get('/email-activated', isLoggedIn, function (req, res) {   
+router.get('/email-activated', function (req, res) {   
     if (req.user.active) {
         res.render('pages/welcome/email-activated');
     }
