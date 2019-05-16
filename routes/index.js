@@ -32,7 +32,7 @@ router.get('/', function (req, res) {
     }
     getProjectIndex('verified', function (error, projects) {
         projects.forEach((project, index) => {
-            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0) {
+            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0 && project.basic[0].stock[0].remain > 0 ) {
                 open_projects[index] = project
                 durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
             }
@@ -51,7 +51,6 @@ router.get('/', function (req, res) {
     });
 });
 router.get('/activation/:secretToken', function (req, res) {
-    let success_message;
     let error_message;
     let secretToken = req.params.secretToken;
     getUserBySecretToken(secretToken, function (err, user) {
@@ -67,7 +66,6 @@ router.get('/activation/:secretToken', function (req, res) {
         } else {
             let updateValue = {
                 active: true,
-                secretToken: ""
             }
             updateUser(user, updateValue, function (err, user) {
                 if (err) {
@@ -80,7 +78,7 @@ router.get('/activation/:secretToken', function (req, res) {
                     req.flash('error_message', error_message);
                     res.redirect('/auth/login');
                 } else {
-                    res.redirect('/welcome/email-activated');
+                    res.redirect(`/welcome/email-activated/${secretToken}`);
                 }
             });
         }
@@ -113,7 +111,7 @@ router.get('/explore', function (req, res) {
 
     getProjectByStatus('verified', function (error, projects) {
         projects.forEach((project, index) => {
-            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0) {
+            if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0 && project.basic[0].stock[0].remain > 0) {
                 open_projects[index] = project
                 durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
             }

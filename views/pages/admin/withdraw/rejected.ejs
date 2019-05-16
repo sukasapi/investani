@@ -25,6 +25,7 @@
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
 </head>
 
 <body>
@@ -43,41 +44,54 @@
         <!-- Header-->
 
         <% include ../../../partials/admin/breadcrumbs-dashboard %>
-
+        <% if (success_message != '') { %>
+            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
+                <%= success_message %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+        <% } %>
+        <% if (error_message != '') { %>
+            <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
+                <%= error_message %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+        <% } %>
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Inisiator Aktif</strong>
+                                <strong class="card-title">Pencairan Kegiatan dan Anggaran yang Ditolak</strong>
                             </div>
                             <div class="card-body">
                                 <table id="bootstrap-data-table-3" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Judul Kategori</th>
-                                            <th>Satuan Kategori</th>
-                                            <% for(let i = 1; i <= 5; i++) { %>
-                                            <th>Sub-Kategori <%= i %></th>
-                                            <% } %>
+                                            <th>No.</th>
+                                            <th>Judul Proyek</th>
+                                            <th>Deskripsi</th>
+                                            <th>Tanggal Kegiatan</th>
+                                            <th>Jumlah</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% categories.forEach((category) => { %>
-                                        <tr>
-                                            <td>
-                                                <%= category.title %>
-                                            </td>
-                                            <td>
-                                                <%= category.unit %>
-                                            </td>
-                                            <% category.sub_category.forEach((sub_category, index) => { %>
-                                            <td>
-                                                <%= sub_category.name %>
-                                            </td>
-                                            <% }) %>
-                                        </tr>
+                                        <% rejected_withdraws.forEach((rejected_withdraw, index) => { %>
+                                            <tr>
+                                                <td><%= index+1 %></td>
+                                                <td>
+                                                    <a href="/project/<%= rejected_withdraw.project_id %>" style="color: #007bff">
+                                                        <%= rejected_withdraw.project_title %>
+                                                    </a>
+                                                </td>
+                                                <td><%= rejected_withdraw.description %></td>
+                                                <td><%= rejected_withdraw.activity_date %></td>
+                                                <td><%= rejected_withdraw.amount %></td>
+                                            </tr>
                                         <% }) %>
                                     </tbody>
                                 </table>
@@ -116,10 +130,7 @@
     <script src="/js/buttons.colVis.min.js"></script>
     <script src="/js/datatables-init.js"></script>
     <script>
-        document.getElementById("category").className = "menu-item-has-children dropdown active show";
-        document.getElementById("category-link").click();
-        document.getElementById("category-list-icon").style.color= '#03a9f3';
-        document.getElementById("category-list-link").style.color= '#03a9f3';
+        document.getElementById("rejected-withdraw").className = "active";
     </script>
 </body>
 

@@ -249,38 +249,38 @@
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <div class="card">
-                                                                    <% if (transaction.receipt) { %>
-                                                                    <img class="card-img-top"
-                                                                        src="/admin/transaction/get-receipt/<%= transaction.project._id %>/<%= transaction.receipt %>"
-                                                                        alt="Card image cap">
-                                                                    <% } %>
+                                                    <form action="/admin/transaction/waiting/<%= transaction._id %>/verify" method="get">
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="card">
+                                                                        <% if (transaction.receipt) { %>
+                                                                        <img class="card-img-top"
+                                                                            src="/admin/transaction/get-receipt/<%= transaction.project._id %>/<%= transaction.receipt %>"
+                                                                            alt="Card image cap">
+                                                                        <% } %>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label class="control-label mb-1">Pengesahan</label>
+                                                                    <select name="position" id="position" class="form-control">
+                                                                        <option selected disabled>Pilih Pengesah</option>
+                                                                        <% signatures.forEach(signature => {  %>
+                                                                            <option value="<%= signature._id %>"><%= signature.full_name %></option>
+                                                                        <% }) %>
+                                                                    </select>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <label class="control-label mb-1">Pengesahan</label>
-                                                                <select name="position" id="position" class="form-control">
-                                                                    <option selected disabled>Pilih Pengesah</option>
-                                                                    <% signatures.forEach(signature => {  %>
-                                                                        <option value="<%= signature._id %>"><%= signature.full_name %></option>
-                                                                    <% }) %>
-                                                                </select>
-                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <a href="/admin/transaction/waiting/<%= transaction._id %>/reject">
-                                                            <button type="button"
-                                                                class="btn btn-danger">Tolak</button>
-                                                        </a>
-                                                        <a href="/admin/transaction/waiting/<%= transaction._id %>/verify">
-                                                            <button type="button"
-                                                                class="btn btn-primary verification-button">Verifikasi</button>
-                                                        </a>
-                                                    </div>
+                                                        <div class="modal-footer">
+                                                            <a href="/admin/transaction/waiting/<%= transaction._id %>/reject">
+                                                                <button type="button"
+                                                                    class="btn btn-danger">Tolak</button>
+                                                            </a>
+                                                                <button type="submit"
+                                                                    class="btn btn-primary verification-button">Verifikasi</button>
+                                                        </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -336,6 +336,7 @@
         $('.verification-button').on('click', function (event) {
             $('#full-loader').show();
         });
+        document.getElementById
     </script>
 </body>
 

@@ -308,7 +308,7 @@
                                                     value="<%= user.pic[0].pic_identity_number %>" disabled>
                                                 <div class="input-group-btn">
                                                     <button type="button" class="btn btn-primary mb-1"
-                                                        data-toggle="modal" data-target="#pic_identity-image-modal">
+                                                        data-toggle="modal" data-target="#pic-identity-image-modal">
                                                         Lihat
                                                     </button>
                                                 </div>
@@ -419,7 +419,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal fade" id="pic_identity-image-modal" tabindex="-1" role="dialog"
+                <div class="modal fade" id="pic-identity-image-modal" tabindex="-1" role="dialog"
                     aria-labelledby="smallmodalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-sm" role="document">
                         <div class="modal-content">
@@ -434,12 +434,12 @@
                                     <div class="col-md-12">
                                         <div class="card">
                                             <img class="card-img-top"
-                                                src="/admin/user/get-image/<%= user._id %>/<%= user.document[0].identity_image %>"
+                                                src="/admin/user/get-image/<%= user._id %>/<%= user.pic[0].pic_identity_image %>"
                                                 alt="Card image cap">
                                         </div>
                                         <div class="card">
                                             <img class="card-img-top"
-                                                src="/admin/user/get-image/<%= user._id %>/<%= user.document[0].identity_selfie_image %>"
+                                                src="/admin/user/get-image/<%= user._id %>/<%= user.pic[0].pic_identity_selfie_image %>"
                                                 alt="Card image cap">
                                         </div>
                                     </div>
@@ -472,6 +472,33 @@
                                         <div class="card">
                                             <img class="card-img-top"
                                                 src="/admin/user/get-image/<%= user._id %>/<%= user.document[0].identity_selfie_image %>"
+                                                alt="Card image cap">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="company-registration-image-modal" tabindex="-1" role="dialog"
+                    aria-labelledby="smallmodalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="smallmodalLabel">Tanda Daftar Perusahaan</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <img class="card-img-top"
+                                                src="/admin/user/get-image/<%= user._id %>/<%= user.document[0].company_registration_image %>"
                                                 alt="Card image cap">
                                         </div>
                                     </div>

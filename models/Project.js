@@ -47,6 +47,12 @@ let ProjectSchema = mongoose.Schema({
         },
         amount: {
             type: Number
+        },
+        status: {
+            type: String
+        },
+        receipt: {
+            type: String
         }
     }],
     project: [{

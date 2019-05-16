@@ -335,9 +335,9 @@ router.post('/', isLoggedIn, isNoContract, isUser, function (req, res) {
         'income_source': "",
         'income': "",
 
-        'pic_name': pic_name,
-        'pic_birth_date': pic_birth_date,
-        'pic_identity_number': pic_identity_number,
+        'pic_name': "",
+        'pic_birth_date': "",
+        'pic_identity_number': "",
 
         'company_registration_number': "",
         'npwp_number': "",
@@ -523,9 +523,9 @@ router.post('/occupation', isLoggedIn, isNoContract, isUser, function (req, res)
         'income_source': income_source,
         'income': income,
 
-        'pic_name': pic_name,
-        'pic_birth_date': pic_birth_date,
-        'pic_identity_number': pic_identity_number,
+        'pic_name': "",
+        'pic_birth_date': "",
+        'pic_identity_number': "",
 
         'company_registration_number': "",
         'npwp_number': "",
@@ -633,10 +633,10 @@ router.post('/pic', isLoggedIn, isNoContract, isUser, upload.fields([{
         'identity_number': "",
         'npwp_number': "",
 
-        'bank_name': bank_name,
-        'account_name': account_name,
-        'account_number': account_number,
-        'branch': branch
+        'bank_name': "",
+        'account_name': "",
+        'account_number': "",
+        'branch': ""
     }
 
     const imagePath = path.join(__dirname, `../storage/documents/${req.user._id}`);
@@ -659,6 +659,7 @@ router.post('/pic', isLoggedIn, isNoContract, isUser, upload.fields([{
     if (errors) {
         error_message = errors[errors.length - 1].msg;
         req.flash('error_message', error_message);
+        req.flash('request', request);
         return res.redirect('/complete-profile');
     } else {
         let pic_identity_image_filename = req.body.pic_identity_image_input;
@@ -669,26 +670,27 @@ router.post('/pic', isLoggedIn, isNoContract, isUser, upload.fields([{
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
+                    req.flash('request', request);
                     return res.redirect('/complete-profile');
                 }
                 if (user) {
                     error_message = "Nomor KTP/ Paspor sudah terdaftar";
                     req.flash('error_message', error_message);
-                    res.redirect('/complete-profile');
-                    return;
+                    req.flash('request', request);
+                    return res.redirect('/complete-profile');
                 }
             });
 
             if (!req.files['pic_identity_image']) {
                 req.flash('error_message', 'Unggah Foto KTP/ Paspor wajib diisi.');
-                res.redirect('/complete-profile');
-                return;
+                req.flash('request', request);
+                return res.redirect('/complete-profile');
             }
 
             if (!req.files['pic_identity_selfie_image']) {
                 req.flash('error_message', 'Unggah Foto KTP/ Paspor + Selfie wajib diisi.');
-                res.redirect('/complete-profile');
-                return;
+                req.flash('request', request);
+                return res.redirect('/complete-profile');
             }
 
             pic_identity_image_filename = await fileUpload.save(req.files['pic_identity_image'][0].buffer);
@@ -699,19 +701,17 @@ router.post('/pic', isLoggedIn, isNoContract, isUser, upload.fields([{
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
-                    res.redirect('/complete-profile');
-                    return;
+                    req.flash('request', request);
+                    return res.redirect('/complete-profile');
                 }
                 if (user) {
                     if (user._id != req.user._id) {
                         error_message = "Nomor KTP/ Paspor sudah terdaftar";
                         req.flash('error_message', error_message);
-                        res.redirect('/complete-profile');
-                        return;
+                        req.flash('request', request);
+                        return res.redirect('/complete-profile');
                     }
                 }
-
-
             });
 
             if (req.files['pic_identity_image']) {
@@ -737,17 +737,16 @@ router.post('/pic', isLoggedIn, isNoContract, isUser, upload.fields([{
             if (error) {
                 error_message = "Terjadi kesalahan";
                 req.flash('error_message', error_message);
-                res.redirect('/complete-profile');
-                return;
+                req.flash('request', request);
+                return res.redirect('/complete-profile');
             }
             if (!user) {
                 error_message = "User tidak tersedia";
                 req.flash('error_message', error_message);
-                res.redirect('/complete-profile');
-                return;
+                req.flash('request', request);
+                return res.redirect('/complete-profile');
             } else {
-                res.redirect('/complete-profile');
-                return;
+                return res.redirect('/complete-profile');
             }
         });
     }
@@ -805,9 +804,9 @@ router.post('/document', isLoggedIn, isNoContract, isUser, upload.fields([{
             'income_source': "",
             'income': "",
 
-            'pic_name': pic_name,
-            'pic_birth_date': pic_birth_date,
-            'pic_identity_number': pic_identity_number,
+            'pic_name': "",
+            'pic_birth_date': "",
+            'pic_identity_number': "",
 
             'company_registration_number': company_registration_number,
             'npwp_number': npwp_number,
@@ -1046,9 +1045,9 @@ router.post('/bank', isLoggedIn, isNoContract, isUser, function (req, res) {
         'income_source': "",
         'income': "",
 
-        'pic_name': pic_name,
-        'pic_birth_date': pic_birth_date,
-        'pic_identity_number': pic_identity_number,
+        'pic_name': "",
+        'pic_birth_date': "",
+        'pic_identity_number': "",
 
         'company_registration_number': "",
         'npwp_number': "",

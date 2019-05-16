@@ -488,7 +488,7 @@
 										<div class="form-holder form-holder-2" id="company-registration-number-input" style="display: none">
 											<label class="control-label mb-1">Nomor Tanda Daftar Perusahaan</label>
 											<input class="form-control" id="company-registration-number" name="company_registration_number" placeholder="Nomor Tanda Daftar Perusahaan"
-											 type="number">
+											 type="number" <% if (request[0]) { %> value="<%= request[0].company_registration_number %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">

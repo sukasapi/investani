@@ -16,6 +16,9 @@
                         <% if (url == 'signature-list' || url == 'add-signature') { %>
                             <h1>Pengesahan</h1>
                         <% } %>
+                        <% if (url == 'waiting-withdraw-approval' || 'waiting-withdraw-payment') { %>
+                            <h1>Pencairan</h1>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -125,6 +128,17 @@
                                 <% } %>
                                 <% if (url == 'add-signature') { %>
                                     <li class="active">Tambah Pengesahan</li>
+                                <% } %>
+                            <% } %>
+                            <% if (url == 'waiting-withdraw-approval' || 'waiting-withdraw-payment') { %>
+                                <li><a href="#">Pencairan</a></li>
+                                <li class="active">Menunggu</li>
+
+                                <% if (url == 'waiting-withdraw-approval') { %>
+                                    <li class="active">Persetujuan</li>
+                                <% } %>
+                                <% if (url == 'waiting-withdraw-payment') { %>
+                                    <li class="active">Pembayaran</li>
                                 <% } %>
                             <% } %>
                         </ol>

@@ -3,7 +3,7 @@ import { User, getUserByID } from '../models/User';
 import { getProjectByStatus, getProjectByID, updateProject } from '../models/Project';
 import { Category, createCategory } from '../models/Category';
 import { getTransactionByStatus, getTransactionById } from '../models/Transaction';
-import { createSignature, Signature } from '../models/Signature';
+import { Signature, createSignature, getSignatureByID } from '../models/Signature';
 import moment from 'moment';
 import request from 'request';
 import upload from '../uploadMiddleware';
@@ -174,7 +174,7 @@ router.get('/project/open', isLoggedIn, isAdmin, function (req, res) {
         }
         else {
             projects.forEach((project, index) => {
-                if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0) {
+                if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0 && project.basic[0].stock[0].remain > 0) {
                     open_projects[index] = project
                     durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
                 }
@@ -193,7 +193,7 @@ router.get('/project/open', isLoggedIn, isAdmin, function (req, res) {
 router.get('/project/done', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let durations = [];
-    let open_projects = [];
+    let done_projects = [];
 
     getProjectByStatus("verified", function (error, projects) {
         if (error) {
@@ -203,14 +203,14 @@ router.get('/project/done', isLoggedIn, isAdmin, function (req, res) {
         }
         else {
             projects.forEach((project, index) => {
-                if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds < 0) {
-                    open_projects[index] = project
+                if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds < 0 || project.basic[0].stock[0].remain == 0) {
+                    done_projects[index] = project
                     durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');
                 }
             });
 
             let data = {
-                projects: open_projects,
+                projects: done_projects,
                 durations: durations,
                 url: "done-project",
             }
@@ -507,110 +507,136 @@ router.get('/transaction/rejected', isLoggedIn, isAdmin, function (req, res) {
 router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
-
-    getTransactionById(req.params.transaction_id, function (error, transaction) {
-        if (error) {
-            error_message = "Terjadi kesalahan.";
-            req.flash('error_message', error_message);
-            return res.redirect('/admin/transaction/waiting-verification');
-        }
-        if (!transaction) {
-            error_message = "Transaksi tidak tersedia.";
-            req.flash('error_message', error_message);
-            return res.redirect('/admin/transaction/waiting-verification');
-        }
-        else {
-            transaction.status = 'verified';
-            transaction.save().then(transaction => {
-                getProjectByID(transaction.project._id, async function (error, project) {
+    if (req.query.position) {
+        getSignatureByID(req.query.position, function (error, signature) {
+            if (error) {
+                error_message = "Terjadi kesalahan.";
+                req.flash('error_message', error_message);
+                return res.redirect('/admin/transaction/waiting-verification');
+            }
+            if (!signature) {
+                error_message = "Transaksi tidak tersedia.";
+                req.flash('error_message', error_message);
+                return res.redirect('/admin/transaction/waiting-verification');
+            }
+            else {
+                getTransactionById(req.params.transaction_id, function (error, transaction) {
                     if (error) {
                         error_message = "Terjadi kesalahan.";
                         req.flash('error_message', error_message);
                         return res.redirect('/admin/transaction/waiting-verification');
                     }
+                    if (!transaction) {
+                        error_message = "Transaksi tidak tersedia.";
+                        req.flash('error_message', error_message);
+                        return res.redirect('/admin/transaction/waiting-verification');
+                    }
                     else {
-                        project.basic[0].stock[0].remain = project.basic[0].stock[0].remain-transaction.stock_quantity;
-                        project.save().then( async () => {
-                            try {
-                                const browser = await puppeteer.launch();
-                                const page = await browser.newPage();
-
-                                let data = {
-                                    project_title: project.basic[0].title,
-                                    investor: transaction.investor.profile[0].name,
-                                    stock_quantity: transaction.stock_quantity,
-                                    payment_total: transaction.stock_quantity*project.basic[0].stock[0].price,
-                                    verification_date: moment().format('LL')
+                        transaction.status = 'verified';
+                        transaction.save().then(transaction => {
+                            getProjectByID(transaction.project._id, async function (error, project) {
+                                if (error) {
+                                    error_message = "Terjadi kesalahan.";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect('/admin/transaction/waiting-verification');
                                 }
-    
-                                const certificate = await compile('certificate', data);
-                                const content = await compile('certificate-email', data);
-
-                                await page.setContent(certificate);
-                                await page.emulateMedia('screen');
-                                await page.pdf({
-                                    path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`,
-                                    width: '725px',
-                                    height: '541px',
-                                    printBackground: true
-                                });
-                                await browser.close();
-
-                                let transporter = nodemailer.createTransport({
-                                    host: 'smtp.gmail.com',
-                                    port: 465,
-                                    secure: true,
-                                    auth: {
-                                        user: 'investaninx@gmail.com',
-                                        pass: 'investani2019'
+                                else {
+                                    project.basic[0].stock[0].remain = project.basic[0].stock[0].remain-transaction.stock_quantity;
+                                    if (project.basic[0].stock[0].remain == 0) {
+                                        project.status = 'done'
                                     }
-                                });
-                                let mailOptions = {
-                                    from: '"Investani" <investaninx@gmail.com>',
-                                    to: transaction.investor.email,
-                                    subject: "Sertifikat Investasi",
-                                    html: content,
-                                    attachments: [
-                                        {
-                                            filename: 'sertifikat investani.pdf',
-                                            path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`
+                                    project.save().then( async () => {
+                                        try {
+                                            const browser = await puppeteer.launch();
+                                            const page = await browser.newPage();
+            
+                                            let data = {
+                                                project_title: project.basic[0].title,
+                                                investor: transaction.investor.profile[0].name,
+                                                stock_quantity: transaction.stock_quantity,
+                                                payment_total: transaction.stock_quantity*project.basic[0].stock[0].price,
+                                                signature_name: signature.full_name,
+                                                signature_position: signature.position,
+                                                verification_date: moment().format('LL')
+                                            }
+                
+                                            const certificate = await compile('certificate', data);
+                                            const content = await compile('certificate-email', data);
+            
+                                            await page.setContent(certificate);
+                                            await page.emulateMedia('screen');
+                                            await page.pdf({
+                                                path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`,
+                                                width: '725px',
+                                                height: '541px',
+                                                printBackground: true
+                                            });
+                                            await browser.close();
+            
+                                            let transporter = nodemailer.createTransport({
+                                                host: 'smtp.gmail.com',
+                                                port: 465,
+                                                secure: true,
+                                                auth: {
+                                                    user: 'investaninx@gmail.com',
+                                                    pass: 'investani2019'
+                                                }
+                                            });
+                                            let mailOptions = {
+                                                from: '"Investani" <investaninx@gmail.com>',
+                                                to: transaction.investor.email,
+                                                subject: "Sertifikat Investasi",
+                                                html: content,
+                                                attachments: [
+                                                    {
+                                                        filename: 'sertifikat investani.pdf',
+                                                        path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`
+                                                    }
+                                                ]
+                                            };
+                                    
+                                            transporter.sendMail(mailOptions, (error, info) => {
+                                                if (error) {
+                                                    error_message = "Email gagal terkirim"; 
+                                                    req.flash('error_message', error_message);
+                                                    return res.redirect('/admin/transaction/waiting-verification');
+                                                }
+                                                else {
+                                                    success_message = "Berhasil melakukan verifikasi transaksi."
+                                                    req.flash('success_message', success_message);
+                                                    return res.redirect('/admin/transaction/waiting-verification');    
+                                                }
+                                            });  
+                                        } catch (e) {
+                                            error_message = "Terjadi kesalahan.";
+                                            req.flash('error_message', error_message);
+                                            return res.redirect('/admin/transaction/waiting-verification');
                                         }
-                                    ]
-                                };
-                        
-                                transporter.sendMail(mailOptions, (error, info) => {
-                                    if (error) {
-                                        error_message = "Email gagal terkirim"; 
+            
+                                    }).catch(project => {
+                                        error_message = "Terjadi kesalahan.";
                                         req.flash('error_message', error_message);
                                         return res.redirect('/admin/transaction/waiting-verification');
-                                    }
-                                    else {
-                                        success_message = "Berhasil melakukan verifikasi transaksi."
-                                        req.flash('success_message', success_message);
-                                        return res.redirect('/admin/transaction/waiting-verification');    
-                                    }
-                                });  
-                            } catch (e) {
-                                error_message = "Terjadi kesalahan3.";
-                                req.flash('error_message', error_message);
-                                return res.redirect('/admin/transaction/waiting-verification');
-                            }
-
-                        }).catch(project => {
-                            error_message = "Terjadi kesalahan4.";
+                                    }); 
+                                }
+                            });
+                        }).catch(transaction => {
+                            error_message = "Terjadi kesalahan.";
                             req.flash('error_message', error_message);
                             return res.redirect('/admin/transaction/waiting-verification');
-                        }); 
+                        });
+            
                     }
                 });
-            }).catch(transaction => {
-                error_message = "Terjadi kesalahan4.";
-                req.flash('error_message', error_message);
-                return res.redirect('/admin/transaction/waiting-verification');
-            });
-
-        }
-    });
+            }
+        });
+    }
+    else {
+        error_message = "Pengesahan wajib dipilih.";
+        req.flash('error_message', error_message);
+        return res.redirect('/admin/transaction/waiting-verification');
+    }
+    
 });
 router.get('/transaction/waiting/:transaction_id/reject', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
@@ -684,6 +710,160 @@ router.get('/signature/add', isLoggedIn, isAdmin, function (req, res) {
 });
 router.get('/signature/get-signature/:filename', isLoggedIn, isAdmin, function (req, res) {
     res.download(__dirname+'/../storage/signatures/'+req.params.filename);
+});
+router.get('/withdraw/waiting-approval', isLoggedIn, isAdmin, function(req, res) {
+    let error_message;
+    let waiting_withdraws = [];
+    let budget_object = null;
+
+    getProjectByStatus("done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (moment.duration(moment(budget.activity_date).diff(moment(), 'days')) <= 3 && budget.status == 'waiting') {
+                        budget_object = budget.toObject();
+                        budget_object.activity_date = moment(budget.activity_date).format('LL');
+                        budget_object.project_id = project._id;
+                        budget_object.project_title = project.basic[0].title;
+                        waiting_withdraws.push(budget_object);
+                    }
+                });
+            });
+
+            let data = {
+                url: "waiting-withdraw-approval",
+                waiting_withdraws: waiting_withdraws
+            }
+            
+            return res.render('pages/admin/withdraw/waiting-approval', data);
+        }
+    });
+});
+router.get('/withdraw/waiting-payment', isLoggedIn, isAdmin, function(req, res) {
+    let error_message;
+    let waiting_withdraws = [];
+    let budget_object = null;
+
+    getProjectByStatus("done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (moment.duration(moment(budget.activity_date).diff(moment(), 'days')) <= 3 && budget.status == 'approved') {
+                        budget_object = budget.toObject();
+                        budget_object.activity_date = moment(budget.activity_date).format('LL');
+                        budget_object.project_id = project._id;
+                        budget_object.project_title = project.basic[0].title;
+                        waiting_withdraws.push(budget_object);
+                    }
+                });
+            });
+
+            let data = {
+                url: "waiting-withdraw-payment",
+                waiting_withdraws: waiting_withdraws
+            }
+            
+            return res.render('pages/admin/withdraw/waiting-payment', data);
+        }
+    });
+});
+router.get('/withdraw/rejected', isLoggedIn, isAdmin, function(req, res) {
+    let error_message;
+    let rejected_withdraws = [];
+    let budget_object = null;
+
+    getProjectByStatus("done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/dashboard');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (moment.duration(moment(budget.activity_date).diff(moment(), 'days')) <= 3 && budget.status == 'rejected') {
+                        budget_object = budget.toObject();
+                        budget_object.activity_date = moment(budget.activity_date).format('LL');
+                        budget_object.project_id = project._id;
+                        budget_object.project_title = project.basic[0].title;
+                        rejected_withdraws.push(budget_object);
+                    }
+                });
+            });
+
+            let data = {
+                url: "rejected-withdraw",
+                rejected_withdraws: rejected_withdraws
+            }
+            
+            return res.render('pages/admin/withdraw/rejected', data);
+        }
+    });
+});
+router.get('/withdraw/waiting/:project_id/:budget_id/approve', isLoggedIn, isAdmin, function(req, res) {
+    let success_message;
+    let error_message;
+    getProjectByID(req.params.project_id, function (error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/withdraw/waiting-approval');
+        }
+        else {
+            project.budget.forEach((budget, index) => {
+                if (budget._id.equals(req.params.budget_id)) {
+                    project.budget[index].status = 'approved';
+                    project.save().then(project => {
+                        success_message = "Kegiatan dan anggaran berhasil disetujui";
+                        req.flash('success_message', success_message);
+                        return res.redirect('/admin/withdraw/waiting-approval');
+                    }).catch(error => {
+                        error_message = "Terjadi kesalahan";
+                        req.flash('error_message', error_message);
+                        return res.redirect('/admin/withdraw/waiting-approval');
+                    });
+                }
+            });
+        }
+    });
+});
+router.get('/withdraw/waiting/:project_id/:budget_id/reject', isLoggedIn, isAdmin, function(req, res) {
+    let success_message;
+    let error_message;
+    getProjectByID(req.params.project_id, function (error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/withdraw/waiting-approval');
+        }
+        else {
+            project.budget.forEach((budget, index) => {
+                if (budget._id.equals(req.params.budget_id)) {
+                    project.budget[index].status = 'rejected';
+                    project.save().then(project => {
+                        console.log(project.budget[index].status);
+                        success_message = "Kegiatan dan anggaran berhasil ditolak";
+                        req.flash('success_message', success_message);
+                        return res.redirect('/admin/withdraw/waiting-approval');
+                    }).catch(error => {
+                        error_message = "Terjadi kesalahan";
+                        req.flash('error_message', error_message);
+                        return res.redirect('/admin/withdraw/waiting-approval');
+                    });
+                }
+            });
+        }
+    });
 });
 
 router.post('/user/investor/individual/verify/:id', isLoggedIn, isAdmin, function (req, res) {

@@ -466,7 +466,9 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
                     budget[index] = {
                         description: budget_item.description,
                         activity_date: budget_item.activity_date,
-                        amount: budget_item.amount
+                        amount: budget_item.amount,
+                        status: "waiting",
+                        receipt: ""
                     }
                     total_budget = total_budget + parseInt(budget_item.amount);
                     req.checkBody(`budget_items[budget_items][${index}][amount]`, 'Anggaran tidak boleh kurang dari 1 Rupiah').isInt({
