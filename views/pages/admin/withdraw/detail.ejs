@@ -1,0 +1,172 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ela Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+
+    <link rel="stylesheet" href="/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="/css/dashboard-style.css">
+    <style>
+        .list-group-item{
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Left Panel -->
+
+    <% include ../../../partials/admin/aside-dashboard %>
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <% include ../../../partials/admin/header-dashboard %>
+        <!-- Header-->
+
+        <% if (url != "dashboard") { %>
+        <% include ../../../partials/admin/breadcrumbs-dashboard %>
+        <% } %>
+
+        <div class="content">
+            <!-- Animated -->
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                        <div class="card-header">
+                                <strong class="card-title">Detail Pencairan Kegiatan dan Anggaran</strong>
+                            </div>
+                            <a href="/project/<%= project._id %>">
+                                <img alt="Card image cap" class="card-img-top" src="/image/project/<%= project._id %>/<%= project.image[0].filename %>" style="max-height: 178px;">
+                            </a>
+                            
+                            <div class="card-body">
+                                <div class="mx-auto d-block">
+                                    <h4 class="card-title mb-3"><a href="/project/<%= project._id %>"><%= project.basic[0].title %></a> 
+                                    </h4>
+                                    <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                       Nama Kegiatan <br><strong><%= budget.description %></strong>
+                                    </li>
+                                    <li class="list-group-item">
+                                       Tanggal Kegiatan <br><strong><%= budget.activity_date %></strong>
+                                    </li>
+                                    <li class="list-group-item">
+                                       Nomor Rekening <br><strong><%= project.inisiator.bank[0].account_number %></strong>
+                                    </li>
+                                    <li class="list-group-item">
+                                       Nama Pemilik <br><strong><%= project.inisiator.bank[0].account_name %> </strong> <strong class="pull-right"><%= project.inisiator.bank[0].bank_name %></strong>
+                                    </li>
+                                    <li class="list-group-item">
+                                       Jumlah <br><strong><%= budget.amount %></strong>
+                                    </li>
+                                </ul>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div id="basic-card" class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Konfirmasi Pencairan</strong>
+                            </div>
+                            <div class="card-body">
+                                <div id="pay-invoice">
+                                    <div class="card-body">
+                                        <form action="/admin/withdraw/waiting-payment/<%= project._id %>/<%= budget._id %>" enctype="multipart/form-data" id="payment-form" method="post">
+                                            <% if (success_message != '') { %>
+                                            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                <%= success_message %>
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <% if (error_message != '') { %>
+                                            <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                <%= error_message %>
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <div class="form-group">
+                                                <label class="control-label mb-1">Bukti Transaksi</label>
+                                                <input accept="image/*" class="form-control-file" id="receipt" name="receipt" type="file">
+                                            </div>
+                                            <div>
+                                                <button id="payment-form-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                                    <span aria-hidden="true" class="spinner-border spinner-border-sm"
+                                                        id="payment-form-spinner" role="status" style="display: none"></span>
+                                                    <span>Lanjut</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .animated -->
+        </div>
+
+
+        <div class="clearfix"></div>
+
+        <% include ../../../partials/admin/footer-dashboard %>
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/js/dashboard-main.js"></script>
+
+    <script>
+        document.getElementById("my-transaction").className = "menu-item-has-children dropdown show";
+        document.getElementById("my-transaction-link").setAttribute('aria-expanded', 'true');
+        document.getElementById("my-transaction-sub-menu").className = "sub-menu children dropdown-menu show";
+        document.getElementById("waiting-payment-icon").setAttribute('style', 'color: #03a9f3');
+        document.getElementById("waiting-payment-link").setAttribute('style', 'color: #03a9f3');
+        $('#payment-form').on('submit', function (event) {
+            $('#payment-form-button').attr('disabled', 'disabled');
+            $('#payment-form-spinner').show();
+        });
+    </script>
+</body>
+
+</html>

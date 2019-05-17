@@ -777,6 +777,52 @@ router.get('/withdraw/waiting-payment', isLoggedIn, isAdmin, function(req, res) 
         }
     });
 });
+router.get('/withdraw/waiting-payment/:project_id/:budget_id', isLoggedIn, isAdmin, function(req, res) {
+    let error_message;
+    let budget_id = req.params.budget_id;
+    let budget_object = null;
+
+    getProjectByID(req.params.project_id, function (error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/withdraw/waiting-payment');
+        }
+        if (!project) {
+            error_message = "Proyek tidak tersedia.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/withdraw/waiting-payment');
+        }
+        else {
+            if (project.status == 'done') {
+                project.budget.forEach((budget) => {
+                    if (budget._id.equals(budget_id)) {
+                        if (budget.status == 'approved') {
+                            budget_object = budget.toObject();
+                            budget_object.activity_date = moment(budget.activity_date).format('LL');
+                            let data = {
+                                url: "waiting-withdraw-payment-detail",
+                                project: project,
+                                budget: budget_object
+                            }
+                            return res.render('pages/admin/withdraw/detail', data);
+                        }
+                        else {
+                            error_message = "Kegiatan dan anggaran tidak tersedia";
+                            req.flash('error_message', error_message);
+                            return res.redirect('/admin/withdraw/waiting-payment');
+                        }
+                    }
+                });
+            }
+            else {
+                error_message = "Proyek tidak tersedia.";
+                req.flash('error_message', error_message);
+                return res.redirect('/admin/withdraw/waiting-payment');
+            }
+        }
+    });
+});
 router.get('/withdraw/rejected', isLoggedIn, isAdmin, function(req, res) {
     let error_message;
     let rejected_withdraws = [];
@@ -851,7 +897,6 @@ router.get('/withdraw/waiting/:project_id/:budget_id/reject', isLoggedIn, isAdmi
                 if (budget._id.equals(req.params.budget_id)) {
                     project.budget[index].status = 'rejected';
                     project.save().then(project => {
-                        console.log(project.budget[index].status);
                         success_message = "Kegiatan dan anggaran berhasil ditolak";
                         req.flash('success_message', success_message);
                         return res.redirect('/admin/withdraw/waiting-approval');
@@ -1494,6 +1539,120 @@ router.post('/signature/add', isLoggedIn, isAdmin, function (req, res) {
                 }
             }
         }
+    });
+});
+let receiptUpload = upload.fields([{
+    name: 'receipt',
+    maxCount: 1
+}]);
+router.post('/withdraw/waiting-payment/:project_id/:budget_id', isLoggedIn, isAdmin, function (req, res) {
+    receiptUpload(req, res, function (err) {
+        let error_message;
+        let success_message;
+        const dir = path.join(__dirname, `../storage/projects/${req.params.project_id}/budget`);
+        let receipt;
+        if (err instanceof multer.MulterError) {
+            error_message = "Ukuran gambar terlalu besar";
+            req.flash('error_message', error_message);
+            return res.redirect(`/transaction/waiting-payment/${req.params.transaction_id}`);
+        } else if (err) {
+            error_message = "Terjadi Kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
+        }
+        getProjectByID(req.params.project_id, function (error, project) {
+            if (error) {
+                error_message = "Terjadi kesalahan";
+                req.flash('error_message', error_message);
+                return res.redirect('back');
+            }
+            if (!project) {
+                error_message = "Proyek tidak tersedia.";
+                req.flash('error_message', error_message);
+                return res.redirect('back');
+            }
+            else {
+                if (project.status == 'done') {
+                    fs.access(dir, async (err) => {
+                        const imageUpload = new Resize(dir);
+                        if (err) {
+                            fs.mkdir(dir, async (err) => {
+                                if (err) {
+                                    error_message = "Terjadi Kesalahan";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect('back');
+                                } else {
+                                    if (req.files['receipt']) {
+                                        receipt = await imageUpload.save(req.files['receipt'][0].buffer)
+                                        project.budget.forEach((budget, index) => {
+                                            if (budget._id.equals(req.params.budget_id)) {
+                                                if (budget.status == 'approved') {
+                                                    project.budget[index].status = 'paid';
+                                                    project.budget[index].receipt = receipt;
+                                                    project.save().then(project => {
+                                                        success_message = "Bukti transer berhasil diunggah.";
+                                                        req.flash('success_message', success_message);
+                                                        return res.redirect('back');
+                                                    }).catch(error => {
+                                                        error_message = "Terjadi kesalahan";
+                                                        req.flash('error_message', error_message);
+                                                        return res.redirect('back');
+                                                    });
+                                                }
+                                                else {
+                                                    error_message = "Kegiatan dan Anggaran tidak tersedia.";
+                                                    req.flash('error_message', error_message);
+                                                    return res.redirect('back');
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        error_message = "Bukti transfer wajib diunggah.";
+                                        req.flash('error_message', error_message);
+                                        return res.redirect('back');
+                                    }
+                                }
+                            });
+                        } else {
+                            if (req.files['receipt']) {
+                                receipt = await imageUpload.save(req.files['receipt'][0].buffer)
+                                project.budget.forEach((budget, index) => {
+                                    if (budget._id.equals(req.params.budget_id)) {
+                                        if (budget.status == 'approved') {
+                                            project.budget[index].status = 'paid';
+                                            project.budget[index].receipt = receipt;
+                                            project.save().then(project => {
+                                                success_message = "Bukti transer berhasil diunggah.";
+                                                req.flash('success_message', success_message);
+                                                return res.redirect('back');
+                                            }).catch(error => {
+                                                error_message = "Terjadi kesalahan";
+                                                req.flash('error_message', error_message);
+                                                return res.redirect('back');
+                                            });
+                                        }
+                                        else {
+                                            error_message = "Kegiatan dan Anggaran tidak tersedia.";
+                                            req.flash('error_message', error_message);
+                                            return res.redirect('back');
+                                        }
+                                    }
+                                });
+                            } else {
+                                error_message = "Bukti transfer wajib diunggah.";
+                                req.flash('error_message', error_message);
+                                return res.redirect('back');
+                            }
+                        }
+                    });
+                }
+                else {
+                    error_message = "Proyek tidak tersedia.";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                }
+            }
+        });
     });
 });
 
