@@ -68,7 +68,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Pencairan yang Menunggu Pembayaran dari Investani</strong>
+                                <strong class="card-title">Pencairan Alternatif yang Menunggu Pembayaran dari Investani</strong>
                             </div>
                             <div class="card-body">
                                 <table id="bootstrap-data-table-3" class="table table-striped table-bordered">
@@ -93,11 +93,11 @@
                                                 </a>
                                             </td>
                                             <td><%= waiting_withdraw.description %></td>
-                                            <td><%= waiting_withdraw.activity_date %></td>
-                                            <td>Rp. <%= waiting_withdraw.amount %></td>
+                                            <td><%= waiting_withdraw.alternative_activity_date %></td>
+                                            <td>Rp. <%= waiting_withdraw.alternative_amount %></td>
                                             <td>
                                                 <div class="input-group-btn">
-                                                    <a href="/admin/withdraw/waiting-payment/<%= waiting_withdraw.project_id %>/<%= waiting_withdraw._id %>">
+                                                    <a href="/admin/withdraw/alternative/waiting-payment/<%= waiting_withdraw.project_id %>/<%= waiting_withdraw._id %>">
                                                         <button class="btn btn-primary">
                                                             Konfirmasi
                                                         </button>

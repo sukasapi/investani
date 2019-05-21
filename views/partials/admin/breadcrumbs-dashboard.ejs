@@ -16,7 +16,7 @@
                         <% if (url == 'signature-list' || url == 'add-signature') { %>
                             <h1>Pengesahan</h1>
                         <% } %>
-                        <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment') { %>
+                        <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment' || url == 'rejected-withdraw') { %>
                             <h1>Pencairan</h1>
                         <% } %>
                     </div>
@@ -130,16 +130,21 @@
                                     <li class="active">Tambah Pengesahan</li>
                                 <% } %>
                             <% } %>
-                            <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment') { %>
+                            <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment' || url == 'rejected-withdraw' || url == 'paid-withdraw') { %>
                                 <li><a href="#">Pencairan</a></li>
-                                <li class="active">Menunggu</li>
-
-                                <% if (url == 'waiting-withdraw-approval') { %>
-                                    <li class="active">Persetujuan</li>
+                                <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment') { %>
+                                    <li class="active">Menunggu</li>
+                                    <% if (url == 'waiting-withdraw-approval') { %>
+                                        <li class="active">Persetujuan</li>
+                                    <% } %>
+                                    <% if (url == 'waiting-withdraw-payment') { %>
+                                        <li class="active">Pembayaran</li>
+                                    <% } %>
                                 <% } %>
-                                <% if (url == 'waiting-withdraw-payment') { %>
-                                    <li class="active">Pembayaran</li>
+                                <% if (url == 'rejected-withdraw') { %>
+                                    <li class="active">Ditolak</li>
                                 <% } %>
+                                
                             <% } %>
                         </ol>
                     </div>

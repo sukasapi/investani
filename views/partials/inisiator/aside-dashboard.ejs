@@ -17,6 +17,29 @@
                         <li><i class="menu-icon fa fa-sign-in"></i><a id="started-project-sub" href="/inisiator/<%= user_id %>/started-project">Proyek yang Dimulai</a></li>
                     </ul>
                 </li>
+                <li class="menu-title">Pencairan</li><!-- /.menu-title -->
+                <li class="menu-item-has-children dropdown" id="normal-withdraw">
+                    <a href="#" id="normal-withdraw-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="menu-icon fa fa-tasks"></i>Normal</a>
+                    <ul class="sub-menu children dropdown-menu">
+                        <li><i class="menu-icon fa fa-fort-awesome" id="paid-withdraw-icon"></i><a href="/inisiator/withdraw/paid" id="paid-withdraw-link">Cair</a></li>
+                        <li><i class="menu-icon fa fa-fort-awesome" id="waiting-approval-withdraw-icon"></i><a href="/inisiator/withdraw/waiting-approval" id="waiting-approval-withdraw-link">Menunggu Persetujuan</a></li>
+                        <li><i class="menu-icon fa fa-fort-awesome" id="waiting-payment-withdraw-icon"></i><a href="/inisiator/withdraw/waiting-payment" id="waiting-payment-withdraw-link">Menunggu Pembayaran</a></li>
+                        <li><i class="menu-icon fa fa-fort-awesome" id="rejected-withdraw-icon"></i><a href="/inisiator/withdraw/rejected" id="rejected-withdraw-link">Ditolak</a></li>
+
+                    </ul>
+                </li>
+                <li class="menu-item-has-children dropdown" id="alternative-withdraw">
+                    <a href="#" id="alternative-withdraw-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="menu-icon fa fa-tasks"></i>Alternatif</a>
+                    <ul class="sub-menu children dropdown-menu">
+                        <li><i class="menu-icon fa fa-fort-awesome" id="submission-withdraw-icon"></i><a href="/inisiator/withdraw/alternative" id="submission-withdraw-link">Pengajuan</a></li>
+                        <li><i class="menu-icon fa fa-fort-awesome" id="paid-withdraw-icon"></i><a href="/inisiator/withdraw/alternative/paid" id="paid-alternative-withdraw-link">Cair</a></li>
+                        <li><i class="menu-icon fa fa-fort-awesome" id="waiting-approval-alternative-withdraw-icon"></i><a href="/inisiator/withdraw/alternative/waiting-approval" id="waiting-approva-alternativel-withdraw-link">Menunggu Persetujuan</a></li>
+                        <li><i class="menu-icon fa fa-fort-awesome" id="waiting-payment-alternative-withdraw-icon"></i><a href="/inisiator/withdraw/alternative/waiting-payment" id="waiting-payment-alternative-withdraw-link">Menunggu Pembayaran</a></li>
+                        <li><i class="menu-icon fa fa-fort-awesome" id="rejected-alternative-withdraw-icon"></i><a href="/inisiator/withdraw/alternative/rejected" id="rejected-alternative-withdraw-link">Ditolak</a></li>
+                    </ul>
+                </li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>

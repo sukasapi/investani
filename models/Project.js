@@ -45,13 +45,22 @@ let ProjectSchema = mongoose.Schema({
         activity_date: {
             type: Date
         },
+        alternative_activity_date: {
+            type: Date
+        },
         amount: {
+            type: Number
+        },
+        alternative_amount: {
             type: Number
         },
         status: {
             type: String
         },
         receipt: {
+            type: String
+        },
+        official_record: {
             type: String
         }
     }],
@@ -135,4 +144,11 @@ export const getProjectByInisiator = (id, callback) => {
       inisiator: id
     }
     Project.find(Obj, callback).sort({ createdAt: -1 });
-  }
+}
+export const getProjectByInisiatorAndStatus = (id, status, callback) => {
+    let Obj = {
+      inisiator: id,
+      status: status
+    }
+    Project.find(Obj, callback).sort({ createdAt: -1 });
+}

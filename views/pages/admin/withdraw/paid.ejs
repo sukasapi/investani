@@ -45,22 +45,20 @@
 
         <% include ../../../partials/admin/breadcrumbs-dashboard %>
         <% if (success_message != '') { %>
-        <div class="sufee-alert alert with-close alert-success alert-dismissible fade show"
-            style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
-            <%= success_message %>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-        </div>
+            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
+                <%= success_message %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
         <% } %>
         <% if (error_message != '') { %>
-        <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show"
-            style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
-            <%= error_message %>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-        </div>
+            <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
+                <%= error_message %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
         <% } %>
         <div class="content">
             <div class="animated fadeIn">
@@ -68,7 +66,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Pencairan yang Menunggu Pembayaran dari Investani</strong>
+                                <strong class="card-title">Pencairan yang Sudah Cair</strong>
                             </div>
                             <div class="card-body">
                                 <table id="bootstrap-data-table-3" class="table table-striped table-bordered">
@@ -79,32 +77,21 @@
                                             <th>Deskripsi</th>
                                             <th>Tanggal Kegiatan</th>
                                             <th>Jumlah</th>
-                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% waiting_withdraws.forEach((waiting_withdraw, index) => { %>
-                                        <tr>
-                                            <td><%= index+1 %></td>
-                                            <td>
-                                                <a href="/project/<%= waiting_withdraw.project_id %>"
-                                                    style="color: #007bff">
-                                                    <%= waiting_withdraw.project_title %>
-                                                </a>
-                                            </td>
-                                            <td><%= waiting_withdraw.description %></td>
-                                            <td><%= waiting_withdraw.activity_date %></td>
-                                            <td>Rp. <%= waiting_withdraw.amount %></td>
-                                            <td>
-                                                <div class="input-group-btn">
-                                                    <a href="/admin/withdraw/waiting-payment/<%= waiting_withdraw.project_id %>/<%= waiting_withdraw._id %>">
-                                                        <button class="btn btn-primary">
-                                                            Konfirmasi
-                                                        </button>
+                                        <% paid_withdraws.forEach((paid_withdraw, index) => { %>
+                                            <tr>
+                                                <td><%= index+1 %></td>
+                                                <td>
+                                                    <a href="/project/<%= paid_withdraw.project_id %>" style="color: #007bff">
+                                                        <%= paid_withdraw.project_title %>
                                                     </a>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                                <td><%= paid_withdraw.description %></td>
+                                                <td><%= paid_withdraw.activity_date %></td>
+                                                <td>Rp. <%= paid_withdraw.amount %></td>
+                                            </tr>
                                         <% }) %>
                                     </tbody>
                                 </table>
@@ -145,8 +132,8 @@
     <script>
         document.getElementById("normal-withdraw").className = "menu-item-has-children dropdown active show";
         document.getElementById("normal-withdraw-link").click();
-        document.getElementById("waiting-payment-normal-withdraw-icon").style.color = '#03a9f3';
-        document.getElementById("waiting-payment-normal-withdraw-link").style.color = '#03a9f3';
+        document.getElementById("paid-normal-withdraw-icon").style.color = '#03a9f3';
+        document.getElementById("paid-normal-withdraw-link").style.color = '#03a9f3';
     </script>
 </body>
 

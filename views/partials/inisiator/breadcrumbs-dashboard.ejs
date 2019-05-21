@@ -7,6 +7,9 @@
                         <% if (url == "start-project" || url == "started-project" || url == "edit-project" ||url == "started-project-transaction") { %>
                             <h1>Proyek</h1>
                         <% } %>
+                        <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment' || url == 'rejected-withdraw' || url == 'paid-withdraw' ) { %>
+                            <h1>Pencairan</h1>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -28,6 +31,24 @@
                         <% } %>
                         <% if (url == "started-project-transaction") { %>
                             <li class="active">Transaksi</li>
+                        <% } %>
+                        <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment' || url == 'rejected-withdraw' || url == 'paid-withdraw') { %>
+                            <li><a href="#">Pencairan</a></li>
+                            <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment') { %>
+                                <li class="active">Menunggu</li>
+                                <% if (url == 'waiting-withdraw-approval') { %>
+                                    <li class="active">Persetujuan</li>
+                                <% } %>
+                                <% if (url == 'waiting-withdraw-payment') { %>
+                                    <li class="active">Pembayaran</li>
+                                <% } %>
+                            <% } %>
+                            <% if (url == 'rejected-withdraw') { %>
+                                <li class="active">Ditolak</li>
+                            <% } %>
+                            <% if (url == 'paid-withdraw') { %>
+                                <li class="active">Cair</li>
+                            <% } %>
                         <% } %>
                     </ol>
                     </div>

@@ -56,7 +56,7 @@
                     <div class="col-lg-6">
                         <div class="card">
                         <div class="card-header">
-                                <strong class="card-title">Detail Pencairan</strong>
+                                <strong class="card-title">Detail Pencairan Alternatif</strong>
                             </div>
                             <a href="/project/<%= project._id %>">
                                 <img alt="Card image cap" class="card-img-top" src="/image/project/<%= project._id %>/<%= project.image[0].filename %>" style="max-height: 178px;">
@@ -71,7 +71,7 @@
                                        Nama Kegiatan <br><strong><%= budget.description %></strong>
                                     </li>
                                     <li class="list-group-item">
-                                       Tanggal Kegiatan <br><strong><%= budget.activity_date %></strong>
+                                       Tanggal Kegiatan <br><strong><%= budget.alternative_activity_date %></strong>
                                     </li>
                                     <li class="list-group-item">
                                        Nomor Rekening <br><strong><%= project.inisiator.bank[0].account_number %></strong>
@@ -80,7 +80,7 @@
                                        Nama Pemilik <br><strong><%= project.inisiator.bank[0].account_name %> </strong> <strong class="pull-right"><%= project.inisiator.bank[0].bank_name %></strong>
                                     </li>
                                     <li class="list-group-item">
-                                       Jumlah <br><strong><%= budget.amount %></strong>
+                                       Jumlah <br><strong><%= budget.alternative_amount %></strong>
                                     </li>
                                 </ul>
                                     

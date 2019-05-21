@@ -6,7 +6,8 @@ import {
     createProject,
     updateProject,
     getProjectByID,
-    getProjectByInisiator
+    getProjectByInisiator,
+    getProjectByInisiatorAndStatus
 } from '../models/Project';
 import {
     Category
@@ -38,14 +39,14 @@ const prospectusUpload = multer({
     }
 });
 
-router.get('/dashboard', isLoggedIn, isInisiator, function (req, res) {
+router.get('/dashboard', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let data = {
         user_id: req.user._id,
         url: "dashboard"
     }
     res.render('pages/inisiator/dashboard', data);
 });
-router.get('/start-project', isLoggedIn, isInisiator, function (req, res) {
+router.get('/start-project', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let data = {
         user_id: req.user._id,
         url: "start-project"
@@ -274,6 +275,291 @@ router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerif
                 res.redirect('/inisiator/dashboard');
             }
             
+        }
+    });
+});
+router.get('/withdraw/waiting-approval', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let waiting_withdraws = [];
+    let budget_object = null;
+
+    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/inisiator/dashboard');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (moment.duration(moment(budget.activity_date).diff(moment(), 'days')) <= 3 && budget.status == 'waiting') {
+                        budget_object = budget.toObject();
+                        budget_object.activity_date = moment(budget.activity_date).format('LL');
+                        budget_object.project_id = project._id;
+                        budget_object.project_title = project.basic[0].title;
+                        waiting_withdraws.push(budget_object);
+                    }
+                });
+            });
+
+            let data = {
+                user_id: req.user._id,
+                url: "waiting-withdraw-approval",
+                waiting_withdraws: waiting_withdraws
+            }
+            
+            return res.render('pages/inisiator/withdraw/waiting-approval', data);
+        }
+    });
+});
+router.get('/withdraw/waiting-payment', isLoggedIn, isInisiator, isVerified, function(req, res) {
+    let error_message;
+    let waiting_withdraws = [];
+    let budget_object = null;
+
+    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/inisiator/dashboard');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (moment.duration(moment(budget.activity_date).diff(moment(), 'days')) <= 3 && budget.status == 'approved') {
+                        budget_object = budget.toObject();
+                        budget_object.activity_date = moment(budget.activity_date).format('LL');
+                        budget_object.project_id = project._id;
+                        budget_object.project_title = project.basic[0].title;
+                        waiting_withdraws.push(budget_object);
+                    }
+                });
+            });
+
+            let data = {
+                user_id: req.user._id,
+                url: "waiting-withdraw-payment",
+                waiting_withdraws: waiting_withdraws
+            }
+            
+            return res.render('pages/inisiator/withdraw/waiting-payment', data);
+        }
+    });
+});
+router.get('/withdraw/rejected', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let rejected_withdraws = [];
+    let budget_object = null;
+
+    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/inisiator/dashboard');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (moment.duration(moment(budget.activity_date).diff(moment(), 'days')) <= 3 && budget.status == 'rejected') {
+                        budget_object = budget.toObject();
+                        budget_object.activity_date = moment(budget.activity_date).format('LL');
+                        budget_object.project_id = project._id;
+                        budget_object.project_title = project.basic[0].title;
+                        rejected_withdraws.push(budget_object);
+                    }
+                });
+            });
+
+            let data = {
+                user_id: req.user._id,
+                url: "rejected-withdraw",
+                rejected_withdraws: rejected_withdraws
+            }
+            
+            return res.render('pages/inisiator/withdraw/rejected', data);
+        }
+    });
+});
+router.get('/withdraw/paid', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let paid_withdraws = [];
+    let budget_object = null;
+
+    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/inisiator/dashboard');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (moment.duration(moment(budget.activity_date).diff(moment(), 'days')) <= 3 && budget.status == 'paid') {
+                        budget_object = budget.toObject();
+                        budget_object.activity_date = moment(budget.activity_date).format('LL');
+                        budget_object.project_id = project._id;
+                        budget_object.project_title = project.basic[0].title;
+                        paid_withdraws.push(budget_object);
+                    }
+                });
+            });
+
+            let data = {
+                user_id: req.user._id,
+                url: "paid-withdraw",
+                paid_withdraws: paid_withdraws
+            }
+            
+            return res.render('pages/inisiator/withdraw/paid', data);
+        }
+    });
+})
+router.get('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let project_object = null;
+    let waiting_budget = [];
+    let project_data = []
+
+    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/inisiator/dashboard');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (budget.status == 'waiting') {
+                        waiting_budget.push(budget);
+                    }
+                });
+                project_object = project.toObject();
+                project_object.budget = waiting_budget;
+                project_data.push(project_object);
+            });
+
+            let data = {
+                user_id: req.user._id,
+                url: "alternative-withdraw",
+                projects: project_data
+            }
+            
+            res.render('pages/inisiator/withdraw/alternative', data);
+        }
+    });
+    
+
+})
+router.get('/withdraw/alternative/waiting-approval', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    // alternative_activity_date
+    let error_message;
+    let waiting_withdraws = [];
+    let budget_object = null;
+
+    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/inisiator/dashboard');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (budget.alternative_activity_date && budget.status == 'waiting') {
+                        budget_object = budget.toObject();
+                        budget_object.alternative_activity_date = moment(budget.alternative_activity_date).format('LL');
+                        budget_object.project_id = project._id;
+                        budget_object.project_title = project.basic[0].title;
+                        waiting_withdraws.push(budget_object);
+                    }
+                });
+            });
+            let data = {
+                user_id: req.user._id,
+                url: "waiting-withdraw-approval-alternative",
+                waiting_withdraws: waiting_withdraws
+            }
+            
+            return res.render('pages/inisiator/withdraw/waiting-approval-alternative', data);
+        }
+    });
+});
+router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let waiting_withdraws = [];
+    let budget_object = null;
+
+    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/inisiator/dashboard');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (budget.alternative_activity_date && budget.status == 'approved') {
+                        budget_object = budget.toObject();
+                        budget_object.alternative_activity_date = moment(budget.alternative_activity_date).format('LL');
+                        budget_object.project_id = project._id;
+                        budget_object.project_title = project.basic[0].title;
+                        waiting_withdraws.push(budget_object);
+                    }
+                });
+            });
+            let data = {
+                user_id: req.user._id,
+                url: "waiting-withdraw-payment-alternative",
+                waiting_withdraws: waiting_withdraws
+            }
+            
+            return res.render('pages/inisiator/withdraw/waiting-approval-alternative', data);
+        }
+    });
+});
+router.get('/get-activity', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let waiting_budget = [];
+    getProjectByID(req.query.project_id, function (error, project) {
+        if (error) {
+            return res.json({
+                success: false,
+                activity: null
+            });
+        }
+        else {
+            project.budget.forEach((budget) => {
+                if (budget.status == 'waiting') {
+                    waiting_budget.push(budget);
+                }
+            });
+
+            return res.json({
+                success: true,
+                activity: waiting_budget
+            })
+        }
+    });
+});
+router.get('/get-activity-detail', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let waiting_budget = null;
+    getProjectByID(req.query.project_id, function (error, project) {
+        if (error) {
+            return res.json({
+                success: false,
+                activity: null
+            });
+        }
+        else {
+            project.budget.forEach((budget) => {
+                if (budget._id == req.query.activity_id) {
+                    waiting_budget = budget
+                }
+            });
+            return res.json({
+                success: true,
+                activity: waiting_budget,
+                activity_date: waiting_budget.activity_date.toLocaleDateString()
+            })
         }
     });
 });
@@ -524,7 +810,7 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
     });
 
 });
-router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified, prospectusUpload.single('prospectus'), async function (req, res) {
+router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified, prospectusUpload.single('prospectus'), function (req, res) {
     let error_message;
     let success_message;
 
@@ -787,6 +1073,69 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
                 }
             }
         });
+    });
+});
+
+const officialRecordStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, `../storage/projects/${req.body.project}/budget`))
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${uuidv4()}-official_record.pdf`)
+    }
+})
+const officialRecordUpload = multer({
+    storage: officialRecordStorage,
+    limits: {
+        fileSize: 4 * 1024 * 1024,
+    }
+});
+
+router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, officialRecordUpload.single('official_record'), function (req, res) {
+    let error_message;
+    let success_message;
+    
+    getProjectByID(req.body.project, async function (error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('back');
+        }
+        if (!project) {
+            error_message = "Proyek tidak tersedia";
+            req.flash('error_message', error_message);
+            return res.redirect('back');
+        } else {
+            if (project.inisiator._id.equals(req.user._id)) {
+                if (req.file) {                 
+                    project.budget.forEach((budget, index) => {
+                        if (budget._id.equals(req.body.activity)) {
+                            project.budget[index].alternative_activity_date = req.body.activity_date;
+                            project.budget[index].alternative_amount = req.body.amount;
+                            project.budget[index].official_record = req.file.filename;
+                            project.save().then(project => {
+                                success_message = "Pencairan alternatif berhasil dilakukan.";
+                                req.flash('success_message', success_message);
+                                return res.redirect('back');
+                            }).catch(error => {
+                                error_message = "Pencairan alternatif gagal dilakukan.";
+                                req.flash('error_message', error_message);
+                                return res.redirect('back');
+                            });
+                        }
+                    });
+                } else {
+                    error_message = "Berita acara wajib diunggah.";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                }
+            }
+            else {
+                error_message = "Proyek tidak tersedia";
+                req.flash('error_message', error_message);
+                return res.redirect('back');
+            }
+        }
     });
 });
 
