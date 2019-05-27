@@ -4,6 +4,11 @@ import { getProjectByStatus, getProjectByID, updateProject, Project } from '../m
 import { Category, createCategory } from '../models/Category';
 import { getTransactionByStatus, getTransactionById } from '../models/Transaction';
 import { Signature, createSignature, getSignatureByID } from '../models/Signature';
+import { NotificationObject } from '../models/NotificationObject';
+import { Entity } from '../models/Entity';
+import { EntityType } from '../models/EntityType';
+import { NotificationReceiver, getNotificationReceiverByReceiverAndStatus, deleteNotificationReceiverByEntityType } from '../models/NotificationReceiver';
+
 import moment from 'moment';
 import request from 'request';
 import upload from '../uploadMiddleware';
@@ -27,11 +32,125 @@ const compile = async function (templateName, data) {
 router.get('/', isLoggedIn, isAdmin, function (req, res) {
     res.redirect('/admin/dashboard');
 });
-router.get('/dashboard', isLoggedIn, isAdmin, function (req, res) {
-    let data = {
-        url: "dashboard"
-    }
-    res.render('pages/admin/dashboard', data);
+router.get('/dashboard', isLoggedIn, isAdmin, function (req, res, next) {
+    getProjectByStatus("done", function (error, projects) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('back');
+        }
+        else {
+            projects.forEach((project) => {
+                project.budget.forEach((budget) => {
+                    if (moment.duration(moment(budget.activity_date).diff(moment(), 'days')) <= 3 && budget.status == 'waiting') {
+                        Entity.findById('5ce64b78772d872184fc7007', function (error, entity) {
+                            if (error) {
+                                error_message = "Terjadi kesalahan";
+                                req.flash('error_message', error_message);
+                                return res.redirect('back');
+                            }
+                            else {
+                                EntityType.findById('5ce5f09a27a6e5347c68bb44', function (error, entity_type) {
+                                    if (error) {
+                                        error_message = "Terjadi kesalahan";
+                                        req.flash('error_message', error_message);
+                                        return res.redirect('back');
+                                    }
+                                    else {
+                                        let notification_data = {
+                                            entity: entity._id,
+                                            entity_type: entity_type._id,
+                                            budget_id: budget._id
+                                        }
+                                        NotificationObject.find(function (error, notification_objects) {
+                                            if (error) {
+                                                error_message = "Terjadi kesalahan";
+                                                req.flash('error_message', error_message);
+                                                return res.redirect('back');
+                                            }
+                                            else {
+                                                if (notification_objects.length == 0) {
+                                                    let notification_object = new NotificationObject(notification_data);
+                                                    notification_object.save(function(error) {
+                                                        if (error) {
+                                                            error_message = "Terjadi kesalahan";
+                                                            req.flash('error_message', error_message);
+                                                            return res.redirect('back');
+                                                        }
+                                                        else {
+                                                            let notification_receiver_data = {
+                                                                status: "unread",
+                                                                receiver: req.user._id,
+                                                                notification_object: notification_object._id
+                                                            }
+                                                            let notification_receiver = new NotificationReceiver(notification_receiver_data);
+                                                            notification_receiver.save(function (error) {
+                                                                if (error) {
+                                                                    error_message = "Terjadi kesalahan";
+                                                                    req.flash('error_message', error_message);
+                                                                    return res.redirect('back');
+                                                                }
+                                                                
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                                else {
+                                                    notification_objects.forEach(notification_object => {
+                                                        if (!budget._id.equals(notification_object.budget_id)) {
+                                                            let notification_object = new NotificationObject(notification_data);
+                                                            notification_object.save(function (error) {
+                                                                if (error) {
+                                                                    error_message = "Terjadi kesalahan";
+                                                                    req.flash('error_message', error_message);
+                                                                    return res.redirect('back');
+                                                                }
+                                                                else {
+                                                                    let notification_receiver_data = {
+                                                                        status: "unread",
+                                                                        receiver: req.user._id,
+                                                                        notification_object: notification_object._id
+                                                                    }
+                                                                    let notification_receiver = new NotificationReceiver(notification_receiver_data);
+                                                                    notification_receiver.save(function (error) {
+                                                                        if (error) {
+                                                                            error_message = "Terjadi kesalahan";
+                                                                            req.flash('error_message', error_message);
+                                                                            return res.redirect('back');
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                        
+                    }
+                });
+            });
+            getNotificationReceiverByReceiverAndStatus(req.user._id, "unread", function (error, notificationReceiver) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');   
+                }
+                else {
+                    let data = {
+                        url: "dashboard",
+                        notificationReceivers: notificationReceiver
+                    }
+                    return res.render('pages/admin/dashboard', data);
+                }
+            });
+        }
+    });
+    
 });
 router.get('/user', isLoggedIn, isAdmin, function (req, res) {
     res.redirect('/admin/user/investor/individual');
@@ -734,13 +853,30 @@ router.get('/withdraw/waiting-approval', isLoggedIn, isAdmin, function(req, res)
                     }
                 });
             });
-
-            let data = {
-                url: "waiting-withdraw-approval",
-                waiting_withdraws: waiting_withdraws
-            }
-            
-            return res.render('pages/admin/withdraw/waiting-approval', data);
+            deleteNotificationReceiverByEntityType('5ceb587955d2601a80cbf8d8', function (error) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                }
+                else {
+                    getNotificationReceiverByReceiverAndStatus(req.user._id, "unread", function (error, notificationReceiver) {
+                        if (error) {
+                            error_message = "Terjadi kesalahan";
+                            req.flash('error_message', error_message);
+                            return res.redirect('back');   
+                        }
+                        else {
+                            let data = {
+                                url: "waiting-withdraw-approval",
+                                waiting_withdraws: waiting_withdraws,
+                                notificationReceivers: notificationReceiver
+                            }
+                            return res.render('pages/admin/withdraw/waiting-approval', data);
+                        }
+                    });
+                }
+            });   
         }
     });
 });
@@ -863,7 +999,7 @@ router.get('/withdraw/waiting/:project_id/:budget_id/approve', isLoggedIn, isAdm
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/withdraw/waiting-approval');
+            return res.redirect('back');
         }
         else {
             project.budget.forEach((budget, index) => {
@@ -872,11 +1008,11 @@ router.get('/withdraw/waiting/:project_id/:budget_id/approve', isLoggedIn, isAdm
                     project.save().then(project => {
                         success_message = "Kegiatan dan anggaran berhasil disetujui";
                         req.flash('success_message', success_message);
-                        return res.redirect('/admin/withdraw/waiting-approval');
+                        return res.redirect('back');
                     }).catch(error => {
                         error_message = "Terjadi kesalahan";
                         req.flash('error_message', error_message);
-                        return res.redirect('/admin/withdraw/waiting-approval');
+                        return res.redirect('back');
                     });
                 }
             });
@@ -1120,6 +1256,9 @@ router.get('/withdraw/alternative/paid', isLoggedIn, isAdmin, function(req, res)
             return res.render('pages/admin/withdraw/paid-alternative', data);
         }
     });
+});
+router.get('/withdraw/get-receipt/:project_id/:filename', isLoggedIn, isAdmin, function (req, res) {
+    res.download(__dirname+'/../storage/projects/'+req.params.project_id+'/budget/'+req.params.filename);
 });
 
 router.post('/user/investor/individual/verify/:id', isLoggedIn, isAdmin, function (req, res) {
@@ -1803,7 +1942,7 @@ router.post('/withdraw/waiting-payment/:project_id/:budget_id', isLoggedIn, isAd
                                                     project.save().then(project => {
                                                         success_message = "Bukti transer berhasil diunggah.";
                                                         req.flash('success_message', success_message);
-                                                        return res.redirect('back');
+                                                        return res.redirect('/admin/withdraw/paid');
                                                     }).catch(error => {
                                                         error_message = "Terjadi kesalahan";
                                                         req.flash('error_message', error_message);
@@ -1835,7 +1974,7 @@ router.post('/withdraw/waiting-payment/:project_id/:budget_id', isLoggedIn, isAd
                                             project.save().then(project => {
                                                 success_message = "Bukti transer berhasil diunggah.";
                                                 req.flash('success_message', success_message);
-                                                return res.redirect('back');
+                                                return res.redirect('/admin/withdraw/paid');
                                             }).catch(error => {
                                                 error_message = "Terjadi kesalahan";
                                                 req.flash('error_message', error_message);

@@ -226,7 +226,7 @@ router.get('/', isLoggedIn, isNoContract, isUser, function (req, res) {
 
 router.get('/get-city', isLoggedIn, function (req, res) {
     request({
-            url: `http://dev.farizdotid.com/api/daerahindonesia/provinsi/${req.que2ry.province_id}/kabupaten`, //URL to hit
+            url: `http://dev.farizdotid.com/api/daerahindonesia/provinsi/${req.query.province_id}/kabupaten`, //URL to hit
             method: 'GET', // specify the request type
         },
         function (error, response, body) {
