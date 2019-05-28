@@ -21,14 +21,14 @@
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-bell"></i>
-                        <span class="count bg-danger"><%= notificationReceivers.length %></span>
+                        <span class="count bg-danger"><%= notifications.length %></span>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="notification">
-                        <p class="red">Anda memiliki <%= notificationReceivers.length %> Pemberitahuan</p>
-                        <% notificationReceivers.forEach(notificationReceiver => { %>
-                            <a class="dropdown-item media" href="<%= notificationReceiver.notification_object.entity_type.url %>">
+                        <p class="red">Anda memiliki <%= notifications.length %> Pemberitahuan</p>
+                        <% notifications.forEach(notification => { %>
+                            <a class="dropdown-item media" href="<%= notification.url %>">
                                 <i class="fa fa-info"></i>
-                                <p><%= notificationReceiver.notification_object.entity_type.description %></p>
+                                <p><%= notification.description %></p>
                             </a>    
                         <% }); %>
                     </div>
@@ -97,5 +97,5 @@
     </div>
 </header><!-- /header -->
 <script>
-    console.log(JSON.parse('<%- JSON.stringify(notificationReceivers) %>'))
+    console.log(JSON.parse('<%- JSON.stringify(notifications) %>'))
 </script>
