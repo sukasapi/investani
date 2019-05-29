@@ -317,10 +317,7 @@
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Durasi Kampanye (hari)</label>
-                                                    <select name="campaign" id="campaign" class="form-control">
-                                                        <option selected disabled>Pilih Durasi Kampanye</option>
-                                                        <option value="30" <% if(campaign=='30' ) {%> selected <%}%>>30</option>
-                                                    </select>
+                                                    <input class="form-control" name="campaign" type="number" value="<%= campaign %>">
                                                 </div>
                                             </div>
                                             <div class="row form-group">

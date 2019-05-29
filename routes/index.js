@@ -32,6 +32,7 @@ router.get('/', function (req, res) {
     }
     getProjectIndex('verified', function (error, projects) {
         projects.forEach((project, index) => {
+            console.log(moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds)
             if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0 && project.basic[0].stock[0].remain > 0 ) {
                 open_projects[index] = project
                 durations[index] = moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days');

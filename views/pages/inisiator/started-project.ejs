@@ -100,7 +100,7 @@
                     <% projects.forEach((project, index) => { %>
                     <div class="col-md-4">
                         <div class="card">
-                            <a href="<% if(project.status == 'verified') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'verified') { %> /inisiator/project/<%= project._id %>/edit <% } %>">
+                            <a href="<% if(project.status == 'done') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'done') { %> /inisiator/project/<%= project._id %>/edit <% } %>">
                                 <% if (project.image[0]) { %>
                                 <img alt="Card image cap" class="card-img-top"
                                     src="/image/project/<%= project._id %>/<%= project.image[0].filename %>"
@@ -114,7 +114,7 @@
                             <div class="card-body">
                                 <div class="mx-auto d-block">
                                     <h4 class="card-title mb-3"><a
-                                            href="<% if(project.status == 'verified') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'verified') { %> /inisiator/project/<%= project._id %>/edit <% } %>"><%= project.basic[0].title %></a>
+                                            href="<% if(project.status == 'done') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'done') { %> /inisiator/project/<%= project._id %>/edit <% } %>"><%= project.basic[0].title %></a>
                                         <% if (project.status == "draft") { %>
                                         <small><span class="badge badge-light float-right mt-1">Draft</span></small>
                                         <% } %>
@@ -124,6 +124,9 @@
                                         <% } %>
                                         <% if (project.status == "verified") { %>
                                             <small><span class="badge badge-primary float-right mt-1">Terverifikasi</span></small>
+                                        <% } %>
+                                        <% if (project.status == "done") { %>
+                                            <small><span class="badge badge-success float-right mt-1">Selesai</span></small>
                                         <% } %>
                                     </h4>
                                     <p class="card-text">Dibuat oleh <strong><%= inisiator %></strong></p>

@@ -382,7 +382,7 @@ router.get('/project/done', isLoggedIn, isAdmin, function (req, res) {
     let durations = [];
     let done_projects = [];
 
-    getProjectByStatus("verified", function (error, projects) {
+    getProjectByStatus("done", function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
