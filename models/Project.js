@@ -35,6 +35,9 @@ let ProjectSchema = mongoose.Schema({
             },
             temp: {
                 type: Number
+            },
+            max_invest: {
+                type: Number
             }
         }],
     }],

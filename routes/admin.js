@@ -1652,6 +1652,21 @@ router.post('/project/waiting/:project_id/basic', isLoggedIn, isAdmin, function 
                 req.flash('error_message', error_message);
                 return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
             } else {
+                if (req.body.total_stock) {
+                    req.checkBody('max_invest', `Saham maksimal per investor tidak boleh lebih dari ${req.body.total_stock} lembar`).isInt({
+                        max: req.body.total_stock
+                    });
+                }
+                req.checkBody('max_invest', 'Saham maksimal per investor tidak boleh kurang dari 1 lembar').isInt({
+                    min: 1
+                });
+                req.checkBody('max_invest', 'Saham maksimal per investor wajib diisi').notEmpty();
+                req.checkBody('total_stock', 'Jumlah saham tidak boleh lebih dari 1000').isInt({
+                    max: 1000
+                });
+                req.checkBody('total_stock', 'Jumlah saham tidak boleh kurang dari 1').isInt({
+                    min: 1
+                });
                 req.checkBody('stock_price', 'Harga saham tidak boleh lebih dari 1 Juta Rupiah').isInt({
                     max: 1000000
                 });
@@ -1659,14 +1674,9 @@ router.post('/project/waiting/:project_id/basic', isLoggedIn, isAdmin, function 
                     min: 1
                 });
                 req.checkBody('stock_price', 'Harga saham wajib diisi').notEmpty();
-                req.checkBody('total_stock', 'Jumlah saham tidak boleh lebih dari 1000').isInt({
-                    max: 1000
-                });
-                req.checkBody('total_stock', 'Jumlah saham tidak boleh kurang dari 1').isInt({
-                    min: 1
-                });
                 req.checkBody('total_stock', 'Jumlah saham wajib diisi').notEmpty();
-                req.checkBody('category', 'Kategori tanaman wajib dipilih.').notEmpty();
+                req.checkBody('sub_category', 'Sub-kategori proyek wajib dipilih.').notEmpty();
+                req.checkBody('category', 'Kategori proyek wajib dipilih.').notEmpty();
                 req.checkBody('city', 'Kota wajib dipilih.').notEmpty();
                 req.checkBody('province', 'Provinsi wajib dipilih.').notEmpty();
                 req.checkBody('title', 'Judul proyek tidak boleh lebih dari 250 karakter.').isLength({
@@ -1697,7 +1707,10 @@ router.post('/project/waiting/:project_id/basic', isLoggedIn, isAdmin, function 
                             },
                             stock: {
                                 total: req.body.total_stock,
-                                price: req.body.stock_price
+                                price: req.body.stock_price,
+                                remain: req.body.total_stock,
+                                temp: req.body.total_stock,
+                                max_invest: req.body.max_invest
                             },
                         },
                         category: req.body.category,
@@ -1823,6 +1836,9 @@ router.post('/project/waiting/:project_id/project', isLoggedIn, isAdmin, functio
     });
     req.checkBody('roi', 'Imbal hasil wajib diisi').notEmpty();
     req.checkBody('start_date', 'Tanggal proyek dimulai wajib diisi').notEmpty();
+    req.checkBody('campaign', 'Durasi Kampanye proyek tidak boleh kurang dari 10 hari.').isInt({
+        min: 10
+    });
     req.checkBody('campaign', 'Durasi Kampanye proyek wajib dipilih').notEmpty();
     req.checkBody('unit_value', 'Nilai Satuan tidak boleh kurang dari 1.').isNumeric({
         min: 1

@@ -166,35 +166,40 @@
                                                     <label for="cc-name" class="control-label mb-1">Kategori
                                                         Proyek</label>
                                                     <select name="category" id="category" class="form-control">
-                                                        <option value="<%= project.category._id %>" selected>
-                                                            <%= project.category.title %></option>
+                                                        <option disabled>Pilih kategori</option>
+                                                        <% all_category.forEach((all_category) => { %>
+                                                        <option value="<%= all_category._id %>"
+                                                            <% if (project.category._id == all_category._id) { %> selected <% } %>>
+                                                            <%= all_category.title %></option>
+                                                        <% }) %>
                                                     </select>
                                                 </div>
                                                 <div class="col col-sm-3">
                                                     <label for="cc-name" class="control-label mb-1">Sub-kategori
                                                         Proyek</label>
                                                     <select name="sub_category" id="sub-category" class="form-control">
-                                                        <% project.category.sub_category.forEach((sub_category) => { %>
-                                                        <% if (project.sub_category.equals(sub_category._id)) { %>
-                                                        <option value="<%= project.sub_category %>" selected>
-                                                            <%= sub_category.name %></option>
-                                                        <% } %>
-                                                        <% }) %>
+                                                       
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="row form-group">
-                                                <div class="col col-sm-6">
+                                                <div class="col col-sm-3">
                                                     <label class="control-label mb-1">Harga Saham</label>
                                                     <input class="form-control" id="stock-price" name="stock_price"
                                                         placeholder="Harga Saham" type="number"
-                                                        value="<%= project.basic[0].stock[0].price %>" min=0>
+                                                        value="<%= project.basic[0].stock[0].price %>">
                                                 </div>
-                                                <div class="col col-sm-6">
+                                                <div class="col col-sm-3">
                                                     <label class="control-label mb-1">Jumlah Saham</label>
                                                     <input class="form-control" id="total-stock" name="total_stock"
                                                         placeholder="Jumlah Saham" type="number"
-                                                        value="<%= project.basic[0].stock[0].total %>" min=0>
+                                                        value="<%= project.basic[0].stock[0].total %>">
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Saham Maksimal per Investor</label>
+                                                    <input class="form-control" id="max-invest" name="max_invest"
+                                                        placeholder="Saham Maksimal per Investor" type="number"
+                                                        value="<%= project.basic[0].stock[0].max_invest %>">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -296,11 +301,7 @@
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Durasi Kampanye (hari)</label>
-                                                    <select name="campaign" id="campaign" class="form-control">
-                                                        <option value="<%= project.project[0].duration[0].campaign %>"
-                                                            selected><%= project.project[0].duration[0].campaign %>
-                                                        </option>
-                                                    </select>
+                                                    <input class="form-control" id="campaign" name="campaign" type="number" value="<%= project.project[0].duration[0].campaign %>">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -492,22 +493,23 @@
             uiLibrary: 'bootstrap4',
             minDate: today
         });
-        
 
-        $('#category').on('change', function (event) {
+        $(document).on('change', '#category', function(event){
             event.preventDefault();
 
             var category = $(this).val();
             $('.sub-category-option').remove();
-            <% all_category.forEach((category_list) => { %> 
-                if (category == "<%= category_list._id %>") {
-                    $('#unit-value-label').text("<%= category_list.unit %>");
-                    <% category_list.sub_category.forEach((sub_category) => { %>
-                        <% if (sub_category.name) { %>
-                            $('#sub-category').append('<option class="sub-category-option" value="<%= sub_category._id %>"><%= sub_category.name %></option>');
-                        <% } %>
-                    <% }) %>
-                }
+            <% all_category.forEach((category_list) => { %>
+            if (category == "<%= category_list._id %>") {
+                $('#unit-value-label').text("<%= category_list.unit %>");
+                <% category_list.sub_category.forEach((sub_category) => { %>
+                <% if (sub_category.name) { %>
+                $('#sub-category').append(
+                    '<option class="sub-category-option" value="<%= sub_category._id %>"><%= sub_category.name %></option>'
+                    );
+                <% } %>
+                <% }) %>
+            }
             <% }) %>
         });
 

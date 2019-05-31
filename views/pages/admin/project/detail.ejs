@@ -170,26 +170,32 @@
                                                     <select name="sub_category" id="sub-category" class="form-control"
                                                         disabled>
                                                         <% project.category.sub_category.forEach((sub_category) => { %>
-                                                        <% if (project.sub_category.equals(sub_category._id)) { %>
-                                                        <option value="<%= project.sub_category %>" selected>
-                                                            <%= sub_category.name %></option>
-                                                        <% } %>
+                                                            <% if (project.sub_category.equals(sub_category._id)) { %>
+                                                                <option value="<%= project.sub_category %>" selected><%= sub_category.name %></option>
+                                                            <% } %>
                                                         <% }) %>
                                                     </select>
                                                 </div>
                                             </div>
+                                            
                                             <div class="row form-group">
-                                                <div class="col col-sm-6">
+                                                <div class="col col-sm-3">
                                                     <label class="control-label mb-1">Harga Saham</label>
                                                     <input class="form-control" id="stock-price" name="stock_price"
                                                         placeholder="Harga Saham" type="number"
                                                         value="<%= project.basic[0].stock[0].price %>" disabled>
                                                 </div>
-                                                <div class="col col-sm-6">
+                                                <div class="col col-sm-3">
                                                     <label class="control-label mb-1">Jumlah Saham</label>
                                                     <input class="form-control" id="total-stock" name="total_stock"
                                                         placeholder="Jumlah Saham" type="number"
                                                         value="<%= project.basic[0].stock[0].total %>" disabled>
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Saham Maksimal per Investor</label>
+                                                    <input class="form-control" id="max-invest" name="max_invest"
+                                                        placeholder="Saham Maksimal per Investor" type="number"
+                                                        value="<%= project.basic[0].stock[0].max_invest %>" disabled>
                                                 </div>
                                             </div>
                                             <% if (url == 'waiting-detail-project') { %>
@@ -327,11 +333,7 @@
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Durasi Kampanye (hari)</label>
-                                                    <select name="campaign" id="campaign" class="form-control" disabled>
-                                                        <option value="<%= project.project[0].duration[0].campaign %>"
-                                                            selected><%= project.project[0].duration[0].campaign %>
-                                                        </option>
-                                                    </select>
+                                                    <input class="form-control" id="campaign" name="campaign" type="number" value="<%= project.project[0].duration[0].campaign %>" disabled>
                                                 </div>
                                             </div>
                                             <div class="row form-group">

@@ -149,6 +149,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                         let activity_date = [];
                         let image = [];
                         let new_data = {};
+                        let max_invest = 0;
 
                         if (project.basic[0].province.length != 0) {
                             province_id = project.basic[0].province[0].province_id;
@@ -159,6 +160,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                             sub_category = project.sub_category;
                             stock_price = project.basic[0].stock[0].price;
                             total_stock = project.basic[0].stock[0].total;
+                            max_invest = project.basic[0].stock[0].max_invest;
                         }
 
                         for (let i = 0; i < project.budget.length; i++) {
@@ -243,6 +245,7 @@ router.get('/project/:project_id/edit', isLoggedIn, isInisiator, isVerified, fun
                                                     duration: duration,
                                                     stock_price: stock_price,
                                                     total_stock: total_stock,
+                                                    max_invest: max_invest,
                                                     budget: budget,
                                                     budget_not_null: budget_not_null,
                                                     abstract: abstract,
@@ -916,6 +919,21 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                 return res.redirect('/inisiator/start-project');
             }
             else {
+                if (req.body.total_stock) {
+                    req.checkBody('max_invest', `Saham maksimal per investor tidak boleh lebih dari ${req.body.total_stock} lembar`).isInt({
+                        max: req.body.total_stock
+                    });
+                }
+                req.checkBody('max_invest', 'Saham maksimal per investor tidak boleh kurang dari 1 lembar').isInt({
+                    min: 1
+                });
+                req.checkBody('max_invest', 'Saham maksimal per investor wajib diisi').notEmpty();
+                req.checkBody('total_stock', 'Jumlah saham tidak boleh lebih dari 1000').isInt({
+                    max: 1000
+                });
+                req.checkBody('total_stock', 'Jumlah saham tidak boleh kurang dari 1').isInt({
+                    min: 1
+                });
                 req.checkBody('stock_price', 'Harga saham tidak boleh lebih dari 1 Juta Rupiah').isInt({
                     max: 1000000
                 });
@@ -923,14 +941,9 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                     min: 1
                 });
                 req.checkBody('stock_price', 'Harga saham wajib diisi').notEmpty();
-                req.checkBody('total_stock', 'Jumlah saham tidak boleh lebih dari 1000').isInt({
-                    max: 1000
-                });
-                req.checkBody('total_stock', 'Jumlah saham tidak boleh kurang dari 1').isInt({
-                    min: 1
-                });
                 req.checkBody('total_stock', 'Jumlah saham wajib diisi').notEmpty();
-                req.checkBody('category', 'Kategori tanaman wajib dipilih.').notEmpty();
+                req.checkBody('sub_category', 'Sub-kategori proyek wajib dipilih.').notEmpty();
+                req.checkBody('category', 'Kategori proyek wajib dipilih.').notEmpty();
                 req.checkBody('city', 'Kota wajib dipilih.').notEmpty();
                 req.checkBody('province', 'Provinsi wajib dipilih.').notEmpty();
                 req.checkBody('title', 'Judul proyek tidak boleh lebih dari 250 karakter.').isLength({
@@ -963,7 +976,8 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                                 total: req.body.total_stock,
                                 price: req.body.stock_price,
                                 remain: req.body.total_stock,
-                                temp: req.body.total_stock
+                                temp: req.body.total_stock,
+                                max_invest: req.body.max_invest
                             },
                         },
                         category: req.body.category,
@@ -1098,6 +1112,9 @@ router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified,
     });
     req.checkBody('roi', 'Imbal hasil wajib diisi').notEmpty();
     req.checkBody('start_date', 'Tanggal proyek dimulai wajib diisi').notEmpty();
+    req.checkBody('campaign', 'Durasi Kampanye proyek tidak boleh kurang dari 10 hari.').isInt({
+        min: 10
+    });
     req.checkBody('campaign', 'Durasi Kampanye proyek wajib dipilih').notEmpty();
     req.checkBody('unit_value', 'Nilai Satuan tidak boleh kurang dari 1.').isNumeric({
         min: 1

@@ -182,28 +182,28 @@
                                                         Proyek</label>
                                                     <select name="sub_category" id="sub-category" class="form-control">
                                                         <option selected disabled>Pilih Sub-kategori</option>
-                                                        <% all_category[0].sub_category.forEach((sub_category) => { %>
-                                                        <% if (sub_category.name != null){ %>
-                                                        <option class="sub-category-option"
-                                                            value="<%= sub_category._id %>"><%= sub_category.name %>
-                                                        </option>
-                                                        <% } %>
-                                                        <% }) %>
+                                                        
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="row form-group">
-                                                <div class="col col-sm-6">
+                                                <div class="col col-sm-3">
                                                     <label class="control-label mb-1">Harga Saham</label>
                                                     <input class="form-control" id="stock-price" name="stock_price"
                                                         placeholder="Harga Saham" type="number"
                                                         value="<%= stock_price %>">
                                                 </div>
-                                                <div class="col col-sm-6">
+                                                <div class="col col-sm-3">
                                                     <label class="control-label mb-1">Jumlah Saham</label>
                                                     <input class="form-control" id="total-stock" name="total_stock"
                                                         placeholder="Jumlah Saham" type="number"
                                                         value="<%= total_stock %>">
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Saham Maksimal per Investor</label>
+                                                    <input class="form-control" id="max-invest" name="max_invest"
+                                                        placeholder="Saham Maksimal per Investor" type="number"
+                                                        value="<%= max_invest %>">
                                                 </div>
                                             </div>
                                             <div>
@@ -312,12 +312,12 @@
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1" id="unit-value-label">Satuan
                                                         Unit</label>
-                                                    <input class="form-control" id="unit_value" name="unit_value"
+                                                    <input class="form-control" id="unit_value" name="unit_value" placeholder="Gunakan titik untuk bilangan desimal"
                                                         step=0.001 type="number" value="<%= unit_value %>">
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Durasi Kampanye (hari)</label>
-                                                    <input class="form-control" name="campaign" type="number" value="<%= campaign %>">
+                                                    <input class="form-control" id="campaign" name="campaign" type="number" value="<%= campaign %>">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -614,7 +614,16 @@
                 e.preventDefault();
             }
         });
-
+        document.getElementById('max-invest').addEventListener('keydown', function (e) {
+            if (e.which === 38 || e.which === 40) {
+                e.preventDefault();
+            }
+        });
+        document.getElementById('campaign').addEventListener('keydown', function (e) {
+            if (e.which === 38 || e.which === 40) {
+                e.preventDefault();
+            }
+        });
         $('.nav-link').on('click', function (event) {
             event.preventDefault();
             $('#budget-chart-col').hide();
