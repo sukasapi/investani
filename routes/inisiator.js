@@ -896,7 +896,7 @@ router.post('/start-project', isLoggedIn, isInisiator, isVerified, function (req
 router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let success_message;
-
+    req.body.stock_price = parseInt(req.body.stock_price.split('.').join(""));
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             error_message = "Terjadi kesalahan";
@@ -934,9 +934,9 @@ router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, f
                 req.checkBody('total_stock', 'Jumlah saham tidak boleh kurang dari 1').isInt({
                     min: 1
                 });
-                req.checkBody('stock_price', 'Harga saham tidak boleh lebih dari 1 Juta Rupiah').isInt({
-                    max: 1000000
-                });
+                // req.checkBody('stock_price', 'Harga saham tidak boleh lebih dari 1 Juta Rupiah').isInt({
+                //     max: 1000000
+                // });
                 req.checkBody('stock_price', 'Harga saham tidak boleh kurang dari 1 Rupiah').isInt({
                     min: 1
                 });
@@ -1009,6 +1009,10 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
     let success_message;
     let budget = [];
     let total_budget = 0;
+
+    req.body.budget_items.budget_items.forEach((budget_item, index) => {
+        req.body.budget_items.budget_items[index].amount = parseInt(budget_item.amount.split('.').join(""));
+    });
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             error_message = "Terjadi kesalahan";

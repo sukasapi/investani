@@ -1635,7 +1635,7 @@ router.post('/project/waiting/verify/:project_id', isLoggedIn, isAdmin, function
 router.post('/project/waiting/:project_id/basic', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
-
+    req.body.stock_price = parseInt(req.body.stock_price.split('.').join(""));
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             error_message = "Terjadi kesalahan";
@@ -1742,6 +1742,11 @@ router.post('/project/waiting/:project_id/budget', isLoggedIn, isAdmin, function
     let success_message;
     let budget = [];
     let total_budget = 0;
+
+    req.body.budget_items.budget_items.forEach((budget_item, index) => {
+        req.body.budget_items.budget_items[index].amount = parseInt(budget_item.amount.split('.').join(""));
+    });
+    
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             error_message = "Terjadi kesalahan";

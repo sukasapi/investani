@@ -178,12 +178,10 @@
                             <div class="description">
                                 <h5>Dana Terkumpul</h5>
                                 <p>
-                                    <span class="item_price">Rp. <%= (project.basic[0].stock[0].total-project.basic[0].stock[0].remain)*project.basic[0].stock[0].price %></span>
+                                    <span class="item_price">Rp. <span id="funded"></span></span>
                                 </p>
-                                <% let goal = 0; project.budget.forEach( (budget) => { %>
-                                <% goal = goal + budget.amount %>
-                                <% }) %>
-                                <h5>dari <b>Rp. <%= goal %></b></h5>
+                                
+                                <h5>dari <b>Rp. <span id="budget-goal"></span></b></h5>
                             </div>
                             <div class="description">
                                 <h5>Durasi Proyek</h5>
@@ -207,7 +205,7 @@
                             <div class="description">
                                 <h5>Harga per Saham</h5>
                                 <p>
-                                    <span class="item_price">Rp. <%= project.basic[0].stock[0].price %></span>
+                                    <span class="item_price">Rp. <span class="stock-price"></span></span>
                                 </p>
                             </div>
                             <div class="description">
@@ -252,8 +250,8 @@
                                 </form>
                             </div>
                             <ul>
-                              <li>Saham <i>:</i> <span>&nbsp x Rp. <%= project.basic[0].stock[0].price %></span><span id="stock-quantity">0</span> </li>
-                              <li>Total <i>:</i> <span id="stock-total">0</span></li>
+                              <li>Saham <i>:</i> <span>&nbsp x Rp. <span class="stock-price"></span></span><span id="stock-quantity">0</span> </li>
+                              <li>Total <i>:</i> <span>&nbsp Rp. <span id="stock-total">0</span></span></li>
                            </ul>
                         </div>
                         
@@ -517,13 +515,41 @@
     </script>
     <script>
         document.getElementById("stock-input").addEventListener('input', function(e) {
-            document.getElementById("stock-quantity").innerHTML = document.getElementById("stock-input").value
-            document.getElementById("stock-total").innerHTML = document.getElementById("stock-input").value*<%= project.basic[0].stock[0].price %>
+            var stock_input = document.getElementById("stock-input").value;
+            var total = stock_input*<%= project.basic[0].stock[0].price %>
+            document.getElementById("stock-quantity").innerHTML = stock_input
+            document.getElementById("stock-total").innerHTML = formatRupiah(total.toString())
         })
+        
         $('#invest-now').on('submit', function (event) {
             $('#invest-now-button').attr('disabled', 'disabled');
             $('#invest-now-spinner').show();
         });
+        <% let goal = 0 %>
+        <% project.budget.forEach((budget) => { %>
+            <% goal = goal + budget.amount %>
+        <% }) %>
+
+        document.getElementById('budget-goal').innerHTML = formatRupiah('<%= goal %>')
+        document.getElementById('funded').innerHTML = formatRupiah('<%= (project.basic[0].stock[0].total-project.basic[0].stock[0].remain)*project.basic[0].stock[0].price %>');
+        document.getElementsByClassName('stock-price')[0].innerHTML = formatRupiah('<%= project.basic[0].stock[0].price %>');
+        document.getElementsByClassName('stock-price')[1].innerHTML = formatRupiah('<%= project.basic[0].stock[0].price %>');
+
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
     </script>
     <!-- //FlexSlider-->
 

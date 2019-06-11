@@ -169,7 +169,7 @@
                                                     <label for="cc-name" class="control-label mb-1">Kategori
                                                         Proyek</label>
                                                     <select name="category" id="category" class="form-control">
-                                                        <option disabled>Pilih kategori</option>
+                                                        <option <% if (!category) { %> selected <% } %> disabled>Pilih kategori</option>
                                                         <% all_category.forEach((all_category) => { %>
                                                         <option value="<%= all_category._id %>"
                                                             <% if (category == all_category._id) { %> selected <% } %>>
@@ -189,9 +189,9 @@
                                             <div class="row form-group">
                                                 <div class="col col-sm-3">
                                                     <label class="control-label mb-1">Harga Saham</label>
-                                                    <input class="form-control" id="stock-price" name="stock_price"
-                                                        placeholder="Harga Saham" type="number"
-                                                        value="<%= stock_price %>">
+                                                    <input class="form-control input-currency" id="stock-price" name="stock_price"
+                                                        placeholder="Harga Saham" type="text"
+                                                        value="">
                                                 </div>
                                                 <div class="col col-sm-3">
                                                     <label class="control-label mb-1">Jumlah Saham</label>
@@ -200,7 +200,7 @@
                                                         value="<%= total_stock %>">
                                                 </div>
                                                 <div class="col col-sm-6">
-                                                    <label class="control-label mb-1">Saham Maksimal per Investor</label>
+                                                    <label class="control-label mb-1">Jumlah Saham Maksimal per Investor</label>
                                                     <input class="form-control" id="max-invest" name="max_invest"
                                                         placeholder="Saham Maksimal per Investor" type="number"
                                                         value="<%= max_invest %>">
@@ -257,8 +257,8 @@
                                                 </div>
                                                 <div class="col col-sm-2">
                                                     <label class="control-label mb-1">Rp</label>
-                                                    <input class="form-control budget-amount" id="budget-items-amount"
-                                                        name="amount" placeholder="Rp" type="number" value="" min=0>
+                                                    <input class="form-control budget-amount input-currency" id="budget-items-amount"
+                                                        name="amount" placeholder="Rp" type="text" value="">
                                                 </div>
                                                 <div class="col col-sm-3">
                                                     <label class="control-label mb-1">Aksi</label>
@@ -664,9 +664,11 @@
                 var labels = [];
                 var data = [];
                 var budget = 0;
-                $('.budget-description')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].description;
-                $('.activity-datepicker')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].activity_date;
-                $('.budget-amount')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].amount;
+                <% if (budget.length != 0) { %>
+                    $('.budget-description')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].description;
+                    $('.activity-datepicker')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].activity_date;
+                    $('.budget-amount')[i].value = formatRupiah(JSON.parse('<%- JSON.stringify(budget) %>')[i].amount.toString());
+                <% } %>
                 i++;
                 if (i < '<%= budget_not_null %>') {
                     $('.plus').last().click();
@@ -674,13 +676,13 @@
                 } else {
                     for (var j = 0; j < '<%= budget_not_null %>'; j++) {
                         labels[j] = JSON.parse('<%- JSON.stringify(budget) %>')[j].description;
-                        data[j] = parseInt(JSON.parse('<%- JSON.stringify(budget) %>')[j].amount);
+                        data[j] = JSON.parse('<%- JSON.stringify(budget) %>')[j].amount;
                         budget += data[j];
                     }
                     for (var j = 0; j < data.length; j++) {
                         data[j] = (data[j] / budget) * 100;
                     }
-                    $('#funding-target').text(budget);
+                    $('#funding-target').text(formatRupiah(budget.toString()));
                     updateItem(labels, data);
                 }
             }, 1000);
@@ -711,14 +713,14 @@
             for (var i = 0; i < item_total; i++) {
                 labels[i] = $('.budget-description')[i].value;
                 if ($('.budget-amount')[i].value != '') {
-                    data[i] = parseInt($('.budget-amount')[i].value);
-                    budget += parseInt($('.budget-amount')[i].value);
+                    data[i] = parseInt($('.budget-amount')[i].value.split('.').join(""));
+                    budget += parseInt(data[i]);
                 }
             }
             for (var i = 0; i < data.length; i++) {
                 data[i] = (data[i] / budget) * 100;
             }
-            $('#funding-target').text(budget);
+            $('#funding-target').text(formatRupiah(budget.toString()));
             updateItem(labels, data);
         });
         $('.budget-amount').on('input', function (event) {
@@ -730,18 +732,19 @@
             for (var i = 0; i < item_total; i++) {
                 labels[i] = $('.budget-description')[i].value;
                 if ($('.budget-amount')[i].value != '') {
-                    data[i] = parseInt($('.budget-amount')[i].value);
-                    budget += parseInt($('.budget-amount')[i].value);
+                    data[i] = parseInt($('.budget-amount')[i].value.split('.').join(""));
+                    budget += parseInt(data[i]);
                 }
             }
             for (var i = 0; i < data.length; i++) {
                 data[i] = (data[i] / budget) * 100;
             }
-            $('#funding-target').text(budget);
+            $('#funding-target').text(formatRupiah(budget.toString()));
             updateItem(labels, data);
         });
         $('.plus').on('click', function (event) {
             event.preventDefault();
+            
             $('.item-label').contents().eq(0).replaceWith('Kegiatan 1');
             var delay = 1000;
             setTimeout(function () {
@@ -750,11 +753,12 @@
                 var data = [];
                 var item_total = $('.dynamic-row').length;
                 $('.item-label').contents().eq(item_total - 1).replaceWith('Kegiatan ' + item_total);
+                
                 for (var i = 0; i < item_total; i++) {
                     labels[i] = $('.budget-description')[i].value;
                     if ($('.budget-amount')[i].value != '') {
-                        data[i] = parseInt($('.budget-amount')[i].value);
-                        budget += parseInt($('.budget-amount')[i].value);
+                        data[i] = parseInt($('.budget-amount')[i].value.split('.').join(""));
+                        budget += data[i];
                     }
                 }
                 updateItem(labels, data);
@@ -766,6 +770,13 @@
                         minDate: today
                     });
                 });
+
+                var rupiah = document.getElementsByClassName("input-currency");
+                for (var i = 0; i < rupiah.length; i++) {
+                    rupiah[i].addEventListener("keyup", function(e) {
+                        this.value = formatRupiah(this.value);
+                    });
+                }
             }, delay);
         });
         $('.minus').on('click', function (event) {
@@ -781,14 +792,41 @@
                 for (var i = 0; i < item_total; i++) {
                     labels[i] = $('.budget-description')[i].value;
                     if ($('.budget-amount')[i].value != '') {
-                        data[i] = parseInt($('.budget-amount')[i].value);
-                        budget += parseInt($('.budget-amount')[i].value);
+                        data[i] = parseInt($('.budget-amount')[i].value.split('.').join(""));
+                        budget += parseInt(data[i]);
                     }
                 }
-                $('#funding-target').text(budget);
+                $('#funding-target').text(formatRupiah(budget.toString()));
                 updateItem(labels, data);
             }, delay);
         });
+
+        <% if (stock_price) { %>
+            document.getElementById('stock-price').value = formatRupiah('<%= stock_price %>');
+        <% } %>
+
+        var rupiah = document.getElementsByClassName("input-currency");
+        for (var i = 0; i < rupiah.length; i++) {
+            rupiah[i].addEventListener("keyup", function(e) {
+                this.value = formatRupiah(this.value);
+            });
+        }
+
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
     </script>
     <script>
         var ctx = document.getElementById("budget-chart");

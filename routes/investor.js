@@ -195,7 +195,8 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) 
             error_message = "Proyek tidak tersedia";
             req.flash('error_message', error_message);
             return res.redirect('/project/' + req.params.project_id);
-        } else {
+        }
+        else {
             fs.access(dir, (err) => {
                 if (err) {
                     fs.mkdir(dir, async (err) => {
@@ -207,6 +208,9 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) 
                             if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0 && project.status == 'verified') {
                                 req.checkBody('stock', 'Jumlah saham tidak boleh lebih dari ' + project.basic[0].stock[0].temp).isInt({
                                     max: project.basic[0].stock[0].temp
+                                });
+                                req.checkBody('stock', 'Jumlah saham tidak boleh lebih dari ' + project.basic[0].stock[0].max_invest).isInt({
+                                    max: project.basic[0].stock[0].max_invest
                                 });
                                 req.checkBody('stock', 'Jumlah saham tidak boleh kurang dari 1').isInt({
                                     min: 1
@@ -262,6 +266,9 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, function (req, res) 
                     if (moment.duration(moment(project.project[0].duration[0].due_campaign).diff(moment()))._milliseconds > 0 && project.status == 'verified') {
                         req.checkBody('stock', 'Jumlah saham tidak boleh lebih dari ' + project.basic[0].stock[0].temp).isInt({
                             max: project.basic[0].stock[0].temp
+                        });
+                        req.checkBody('stock', 'Jumlah saham tidak boleh lebih dari ' + project.basic[0].stock[0].max_invest).isInt({
+                            max: project.basic[0].stock[0].max_invest
                         });
                         req.checkBody('stock', 'Jumlah saham tidak boleh kurang dari 1').isInt({
                             min: 1
