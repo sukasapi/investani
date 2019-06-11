@@ -823,99 +823,99 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAdmin, f
                         return res.redirect('/admin/transaction/waiting-verification');
                     }
                     else {
-                        transaction.status = 'verified';
-                        transaction.save().then(transaction => {
-                            getProjectByID(transaction.project._id, async function (error, project) {
-                                if (error) {
+                        getProjectByID(transaction.project._id, async function (error, project) {
+                            if (error) {
+                                error_message = "Terjadi kesalahan.";
+                                req.flash('error_message', error_message);
+                                return res.redirect('/admin/transaction/waiting-verification');
+                            }
+                            else {
+                                try {
+                                    const browser = await puppeteer.launch();
+                                    const page = await browser.newPage();
+                                    
+                                    let data = {
+                                        project_title: project.basic[0].title,
+                                        investor: transaction.investor.profile[0].name,
+                                        stock_quantity: transaction.stock_quantity,
+                                        payment_total: transaction.stock_quantity*project.basic[0].stock[0].price,
+                                        signature_name: signature.full_name,
+                                        signature_position: signature.position,
+                                        verification_date: moment().format('LL')
+                                    }
+                                    
+                                    const certificate = await compile('certificate', data);
+                                    const content = await compile('certificate-email', data);
+                                    
+                                    await page.setContent(certificate);
+                                    await page.emulateMedia('screen');
+                                    await page.pdf({
+                                        path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`,
+                                        width: '725px',
+                                        height: '541px',
+                                        printBackground: true
+                                    });
+                                    await browser.close();
+    
+                                    let transporter = nodemailer.createTransport({
+                                        host: 'smtp.gmail.com',
+                                        port: 465,
+                                        secure: true,
+                                        auth: {
+                                            user: 'investaninx@gmail.com',
+                                            pass: 'investani2019'
+                                        }
+                                    });
+                                    let mailOptions = {
+                                        from: '"Investani" <investaninx@gmail.com>',
+                                        to: transaction.investor.email,
+                                        subject: "Sertifikat Investasi",
+                                        html: content,
+                                        attachments: [
+                                            {
+                                                filename: 'sertifikat investani.pdf',
+                                                path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`
+                                            }
+                                        ]
+                                    };
+                            
+                                    transporter.sendMail(mailOptions, (error, info) => {
+                                        if (error) {
+                                            error_message = "Email gagal terkirim"; 
+                                            req.flash('error_message', error_message);
+                                            return res.redirect('/admin/transaction/waiting-verification');
+                                        }
+                                        else {
+                                            transaction.status = 'verified';
+                                            transaction.save().then(transaction => {
+                                                project.basic[0].stock[0].remain = project.basic[0].stock[0].remain-transaction.stock_quantity;
+                                                if (project.basic[0].stock[0].remain == 0) {
+                                                    project.status = 'done'
+                                                }
+                                                project.save().then(() => {
+                                                    success_message = "Berhasil melakukan verifikasi transaksi."
+                                                    req.flash('success_message', success_message);
+                                                    return res.redirect('/admin/transaction/waiting-verification'); 
+                                                }).catch(project => {
+                                                    error_message = "Terjadi kesalahan.";
+                                                    req.flash('error_message', error_message);
+                                                    return res.redirect('/admin/transaction/waiting-verification');
+                                                }); 
+                                            }).catch(transaction => {
+                                                error_message = "Terjadi kesalahan.";
+                                                req.flash('error_message', error_message);
+                                                return res.redirect('/admin/transaction/waiting-verification');
+                                            });  
+                                        }
+                                    });  
+                                } catch (e) {
                                     error_message = "Terjadi kesalahan.";
                                     req.flash('error_message', error_message);
                                     return res.redirect('/admin/transaction/waiting-verification');
                                 }
-                                else {
-                                    project.basic[0].stock[0].remain = project.basic[0].stock[0].remain-transaction.stock_quantity;
-                                    if (project.basic[0].stock[0].remain == 0) {
-                                        project.status = 'done'
-                                    }
-                                    project.save().then( async () => {
-                                        try {
-                                            const browser = await puppeteer.launch();
-                                            const page = await browser.newPage();
-            
-                                            let data = {
-                                                project_title: project.basic[0].title,
-                                                investor: transaction.investor.profile[0].name,
-                                                stock_quantity: transaction.stock_quantity,
-                                                payment_total: transaction.stock_quantity*project.basic[0].stock[0].price,
-                                                signature_name: signature.full_name,
-                                                signature_position: signature.position,
-                                                verification_date: moment().format('LL')
-                                            }
-                
-                                            const certificate = await compile('certificate', data);
-                                            const content = await compile('certificate-email', data);
-            
-                                            await page.setContent(certificate);
-                                            await page.emulateMedia('screen');
-                                            await page.pdf({
-                                                path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`,
-                                                width: '725px',
-                                                height: '541px',
-                                                printBackground: true
-                                            });
-                                            await browser.close();
-            
-                                            let transporter = nodemailer.createTransport({
-                                                host: 'smtp.gmail.com',
-                                                port: 465,
-                                                secure: true,
-                                                auth: {
-                                                    user: 'investaninx@gmail.com',
-                                                    pass: 'investani2019'
-                                                }
-                                            });
-                                            let mailOptions = {
-                                                from: '"Investani" <investaninx@gmail.com>',
-                                                to: transaction.investor.email,
-                                                subject: "Sertifikat Investasi",
-                                                html: content,
-                                                attachments: [
-                                                    {
-                                                        filename: 'sertifikat investani.pdf',
-                                                        path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`
-                                                    }
-                                                ]
-                                            };
-                                    
-                                            transporter.sendMail(mailOptions, (error, info) => {
-                                                if (error) {
-                                                    error_message = "Email gagal terkirim"; 
-                                                    req.flash('error_message', error_message);
-                                                    return res.redirect('/admin/transaction/waiting-verification');
-                                                }
-                                                else {
-                                                    success_message = "Berhasil melakukan verifikasi transaksi."
-                                                    req.flash('success_message', success_message);
-                                                    return res.redirect('/admin/transaction/waiting-verification');    
-                                                }
-                                            });  
-                                        } catch (e) {
-                                            error_message = "Terjadi kesalahan.";
-                                            req.flash('error_message', error_message);
-                                            return res.redirect('/admin/transaction/waiting-verification');
-                                        }
-            
-                                    }).catch(project => {
-                                        error_message = "Terjadi kesalahan.";
-                                        req.flash('error_message', error_message);
-                                        return res.redirect('/admin/transaction/waiting-verification');
-                                    }); 
-                                }
-                            });
-                        }).catch(transaction => {
-                            error_message = "Terjadi kesalahan.";
-                            req.flash('error_message', error_message);
-                            return res.redirect('/admin/transaction/waiting-verification');
+                            }
                         });
+                        
             
                     }
                 });
@@ -927,7 +927,6 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAdmin, f
         req.flash('error_message', error_message);
         return res.redirect('/admin/transaction/waiting-verification');
     }
-    
 });
 router.get('/transaction/waiting/:transaction_id/reject', isLoggedIn, isAdmin, function (req, res) {
     let error_message;

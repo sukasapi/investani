@@ -95,8 +95,7 @@
                                             <td>
                                                 <%= transaction.stock_quantity %>
                                             </td>
-                                            <td><%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>
-                                            </td>
+                                            <td >Rp. <span class="total-payment"></span></td>
                                             <td><%= due_date %></td>
                                             <td><%= payment_date %></td>
                                             <td>
@@ -182,6 +181,26 @@
     <script src="/js/dataTables.buttons.min.js"></script>
     <script src="/js/datatables-init.js"></script>
     <script>
+        <% transactions.forEach((transaction, index) => { %>
+            document.getElementsByClassName('total-payment')[<%= index %>].innerHTML = formatRupiah('<%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>');
+        <% }) %>
+
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
+
         document.getElementById("my-transaction").className = "menu-item-has-children dropdown show";
         document.getElementById("my-transaction-link").setAttribute('aria-expanded', 'true');
         document.getElementById("my-transaction-sub-menu").className = "sub-menu children dropdown-menu show";

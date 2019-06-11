@@ -1226,6 +1226,8 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
         let success_message;
         let project_image = [];
         const dir = path.join(__dirname, `../storage/projects/${req.params.project_id}/images`);
+        const budget_dir = path.join(__dirname, `../storage/projects/${req.params.project_id}/budget`)
+
         if (err instanceof multer.MulterError) {
             error_message = "Ukuran gambar terlalu besar";
             req.flash('error_message', error_message);
@@ -1267,95 +1269,213 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
                                     req.flash('error_message', error_message);
                                     return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
                                 } else {
-                                    if (req.files['project_image0'] || req.files['project_image1'] || req.files['project_image2']) {
-                                        if (req.files['project_image0']) {
-                                            project_image.push(await imageUpload.save(req.files['project_image0'][0].buffer));
+                                    fs.access(budget_dir, async (err) => {
+                                        if (err) {
+                                            fs.mkdir(budget_dir, async (err) => {
+                                                if (err) {
+                                                    error_message = "Terjadi kesalahan";
+                                                    req.flash('error_message', error_message);
+                                                    return res.redirect('back');
+                                                }
+                                                else {
+                                                    if (req.files['project_image0'] || req.files['project_image1'] || req.files['project_image2']) {
+                                                        if (req.files['project_image0']) {
+                                                            project_image.push(await imageUpload.save(req.files['project_image0'][0].buffer));
+                                                        }
+                                                        if (req.files['project_image1']) {
+                                                            project_image.push(await imageUpload.save(req.files['project_image1'][0].buffer));
+                                                        }
+                                                        if (req.files['project_image2']) {
+                                                            project_image.push(await imageUpload.save(req.files['project_image2'][0].buffer));
+                                                        }
+                                                        let image = [{
+                                                                filename: project_image[0]
+                                                            },
+                                                            {
+                                                                filename: project_image[1]
+                                                            },
+                                                            {
+                                                                filename: project_image[2]
+                                                            }
+                                                        ];
+                                                        let data = {
+                                                            image: image
+                                                        };
+                                                        updateProject(req.params.project_id, data, function (error, project) {
+                                                            if (error) {
+                                                                error_message = "Terjadi kesalahan";
+                                                                req.flash('error_message', error_message);
+                                                                return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                                            }
+                                                            if (!project) {
+                                                                error_message = "Proyek tidak tersedia";
+                                                                req.flash('error_message', error_message);
+                                                                return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                                            } else {
+                                                                success_message = "Berhasil memperbarui proyek";
+                                                                req.flash('success_message', success_message);
+                                                                return res.redirect(`/inisiator/${req.user._id}/started-project`);
+                                                            }
+                                                        });
+                                                    } else {
+                                                        error_message = "Gambar proyek wajib diunggah";
+                                                        req.flash('error_message', error_message);
+                                                        return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                                    }
+                                                }
+                                            });
                                         }
-                                        if (req.files['project_image1']) {
-                                            project_image.push(await imageUpload.save(req.files['project_image1'][0].buffer));
-                                        }
-                                        if (req.files['project_image2']) {
-                                            project_image.push(await imageUpload.save(req.files['project_image2'][0].buffer));
-                                        }
-                                        let image = [{
-                                                filename: project_image[0]
-                                            },
-                                            {
-                                                filename: project_image[1]
-                                            },
-                                            {
-                                                filename: project_image[2]
-                                            }
-                                        ];
-                                        let data = {
-                                            image: image
-                                        };
-                                        updateProject(req.params.project_id, data, function (error, project) {
-                                            if (error) {
-                                                error_message = "Terjadi kesalahan";
-                                                req.flash('error_message', error_message);
-                                                return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
-                                            }
-                                            if (!project) {
-                                                error_message = "Proyek tidak tersedia";
-                                                req.flash('error_message', error_message);
-                                                return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                        else {
+                                            if (req.files['project_image0'] || req.files['project_image1'] || req.files['project_image2']) {
+                                                if (req.files['project_image0']) {
+                                                    project_image.push(await imageUpload.save(req.files['project_image0'][0].buffer));
+                                                }
+                                                if (req.files['project_image1']) {
+                                                    project_image.push(await imageUpload.save(req.files['project_image1'][0].buffer));
+                                                }
+                                                if (req.files['project_image2']) {
+                                                    project_image.push(await imageUpload.save(req.files['project_image2'][0].buffer));
+                                                }
+                                                let image = [{
+                                                        filename: project_image[0]
+                                                    },
+                                                    {
+                                                        filename: project_image[1]
+                                                    },
+                                                    {
+                                                        filename: project_image[2]
+                                                    }
+                                                ];
+                                                let data = {
+                                                    image: image
+                                                };
+                                                updateProject(req.params.project_id, data, function (error, project) {
+                                                    if (error) {
+                                                        error_message = "Terjadi kesalahan";
+                                                        req.flash('error_message', error_message);
+                                                        return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                                    }
+                                                    if (!project) {
+                                                        error_message = "Proyek tidak tersedia";
+                                                        req.flash('error_message', error_message);
+                                                        return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                                    } else {
+                                                        success_message = "Berhasil memperbarui proyek";
+                                                        req.flash('success_message', success_message);
+                                                        return res.redirect(`/inisiator/${req.user._id}/started-project`);
+                                                    }
+                                                });
                                             } else {
-                                                success_message = "Berhasil memperbarui proyek";
-                                                req.flash('success_message', success_message);
+                                                error_message = "Gambar proyek wajib diunggah";
+                                                req.flash('error_message', error_message);
                                                 return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
                                             }
-                                        });
-                                    } else {
-                                        error_message = "Gambar proyek wajib diunggah";
-                                        req.flash('error_message', error_message);
-                                        return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
-                                    }
+                                        }
+                                    });                                    
                                 }
                             });
                         } else {
-                            if (req.files['project_image0']) {
-                                project_image.push(await imageUpload.save(req.files['project_image0'][0].buffer));
-                            } else {
-                                project_image.push(req.body.project_image0_input);
-                            }
-                            if (req.files['project_image1']) {
-                                project_image.push(await imageUpload.save(req.files['project_image1'][0].buffer));
-                            } else {
-                                project_image.push(req.body.project_image1_input);
-                            }
-                            if (req.files['project_image2']) {
-                                project_image.push(await imageUpload.save(req.files['project_image2'][0].buffer));
-                            } else {
-                                project_image.push(req.body.project_image2_input);
-                            }
-                            let image = [{
-                                    filename: project_image[0]
-                                },
-                                {
-                                    filename: project_image[1]
-                                },
-                                {
-                                    filename: project_image[2]
+                            fs.access(budget_dir, async (err) => {
+                                if (err) {
+                                    fs.mkdir(budget_dir, async (err) => {
+                                        if (err) {
+                                            error_message = "Terjadi kesalahan";
+                                            req.flash('error_message', error_message);
+                                            return res.redirect('back');
+                                        }
+                                        else {
+                                            if (req.files['project_image0'] || req.files['project_image1'] || req.files['project_image2']) {
+                                                if (req.files['project_image0']) {
+                                                    project_image.push(await imageUpload.save(req.files['project_image0'][0].buffer));
+                                                }
+                                                if (req.files['project_image1']) {
+                                                    project_image.push(await imageUpload.save(req.files['project_image1'][0].buffer));
+                                                }
+                                                if (req.files['project_image2']) {
+                                                    project_image.push(await imageUpload.save(req.files['project_image2'][0].buffer));
+                                                }
+                                                let image = [{
+                                                        filename: project_image[0]
+                                                    },
+                                                    {
+                                                        filename: project_image[1]
+                                                    },
+                                                    {
+                                                        filename: project_image[2]
+                                                    }
+                                                ];
+                                                let data = {
+                                                    image: image
+                                                };
+                                                updateProject(req.params.project_id, data, function (error, project) {
+                                                    if (error) {
+                                                        error_message = "Terjadi kesalahan";
+                                                        req.flash('error_message', error_message);
+                                                        return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                                    }
+                                                    if (!project) {
+                                                        error_message = "Proyek tidak tersedia";
+                                                        req.flash('error_message', error_message);
+                                                        return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                                    } else {
+                                                        success_message = "Berhasil memperbarui proyek";
+                                                        req.flash('success_message', success_message);
+                                                        return res.redirect(`/inisiator/${req.user._id}/started-project`);
+                                                    }
+                                                });
+                                            } else {
+                                                error_message = "Gambar proyek wajib diunggah";
+                                                req.flash('error_message', error_message);
+                                                return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                            }
+                                        }
+                                    });
                                 }
-                            ];
-                            let data = {
-                                image: image
-                            };
-                            updateProject(req.params.project_id, data, function (error, project) {
-                                if (error) {
-                                    error_message = "Terjadi kesalahan";
-                                    req.flash('error_message', error_message);
-                                    return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
-                                }
-                                if (!project) {
-                                    error_message = "Proyek tidak tersedia";
-                                    req.flash('error_message', error_message);
-                                    return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
-                                } else {
-                                    success_message = "Berhasil memperbarui proyek";
-                                    req.flash('success_message', success_message);
-                                    return res.redirect(`/inisiator/project/${project._id}/edit`);
+                                else {
+                                    if (req.files['project_image0']) {
+                                        project_image.push(await imageUpload.save(req.files['project_image0'][0].buffer));
+                                    } else {
+                                        project_image.push(req.body.project_image0_input);
+                                    }
+                                    if (req.files['project_image1']) {
+                                        project_image.push(await imageUpload.save(req.files['project_image1'][0].buffer));
+                                    } else {
+                                        project_image.push(req.body.project_image1_input);
+                                    }
+                                    if (req.files['project_image2']) {
+                                        project_image.push(await imageUpload.save(req.files['project_image2'][0].buffer));
+                                    } else {
+                                        project_image.push(req.body.project_image2_input);
+                                    }
+                                    let image = [{
+                                            filename: project_image[0]
+                                        },
+                                        {
+                                            filename: project_image[1]
+                                        },
+                                        {
+                                            filename: project_image[2]
+                                        }
+                                    ];
+                                    let data = {
+                                        image: image
+                                    };
+                                    updateProject(req.params.project_id, data, function (error, project) {
+                                        if (error) {
+                                            error_message = "Terjadi kesalahan";
+                                            req.flash('error_message', error_message);
+                                            return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                        }
+                                        if (!project) {
+                                            error_message = "Proyek tidak tersedia";
+                                            req.flash('error_message', error_message);
+                                            return res.redirect(`/inisiator/project/${req.params.project_id}/edit`);
+                                        } else {
+                                            success_message = "Berhasil memperbarui proyek";
+                                            req.flash('success_message', success_message);
+                                            return res.redirect(`/inisiator/${req.user._id}/started-project`);
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -1384,6 +1504,7 @@ const officialRecordUpload = multer({
 router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, officialRecordUpload.single('official_record'), function (req, res) {
     let error_message;
     let success_message;
+
     
     getProjectByID(req.body.project, async function (error, project) {
         if (error) {
@@ -1396,54 +1517,119 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, offici
             req.flash('error_message', error_message);
             return res.redirect('back');
         } else {
-            if (project.inisiator._id.equals(req.user._id)) {
-                if (req.file) {                 
-                    project.budget.forEach((budget, index) => {
-                        if (budget._id.equals(req.body.activity)) {
-                            project.budget[index].alternative_activity_date = req.body.activity_date;
-                            project.budget[index].alternative_amount = req.body.amount;
-                            project.budget[index].official_record = req.file.filename;
-                            project.save().then(project => {
-                                let notification_data = {
-                                    status: 'unread',
-                                    entity: 'waiting_approval_alternative_withdraw',
-                                    description: 'Pencairan Alternatif Menunggu Persetujuan',
-                                    url: '/admin/withdraw/alternative/waiting-approval',
-                                    budget_id: budget._id,
-                                    sender: req.user._id,
-                                    receiver: '5cdb66e014c79f4bc8a01ee5'
+            fs.access(budget_dir, async (err) => {
+                if (err) {
+                    console.log('tidak')
+                    fs.mkdir(dir, async (err) => {
+                        if (err) {
+                            error_message = "Terjadi kesalahan";
+                            req.flash('error_message', error_message);
+                            return res.redirect('back');
+                        }
+                        else {
+                            if (project.inisiator._id.equals(req.user._id)) {
+                                if (req.file) {          
+                                    project.budget.forEach((budget, index) => {
+                                        if (budget._id.equals(req.body.activity)) {
+                                            project.budget[index].alternative_activity_date = req.body.activity_date;
+                                            project.budget[index].alternative_amount = req.body.amount;
+                                            project.budget[index].official_record = req.file.filename;
+                                            project.save().then(project => {
+                                                let notification_data = {
+                                                    status: 'unread',
+                                                    entity: 'waiting_approval_alternative_withdraw',
+                                                    description: 'Pencairan Alternatif Menunggu Persetujuan',
+                                                    url: '/admin/withdraw/alternative/waiting-approval',
+                                                    budget_id: budget._id,
+                                                    sender: req.user._id,
+                                                    receiver: '5cdb66e014c79f4bc8a01ee5'
+                                                }
+                                                let notification = new Notification(notification_data);
+                                                createNotification(notification, function(error) {
+                                                    if (error) {
+                                                        error_message = "Terjadi kesalahan";
+                                                        req.flash('error_message', error_message);
+                                                        return res.redirect('back');
+                                                    }
+                                                    else {
+                                                        success_message = "Pencairan alternatif berhasil dilakukan.";
+                                                        req.flash('success_message', success_message);
+                                                        return res.redirect('back');
+                                                    }
+                                                });
+                                            }).catch(error => {
+                                                error_message = "Pencairan alternatif gagal dilakukan.";
+                                                req.flash('error_message', error_message);
+                                                return res.redirect('back');
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    error_message = "Berita acara wajib diunggah.";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect('back');
                                 }
-                                let notification = new Notification(notification_data);
-                                createNotification(notification, function(error) {
-                                    if (error) {
-                                        error_message = "Terjadi kesalahan";
-                                        req.flash('error_message', error_message);
-                                        return res.redirect('back');
-                                    }
-                                    else {
-                                        success_message = "Pencairan alternatif berhasil dilakukan.";
-                                        req.flash('success_message', success_message);
-                                        return res.redirect('back');
-                                    }
-                                });
-                            }).catch(error => {
-                                error_message = "Pencairan alternatif gagal dilakukan.";
+                            }
+                            else {
+                                error_message = "Proyek tidak tersedia";
                                 req.flash('error_message', error_message);
                                 return res.redirect('back');
-                            });
+                            }
                         }
                     });
-                } else {
-                    error_message = "Berita acara wajib diunggah.";
-                    req.flash('error_message', error_message);
-                    return res.redirect('back');
                 }
-            }
-            else {
-                error_message = "Proyek tidak tersedia";
-                req.flash('error_message', error_message);
-                return res.redirect('back');
-            }
+                else {
+                    console.log('ada')
+                    if (project.inisiator._id.equals(req.user._id)) {
+                        if (req.file) {          
+                            project.budget.forEach((budget, index) => {
+                                if (budget._id.equals(req.body.activity)) {
+                                    project.budget[index].alternative_activity_date = req.body.activity_date;
+                                    project.budget[index].alternative_amount = req.body.amount;
+                                    project.budget[index].official_record = req.file.filename;
+                                    project.save().then(project => {
+                                        let notification_data = {
+                                            status: 'unread',
+                                            entity: 'waiting_approval_alternative_withdraw',
+                                            description: 'Pencairan Alternatif Menunggu Persetujuan',
+                                            url: '/admin/withdraw/alternative/waiting-approval',
+                                            budget_id: budget._id,
+                                            sender: req.user._id,
+                                            receiver: '5cdb66e014c79f4bc8a01ee5'
+                                        }
+                                        let notification = new Notification(notification_data);
+                                        createNotification(notification, function(error) {
+                                            if (error) {
+                                                error_message = "Terjadi kesalahan";
+                                                req.flash('error_message', error_message);
+                                                return res.redirect('back');
+                                            }
+                                            else {
+                                                success_message = "Pencairan alternatif berhasil dilakukan.";
+                                                req.flash('success_message', success_message);
+                                                return res.redirect('back');
+                                            }
+                                        });
+                                    }).catch(error => {
+                                        error_message = "Pencairan alternatif gagal dilakukan.";
+                                        req.flash('error_message', error_message);
+                                        return res.redirect('back');
+                                    });
+                                }
+                            });
+                        } else {
+                            error_message = "Berita acara wajib diunggah.";
+                            req.flash('error_message', error_message);
+                            return res.redirect('back');
+                        }
+                    }
+                    else {
+                        error_message = "Proyek tidak tersedia";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    }
+                }
+            });
         }
     });
 });

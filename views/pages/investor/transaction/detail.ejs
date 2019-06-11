@@ -59,14 +59,14 @@
                                 <div class="mx-auto d-block">
                                     <h4 class="card-title mb-3"><a href="/project/<%= transaction.project._id %>"><%= transaction.project.basic[0].title %></a> 
                                     </h4>
-                                    <%= transaction.stock_quantity %> x <strong>Rp. <%= transaction.project.basic[0].stock[0].price %></strong>
+                                    <%= transaction.stock_quantity %> x <strong>Rp. <span id="stock-price"></span></strong>
 
                                 </div>
                             </div>
                             <div class="card-footer" style="font-size: 16px;">
                                 <strong class="card-title mb-3">Total: </strong>
                                 <span class="pull-right">
-                                    <strong class="card-title mb-3">Rp. <%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %></strong>
+                                    <strong class="card-title mb-3">Rp. <span id="total-payment"></span></strong>
                                 </span>
                             </div>
                         </div>
@@ -145,10 +145,30 @@
         document.getElementById("my-transaction-sub-menu").className = "sub-menu children dropdown-menu show";
         document.getElementById("waiting-payment-icon").setAttribute('style', 'color: #03a9f3');
         document.getElementById("waiting-payment-link").setAttribute('style', 'color: #03a9f3');
+        
         $('#payment-form').on('submit', function (event) {
             $('#payment-form-button').attr('disabled', 'disabled');
             $('#payment-form-spinner').show();
         });
+
+        document.getElementById('stock-price').innerHTML = formatRupiah('<%= transaction.project.basic[0].stock[0].price %>')
+        document.getElementById('total-payment').innerHTML = formatRupiah('<%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>')
+
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
     </script>
 </body>
 

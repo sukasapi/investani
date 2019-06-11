@@ -98,12 +98,9 @@
                                                     <%= transaction.project.basic[0].title %>
                                                 </a>
                                             </td>
-                                            <td>
-                                                <%= transaction.stock_quantity %>
-                                            </td>
-                                            <td><%= transaction.project.basic[0].stock[0].price %></td>
-                                            <td><%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>
-                                            </td>
+                                            <td><%= transaction.stock_quantity %></td>
+                                            <td>Rp. <span class="stock-price"></span></td>
+                                            <td>Rp. <span class="total-payment"></span></td>
                                             <td><%= due_date[index] %></td>
                                             <td>
                                                 <% if (expired[index]) { %>
@@ -166,9 +163,31 @@
         document.getElementById("waiting-payment-link").style.color= '#03a9f3';
 
         $('#project-basic-form').on('submit', function () {
-                $('#project-basic-button').attr('disabled', 'disabled');
-                $('#project-basic-spinner').show();
-            });
+            $('#project-basic-button').attr('disabled', 'disabled');
+            $('#project-basic-spinner').show();
+        });
+
+        <% transactions.forEach((transaction, index) => { %>
+            document.getElementsByClassName('stock-price')[<%= index %>].innerHTML = formatRupiah('<%= transaction.project.basic[0].stock[0].price %>')
+            document.getElementsByClassName('total-payment')[<%= index %>].innerHTML = formatRupiah('<%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>');
+        <% }) %>
+
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
+
     </script>
 </body>
 
