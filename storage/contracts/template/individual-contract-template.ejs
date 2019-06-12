@@ -1,0 +1,659 @@
+<html>
+
+</html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="css/dropify.min.css">
+</head>
+
+<body>
+    <title>PERJANJIAN KEPESERTAAN PROGRAM BUDIDAYA INVESTANI</title>
+    <style>
+        .page {
+            border: 1px solid #000;
+            padding: 24px;
+            width: 668px;
+            height: 958px;
+            margin: 48px auto;
+            background: #fff
+        }
+
+        body {
+            background: #ebecf2
+        }
+
+        .right>.signature {
+            border: 1px dashed #b8bbcc;
+            background: #c3f9c1;
+            width: 150px;
+            height: 100px;
+            cursor: pointer
+        }
+
+        .display-none {
+            display: none
+        }
+
+        .display-flex {
+            display: flex
+        }
+
+        .display-block {
+            display: block
+        }
+
+        body {
+            font-size: 14px;
+            line-height: 1.35;
+            font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+        }
+
+        .page {
+            height: 910px;
+            width: 620px;
+            margin: auto;
+            padding: 50px 0;
+            box-sizing: border-box;
+            page-break-after: always;
+            position: relative;
+        }
+
+        .page:last-child {
+            page-break-after: avoid;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .heading-1,
+        .heading-2 {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .heading-1 {
+            font-size: 16px;
+        }
+
+        .heading-2 {
+            margin-bottom: 10px;
+        }
+
+        .normal {
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        .sign {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .sign .left,
+        .sign .right {
+            width: 50%;
+            text-align: left;
+            float: left;
+            box-sizing: border-box;
+        }
+
+        .sign .left {
+            padding-right: 10px;
+        }
+
+        .sign .right {
+            padding-left: 10px;
+        }
+
+        .sign .title {
+            margin-bottom: 10px;
+            height: 40px;
+        }
+
+        .sign .signature {
+            height: 100px;
+        }
+
+        .sign .signature img {
+            height: 100px;
+            max-width: 270px;
+            width: auto;
+        }
+
+        .sign .signee {
+            margin-top: 10px;
+        }
+
+        .sign .signee hr {
+            margin: 0;
+            width: 80%;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        .income-source,
+        .income-source ul {
+            margin-top: 0;
+            padding-left: 2em;
+            list-style-type: none;
+        }
+
+        .income-source li:before {
+            position: absolute;
+            left: 2em;
+        }
+
+        .income-source li.tick:before {
+            content: 'v';
+            font-weight: bold;
+        }
+
+        .income-source li.tick {
+            font-weight: bold;
+        }
+
+        .income-source li.circle:before {
+            content: '\2022';
+        }
+
+        .inside-list,
+        ol {
+            padding-left: 18px;
+        }
+
+        .inside-list p,
+        .inside-list ul,
+        .inside-list ul li {
+            margin: 0;
+            margin-bottom: 5px;
+        }
+
+        ul {
+            padding-left: 13px;
+        }
+
+        table {
+            margin-left: -3px;
+        }
+
+        table>tr>td {
+            font-size: 14px;
+            line-height: 1.35;
+            font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+        }
+
+        ol>li {
+            margin-bottom: 10px;
+        }
+
+        .page {
+            border: 1px solid #000;
+            padding: 24px;
+            width: 668px;
+            height: 958px;
+            margin: 48px auto;
+            background: #fff
+        }
+
+        body {
+            background: #ebecf2
+        }
+
+        .right>.signature {
+            border: 1px dashed #b8bbcc;
+            background: #c3f9c1;
+            width: 150px;
+            height: 100px;
+            cursor: pointer
+        }
+
+        .display-none {
+            display: none
+        }
+
+        .display-flex {
+            display: flex
+        }
+
+        .display-block {
+            display: block
+        }
+    </style>
+    <div class="page">
+        <div class="heading-1">
+            PERJANJIAN KEPESERTAAN PROGRAM BUDIDAYA TEBU INVESTANI
+            <br><br>
+            ANTARA
+            <br>
+            INVESTANI
+            <br>
+            DENGAN
+            <br>
+            <%= profile[0].name.toUpperCase() %>
+        </div>
+        <hr>
+        <div class="normal">
+            <p>Pada hari ini <span id="today"></span>, bertempat di Surabaya, telah diadakan
+                penandatanganan Perjanjian Kepesertaan Program Budidaya Tebu INVESTANI (selanjutnya
+                disingkat “Perjanjian”), oleh dan antara para pihak:</p>
+            <ol>
+                <li><strong>INVESTANI</strong>, platform pendanaan secara elektronik di bawah <strong>Koperasi
+                        Karyawan PTPN X</strong> yang didirikan berdasarkan hukum Republik Indonesia, beralamat
+                    di Jl. Jembatan Merah No 3-11, Surabaya 60175 Jawa Timur, Indonesia yang diwakili secara sah
+                    oleh
+                    <strong>Nanang
+                        Dwi Heriyanto</strong> selaku Ketua Koperasi Karyawan PTPN X, dalam hal ini bertindak
+                    untuk dan atas nama <strong>Koperasi Karyawan PTPN X</strong>, untuk selanjutnya disebut
+                    <strong>PIHAK
+                        PERTAMA</strong>;
+                </li>
+                <li><strong>
+                        <%= profile[0].name.toUpperCase() %></strong>, warga negara Indonesia, pemegang kartu tanda
+                    penduduk No.
+                    <%= document[0].identity_number %> bertempat tinggal di
+                    <%= profile[0].address %>,
+                    <%= profile[0].sub_district[0].sub_district_name %>,
+                    <%= profile[0].district[0].district_name %>,
+                    <%= profile[0].city[0].city_name %>,
+                    <%= profile[0].province[0].province_name %>, untuk selanjutnya disebut sebagai <strong>PIHAK
+                        KEDUA</strong>;
+                </li>
+            </ol>
+            <p>Selanjutnya PIHAK PERTAMA dan PIHAK KEDUA secara bersama-sama disebut “Para Pihak”.</p>
+            <p>BAHWA:</p>
+            <ol>
+                <li>PIHAK PERTAMA adalah platform fintech di bawah koperasi karyawan PTPN X yang
+                    bergerak di bidang portal web melalui media internet yang menjalankan program budidaya
+                    tebu dengan melibatkan partisipasi masyarakat untuk membiayai program budidaya
+                    tersebut.</li>
+                <li>PIHAK KEDUA adalah pihak yang hendak menempatkan dananya sebagai bentuk
+                    penyertaan modal untuk program budidaya tebu yang diselenggarakan oleh PIHAK
+                    PERTAMA.</li>
+                <li>Dengan membuat dan menandatangani Perjanjian ini, PIHAK KEDUA menyatakan telah
+                    membaca, menyetujui syarat dan ketentuan yang tercantum dalam Syarat dan Ketentuan
+                    sebagaimana tercantum di dalam www.investani.ptpn10.co.id</li>
+                <li>PIHAK KEDUA setuju bahwa dana PIHAK KEDUA akan ditempatkan dari rekening PIHAK
+                    KEDUA kepada Rekening PIHAK PERTAMA (sebagaimana didefinisikan dibawah ini).</li>
+                <li>Lebih lanjut, dengan mempertimbangkan kesepahaman bersama yang dituangkan dalam
+                    Perjanjian ini, Para Pihak dengan berdasarkan itikad baik serta saling mempercayai, telah
+                    saling sepakat dan setuju untuk saling mengikatkan diri dalam Perjanjian Kepersertaan
+                    Program Budidaya Tebu INVESTANI (“Perjanjian”) dengan ketentuan-ketentuan dan syarat-syarat
+                    sebagaimana dituangkan dalam Pasal-Pasal sebagai berikut:</li>
+            </ol>
+        </div>
+        <div class="page-number">1</div>
+    </div>
+    <div class="page">
+        <div class="heading-2">PASAL I
+            <br>
+            PERINCIAN
+        </div>
+        <div class="normal">
+            <ol>
+                <li>Para Pihak sepakat bahwa dana PIHAK KEDUA akan ditempatkan dari Rekening PIHAK
+                    KEDUA sebagaimana disebutkan dalam Pasal 1 ayat 4 Perjanjian ini kepada Rekening
+                    PIHAK PERTAMA dengan rincian sebagai berikut (“Rekening PIHAK PERTAMA”):<br>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>Bank</td>
+                                <td>:</td>
+                                <td>Mandiri</td>
+                            </tr>
+                            <tr>
+                                <td>Nomor Rekening</td>
+                                <td>:</td>
+                                <td>1400039101010</td>
+                            </tr>
+                            <tr>
+                                <td>Nama</td>
+                                <td>:</td>
+                                <td>Koperasi Karyawan PTPN X</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </li>
+                <li>Para Pihak sepakat bahwa dana PIHAK KEDUA yang akan ditempatkan dari Rekening
+                    PIHAK KEDUA ke dalam Rekening PIHAK PERTAMA sebagaimana dimaksud dalam
+                    Pasal 1 ayat 1 Perjanjian ini adalah dana yang bersih dari biaya layanan bank. Apabila
+                    terdapat biaya layanan bank dari bank PIHAK KEDUA, Para Pihak sepakat bahwa
+                    PIHAK KEDUA akan bertanggung jawab atas biaya layanan bank yang timbul tersebut.</li>
+                <li>PIHAK KEDUA akan menyerahkan semua dokumen yang disyaratkan oleh PIHAK
+                    PERTAMA, termasuk setiap perubahannya dari waktu ke waktu.</li>
+                <li>PIHAK KEDUA setuju untuk memberikan informasi penempatan dana kepada PIHAK
+                    PERTAMA dan dokumen pendukung setiap kali melakukan penempatan dana ke
+                    Rekening PIHAK PERTAMA dengan rincian informasi sebagai berikut:</li>
+            </ol>
+            <div class="inside-list">
+                <p><strong>Apabila PIHAK KEDUA adalah individu:</strong></p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Nama Pihak Kedua</td>
+                            <td>:</td>
+                            <td>
+                                <%= profile[0].name %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Warga Negara</td>
+                            <td>:</td>
+                            <td>WNI</td>
+                        </tr>
+                        <tr>
+                            <td>Nomor Handphone</td>
+                            <td>:</td>
+                            <td>
+                                <%= profile[0].phone %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>E-mail</td>
+                            <td>:</td>
+                            <td>
+                                <%= email %>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <td>Alamat Korespondensi</td>
+                            <td>:</td>
+                            <td>
+                                <%= profile[0].address %>,
+                                <%= profile[0].sub_district[0].sub_district_name %>,
+                                <%= profile[0].district[0].district_name %>,
+                                <%= profile[0].city[0].city_name %>,
+                                <%= profile[0].province[0].province_name %>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <div class="inside-list">
+                <p>Informasi Rekening Penempatan dan <strong>Rekening Pengembalian</strong> PIHAK KEDUA (“Rekening
+                    PIHAK KEDUA”):</p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Rekening Atas Nama</td>
+                            <td>:</td>
+                            <td>
+                                <%= bank[0].account_name %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nomor Rekening</td>
+                            <td>:</td>
+                            <td>
+                                <%= bank[0].account_number %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Nama Bank</td>
+                            <td>:</td>
+                            <td>
+                                <%= bank[0].bank_name.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Cabang</td>
+                            <td>:</td>
+                            <td>
+                                <%= bank[0].branch %>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <ol start="5">
+                <li>Para Pihak sepakat bahwa setiap dana yang ditempatkan oleh PIHAK KEDUA di dalam
+                    Rekening PIHAK PERTAMA wajib ditransfer oleh PIHAK KEDUA dari rekening atas nama
+                    PIHAK KEDUA paling lambat 3 (tiga) hari kalender sejak PIHAK KEDUA
+                    mengkonfirmasikan penyertaannya dalam suatu program budidaya. Pengembalian dana
+                    akan ditransfer hanya kepada rekening atas nama PIHAK KEDUA sebagaimana
+                    tercantum dalam Pasal 1 ayat 4 Perjanjian ini. Tidak akan ada pembayaran penempatan
+                    atau pengembalian dana kepada pihak ketiga yang akan diijinkan. Dalam hal Rekening
+                    PIHAK KEDUA untuk penempatan atau pengembalian bukanlah bank yang berasal dari
+                    Indonesia, sebelum menerima atau mengirimkan dana, PIHAK PERTAMA mempunyai
+                    hak untuk meminta dokumen dan informasi untuk melakukan verifikasi sumber dana dari
+                    pemegang rekening.</li>
+            </ol>
+        </div>
+        <div class="page-number">2</div>
+    </div>
+    <div class="page">
+        <div class="normal">
+
+            <ol start="6">
+                <li>Rincian dari rekening penempatan dan rekening pengembalian akan dianggap sama,
+                    kecuali dinyatakan lain oleh Para Pihak dalam dokumen terpisah.</li>
+                <li>Para Pihak sepakat bahwa dana yang yang ditempatkan oleh PIHAK KEDUA dalam
+                    Rekening PIHAK PERTAMA dalam bentuk mata uang Rupiah.</li>
+                <li>Para Pihak sepakat bahwa PIHAK PERTAMA akan mengirimkan pengembalian dana
+                    dalam mata uang Rupiah.</li>
+                <li>Para pihak sepakat jika PIHAK PERTAMA berbeda bank dengan PIHAK KEDUA maka
+                    PIHAK KEDUA akan menanggung semua biaya transfer bank dari dan ke PIHAK KEDUA.</li>
+            </ol>
+            <div class="heading-2">
+                PASAL II
+                <br>
+                PERNYATAAN SUMBER DANA
+            </div>
+            <div class="normal income-source">
+                <p>
+                    Dalam mendukung program anti pencucian uang, PIHAK KEDUA dengan ini menyatakan
+                    bahwa kekayaan dan dana berasal dari:
+                </p>
+                <ul>
+                    <li class=<%if (occupation[0].income_source=='penghasilan_rutin_gaji' ) {%> "tick"
+                        <% } else { %> "circle"
+                        <% } %>>Upah kerja</li>
+                    <li class=<%if (occupation[0].income_source=='usaha_bisnis' ) {%> "tick"
+                        <% } else { %> "circle"
+                        <% } %>>Pendapatan bisnis</li>
+                    <li class=<%if (occupation[0].income_source=='hasil_investasi' ) {%> "tick"
+                        <% } else { %> "circle"
+                        <% } %>>Hasil dari penjualan properti dan/atau aset</li>
+                    <li class=<%if (occupation[0].income_source=='warisan' ) {%> "tick"
+                        <% } else { %> "circle"
+                        <% } %>>Warisan</li>
+                    <li class=<%if (occupation[0].income_source=='hadiah' ) {%> "tick"
+                        <% } else { %> "circle"
+                        <% } %>>Hadiah</li>
+                    <li class=<%if (occupation[0].income_source=='lainnya' ) {%> "tick"
+                        <% } else { %> "circle"
+                        <% } %>>Lainnya</li>
+                </ul>
+            </div>
+        </div>
+        <div class="normal">
+            <p>
+                PIHAK KEDUA selanjutnya menyatakan <strong>tidak terlibat dengan pencucian uang</strong>, dan/atau
+                <strong>perdagangan narkotik dan obat-obatan terlarang</strong>, dan uang dan/atau surat berharga
+                yang
+                telah atau akan didepositkan di rekening bank atas nama PIHAK KEDUA yang bukan berasal,
+                baik secara langsung atau tidak langsung,dari sumber yang tidak sah dan/atau hasil
+                kejahatan.
+            </p>
+        </div>
+        <div class="heading-2">PASAL III<br>PENYERTAAN DANA</div>
+        <div class="normal">
+            <ol>
+                <li>Para Pihak sepakat bahwa PIHAK KEDUA akan mengkonfirmasi setiap penyertaan dana
+                    di program budidaya yang diselenggarakan oleh PIHAK PERTAMA secara online melalui
+                    www.investani.ptpn10.co.id atau secara offline melalui dokumen penyertaan dana yang
+                    telah ditetapkan sebelumnya oleh PIHAK PERTAMA.</li>
+                <li>PIHAK PERTAMA akan menerbitkan sertifikat penyertaan dana program budidaya
+                    (selanjutnya disebut sebagai SERTIFIKAT PENYERTAAN DANA) paling lambat 7 (tujuh)
+                    hari sejak PIHAK PERTAMA menerima dana dari Rekening PIHAK KEDUA.</li>
+            </ol>
+        </div>
+        <div class="heading-2">
+            PASAL IV
+            <br>
+            PEMBATALAN DAN PENGALIHAN
+        </div>
+        <div class="normal">
+            <ol>
+                <li>PIHAK KEDUA tidak dapat membatalkan penyertaan dana di setiap program budidaya
+                    penjualan yang telah dipilihnya sebelum tanggal berakhirnya program budidaya tersebut.</li>
+                <li>PIHAK KEDUA dapat mengalihkan dan/atau menjual hak yang melekat pada SERTIFIKAT
+                    PENYERTAAN DANA dengan pemberitahuan terlebih dahulu 7 hari sebelum pengalihan
+                    terjadi.</li>
+                <li>Dalam hal pengalihan terjadi, maka pihak yang menerima pengalihan akan tunduk pada
+                    ketentuan perjanjian ini secara keseluruhan.</li>
+            </ol>
+        </div>
+        <div class="page-number">3</div>
+    </div>
+    <div class="page">
+
+        <div class="heading-2">
+            PASAL V
+            <br>
+            BAGI HASIL
+        </div>
+        <div class="normal">
+            <ol>
+                <li>Program budidaya diselenggarakan oleh PIHAK PERTAMA dengan sistem bagi hasil (syariah)</li>
+                <li>Perhitungan bagi hasil mengacu kepada laporan laba/rugi program budidaya tebu dimana
+                    PIHAK KEDUA berpartisipasi dan menyertakan dananya.</li>
+                <li>Skema bagi hasil yang ditetapkan sesuai dengan ketentuan yang ada di dalam
+                    prospektus.</li>
+                <li>Pengembalian pokok dan/atau bagi hasil mengacu ke setiap jadwal yang ditetapkan di
+                    setiap program budidaya tebu yang diikuti oleh PIHAK KEDUA.</li>
+                <li>Dana dari pengembalian pokok dan/atau bagi hasil akan ditempatkan ke dalam saldo
+                    rekening PIHAK KEDUA pada tanggal pengembalian pokok dan/atau bagi hasil yang
+                    ditetapkan di setiap program budidaya tebu.</li>
+            </ol>
+        </div>
+        <div class="heading-2">
+            PASAL VI
+            <br>
+            PERPAJAKAN
+        </div>
+        <div class="normal">
+            <p>Segala kewajiban perpajakan yang timbul akibat pemberlakuan Perjanjian ini akan ditanggung
+                oleh Para Pihak sesuai dengan peraturan perundang-undangan yang berlaku.</p>
+        </div>
+        <div class="heading-2">
+            PASAL VII
+            <br>
+            MASA BERLAKUNYA PERJANJIAN
+        </div>
+        <div class="normal">
+            <ol>
+                <li>Perjanjian ini mulai berlaku sejak ditandatangani sampai dengan PIHAK KEDUA
+                    memutuskan untuk berhenti menjadi investor di program-program pembiayaan yang disediakan PIHAK
+                    PERTAMA dan hak-hak PIHAK
+                    KEDUA telah dialihkan/diperjualbelikan ke pihak lain atau PIHAK PERTAMA secara sah.</li>
+                <li>Dalam Pelaksanaan pengakhiran perjanjian ini kedua belah PIHAK setuju untuk
+                    melepaskan ketentuan pasal 1266 Kitab Undang-Undang Hukum Perdata sepanjang
+                    mengatur tentang pengakhiran perjanjian melalui pengadilan, serta melepaskan
+                    ketentuan pasal 1267 Kitab Undang-Undang Hukum Perdata sepanjang mengatur tentang
+                    pemberian ganti kerugian dalam bentuk apapun apabila perjanjian ini diakhiri.</li>
+            </ol>
+        </div>
+        <div class="heading-2">
+            PASAL VIII
+            <br>
+            PENYELESAIAN PERSELISIHAN
+        </div>
+        <div class="normal">
+            <ol>
+                <li>Para pihak sepakat untuk menyelesaikan segala perselisihan yang timbul sehubungan
+                    dengan atau sebagai akibat dari perjanjian ini secara musyawarah untuk mufakat.</li>
+                <li>Apabila perselisihan tersebut tidak dapat diselesaikan dengan musyawarah, maka para
+                    pihak sepakat untuk mengajukan perselisihan yang ada kepada Badan Arbitrase Nasional
+                    Indonesia (BANI) dengan tunduk pada peraturan arbitrase BANI.</li>
+                <li>Selama proses penyelesaian perselisihan para pihak di BANI, maka segala kewajiban
+                    yang harus dilaksanakan oleh para pihak akan ditunda terlebih dahulu sampai mendapat
+                    keputusan tetap dari BANI.</li>
+            </ol>
+        </div>
+        <div class="heading-2">
+            PASAL IX
+            <br>
+            FORCE MAJEURE
+        </div>
+        <div class="normal">
+            <p>
+                Dalam keadaan darurat nasional, perang, peraturan larangan dari pemerintah atau
+                penyebab lainnya diluar kendali kedua belah pihak yang menghalangi untuk menjalankan
+                Perjanjian ini maka kedua belah pihak akan dibebaskan dari kewajiban masing-masing
+                selama periode tersebut.</p>
+        </div>
+        <div class="page-number">4</div>
+    </div>
+    <div class="page">
+
+
+        <div class="heading-2">
+            PASAL X
+            <br>
+            LAIN-LAIN
+        </div>
+        <div class="normal">
+            <ol>
+                <li>Hal-hal yang belum diatur dan perubahan-perubahan dari Perjanjian ini, akan
+                    diselesaikan melalui kesepakatan atau perundingan kedua belah pihak dan akan
+                    dituangkan dalam suatu Addendum Perjanjian yang ditandatangani oleh kedua belah
+                    pihak serta merupakan bagian yang tidak terpisahkan dari dan mempunyai kekuatan
+                    hukum yang sama dengan Perjanjian ini.</li>
+                <li>Segala ketentuan-ketentuan dan syarat-syarat dalam Perjanjian ini berlaku serta
+                    mengikat bagi pihak-pihak yang menandatangani, pengganti-penggantinya dan
+                    mereka memperoleh keuntungan dari padanya.</li>
+            </ol>
+            <p>Demikian Perjanjian ini dibuat dan mempunyai kekuatan hukum yang sama setelah ditandatangani oleh
+                kedua
+                belah pihak.</p>
+            <br><br>
+        </div>
+        <div class="sign">
+            <div class="left">
+                <div class="title">PIHAK PERTAMA<br>Koperasi Karyawan PTPN X</div>
+                <div class="signature"><img src="https://api.tanifund.com/images/ivan-signature.png"></div>
+                <div class="signee">Nanang Dwi Heriyanto
+                    <hr>
+                </div>
+            </div>
+            <div class="right">
+                <div class="title">PIHAK KEDUA</div>
+                <form id="signature-form" enctype="multipart/form-data" style="width: 150px;">
+                    <div class="signature"><img src="https://api.tanifund.com/images/ivan-signature.png"></div>
+                </form>
+                <div class="signee">
+                    <%= profile[0].name %>
+                    <hr>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="page-number">5</div>
+    </div>
+    <script>
+        var months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+            'November', 'Desember'
+        ];
+        var myDays = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
+        var date = new Date();
+        var day = date.getDate();
+        var month = date.getMonth();
+        var thisDay = date.getDay(),
+            thisDay = myDays[thisDay];
+        var yy = date.getYear();
+        var year = (yy < 1000) ? yy + 1900 : yy;
+        $('#today').text(thisDay + ', ' + day + ' ' + months[month] + ' ' + year);
+    </script>
+</body>
+
+</html>

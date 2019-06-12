@@ -1,0 +1,29 @@
+<aside id="left-panel" class="left-panel">
+    <nav class="navbar navbar-expand-sm navbar-default">
+
+        <div id="main-menu" class="main-menu collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li id="dashboard">
+                    <a href="/investor/dashboard"><i class="menu-icon fa fa-laptop"></i>Dashboard </a>
+                </li>
+                <li class="menu-title">Proyek</li><!-- /.menu-title -->
+                <li id="my-project" class="menu-item-has-children dropdown">
+                    <a href="#" id="my-project-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="menu-icon fa fa-glass"></i>Proyek Saya</a>
+                    <ul class="sub-menu children dropdown-menu" id="my-project-sub-menu">
+                        <li><i class="menu-icon fa fa-sign-in" id="backed-project-icon"></i><a id="backed-project-link" href="/investor/<%= user_id %>/backed-project">Proyek yang Didanai</a></li>
+                    </ul>
+                </li>
+                <li class="menu-title">Transaksi</li><!-- /.menu-title -->
+                <li id="my-transaction" class="menu-item-has-children dropdown">
+                    <a href="#" id="my-transaction-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="menu-icon fa fa-glass"></i>Transaksi</a>
+                    <ul class="sub-menu children dropdown-menu" id="my-transaction-sub-menu">
+                        <li><i class="menu-icon fa fa-sign-in" id="waiting-payment-icon"></i><a id="waiting-payment-link" href="/investor/transaction/waiting-payment">Menunggu Pembayaran</a></li>
+                        <li><i class="menu-icon fa fa-sign-in" id="waiting-verification-icon"></i><a id="waiting-verification-link" href="/investor/transaction/waiting-verification">Menunggu Verifikasi</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+</aside><!-- /#left-panel -->

@@ -1,0 +1,241 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ela Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/cs-skin-elastic.css">
+    <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/css/dashboard-style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+    <style>
+        .card-title a {
+            color: #000000
+        }
+        .twt-category {
+            margin-bottom: 0;
+        }
+        .twt-category {
+            display: inline-block;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .weather-category ul {
+            padding-left: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        .twt-category ul li {
+            font-size: 12px;
+        }
+        .weather-category ul li {
+            width: 32%;
+            text-align: center;
+            border-right: 1px solid #e6e6e6;
+            display: inline-block;
+        }
+        .twt-footer {
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+        }
+        .card h4 {
+            font-size: 1.1rem;
+            padding-top: 0px;
+        }
+        .bg-success {
+            background-color: #ffc400 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Left Panel -->
+
+    <% include ../../partials/inisiator/aside-dashboard %>
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <% include ../../partials/inisiator/header-dashboard %>
+        <!-- Header-->
+
+        <% include ../../partials/inisiator/breadcrumbs-dashboard %>
+        <% if (success_message != '') { %>
+        <div class="sufee-alert alert with-close alert-success alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
+            <%= success_message %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <% } %>
+        <% if (error_message != '') { %>
+        <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
+            <%= error_message %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <% } %>
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <% projects.forEach((project, index) => { %>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <a href="<% if(project.status == 'done') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'done') { %> /inisiator/project/<%= project._id %>/edit <% } %>">
+                                <% if (project.image[0]) { %>
+                                <img alt="Card image cap" class="card-img-top"
+                                    src="/image/project/<%= project._id %>/<%= project.image[0].filename %>"
+                                    style="height: 178px;">
+                                <% } %>
+                                <% if (!project.image[0]) { %>
+                                <img class="card-img-top" src="https://picsum.photos/300/169/?random %>"
+                                    alt="Card image cap">
+                                <% } %>
+                            </a>
+                            <div class="card-body">
+                                <div class="mx-auto d-block">
+                                    <h4 class="card-title mb-3"><a
+                                            href="<% if(project.status == 'done') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'done') { %> /inisiator/project/<%= project._id %>/edit <% } %>"><%= project.basic[0].title %></a>
+                                        <% if (project.status == "draft") { %>
+                                        <small><span class="badge badge-light float-right mt-1">Draft</span></small>
+                                        <% } %>
+                                        <% if (project.status == "waiting") { %>
+                                        <small><span
+                                                class="badge badge-warning float-right mt-1">Menunggu</span></small>
+                                        <% } %>
+                                        <% if (project.status == "verified") { %>
+                                            <small><span class="badge badge-primary float-right mt-1">Terverifikasi</span></small>
+                                        <% } %>
+                                        <% if (project.status == "done") { %>
+                                            <small><span class="badge badge-success float-right mt-1">Selesai</span></small>
+                                        <% } %>
+                                    </h4>
+                                    <p class="card-text">Dibuat oleh <strong><%= inisiator %></strong></p>
+                                </div>
+                                <div class="weather-category twt-category">
+                                    <ul>
+                                        <li>
+                                            Imbal Hasil
+                                            <h6>
+                                            <% if (project.project.length > 0) { %>
+                                                <%=project.project[0].roi%>%
+                                            <% } %>
+                                            <% if (project.project.length == 0) { %>
+                                                - %
+                                            <% } %>
+                                            </h6>
+                                        </li>
+                                        <li>
+                                            Durasi Proyek
+                                            <h6>
+                                            <% if (project.project.length > 0) { %>
+                                                <%=project.project[0].duration[0].duration%> 
+                                            <% } %>
+                                            <% if (project.project.length == 0) { %>
+                                                - 
+                                            <% } %>
+                                            Bulan</h6>
+                                        </li>
+                                        <li>
+                                            Tersisa
+                                            <% if (durations[index] == null) { %>
+                                                <h6>-</h6>
+                                            <% } %>
+                                            <% if (durations[index] != null && durations[index] >=0) { %>
+                                                <h6><%= durations[index] %> hari</h6>
+                                            <% } %>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <footer class="twt-footer">
+                                Harga Saham: <% if (project.basic[0].stock.length != 0) { %> <strong>Rp. <span class="stock-price"></span></strong> <% } %>
+                            </footer>
+                            <div class="card-footer" style="font-size: 12px;">
+                                <div class="card-text text-sm-center">
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: <% if (project.basic[0].stock.length != 0) { %> <%- Math.round((project.basic[0].stock[0].total-project.basic[0].stock[0].remain)/project.basic[0].stock[0].total*100 * 100) / 100  %> <% } %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <strong class="card-title mb-3"> <% if (project.basic[0].stock.length != 0) { %> <%- Math.round((project.basic[0].stock[0].total-project.basic[0].stock[0].remain)/project.basic[0].stock[0].total*100 * 100) / 100  %> <% } %>%</strong> Dana Terkumpul
+                                <span class="pull-right">
+                                    <% let goal = 0 %>
+                                    <% project.budget.forEach((budget) => { %>
+                                        <% goal = goal + budget.amount %>
+                                    <% }) %>
+                                    Target: Rp. <%= goal %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+
+        <div class="clearfix"></div>
+        <% include ../../partials/inisiator/footer-dashboard %>
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/js/dashboard-main.js"></script>
+    <script>
+        <% projects.forEach((project, index) => { %>
+            document.getElementsByClassName('stock-price')[<%= index%>].innerHTML = formatRupiah('<%=project.basic[0].stock[0].price%>');
+        <% }); %>
+
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
+
+        document.getElementById("my-project").className = "menu-item-has-children dropdown active show";
+        document.getElementById("my-project-link").click();
+        document.getElementById("started-project-sub").style.color = '#03a9f3';
+    </script>
+
+</body>
+
+</html>

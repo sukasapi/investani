@@ -1,0 +1,59 @@
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <% if (url == "start-project" || url == "started-project" || url == "edit-project" ||url == "started-project-transaction") { %>
+                            <h1>Proyek</h1>
+                        <% } %>
+                        <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment' || url == 'rejected-withdraw' || url == 'paid-withdraw' ) { %>
+                            <h1>Pencairan</h1>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                    <ol class="breadcrumb text-right">
+                        <% if (url == "start-project" || url == "started-project" || url == "edit-project" ||url == "started-project-transaction") { %>
+                            <li><a href="/inisiator/<% user_id %>/started-project">Proyek</a></li>
+                        <% } %>
+                        <% if (url == "start-project") { %>
+                            <li class="active">Mulai Proyek</li>
+                        <% } %>
+                        <% if (url == "started-project") { %>
+                            <li class="active">Proyek yang Dimulai</li>
+                        <% } %>
+                        <% if (url == "edit-project") { %>
+                            <li class="active">Ubah Proyek</li>
+                        <% } %>
+                        <% if (url == "started-project-transaction") { %>
+                            <li class="active">Transaksi</li>
+                        <% } %>
+                        <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment' || url == 'rejected-withdraw' || url == 'paid-withdraw') { %>
+                            <li><a href="#">Pencairan</a></li>
+                            <% if (url == 'waiting-withdraw-approval' || url == 'waiting-withdraw-payment') { %>
+                                <li class="active">Menunggu</li>
+                                <% if (url == 'waiting-withdraw-approval') { %>
+                                    <li class="active">Persetujuan</li>
+                                <% } %>
+                                <% if (url == 'waiting-withdraw-payment') { %>
+                                    <li class="active">Pembayaran</li>
+                                <% } %>
+                            <% } %>
+                            <% if (url == 'rejected-withdraw') { %>
+                                <li class="active">Ditolak</li>
+                            <% } %>
+                            <% if (url == 'paid-withdraw') { %>
+                                <li class="active">Cair</li>
+                            <% } %>
+                        <% } %>
+                    </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Nodemailer Email Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container">
+    <% include ../partials/header %>
+
+        <h1>Sending Email in Node.js</h1>
+        <form action="/email/send-email" method="POST">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="form-group col-md-4">
+                    <label for="to">To:</label>
+                    <input class="form-control" name="to" type="email">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="form-group col-md-4">
+                    <label for="subject">Subject:</label>
+                    <input class="form-control" name="subject" type="text">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="form-group col-md-4">
+                    <label for="body">Body:</label>
+                    <textarea class="form-control" cols="5" name="body" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="form-group col-md-4">
+                    <button class="btn btn-success" type="submit">Send</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

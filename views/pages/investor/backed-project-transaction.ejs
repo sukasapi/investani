@@ -1,0 +1,202 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ela Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="/css/dashboard-style.css">
+    <link rel="stylesheet" href="/css/dropify.min.css">
+    <link rel="stylesheet" href="/css/dataTables.bootstrap.min.css">
+
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+    <style>
+        .detail-link,
+        .detail-link:hover,
+        .detail-link:focus {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Left Panel -->
+
+    <% include ../../partials/investor/aside-dashboard %>
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <% include ../../partials/investor/header-dashboard %>
+        <!-- Header-->
+
+        <% include ../../partials/investor/breadcrumbs-dashboard %>
+        <% if (success_message != '') { %>
+        <div class="sufee-alert alert with-close alert-success alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
+            <%= success_message %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <% } %>
+        <% if (error_message != '') { %>
+        <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
+            <%= error_message %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <% } %>
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Transaksi</strong>
+                            </div>
+                            <div class="card-body">
+                                <table id="bootstrap-data-table-3" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Tanggal Transaksi</th>
+                                            <th>Proyek</th>
+                                            <th>Saham yang Dibeli</th>
+                                            <th>Harga Saham</th>
+                                            <th>Total Pembayaran</th>
+                                            <th>Sertifikat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% no = 0 %>
+                                        <% transactions.forEach((transaction, index) => { %>
+                                        <tr>
+                                            <td><%= no+1 %></td>
+                                            <td><%= createdAt[index] %></td>
+                                            <td>
+                                                <a href="/project/<%= transaction.project._id %>"
+                                                    style="color: #007bff">
+                                                    <%= transaction.project.basic[0].title %>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <%= transaction.stock_quantity %>
+                                            </td>
+                                            <td>Rp. <%= transaction.project.basic[0].stock[0].price %></td>
+                                            <td>Rp. <%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>
+                                            </td>
+                                            <td>
+                                                <% if (transaction.status == 'verified') { %>
+                                                    <div class="input-group-btn">
+                                                        <a class="detail-link" href="/investor/transaction/get-certificate/<%= transaction._id %>/<%= transaction.receipt %>">
+                                                            <button class="btn btn-primary">
+                                                                Unduh
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                        <% no++ %>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <div class="clearfix"></div>
+
+        <% include ../../partials/investor/footer-dashboard %>
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
+    <script src="/js/dropify.min.js"></script>
+    <script src="/js/dashboard-main.js"></script>
+    <script src="/js/datatables.min.js"></script>
+    <script src="/js/dataTables.bootstrap.min.js"></script>
+    <script src="/js/dataTables.buttons.min.js"></script>
+    <script src="/js/datatables-init.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                toolbar: ['italic', 'link'],
+            })
+            .then(editor => {
+                editor.isReadOnly = true
+            })
+            .catch(error => {
+                // console.error(error);
+            });
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $('.dropify').dropify();
+            $('#project-basic-form').on('submit', function () {
+                $('#project-basic-button').attr('disabled', 'disabled');
+                $('#project-basic-spinner').show();
+            });
+            $('#project-budget-form').on('submit', function () {
+                $('#project-budget-button').attr('disabled', 'disabled');
+                $('#project-budget-spinner').show();
+            });
+            $('#project-project-form').on('submit', function () {
+                $('#project-project-button').attr('disabled', 'disabled');
+                $('#project-project-spinner').show();
+            });
+            $('#project-image-form').on('submit', function () {
+                $('#project-image-button').attr('disabled', 'disabled');
+                $('#project-image-spinner').show();
+            });
+            
+        });
+    </script>
+    <script>
+        document.getElementById("my-project").className = "menu-item-has-children dropdown active show";
+        document.getElementById("my-project-link").click();
+        document.getElementById("backed-project-icon").style.color = '#03a9f3';
+        document.getElementById("backed-project-link").style.color = '#03a9f3';
+    </script>
+</body>
+
+</html>

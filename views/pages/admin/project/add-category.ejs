@@ -1,0 +1,172 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ela Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="/css/dashboard-style.css">
+    <link rel="stylesheet" href="/css/dropify.min.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+</head>
+
+<body>
+    <!-- Left Panel -->
+
+    <% include ../../../partials/admin/aside-dashboard %>
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <% include ../../../partials/admin/header-dashboard %>
+        <!-- Header-->
+
+        <% include ../../../partials/admin/breadcrumbs-dashboard %>
+
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="basic-card" class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Menambah Kategori</strong>
+                            </div>
+                            <div class="card-body">
+                                <form action="/admin/project/add-category" id="add-category-form" method="post">
+                                    <% if (success_message != '') { %>
+                                    <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                        <%= success_message %>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <% } %>
+                                    <% if (error_message != '') { %>
+                                    <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                        <%= error_message %>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <% } %>
+                                    <div class="row form-group">
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">Judul Kategori</label>
+                                            <input name="title" type="text" class="form-control"
+                                                placeholder="Judul Kategori">
+                                        </div>
+                                        <div class="col col-sm-3">
+                                            <label class="control-label mb-1">Satuan Kategori</label>
+                                            <input name="unit" type="text" class="form-control"
+                                                placeholder="Satuan Kategori">
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">Deskripsi Kategori</label>
+                                            <textarea name="description" rows="2" placeholder="Deskripsi Kategori"
+                                                class="form-control"></textarea>
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <div class="row form-group dynamic-row" id="dynamic_form">
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1 item-label">Sub-kategori</label>
+                                                    <input class="form-control sub-category" id="sub-category" name="name"
+                                                        placeholder="Sub-kategori" type="text" value="">
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Aksi</label>
+                                                    <div class="button-group">
+                                                        <button class="btn btn-primary btn-sm plus" id="plus5"
+                                                            type="button">Tambah</button>
+                                                        <button class="btn btn-danger btn-sm minus" id="minus5"
+                                                            type="button">Hapus</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <button id="add-category-button" type="submit"
+                                            class="btn btn-lg btn-info btn-block">
+                                            <span aria-hidden="true" class="spinner-border spinner-border-sm"
+                                                id="add-category-spinner" role="status" style="display: none"></span>
+                                            <span id="add-category-button-placeholder">Lanjut</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <div class="clearfix"></div>
+
+        <% include ../../../partials/admin/footer-dashboard %>
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
+    <script src="/js/dropify.min.js"></script>
+    <script src="/js/dashboard-main.js"></script>
+    <script src="/js/dynamic-form.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var dynamic_form = $("#dynamic_form").dynamicForm("#dynamic_form", "#plus5", "#minus5", {
+                limit: 5,
+                formPrefix: "sub_category",
+                normalizeFullForm: false
+            });
+
+            $('.dropify').dropify();
+        });
+    </script>
+    <script>
+        $('#add-category-form').on('submit', function () {
+            $('#add-category-button').attr('disabled', 'disabled');
+            $('#add-category-spinner').show();
+        });
+        document.getElementById("category").className = "menu-item-has-children dropdown active show";
+        document.getElementById("category-link").click();
+        document.getElementById("add-category-icon").style.color= '#03a9f3';
+        document.getElementById("add-category-link").style.color= '#03a9f3';
+    </script>
+</body>
+
+</html>

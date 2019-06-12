@@ -1,0 +1,813 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ela Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="/css/dashboard-style.css">
+    <link rel="stylesheet" href="/css/dropify.min.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+    <style>
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
+			-webkit-appearance: none; 
+			margin: 0; 
+        }
+        .form-control-file{
+            width: 100%;
+            padding: 5px 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
+        }
+        .ck-editor__editable {
+            min-height: 300px;
+        }
+	</style>
+</head>
+
+<body>
+    <!-- Left Panel -->
+
+    <% include ../../../partials/admin/aside-dashboard %>
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <% include ../../../partials/admin/header-dashboard %>
+        <!-- Header-->
+        <% include ../../../partials/admin/breadcrumbs-dashboard %>
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-8" id="budget-chart-col" style="display: none">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="mb-3">Target Pendanaan: Rp. <span id="funding-target">0</span> </h4>
+                                <canvas id="budget-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div id="basic-card" class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Mengubah Proyek</strong>
+                            </div>
+                            <div class="card-body">
+                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active show" id="pills-basic-tab" data-toggle="pill"
+                                            href="#basic" role="tab" aria-controls="basic"
+                                            aria-selected="true">Dasar</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-budget-tab" data-toggle="pill" href="#budget"
+                                            role="tab" aria-controls="budget" aria-selected="false">Kegiatan dan
+                                            Anggaran</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-project-tab" data-toggle="pill" href="#project"
+                                            role="tab" aria-controls="project" aria-selected="false">Proyek</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-image-tab" data-toggle="pill" href="#image"
+                                            role="tab" aria-controls="image" aria-selected="false">Gambar</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade active show" id="basic" role="tabpanel"
+                                        aria-labelledby="basic-tab">
+                                        <form action="/admin/project/waiting/<%= project._id %>/basic"
+                                            id="project-basic-form" method="post">
+                                            <% if (success_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                <%= success_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <% if (error_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                <%= error_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Judul Proyek</label>
+                                                    <input name="title" type="text" class="form-control"
+                                                        placeholder="Judul Proyek"
+                                                        value="<%= project.basic[0].title %>">
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Provinsi</label>
+                                                    <select name="province" id="province" class="form-control">
+                                                        <option disabled selected>Pilih provinsi</option>
+                                                        <% for(var i = 0; i < province.length; i++) {%>
+                                                        <% if (province[i].id == province_id) { %>
+                                                        <option value="<%= province[i].id %>" selected>
+                                                            <%= province[i].nama %>
+                                                        </option>
+                                                        <% } else { %>
+                                                        <option value="<%= province[i].id %>">
+                                                            <%= province[i].nama %>
+                                                        </option>
+                                                        <% }%>
+                                                        <% }%>
+                                                    </select>
+                                                    <input class="form-control" id="province-name" name="province_name"
+                                                        type="text" style="display: none" value="<%= project.basic[0].province[0].province_name %>">
+                                                    <span class="select-btn">
+                                                        <i class="zmdi zmdi-chevron-down"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Kota</label>
+                                                    <select name="city" id="city" class="form-control">
+                                                        <option class="city-option" value="<%= project.basic[0].city[0].city_id %>" selected><%= project.basic[0].city[0].city_name %>
+                                                        </option>
+                                                    </select>
+                                                    <input class="form-control" id="city-name" name="city_name" type="text"
+                                                        style="display: none" value="<%= project.basic[0].city[0].city_name %>">
+                                                    <span class="select-btn">
+                                                        <i class="zmdi zmdi-chevron-down"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="col col-sm-3">
+                                                    <label for="cc-name" class="control-label mb-1">Kategori
+                                                        Proyek</label>
+                                                    <select name="category" id="category" class="form-control">
+                                                        <option disabled>Pilih kategori</option>
+                                                        <% all_category.forEach((all_category) => { %>
+                                                        <option value="<%= all_category._id %>"
+                                                            <% if (project.category._id == all_category._id) { %> selected <% } %>>
+                                                            <%= all_category.title %></option>
+                                                        <% }) %>
+                                                    </select>
+                                                </div>
+                                                <div class="col col-sm-3">
+                                                    <label for="cc-name" class="control-label mb-1">Sub-kategori
+                                                        Proyek</label>
+                                                    <select name="sub_category" id="sub-category" class="form-control">
+                                                       
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-3">
+                                                    <label class="control-label mb-1">Harga Saham</label>
+                                                    <input class="form-control" id="stock-price" name="stock_price"
+                                                        placeholder="Harga Saham" type="text"
+                                                        value="">
+                                                </div>
+                                                <div class="col col-sm-3">
+                                                    <label class="control-label mb-1">Jumlah Saham</label>
+                                                    <input class="form-control" id="total-stock" name="total_stock"
+                                                        placeholder="Jumlah Saham" type="number"
+                                                        value="<%= project.basic[0].stock[0].total %>">
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Saham Maksimal per Investor</label>
+                                                    <input class="form-control" id="max-invest" name="max_invest"
+                                                        placeholder="Saham Maksimal per Investor" type="number"
+                                                        value="<%= project.basic[0].stock[0].max_invest %>">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <button id="project-basic-button" type="submit"
+                                                    class="btn btn-lg btn-info btn-block">
+                                                    <span aria-hidden="true" class="spinner-border spinner-border-sm"
+                                                        id="project-basic-spinner" role="status"
+                                                        style="display: none"></span>
+                                                    <span>Simpan Proyek</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
+                                        <form action="/admin/project/waiting/<%= project._id %>/budget" id="project-budget-form"
+                                            method="post">
+                                            <% if (success_message != '') { %>
+                                            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                <%= success_message %>
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <% if (error_message != '') { %>
+                                            <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                <%= error_message %>
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <div class="row form-group dynamic-row" id="dynamic_form">
+                                                <div class="col col-sm-3">
+                                                    <label class="control-label mb-1 item-label">Nama Kegiatan</label>
+                                                    <input class="form-control budget-description" id="budget-items-description"
+                                                        name="description" placeholder="Kegiatan Baru" type="text"
+                                                        value="">
+                                                </div>
+                                                <div class="col col-sm-4">
+                                                    <label class="control-label mb-1">Tanggal Kegiatan</label>
+                                                    <input type="text" name="activity_date" class="form-control activity-datepicker"
+                                                        id="budget-items-activity-date" placeholder="Tanggal Kegiatan"
+                                                        style="width: 80%">
+                                                </div>
+                                                <div class="col col-sm-2">
+                                                    <label class="control-label mb-1">Rp</label>
+                                                    <input class="form-control budget-amount input-currency" id="budget-items-amount"
+                                                        name="amount" placeholder="Rp" type="text" value="">
+                                                </div>
+                                                <div class="col col-sm-3">
+                                                    <label class="control-label mb-1">Aksi</label>
+                                                    <div class="button-group">
+                                                        <button class="btn btn-primary btn-sm plus" id="plus5" type="button">Tambah
+                                                            Kegiatan</button>
+                                                        <button class="btn btn-danger btn-sm minus" id="minus5" type="button">Hapus</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <button id="project-budget-button" type="submit" class="btn btn-lg btn-info btn-block" <% if (project.status == 'verified') { %> disabled <% } %>>
+                                                    <span aria-hidden="true" class="spinner-border spinner-border-sm"
+                                                        id="project-budget-spinner" role="status" style="display: none"></span>
+                                                    <span id="project-budget-button-placeholder">Simpan dan Lanjutkan</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="project" role="tabpanel"
+                                        aria-labelledby="project-tab">
+                                        <form action="/admin/project/waiting/<%= project._id %>/project" id="project-project-form" method="post">
+                                            <% if (success_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                <%= success_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <% if (error_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                <%= error_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label
+                                                        class="control-label mb-1"><%= project.category.unit %></label>
+                                                    <input class="form-control" id="unit_value" name="unit_value"
+                                                        placeholder="<%= project.category.unit %>" type="number"
+                                                        value="<%= project.project[0].unit_value %>">
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Durasi Kampanye (hari)</label>
+                                                    <input class="form-control" id="campaign" name="campaign" type="number" value="<%= project.project[0].duration[0].campaign %>">
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Imbal Hasil/RoI (%)</label>
+                                                    <input class="form-control" id="roi" name="roi"
+                                                        placeholder="Imbal Hasil (RoI)" type="number"
+                                                        value="<%= project.project[0].roi %>">
+                                                </div>
+                                                <div class="col col-sm-6">
+                                                    <label class="control-label mb-1">Durasi Proyek (Bulan)</label>
+                                                    <input class="form-control" id="duration" name="duration"
+                                                        placeholder="Durasi Proyek (Bulan)" type="number"
+                                                        value="<%= project.project[0].duration[0].duration %>">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label mb-1" id="date-picker-label">Tanggal Proyek
+                                                    Dimulai</label>
+                                                <input type="text" name="start_date" class="date form-control"
+                                                    id="datepicker" placeholder="Tanggal Proyek Dimulai"
+                                                    value="<%= project.project[0].duration[0].start_date.toLocaleDateString() %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label mb-1">Abstrak Proyek</label>
+                                                <textarea name="abstract" id="editor">
+                                                <%= project.project[0].abstract %>
+                                                </textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label mb-1">Prospektus:
+                                                    <%= project.project[0].prospectus %> </label>
+                                                <a href="/project/get-prospectus/<%= project.project[0].prospectus %>"
+                                                    style="color: #ffffff">
+                                                    <button class="btn btn-success btn-sm" type="button">
+                                                        Unduh
+                                                    </button>
+                                                </a>
+
+                                            </div>
+
+                                            <div class="form-group">
+                                                <button id="project-project-button" type="submit"
+                                                    class="btn btn-lg btn-info btn-block">
+                                                    <span aria-hidden="true" class="spinner-border spinner-border-sm"
+                                                        id="project-project-spinner" role="status"
+                                                        style="display: none"></span>
+                                                    <span>Simpan Proyek</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
+                                        <form action="/admin/project/waiting/<%=project._id%>/image"
+                                            enctype="multipart/form-data" id="project-image-form" method="post">
+                                            <% if (success_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                <%= success_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <% if (error_message != '') { %>
+                                            <div
+                                                class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                <%= error_message %>
+                                                <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <% } %>
+                                            <div class="row form-group">
+                                                <% project.image.forEach((image, index) => { %>
+                                                <% if (image != null) { %>
+                                                <div class="col col-sm-4">
+                                                    <input accept="image/*" class="dropify"
+                                                        data-default-file="/image/project/<%=project._id %>/<%= image.filename %>"
+                                                        data-height="304.66" name="project_image<%=index%>" type="file" />
+                                                    <input type="text" name="project_image<%=index%>_input"
+                                                    value="<%= image.filename %>" style="display: none">
+                                                </div>
+                                                <% } %>
+                                                <% }); %>
+                                            </div>
+                                            <div class="form-group">
+                                                <button id="project-image-button" type="submit"
+                                                    class="btn btn-lg btn-info btn-block">
+                                                    <span aria-hidden="true" class="spinner-border spinner-border-sm"
+                                                        id="project-image-spinner" role="status"
+                                                        style="display: none"></span>
+                                                    <span>Simpan Proyek</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+
+        <div class="clearfix"></div>
+        <% include ../../../partials/admin/footer-dashboard %>
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/js/dashboard-main.js"></script>
+
+    <script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
+    <script src="/js/dropify.min.js"></script>
+    <script src="/js/dynamic-form.js"></script>
+    <!--  Chart js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.bundle.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                toolbar: ['italic', 'link'],
+            })
+            .catch(error => {
+                // console.error(error);
+            });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var dynamic_form = $("#dynamic_form").dynamicForm("#dynamic_form", "#plus5", "#minus5", {
+                limit: 100,
+                formPrefix: "budget_items",
+                normalizeFullForm: false
+            });
+            
+            $('.dropify').dropify();
+        });
+    </script>
+    <script type="text/javascript">
+    <% if (project.basic[0].province[0].province_id != null) {%>	        
+        $.ajax({	
+            type: 'get',	
+            url: '/complete-profile/get-city',	
+            data: {	
+                'province_id': <%= project.basic[0].province[0].province_id %>
+            },	
+            success: function (data, status) {	
+                if (data.success == true) {	
+                    for (let index = 0; index < data.city.length; index++) {	
+                        if (data.city[index].id == <%= project.basic[0].city[0].city_id %>) {	
+                            $('#city').append('<option class="city-option" value="' + data.city[index].id +	
+                                '" selected>' + data.city[index].nama + '</option>');	
+                        } else {	
+                            $('#city').append('<option class="city-option" value="' + data.city[index].id +	
+                                '">' + data.city[index].nama + '</option>');	
+                        }	
+                    }	
+                }	
+            }	
+        });	
+    <% } %>
+    <% if (project.category != null) { %>
+        $('#unit-value-label').text("<%= project.category.unit %>");
+
+        <% project.category.sub_category.forEach((sub_category_data) => { %> 
+            <% if (sub_category_data.id == project.sub_category) { %>
+                $('#sub-category').append('<option class="sub-category-option" value="<%= sub_category_data._id %>" selected><%= sub_category_data.name %></option>');
+            <% } %>
+            <% if ((sub_category_data.id != project.sub_category) && (sub_category_data.name != null)) { %>
+                $('#sub-category').append('<option class="sub-category-option" value="<%= sub_category_data._id %>"><%= sub_category_data.name %></option>');
+            <% } %>
+        <% }) %>
+    <% } %>
+        var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+        $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4',
+            minDate: today
+        });
+
+        $(document).on('change', '#category', function(event){
+            event.preventDefault();
+
+            var category = $(this).val();
+            $('.sub-category-option').remove();
+            <% all_category.forEach((category_list) => { %>
+            if (category == "<%= category_list._id %>") {
+                $('#unit-value-label').text("<%= category_list.unit %>");
+                <% category_list.sub_category.forEach((sub_category) => { %>
+                <% if (sub_category.name) { %>
+                $('#sub-category').append(
+                    '<option class="sub-category-option" value="<%= sub_category._id %>"><%= sub_category.name %></option>'
+                    );
+                <% } %>
+                <% }) %>
+            }
+            <% }) %>
+        });
+
+        $('#province').on('change', function (event) {
+            event.preventDefault();
+            var province_id = $(this).val();
+            var province_name = $('#province option:selected').text();
+            $('#province-name').val(province_name);
+            $.ajax({
+                type: "GET",
+                url: '/complete-profile/get-city',
+                data: {
+                    'province_id': province_id
+                },
+                success: function (data, status) {
+                    if (data.success == true) {
+                        $('.city-option').remove();
+                        $('#city-placeholder').removeAttr('disabled');
+                        $('#city-placeholder').attr('selected');
+                        $('#city-placeholder').attr('disabled');
+                        for (let index = 0; index < data.city.length; index++) {
+                            $('#city').append('<option class="city-option" value="' + data.city[index].id + '">' + data.city[index].nama + '</option>');
+                        }
+                    }
+                }
+            })
+        });
+
+        $('#city').on('change', function (event) {
+            event.preventDefault();
+            var city_name = $('#city option:selected').text();
+            $('#city-name').val(city_name);
+        });
+
+        document.getElementById('unit_value').addEventListener('keydown', function (e) {
+            if (e.which === 38 || e.which === 40) {
+                e.preventDefault();
+            }
+        });
+        document.getElementById('roi').addEventListener('keydown', function (e) {
+            if (e.which === 38 || e.which === 40) {
+                e.preventDefault();
+            }
+        });
+        document.getElementById('duration').addEventListener('keydown', function (e) {
+            if (e.which === 38 || e.which === 40) {
+                e.preventDefault();
+            }
+        });
+        document.getElementById('stock-price').addEventListener('keydown', function (e) {
+            if (e.which === 38 || e.which === 40) {
+                e.preventDefault();
+            }
+        });
+        document.getElementById('total-stock').addEventListener('keydown', function (e) {
+            if (e.which === 38 || e.which === 40) {
+                e.preventDefault();
+            }
+        });
+
+        $('.nav-link').on('click', function (event) {
+            event.preventDefault();
+            $('#budget-chart-col').hide();
+        });
+        $('#pills-basic-tab').on('click', function (event) {
+            event.preventDefault();
+            $('.minus').click();
+        });
+        $('#pills-budget-tab').on('click', function (event) {
+            event.preventDefault();
+            $('#budget-chart-col').show();
+            var i = 0;
+            loopingButton(i);
+            var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+            $('.activity-datepicker').each(function () {
+                $(this).datepicker({
+                    uiLibrary: 'bootstrap4',
+                    minDate: today
+                });
+            });
+        });
+        $('#pills-project-tab').on('click', function (event) {
+            event.preventDefault();
+            $('.minus').click();
+        });
+        $('#pills-timeline-tab').on('click', function (event) {
+            event.preventDefault();
+            $('.minus').click();
+        });
+        $('#pills-image-tab').on('click', function (event) {
+            event.preventDefault();
+            $('.minus').click();
+        });
+        function loopingButton(i) {
+            setTimeout(function () {
+                var labels = [];
+                var data = [];
+                var budget = 0;
+
+                $('.budget-description')[i].value = JSON.parse('<%- JSON.stringify(project.budget) %>')[i].description;
+                $('.activity-datepicker')[i].value = new Date(JSON.parse('<%- JSON.stringify(project.budget) %>')[i].activity_date).toLocaleDateString();
+                $('.budget-amount')[i].value = formatRupiah(JSON.parse('<%- JSON.stringify(project.budget) %>')[i].amount.toString());
+                i++;
+                if (i < '<%= project.budget.length %>') {
+                    $('.plus').last().click();
+                    loopingButton(i);
+                } else {
+                    for (var j = 0; j < '<%= project.budget.length %>'; j++) {
+                        labels[j] = JSON.parse('<%- JSON.stringify(project.budget) %>')[j].description;
+                        data[j] = JSON.parse('<%- JSON.stringify(project.budget) %>')[j].amount;
+                        budget += data[j];
+                    }
+                    for (var j = 0; j < data.length; j++) {
+                        data[j] = (data[j] / budget) * 100;
+                    }
+                    $('#funding-target').text(formatRupiah(budget.toString()));
+                    updateItem(labels, data);
+                }
+            }, 1000);
+            var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+        }
+        
+        $('#project-basic-form').on('submit', function () {
+            $('#project-basic-button').attr('disabled', 'disabled');
+            $('#project-basic-spinner').show();
+        });
+        $('#project-budget-form').on('submit', function () {
+            $('#project-budget-button').attr('disabled', 'disabled');
+            $('#project-budget-spinner').show();
+        });
+        $('#project-project-form').on('submit', function () {
+            $('#project-project-button').attr('disabled', 'disabled');
+            $('#project-project-spinner').show();
+        });
+        $('#project-image-form').on('submit', function () {
+            $('#project-image-button').attr('disabled', 'disabled');
+            $('#project-image-spinner').show();
+        });
+        $('.budget-description').on('input', function (event) {
+            event.preventDefault();
+            var budget = 0;
+            var item_total = $('.budget-amount').length;
+            var labels = [];
+            var data = [];
+            for (var i = 0; i < item_total; i++) {
+                labels[i] = $('.budget-description')[i].value;
+                if ($('.budget-amount')[i].value != '') {
+                    data[i] = parseInt($('.budget-amount')[i].value.split('.').join(""));
+                    budget += parseInt(data[i]);
+                }
+            }
+            for (var i = 0; i < data.length; i++) {
+                data[i] = (data[i] / budget) * 100;
+            }
+            $('#funding-target').text(formatRupiah(budget.toString()));
+            updateItem(labels, data);
+        });
+        $('.budget-amount').on('input', function (event) {
+            event.preventDefault();
+            var budget = 0;
+            var item_total = $('.budget-amount').length;
+            var labels = [];
+            var data = [];
+            for (var i = 0; i < item_total; i++) {
+                labels[i] = $('.budget-description')[i].value;
+                if ($('.budget-amount')[i].value != '') {
+                    data[i] = parseInt($('.budget-amount')[i].value.split('.').join(""));
+                    budget += parseInt(data[i]);
+                }
+            }
+            for (var i = 0; i < data.length; i++) {
+                data[i] = (data[i] / budget) * 100;
+            }
+            $('#funding-target').text(formatRupiah(budget.toString()));
+            updateItem(labels, data);
+        });
+        $('.plus').on('click', function (event) {
+            event.preventDefault();
+            $('.item-label').contents().eq(0).replaceWith('Kegiatan 1');
+            var delay = 1000;
+            setTimeout(function () {
+                // your code
+                var labels = [];
+                var data = [];
+                var item_total = $('.dynamic-row').length;
+                $('.item-label').contents().eq(item_total - 1).replaceWith('Kegiatan ' + item_total);
+                for (var i = 0; i < item_total; i++) {
+                    labels[i] = $('.budget-description')[i].value;
+                    if ($('.budget-amount')[i].value != '') {
+                        data[i] = parseInt($('.budget-amount')[i].value.split('.').join(""));
+                        budget += data[i];
+                    }
+                }
+                updateItem(labels, data);
+                var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+                $('.activity-datepicker').each(function () {
+                    $(this).datepicker({
+                        uiLibrary: 'bootstrap4',
+                        minDate: today
+                    });
+                });
+
+                var rupiah = document.getElementsByClassName("input-currency");
+                for (var i = 0; i < rupiah.length; i++) {
+                    rupiah[i].addEventListener("keyup", function(e) {
+                        this.value = formatRupiah(this.value);
+                    });
+                }
+            }, delay);
+
+        });
+        $('.minus').on('click', function (event) {
+            event.preventDefault();
+            var delay = 1000;
+            setTimeout(function () {
+                // your code
+                var budget = 0;
+                var item_total = $('.budget-amount').length;
+                var labels = [];
+                var data = [];
+
+                for (var i = 0; i < item_total; i++) {
+                    labels[i] = $('.budget-description')[i].value;
+                    if ($('.budget-amount')[i].value != '') {
+                        data[i] = parseInt($('.budget-amount')[i].value.split('.').join(""));
+                        budget += parseInt(data[i]);
+                    }
+                }
+                $('#funding-target').text(formatRupiah(budget.toString()));
+                updateItem(labels, data);
+            }, delay);
+        });
+
+        document.getElementById('stock-price').value = formatRupiah('<%= project.basic[0].stock[0].price %>')
+        rupiah = document.getElementById('stock-price').addEventListener('keyup', function (e) {
+            this.value = formatRupiah(this.value);
+        });
+
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
+    </script>
+    <script>
+        var ctx = document.getElementById("budget-chart");
+        ctx.height = 100;
+
+        var myChart = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                labels: ["Kegiatan 1"],
+                datasets: [{
+                    data: [0],
+                    borderColor: "rgba(0, 194, 146, 0.9)",
+                    borderWidth: "0",
+                    backgroundColor: "rgba(0, 194, 146, 0.5)"
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            min: 0,
+                            max: 100,
+                            callback: function (value) {
+                                return value + "%"
+                            }
+                        }
+                    }]
+                }
+            }
+        });
+
+        function updateItem(labels, data) {
+            myChart.data.labels = labels;
+            myChart.data.datasets[0].data = data;
+            myChart.update();
+        }
+    </script>
+    <script>
+        document.getElementById("waiting-project").className = "active";
+    </script>
+</body>
+
+</html>

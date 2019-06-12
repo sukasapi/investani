@@ -1,0 +1,240 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ela Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="/css/dashboard-style.css">
+    <link rel="stylesheet" href="/css/dataTables.bootstrap.min.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .form-control-file {
+            width: 100%;
+            padding: 5px 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Left Panel -->
+
+    <% include ../../../partials/inisiator/aside-dashboard %>
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <% include ../../../partials/inisiator/header-dashboard %>
+        <!-- Header-->
+
+        <% include ../../../partials/inisiator/breadcrumbs-dashboard %>
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <!--/.col-->
+                    <div class="col-lg-12">
+                        <div id="basic-card" class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Pencairan Alternatif</strong>
+                            </div>
+                            <div class="card-body">
+                                <form action="/inisiator/withdraw/alternative" enctype="multipart/form-data" id="project-budget-form" method="post">
+                                    <% if (success_message != '') { %>
+                                    <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                        <%= success_message %>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <% } %>
+                                    <% if (error_message != '') { %>
+                                    <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                        <%= error_message %>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <% } %>
+                                    <div class="row form-group">
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">Pilih Proyek</label>
+                                            <select name="project" id="project" class="form-control">
+                                            <option disabled selected>Pilih proyek</option>
+                                            <% projects.forEach(project => { %>
+                                                <option value="<%= project._id %>">
+                                                    <%= project.basic[0].title %>
+                                                </option>
+                                            <% }); %>
+                                        </select>
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1 item-label">Pilih Kegiatan</label>
+                                            <select name="activity" id="activity" class="form-control">
+                                                <option id="activity-placeholder" value="" disabled selected>Pilih
+                                                    Kegiatan</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-sm-4">
+                                            <label class="control-label mb-1">Tanggal Kegiatan</label>
+                                            <input type="text" id="datepicker" name="activity_date"
+                                                class="form-control activity-datepicker" placeholder="Tanggal Kegiatan"
+                                                style="width: 80%">
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <label class="control-label mb-1">Anggaran</label>
+                                            <input class="form-control budget-amount" id="budget-items-amount"
+                                                name="amount" placeholder="Rp" type="number" value="" min=0>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <label class="control-label mb-1">Berita Acara</label>
+                                            <input accept="application/pdf" class="form-control-file" id="official-record" name="official_record" type="file">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button id="project-budget-button" type="submit"
+                                            class="btn btn-lg btn-info btn-block">
+                                            <span aria-hidden="true" class="spinner-border spinner-border-sm"
+                                                id="project-budget-spinner" role="status" style="display: none"></span>
+                                            <span id="project-budget-button-placeholder">Kirim</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+
+        <div class="clearfix"></div>
+        <% include ../../../partials/inisiator/footer-dashboard %>
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="/js/dashboard-main.js"></script>
+
+    <script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+        $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4',
+            minDate: today
+        });
+        $('#project-budget-form').on('submit', function () {
+            $('#project-budget-button').attr('disabled', 'disabled');
+            $('#project-budget-spinner').show();
+        });
+
+        $('#project').on('change', function (event) {
+			event.preventDefault();
+            var project_id = $(this).val();
+			$.ajax({
+				type: "GET",
+				url: '/inisiator/get-activity',
+				data: {
+					'project_id': project_id
+				},
+				success: function (data, status) {
+					if (data.success == true) {
+						$('.activity-option').remove();
+						$('#activity-placeholder').removeAttr('disabled');
+						$('#activity-placeholder').attr('selected', 'selected');
+                        $('#activity-placeholder').attr('disabled', 'disabled');
+                        $('#datepicker').val('');
+                        $('#budget-items-amount').val('');
+                        
+                        for (let index = 0; index < data.activity.length; index++) {
+							$('#activity').append('<option class="activity-option" value="'+data.activity[index]._id+'" >'+data.activity[index].description+'</option>');
+						}
+					}
+				}
+			})
+        });
+        
+        $('#activity').on('change', function (event) {
+            event.preventDefault();
+            var project_id = $('#project').val();
+            var activity_id = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: '/inisiator/get-activity-detail',
+                data: {
+                    'project_id': project_id,
+                    'activity_id': activity_id
+                },
+                success: function (data, status) {
+                    if (data.success == true) {
+                        $('#datepicker').val(data.activity_date);
+                        $('#budget-items-amount').val(data.activity.amount);
+                    }
+                }
+            });
+        });
+
+    </script>
+    <script src="/js/datatables.min.js"></script>
+    <script src="/js/dataTables.bootstrap.min.js"></script>
+    <script src="/js/dataTables.buttons.min.js"></script>
+    <script src="/js/buttons.bootstrap.min.js"></script>
+    <script src="/js/jszip.min.js"></script>
+    <script src="/js/vfs_fonts.js"></script>
+    <script src="/js/buttons.html5.min.js"></script>
+    <script src="/js/buttons.print.min.js"></script>
+    <script src="/js/buttons.colVis.min.js"></script>
+    <script src="/js/datatables-init.js"></script>
+    <script>
+        document.getElementById("alternative-withdraw").className = "menu-item-has-children dropdown active show";
+        document.getElementById("alternative-withdraw-link").click();
+        document.getElementById("submission-withdraw-icon").style.color = '#03a9f3';
+        document.getElementById("submission-withdraw-link").style.color = '#03a9f3';
+    </script>
+
+</body>
+
+</html>
