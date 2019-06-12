@@ -829,7 +829,6 @@
 				$('#profile-form').show()
 			}
 			if ((<%= profile_length%> != 0 && registration == 'individual') || (<%= profile_length%> != 0 && '<%= user_type %>' == 'inisiator')) {
-
 				if (<%= occupation_length %> == 0) {
 					$('#header-form').text('Pekerjaan');
 					$('#occupation-form').show();
@@ -1191,7 +1190,7 @@
 					});
 				}
 			}
-			if ((<%= profile_length%> != 0 && registration == 'company') || (<%= profile_length%> != 0 && '<%= user_type %>' == 'investor')) {
+			if (<%= profile_length%> != 0 && registration == 'company') {
 				if (<%= pic_length == 0 %>) {
 					$('#header-form').text('Penanggungjawab');
 					$('#pic-form').show();
@@ -1293,20 +1292,27 @@
 						$('#profile-form').hide();
 					});
 				}
-
 				if (<%= pic_length != 0 %> && <%= document_length == 0 %>) {
 					$('#header-form').text('Dokumen');
 					$('#document-form').show();
 					$('#company-registration-number-input').show();
 					$('#company-registration-image-input').show();
+					$('#company-registration-image-label').show();
+					$('#company-registration-image-label').text('<%= company_registration_image %>')
 					$('#identity-number-input').hide();
 					$('#identity-image-input').hide();
 					$('#identity-selfie-image-row').hide();
 					$('#npwp-number-label').text('Nomor NPWP Perusahaan');
 					$('#npwp-image-label').text('Unggah NPWP Perusahaan');
+					$('#npwp-image-filename-label').show();
+					$('#npwp-image-filename-label').text('<%= npwp_image %>')
 					$('#sk-kemenkumham-number-row').show();
 					$('#sk-kemenkumham-image-row').show();
+					$('#sk-kemenkumham-image-label').show();
+					$('#sk-kemenkumham-image-label').text('<%= sk_kemenkumham_image %>');
 					$('#business-permit-image-row').show();
+					$('#business-permit-image-label').show();
+					$('#business-permit-image-label').text('<%= business_permit_image %>');
 
 					$('.first-list').click(function () {
 						$('.first-list').attr('class', 'first done first-list');
@@ -1410,7 +1416,7 @@
 						$('#profile-form').hide();
 						$('#document-form').hide();
 
-						$('#pic-name').val('<%= name %>');
+						$('#pic-name').val('<%= pic_name %>');
 						$('#pic-datepicker').val('<%= pic_birth_date %>');
 						$('#pic-identity-number').val('<%= pic_identity_number %>');
 						$('#pic-identity-image-label').show();
@@ -1563,13 +1569,21 @@
 
 						$('#company-registration-number-input').show();
 						$('#company-registration-image-input').show();
+						$('#company-registration-image-label').show();
+						$('#company-registration-image-label').text('<%= company_registration_image %>')
 						$('#sk-kemenkumham-number-row').show();
 						$('#sk-kemenkumham-image-row').show();
-						$('#business-permit-image-row').show();
 						$('#npwp-number-label').text('Nomor NPWP Perusahaan');
 						$('#npwp-image-label').text('Unggah NPWP Perusahaan');
+						$('#npwp-image-filename-label').show();
+						$('#npwp-image-filename-label').text('<%= npwp_image %>')
 						$('#identity-number-input').hide();
 						$('#identity-image-input').hide();
+						$('#sk-kemenkumham-image-label').show();
+						$('#sk-kemenkumham-image-label').text('<%= sk_kemenkumham_image %>');
+						$('#business-permit-image-row').show();
+						$('#business-permit-image-label').show();
+						$('#business-permit-image-label').text('<%= business_permit_image %>');
 						$('#identity-selfie-image-row').hide();
 
 						$('#company-registration-number').val('<%= company_registration_number %>');

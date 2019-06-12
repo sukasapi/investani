@@ -260,9 +260,9 @@
                         penduduk No.
                         <%= document[0].identity_number %>, merupakan
                         penanggungjawab penyertaan dana pada INVESTANI yang ditunjuk oleh ,
-                        <%= profile[0].name.toUpperCase() %> dengan nomor perusahaan
+                        <%= profile[0].name.toUpperCase() %> dengan Nomor Tanda Daftar Perusahaan
                         <%= document[0].company_registration_number %>,
-                        nomor ijin usaha "nomor ijin usaha", nomor NPWP <%=  document[0].npwp_number %> yang beralamat
+                        nomor NPWP <%=  document[0].npwp_number %> yang beralamat
                         di <%= profile[0].address %>,
                         <%= profile[0].city[0].city_name %>, <%= profile[0].province[0].province_name %>, untuk
                         selanjutnya disebut sebagai <strong>PIHAK KEDUA</strong>;
@@ -354,13 +354,6 @@
                                 <td>:</td>
                                 <td>
                                     <%= profile[0].company_phone %>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Ijin Usaha</td>
-                                <td>:</td>
-                                <td>
-                                    "nomor Ijin Usaha"
                                 </td>
                             </tr>
                             <tr>
@@ -644,6 +637,20 @@
                 <div class="page-number">5</div>
             </div>
         </div>
+        <script>
+        var months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+            'November', 'Desember'
+        ];
+        var myDays = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
+        var date = new Date();
+        var day = date.getDate();
+        var month = date.getMonth();
+        var thisDay = date.getDay(),
+            thisDay = myDays[thisDay];
+        var yy = date.getYear();
+        var year = (yy < 1000) ? yy + 1900 : yy;
+        $('#today').text(thisDay + ', ' + day + ' ' + months[month] + ' ' + year);
+    </script>
 </body>
 
 </html>
