@@ -1517,6 +1517,7 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, offici
             req.flash('error_message', error_message);
             return res.redirect('back');
         } else {
+            let budget_dir = path.join(__dirname, `../storage/projects/${req.body.project}/budget`);
             fs.access(budget_dir, async (err) => {
                 if (err) {
                     console.log('tidak')
