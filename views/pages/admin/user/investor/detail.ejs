@@ -419,6 +419,7 @@
                         </div>
                     </div>
                 </div>
+                <%if (user.profile[0].registration_type == "company") {%>
                 <div class="modal fade" id="pic-identity-image-modal" tabindex="-1" role="dialog"
                     aria-labelledby="smallmodalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-sm" role="document">
@@ -451,6 +452,7 @@
                         </div>
                     </div>
                 </div>
+                <% } %>
                 <div class="modal fade" id="identity-image-modal" tabindex="-1" role="dialog"
                     aria-labelledby="smallmodalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-sm" role="document">
