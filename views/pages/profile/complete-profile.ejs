@@ -262,16 +262,16 @@
 											<label class="control-label mb-1">Pekerjaan</label>
 											<select name="occupation" id="occupation" class="form-control">
 												<option disabled selected>Pilih pekerjaan</option>
-												<option value="karyawan_swasta" <% if (request[0] && request[0].occupation == "karyawan_swasta") { %> selected <% } %>>Karyawan swasta</option>
-												<option value="pegawai_negeri_sipil" <% if (request[0] && request[0].occupation == "pegawai_negeri_sipil") { %> selected <% } %>>Pegawai negeri sipil</option>
-												<option value="pengusaha" <% if (request[0] && request[0].occupation == "pengusaha") { %> selected <% } %>>Pengusaha</option>
-												<option value="tni_polisi" <% if (request[0] && request[0].occupation == "tni_polisi") { %> selected <% } %>>TNI / Polisi</option>
-												<option value="karyawan_bumn" <% if (request[0] && request[0].occupation == "karyawan_bumn") { %> selected <% } %>>Karyawan BUMN</option>
-												<option value="pensiun" <% if (request[0] && request[0].occupation == "pensiun") { %> selected <% } %>>Pensiun</option>
-												<option value="ibu_bapak_rumah_tangga" <% if (request[0] && request[0].occupation == "ibu_bapak_rumah_tangga") { %> selected <% } %>>Ibu/Bapak rumah tangga</option>
-												<option value="pelajar" <% if (request[0] && request[0].occupation == "pelajar") { %> selected <% } %>>Pelajar</option>
-												<option value="profesional" <% if (request[0] && request[0].occupation == "profesional") { %> selected <% } %>>Profesional</option>
-												<option value="lainnya" <% if (request[0] && request[0].occupation == "lainnya") { %> selected <% } %>>Lainnya</option>
+												<option value="Karyawan swasta" <% if (request[0] && request[0].occupation == "Karyawan swasta") { %> selected <% } %>>Karyawan swasta</option>
+												<option value="Pegawai negeri sipil" <% if (request[0] && request[0].occupation == "Pegawai negeri sipil") { %> selected <% } %>>Pegawai negeri sipil</option>
+												<option value="Pengusaha" <% if (request[0] && request[0].occupation == "Pengusaha") { %> selected <% } %>>Pengusaha</option>
+												<option value="TNI / Polisi" <% if (request[0] && request[0].occupation == "TNI / Polisi") { %> selected <% } %>>TNI / Polisi</option>
+												<option value="Karyawan BUMN" <% if (request[0] && request[0].occupation == "Karyawan BUMN") { %> selected <% } %>>Karyawan BUMN</option>
+												<option value="Pensiun" <% if (request[0] && request[0].occupation == "Pensiun") { %> selected <% } %>>Pensiun</option>
+												<option value="Ibu/Bapak rumah tangga" <% if (request[0] && request[0].occupation == "Ibu/Bapak rumah tangga") { %> selected <% } %>>Ibu/Bapak rumah tangga</option>
+												<option value="Pelajar" <% if (request[0] && request[0].occupation == "Pelajar") { %> selected <% } %>>Pelajar</option>
+												<option value="Profesional" <% if (request[0] && request[0].occupation == "Profesional") { %> selected <% } %>>Profesional</option>
+												<option value="Lainnya" <% if (request[0] && request[0].occupation == "Lainnya") { %> selected <% } %>>Lainnya</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
@@ -281,19 +281,19 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Nama Perusahaan (opsional)</label>
-											<input class="form-control" id="company-name" name="company_name" placeholder="Nama Perusahaan (opsional)"
+											<input class="form-control" id="company-name" name="company_name"
 											 type="text" <% if (request[0]) { %> value="<%= request[0].company_name %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Alamat Perusahaan (opsional)</label>
-											<input class="form-control" id="company-address" name="company_address" placeholder="Alamat Perusahaan (opsional)"
+											<input class="form-control" id="company-address" name="company_address"
 											 type="text" <% if (request[0]) { %> value="<%= request[0].company_address %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">
-										<div class="form-holder" id="position-input">
+										<div class="form-holder form-holder-2" id="position-input">
 											<label class="control-label mb-1">Jabatan (opsional)</label>
 											<select name="position" id="position" class="form-control">
 												<option selected disabled>Pilih jabatan</option>
@@ -308,7 +308,9 @@
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
 										</div>
-										<div class="form-holder" id="income-input">
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2" id="income-input">
 											<label class="control-label mb-1">Sumber Dana</label>
 											<select name="income_source" id="income-source" class="form-control">
 												<option disabled selected>Pilih sumber dana</option>
@@ -408,7 +410,7 @@
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Nomor KTP / Paspor Penanggungjawab</label>
 											<input class="form-control" id="pic-identity-number" name="pic_identity_number" placeholder="Nomor KTP / Paspor Penanggungjawab"
-											 type="number" <% if (request[0]) { %> value="<%= request[0].pic_identity_number %>" <% } %>>
+											 type="text" <% if (request[0]) { %> value="<%= request[0].pic_identity_number %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">
@@ -483,19 +485,19 @@
 										<div class="form-holder form-holder-2" id="identity-number-input">
 											<label class="control-label mb-1">Nomor KTP / Paspor</label>
 											<input class="form-control" id="identity-number" name="identity_number" placeholder="Nomor KTP / Paspor"
-											 type="number" <% if (request[0]) { %> value="<%= request[0].identity_number %>" <% } %>>
+											 type="text" <% if (request[0]) { %> value="<%= request[0].identity_number %>" <% } %>>
 										</div>
 										<div class="form-holder form-holder-2" id="company-registration-number-input" style="display: none">
 											<label class="control-label mb-1">Nomor Tanda Daftar Perusahaan</label>
 											<input class="form-control" id="company-registration-number" name="company_registration_number" placeholder="Nomor Tanda Daftar Perusahaan"
-											 type="number" <% if (request[0]) { %> value="<%= request[0].company_registration_number %>" <% } %>>
+											 type="text" <% if (request[0]) { %> value="<%= request[0].company_registration_number %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2" id="identity-image-input">
 											<label class="control-label mb-1">Unggah Foto KTP/ Paspor</label>
 											<input accept="image/*" class="form-control-file" id="identity-image" name="identity_image" type="file">
-											<input type="text" name="npwp_image_input" value="<%= identity_image %>" style="display: none">
+											<input type="text" name="identity_image_input" value="<%= identity_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="identity-image-label" style="display: none"></label>
 										</div>
 										<div class="form-holder form-holder-2" id="company-registration-image-input" style="display: none">
@@ -516,14 +518,14 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1" id="npwp-number-label">Nomor NPWP (opsional)</label>
-											<input class="form-control" id="npwp-number" name="npwp_number" type="number" placeholder="Nomor NPWP" <% if (request[0]) { %> value="<%= request[0].npwp_number %>" <% } %>>
+											<input class="form-control" id="npwp-number" name="npwp_number" type="text" placeholder="Nomor NPWP" <% if (request[0]) { %> value="<%= request[0].npwp_number %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1" id="npwp-image-label">Unggah NPWP (opsional)</label>
 											<input accept="image/*" class="form-control-file" id="npwp-image" name="npwp_image" type="file">
-											<input type="text" name="npwp_image_input" value="<%= identity_image %>" style="display: none">
+											<input type="text" name="npwp_image_input" value="<%= npwp_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="npwp-image-filename-label" style="display: none"></label>
 										</div>
 									</div>
@@ -563,14 +565,6 @@
 				<!-- Document -->
 				<!-- Bank -->
 				<form action="/complete-profile/bank" class="form-register" id="bank-form" method="post" style="display:none">
-					<% if (error_message != '') { %>
-					<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
-						<%= error_message %>
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<% } %>
 					<div id="form-total" role="application" class="wizard clearfix">
 						<div class="steps clearfix">
 							<ul role="tablist">
@@ -601,6 +595,22 @@
 							<h2 id="form-total-h-0" tabindex="-1" class="title current">1</h2>
 							<section id="form-total-p-0" role="tabpanel" aria-labelledby="form-total-h-0" class="body current" aria-hidden="false">
 								<div class="inner">
+									<% if (error_message != '') { %>
+										<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+											<%= error_message %>
+											<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<% } %>
+										<% if (success_message != '') { %>
+										<div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+											<%= success_message %>
+											<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+									</div>
+									<% } %>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Nama Bank</label>
@@ -766,7 +776,8 @@
 	<script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
 	<script>
 		$('#datepicker').datepicker({
-			uiLibrary: 'bootstrap4'
+			uiLibrary: 'bootstrap4',
+			format: 'dd/mm/yyyy'
 		});
 		$('#pic-datepicker').datepicker({
 			uiLibrary: 'bootstrap4'
@@ -1033,7 +1044,6 @@
 						$('#occupation-form').show();
 						$('#profile-form').hide();
 						$('#document-form').hide();
-
 						$('#occupation').val('<%= occupation %>');
 						$('#company-name').val('<%= company_name %>');
 						$('#company-address').val('<%= company_address %>');
@@ -1879,9 +1889,9 @@
 						$('#district-placeholder').attr('selected');
 						$('#sub-district-placeholder').attr('selected');
 
-						$('#city-placeholder').attr('disabled');
-						$('#district-placeholder').attr('disabled');
-						$('#sub-district-placeholder').attr('disabled');
+						$('#city-placeholder').attr('disabled', 'disabled');
+						$('#district-placeholder').attr('disabled', 'disabled');
+						$('#sub-district-placeholder').attr('disabled', 'disabled');
 						for (let index = 0; index < data.city.length; index++) {
 							<% if (request[0]) { %>
 								if ('<%= request[0].city.city_name %>' == data.city[index].name) {
@@ -1923,8 +1933,8 @@
 						$('#district-placeholder').attr('selected');
 						$('#sub-district-placeholder').attr('selected');
 
-						$('#district-placeholder').attr('disabled');
-						$('#sub-district-placeholder').attr('disabled');
+						$('#district-placeholder').attr('disabled', 'disabled');
+						$('#sub-district-placeholder').attr('disabled', 'disabled');
 						
 						for (let index = 0; index < data.district.length; index++) {
 							<% if (request[0]) { %>
@@ -1963,7 +1973,7 @@
 
 						$('#sub-district-placeholder').attr('selected');
 
-						$('#sub-district-placeholder').attr('disabled');
+						$('#sub-district-placeholder').attr('disabled', 'disabled');
 						for (let index = 0; index < data.sub_district.length; index++) {
 							<% if (request[0]) { %>
 								if ('<%= request[0].sub_district_name %>' == data.sub_district[index].name) {

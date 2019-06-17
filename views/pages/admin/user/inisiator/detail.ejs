@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
     <link rel="stylesheet" href="/css/cs-skin-elastic.css">
-    <link rel="stylesheet" href="/css/lib/datatable/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="/css/dataTables.bootstrap.min.css">
     <link rel="stylesheet" href="/css/dashboard-style.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
@@ -70,6 +70,18 @@
                                             role="tab" aria-controls="pills-contact" aria-selected="false">Bank</a>
                                     </li>
                                 </ul>
+                                <div id="error-alert" class="sufee-alert alert with-close alert-danger alert-dismissible fade show" style="display: none">
+                                    <span id="error-message"></span>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div id="success-alert" class="sufee-alert alert with-close alert-success alert-dismissible fade show" style="display: none">
+                                    <span id="success-message"></span>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
                                 <div class="tab-content" id="pills-tabContent">
                                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
                                         aria-labelledby="pills-home-tab">
@@ -207,57 +219,15 @@
                                         </button>
                                     <% } %>
                                     <% if (user.user_type[0].status == 'verified') { %>
-                                        <button id="verification-button" class="btn btn-lg btn-info btn-block" disabled>
+                                        <button class="btn btn-lg btn-info btn-block" disabled>
                                             <span id="verification-button-text">Terverifikasi</span>
                                         </button>
                                     <% } %>
-                                    
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <section class="card">
-                            <div class="twt-feed blue-bg">
-                                <div class="media">
-                                    <a href="#">
-                                        <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;"
-                                            alt="" src="/images/admin.jpg">
-                                    </a>
-                                    <div class="media-body">
-                                        <h2 class="text-white display-6"><%= user.profile[0].name %></h2>
-                                        <p class="text-light"><%= user.occupation[0].occupation.charAt(0).toUpperCase() + user.occupation[0].occupation.slice(1) %></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="weather-category twt-category">
-                                <ul>
-                                    <li class="active">
-                                        <h5>750</h5>
-                                        Tweets
-                                    </li>
-                                    <li>
-                                        <h5>865</h5>
-                                        Following
-                                    </li>
-                                    <li>
-                                        <h5>3645</h5>
-                                        Followers
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="twt-write col-sm-12">
-                                <textarea placeholder="Write your Tweet and Enter" rows="1" class="form-control t-text-area"></textarea>
-                            </div>
-                            <footer class="twt-footer">
-                                <a href="#"><i class="fa fa-map-marker"></i></a>
-                                <%= user.profile[0].city[0].city_name %>
-                                <span class="pull-right">
-                                    Bergabung pada <%= user.createdAt.toLocaleDateString() %>
-                                </span>
-                            </footer>
-                        </section>
-                    </div>
+                    
                 </div>
                 <div class="modal fade" id="identity-image-modal" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel"
                     aria-hidden="true">
@@ -330,8 +300,8 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
 	 crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
-    <script src="/js/individual-main.js"></script>
 
+    <script src="/js/dashboard-main.js"></script>
     <script src="/js/datatables.min.js"></script>
     <script src="/js/dataTables.bootstrap.min.js"></script>
     <script src="/js/dataTables.buttons.min.js"></script>
@@ -354,7 +324,15 @@
             data: {},
             success: function(data, status) {
                 if(data.success == true) {
-                    location.reload();
+                    $('#verification-button-process').hide();
+                    $('#verification-button-text').show();
+                    $('#verification-button-text').text("Terverifikasi");
+                    $('#success-alert').show();
+                    $('#success-message').text(data.message);
+                }
+                else {
+                    $('#error-alert').show();
+                    $('#error-message').text(data.message);
                 }
             }
         })

@@ -108,7 +108,7 @@ let UserSchema = mongoose.Schema({
       type: Date
     },
     pic_identity_number: {
-      type: Number
+      type: String
     },
     pic_identity_image: {
       type: String
@@ -119,7 +119,7 @@ let UserSchema = mongoose.Schema({
   }],
   document: [{
     identity_number: {
-      type: Number
+      type: String
     },
     identity_image: {
       type: String
@@ -128,19 +128,19 @@ let UserSchema = mongoose.Schema({
       type: String
     },
     npwp_number: {
-      type: Number
+      type: String
     },
     npwp_image: {
       type: String
     },
     company_registration_number: {
-      type: Number
+      type: String
     },
     company_registration_image: {
       type: String
     },
     sk_kemenkumham_number: {
-      type: Number
+      type: String
     },
     sk_kemenkumham_image: {
       type: String

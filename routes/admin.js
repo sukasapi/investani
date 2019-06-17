@@ -1588,14 +1588,14 @@ router.post('/user/inisiator/individual/verify/:id', isLoggedIn, isAdmin, functi
         }]
     }, function (error, user) {
         if (error) {
-            return res.json({success: false, message: "Terjadi kesalahan"});
+            return res.json({success: false, message: "Terjadi kesalahan."});
         }
         if (!user) {
-            res.json({success: false, message: "User tidak tersedia"});
+            res.json({success: false, message: "User tidak tersedia."});
 
         }
         else {    
-            res.json({success: true});
+            res.json({success: true, message: "Berhasil melakukan verifikasi."});
         }
     });
 });

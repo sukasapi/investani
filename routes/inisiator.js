@@ -14,16 +14,17 @@ import {
 } from '../models/Category';
 import { getTransactionByProject } from '../models/Transaction';
 import { Notification, createNotification, getNotificationByReceiverAndStatus, updateNotificationByEntity } from '../models/Notification';
+import { updateUser } from "../models/User";
 import path from 'path';
 import uuidv4 from 'uuid/v4';
 import Resize from '../Resize';
 import upload from '../uploadMiddleware';
 import fs from 'fs';
 import moment from 'moment';
+import expressValidator from 'express-validator';
 
 const router = express.Router();
 const prospectusFilePath = path.join(__dirname, '../storage/prospectus');
-
 const prospectusStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, prospectusFilePath)
@@ -32,13 +33,37 @@ const prospectusStorage = multer.diskStorage({
         cb(null, `${uuidv4()}-prospectus.pdf`)
     }
 })
-
 const prospectusUpload = multer({
     storage: prospectusStorage,
     limits: {
         fileSize: 4 * 1024 * 1024,
     }
 });
+const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
+
+router.use(expressValidator({
+    customValidators: {
+        isImage: function (value, filename) {
+            if (filename) {
+                var extension = (path.extname(filename)).toLowerCase();
+                switch (extension) {
+                    case '.jpg':
+                        return '.jpg';
+                    case '.jpeg':
+                        return '.jpeg';
+                    case '.png':
+                        return '.png';
+                    default:
+                        return false;
+                }
+            }
+            else {
+                return true;
+            }
+            
+        }
+    }
+}));
 
 router.get('/dashboard', isLoggedIn, isInisiator, isVerified, function (req, res) {
     getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
@@ -54,6 +79,38 @@ router.get('/dashboard', isLoggedIn, isInisiator, isVerified, function (req, res
                 url: "dashboard"
             }
             res.render('pages/inisiator/dashboard', data);
+        }
+    });
+});
+router.get('/profile/:user_id', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    request({
+        url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
+        method: 'GET', // specify the request type
+    },
+    function (error, response, body) {
+        if (error) {
+            res.json({
+                success: false,
+                province: null
+            });
+        } else {
+            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');   
+                }
+                else {
+                    let data = {
+                        user_id: req.user._id,
+                        birth_date: moment(req.user.profile[0].birth_date).format('DD/MM/YYYY'),
+                        province: JSON.parse(body).semuaprovinsi,
+                        notifications: notification,
+                        url: "inisiator-my-profile"
+                    }
+                    res.render('pages/inisiator/profile/my-profile', data);
+                }
+            });    
         }
     });
 });
@@ -893,6 +950,312 @@ router.post('/start-project', isLoggedIn, isInisiator, isVerified, function (req
     }
 
 });
+router.post('/profile/:user_id', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let success_message;
+
+    req.checkBody('address', 'Alamat Korespondensi tidak boleh lebih dari 250 karakter.').isLength({
+        max: 250
+    });
+    req.checkBody('address', 'Alamat Korespondensi minimal mengandung 10 karakter.').isLength({
+        min: 10
+    });
+    req.checkBody('address', 'Alamat Korespondensi wajib diisi.').notEmpty();
+    req.checkBody('sub_district', 'Kelurahan wajib dipilih.').notEmpty();
+    req.checkBody('district', 'Kecamatan wajib dipilih.').notEmpty();
+    req.checkBody('city', 'Kota wajib dipilih.').notEmpty();
+    req.checkBody('province', 'Provinsi wajib dipilih.').notEmpty();
+    req.checkBody('birth_date', 'Tanggal Lahir wajib diisi.').notEmpty();
+    req.checkBody('gender', 'Jenis Kelamin wajib dipilih.').notEmpty();
+    req.checkBody('phone', 'Nomor Handphone tidak boleh lebih dari 15 karakter.').isLength({
+        max: 15
+    });
+    req.checkBody('phone', 'Nomor Handphone minimal mengandung 5 karakter.').isLength({
+        min: 5
+    });
+    req.checkBody('phone', 'Nomor Handphone wajib diisi.').notEmpty();
+    req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
+    req.checkBody('email', 'Email wajib diisi.').notEmpty();
+    req.checkBody('name', 'Nama Lengkap tidak boleh lebih dari 255 karakter.').isLength({
+        max: 255
+    });
+    req.checkBody('name', 'Nama Lengkap minimal mengandung 3 karakter.').isLength({
+        min: 3
+    });
+    req.checkBody('name', 'Nama Lengkap wajib diisi.').notEmpty();
+
+    let errors = req.validationErrors();
+
+    if (errors) {
+        error_message = errors[errors.length - 1].msg;
+        req.flash('error_message', error_message);
+        req.flash('request', request);
+        return res.redirect('back');
+    }
+    else {
+        let check_phone = phoneUtil.parseAndKeepRawInput(req.body.phone, 'ID');
+        if (phoneUtil.isPossibleNumber(check_phone)) {
+            let data = {
+                email: req.body.email,
+                profile: [{
+                    name: req.body.name,
+                    phone: req.body.phone,
+                    established_place: req.body.established_place,
+                    company_phone: req.body.company_phone,
+                    gender: req.body.gender,
+                    birth_date: moment(req.body.birth_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                    province: {
+                        province_id: req.body.province,
+                        province_name: req.body.province_name
+                    },
+                    city: {
+                        city_id: req.body.city,
+                        city_name: req.body.city_name
+                    },
+                    district: {
+                        district_id: req.body.district,
+                        district_name: req.body.district_name
+                    },
+                    sub_district: {
+                        sub_district_id: req.body.sub_district,
+                        sub_district_name: req.body.sub_district_name
+                    },
+                    address: req.body.address
+                }]
+            };
+
+            updateUser(req.user, data, function (error, user) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                }
+                if (!user) {
+                    error_message = "User tidak tersedia";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                } else {
+                    success_message = "Berhasil memperbarui data";
+                    req.flash('success_message', success_message);
+                    return res.redirect('back');
+                }
+            });
+        } else {
+            error_message = "Nomor Handphone tidak valid";
+            req.flash('error_message', error_message);
+            return res.redirect('back');
+        }
+    }
+});
+router.post('/profile/:user_id/occupation', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let success_message;
+
+    req.checkBody('income', 'Penghasilan per Bulan wajib dipilih').notEmpty();
+    req.checkBody('income_source', 'Sumber Dana wajib dipilih').notEmpty();
+    req.checkBody('company_address', 'Alamat Perusahaan tidak boleh lebih dari 250 karakter').isLength({
+        max: 250
+    });
+    req.checkBody('company_name', 'Nama Perusahaan tidak boleh lebih dari 255 karakter').isLength({
+        max: 255
+    });
+    req.checkBody('occupation', 'Pekerjaan wajib dipilih').notEmpty();
+
+    let errors = req.validationErrors();
+
+    if (errors) {
+        error_message = errors[errors.length - 1].msg;
+        req.flash('error_message', error_message);
+        return res.redirect('back');
+    } else {
+        updateUser(req.user, {
+                occupation: [{
+                    occupation: req.body.occupation,
+                    company_name: req.body.company_name,
+                    company_address: req.body.company_address,
+                    position: req.body.position,
+                    income_source: req.body.income_source,
+                    income: req.body.income,
+                }]
+            },
+            function (error, user) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    req.flash('request', request);
+                    return res.redirect('back');
+                }
+                if (!user) {
+                    error_message = "User tidak tersedia";
+                    req.flash('error_message', error_message);
+                    req.flash('request', request);
+                    return res.redirect('back');
+                } else {
+                    success_message = "Berhasil memperbarui data."
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                }
+            });
+    }
+});
+let documentUpload = upload.fields([
+    {
+        name: 'npwp_image',
+        maxCount: 1
+    },
+    {
+        name: 'business_permit_image',
+        maxCount: 1
+    }
+]);
+router.post('/profile/:user_id/document', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let success_message;
+    documentUpload(req, res, async function(err){
+        if (err instanceof multer.MulterError) {
+            error_message = "Ukuran gambar maksimal 4 MB.";
+            req.flash('error_message', error_message);
+            return res.redirect('back');
+        } else if (err) {
+            error_message = "Terjadi Kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('back');
+        }
+        if (req.user.profile[0].registration_type == 'individual' || req.user.user_type[0].name == "inisiator") {
+            if (req.body.npwp_number != '') {
+                let npwpImage = typeof req.files['npwp_image'] !== "undefined" ? req.files['npwp_image'][0].originalname : '';
+                req.checkBody('npwp_image', 'Format NPWP Perusahaan harus berupa gambar').isImage(npwpImage);
+                req.checkBody('npwp_number', 'Nomor NPWP harus memiliki 15 karakter.').isLength({
+                    min: 15,
+                    max: 15
+                });
+            }
+        }
+        if (req.user.profile[0].registration_type == 'company') {
+            let businessPermitImage = typeof req.files['business_permit_image'] !== "undefined" ? req.files['business_permit_image'][0].originalname : '';
+            req.checkBody('business_permit_image', 'Format Surat Izin Usaha Perdagangan harus berupa gambar').isImage(businessPermitImage);            
+        }
+
+        let errors = req.validationErrors();
+
+        if (errors) {
+            error_message = errors[errors.length - 1].msg;
+            req.flash('error_message', error_message);
+            return res.redirect('back');
+        } else {
+            let npwp_image_filename = req.body.npwp_image_input;
+            let business_permit_image_filename = req.body.business_permit_image_input;
+
+            const imagePath = path.join(__dirname, `../storage/documents/${req.user._id}`);
+            const fileUpload = new Resize(imagePath);
+
+            if (req.user.profile[0].registration_type == 'individual' || req.user.user_type[0].name == "inisiator") {
+                if (req.files['npwp_image']) {
+                    npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
+                }
+            }
+            if (req.user.profile[0].registration_type == 'company') {
+                if (req.files['business_permit_image']) {
+                    business_permit_image_filename = await fileUpload.save(req.files['business_permit_image'][0].buffer);
+                }
+            }
+            let data = {
+                document: [{
+                    identity_number: req.user.document[0].identity_number,
+                    identity_image: req.user.document[0].identity_image_filename,
+                    identity_selfie_image: req.user.document[0].identity_selfie_image_filename,
+                    company_registration_number: req.user.document[0].company_registration_number,
+                    company_registration_image: req.user.document[0].company_registration_image_filename,
+                    sk_kemenkumham_number: req.user.document[0].k_kemenkumham_number,
+                    sk_kemenkumham_image: req.user.document[0].sk_kemenkumham_image_filename,
+                    npwp_number: req.body.npwp_number,
+                    npwp_image: npwp_image_filename,
+                    business_permit_image: business_permit_image_filename
+                }]
+            };
+
+            updateUser(req.user, data, function (error, user) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                }
+                if (!user) {
+                    error_message = "User tidak tersedia";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                } else {
+                    success_message = "Berhasil memperbarui data.";
+                    req.flash('success_message', success_message);
+                    return res.redirect('back');
+                }
+            });
+        }
+    });
+});
+router.post('/profile/:user_id/bank', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let success_message;
+
+    req.checkBody('branch', 'Cabang tidak boleh lebih dari 50 karakter.').isLength({
+        max: 50
+    });
+    req.checkBody('branch', 'Cabang minimal mengandung 3 karakter.').isLength({
+        min: 3
+    });
+    req.checkBody('branch', 'Cabang wajib diisi.').notEmpty();
+    req.checkBody('account_number', 'Nomor Rekening tidak boleh lebih dari 50 karakter.').isLength({
+        max: 50
+    });
+    req.checkBody('account_number', 'Nomor Rekening minimal mengandung 3 karakter.').isLength({
+        min: 3
+    });
+    req.checkBody('account_number', 'Nomor Rekening wajib diisi.').notEmpty();
+    req.checkBody('account_name', 'Nama Pemilik Rekening tidak boleh lebih dari 50 karakter.').isLength({
+        max: 50
+    });
+    req.checkBody('account_name', 'Nama Pemilik Rekening minimal mengandung 3 karakter.').isLength({
+        min: 3
+    });
+    req.checkBody('account_name', 'Nama Pemilik Rekening wajib diisi.').notEmpty();
+    req.checkBody('bank_name', 'Nama Bank wajib dipilih.').notEmpty();
+
+    let errors = req.validationErrors();
+
+    if (errors) {
+        error_message = errors[errors.length - 1].msg;
+        req.flash('error_message', error_message);
+        req.flash('request', request);
+        return res.redirect('back');
+    } else {
+        updateUser(req.user, {
+                bank: [{
+                    bank_name: req.body.bank_name,
+                    account_name: req.body.account_name,
+                    account_number: req.body.account_number,
+                    branch: req.body.branch
+                }]
+            },
+            function (error, user) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    req.flash('request', request);
+                    return res.redirect('back');
+                }
+                if (!user) {
+                    error_message = "User tidak tersedia";
+                    req.flash('error_message', error_message);
+                    req.flash('request', request);
+                    return res.redirect('back');
+                } else {
+                    success_message = "Berhasil memperbarui data."
+                    req.flash('success_message', success_message);
+                    return res.redirect('back');
+                }
+            });
+    }
+});
 router.post('/project/:project_id/basic', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let success_message;
@@ -1657,7 +2020,7 @@ function isVerified(req, res, next) {
     } else {
         let error_message = "Anda belum terverifikasi";
         req.flash('error_message', error_message);
-        return res.redirect('/inisiator/start-project');
+        return res.redirect('/complete-profile');
     }
 }
 
