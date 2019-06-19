@@ -375,7 +375,7 @@ function (req, email, password, done) {
                 return done(err);
             }
             if (isMatch) {
-                return done(null, user, req.flash('success_message', 'Anda berhasil masuk!!'));
+                return done(null, user);
             }
             else {
                 req.flash('error_message', 'Password salah');

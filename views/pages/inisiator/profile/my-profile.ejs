@@ -28,7 +28,7 @@
 			margin: 0; 
         }
         .form-control-file{
-            width: 100%;
+            width: 89%;
             padding: 5px 10px;
             border: 1px solid #e5e5e5;
             border-radius: 5px;
@@ -269,26 +269,40 @@
                                     </div>
                                     <div class="tab-pane fade" id="pills-document" role="tabpanel" aria-labelledby="pills-document-tab">
                                         <form action="/inisiator/profile/<%= user._id %>/document" enctype="multipart/form-data" method="post">
-                                            <% if (user.profile[0].registration_type == 'individual' || user.user_type[0].name == 'inisiator') { %>
-                                                <div class="form-group">
-                                                    <label class=" form-control-label">NPWP (Opsional)</label>
-                                                    <input class="form-control" name="npwp_number" type="number" placeholder="Nomor NPWP" value="<%= user.document[0].npwp_number %>">
+                                            <% if (error_message != '') { %>
+                                                <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                    <%= error_message %>
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label class=" form-control-label">Unggah NPWP (Opsional)</label>
+                                            <% } %>
+                                            <% if (success_message != '') { %>
+                                                <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                    <%= success_message %>
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                            <% } %>
+                                            <div class="form-group">
+                                                <label class=" form-control-label">NPWP (Opsional)</label>
+                                                <input class="form-control" name="npwp_number" type="number" placeholder="Nomor NPWP" value="<%= user.document[0].npwp_number %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Unggah NPWP (Opsional)</label>
+                                                <div class="input-group">
                                                     <input accept="image/*" class="form-control-file" name="npwp_image" type="file">
-                                                    <input type="text" name="npwp_image_input" value="<%= user.document[0].npwp_image %>" style="display: none">
-                                                    <label for="exampleFormControlFile1" id="npwp-image-filename-label"><%= user.document[0].npwp_image %></label>
+                                                    <div class="input-group-btn">
+                                                        <button type="button" class="btn btn-primary mb-1"
+                                                            data-toggle="modal" data-target="#npwp-image-modal">
+                                                            Lihat
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            <% } %>
-                                            <% if (user.profile[0].registration_type == 'company') { %>
-                                                <div class="form-group">
-                                                    <label class=" form-control-label">Unggah Surat Izin Usaha Perdagangan (opsional)</label>
-                                                    <input accept="image/*" class="form-control-file" name="business_permit_image" type="file">
-											        <input type="text" name="business_permit_image_input" value="<%= user.document[0].business_permit_image %>" style="display: none">
-											        <label for="exampleFormControlFile1"><%= user.document[0].business_permit_image %></label>
-                                                </div>
-                                            <% } %>
+                                                <input type="text" name="npwp_image_input" value="<%= user.document[0].npwp_image %>" style="display: none">
+                                                <label for="exampleFormControlFile1" id="npwp-image-filename-label"><%= user.document[0].npwp_image %></label>
+                                            </div>
                                             <button class="btn btn-lg btn-warning btn-block" type="submit">
                                                 <span id="verification-button-text">Simpan</span>
                                             </button>
@@ -435,6 +449,33 @@
                                 </div>
                                 
                                 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="npwp-image-modal" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="smallmodalLabel">NPWP</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <% if ( user.document[0].npwp_image) { %>
+                                                <img class="card-img-top" src="/inisiator/profile/get-image/<%= user._id %>/<%= user.document[0].npwp_image %>" alt="Card image cap">
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                             </div>
                         </div>
                     </div>

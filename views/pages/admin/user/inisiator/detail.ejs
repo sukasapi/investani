@@ -153,7 +153,7 @@
                                                     <input class="form-control" type="text" value="" disabled>
                                                 <% } %>
                                                 <% if (user.occupation[0].position != '') { %>
-                                                    <input class="form-control" type="text" value="<%= user.occupation[0].position.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') %>" disabled>
+                                                    <input class="form-control" type="text" value="<%= user.occupation[0].position %>" disabled>
                                                 <% } %>
                                             </div>
                                             <div class="col col-md-6">
@@ -271,7 +271,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="card">
-                                            <img class="card-img-top" src="/admin/user/get-image/<%= user.document[0].npwp_image %>" alt="Card image cap">
+                                            <img class="card-img-top" src="/admin/user/get-image/<%= user._id %>/<%= user.document[0].npwp_image %>" alt="Card image cap">
                                         </div>
                                     </div>
                                 </div>

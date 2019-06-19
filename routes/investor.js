@@ -11,6 +11,7 @@ import {
     getTransactionByInvestorandProject,
     updateTransaction
 } from '../models/Transaction';
+import { updateUser } from "../models/User";
 import moment from 'moment';
 import multer from 'multer';
 import path from 'path';
@@ -18,10 +19,35 @@ import Resize from '../Resize';
 import upload from '../uploadMiddleware';
 import fs from 'fs';
 import request from 'request';
+import expressValidator from 'express-validator';
 
 const router = express.Router();
+const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
 moment.locale('id');
+router.use(expressValidator({
+    customValidators: {
+        isImage: function (value, filename) {
+            if (filename) {
+                var extension = (path.extname(filename)).toLowerCase();
+                switch (extension) {
+                    case '.jpg':
+                        return '.jpg';
+                    case '.jpeg':
+                        return '.jpeg';
+                    case '.png':
+                        return '.png';
+                    default:
+                        return false;
+                }
+            }
+            else {
+                return true;
+            }
+            
+        }
+    }
+}));
 
 router.get('/dashboard', isLoggedIn, isInvestor, isVerified, function (req, res) {
     let data = {
@@ -42,15 +68,23 @@ router.get('/profile/:user_id', isLoggedIn, isInvestor, isVerified, function (re
                 province: null
             });
         } else {
+            let pic_birth_date;
+            if (req.user.pic.length != 0) {
+                pic_birth_date = moment(req.user.pic[0].pic_birth_date).format('DD/MM/YYYY');
+            }
             let data = {
                 user_id: req.user._id,
                 birth_date: moment(req.user.profile[0].birth_date).format('DD/MM/YYYY'),
+                pic_birth_date: pic_birth_date,
                 province: JSON.parse(body).semuaprovinsi,
                 url: "investor-my-profile"
             }
             res.render('pages/investor/profile/my-profile', data);
         }
     });
+});
+router.get('/profile/get-image/:user_id/:filename', isLoggedIn, isInvestor, isVerified, function (req, res) {
+    res.download(__dirname+'/../storage/documents/'+req.params.user_id+'/'+req.params.filename);
 });
 router.get('/transaction/waiting-payment', isLoggedIn, isInvestor, isVerified, function (req, res) {
     let waiting_transactions = [];
@@ -217,10 +251,10 @@ router.post('/profile/:user_id', isLoggedIn, isInvestor, isVerified, function (r
     req.checkBody('district', 'Kecamatan wajib dipilih.').notEmpty();
     req.checkBody('city', 'Kota wajib dipilih.').notEmpty();
     req.checkBody('province', 'Provinsi wajib dipilih.').notEmpty();
-    req.checkBody('birth_date', 'Tanggal Lahir wajib diisi.').notEmpty();
-    req.checkBody('gender', 'Jenis Kelamin wajib dipilih.').notEmpty();
-    if (req.user.user_type[0].name == 'inisiator'|| (req.user.profile[0].registration_type && req.user.profile[0].registration_type == 'individual')) {
-    } else if (req.user.user_type[0].name == 'investor' && req.user.profile[0].registration_type == 'company') {
+    if (req.user.profile[0].registration_type == 'individual') {
+        req.checkBody('birth_date', 'Tanggal Lahir wajib diisi.').notEmpty();
+        req.checkBody('gender', 'Jenis Kelamin wajib dipilih.').notEmpty();
+    } else if (req.user.profile[0].registration_type == 'company') {
         req.checkBody('company_phone', 'Nomor Telepon tidak boleh lebih dari 15 karakter.').isLength({
             max: 15
         });
@@ -244,8 +278,6 @@ router.post('/profile/:user_id', isLoggedIn, isInvestor, isVerified, function (r
         min: 5
     });
     req.checkBody('phone', 'Nomor Handphone wajib diisi.').notEmpty();
-    req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
-    req.checkBody('email', 'Email wajib diisi.').notEmpty();
     req.checkBody('name', 'Nama Lengkap tidak boleh lebih dari 255 karakter.').isLength({
         max: 255
     });
@@ -259,26 +291,23 @@ router.post('/profile/:user_id', isLoggedIn, isInvestor, isVerified, function (r
     if (errors) {
         error_message = errors[errors.length - 1].msg;
         req.flash('error_message', error_message);
-        req.flash('request', request);
         return res.redirect('back');
     }
     else {
         let check_phone = phoneUtil.parseAndKeepRawInput(req.body.phone, 'ID');
         if (phoneUtil.isPossibleNumber(check_phone)) {
-            if (req.user.user_type[0].name == 'investor' && req.user.profile[0].registration_type != 'individual') {
-                let check_company_phone = phoneUtil.parseAndKeepRawInput(company_phone, 'ID');
-                if (phoneUtil.isPossibleNumber(check_company_phone)) {
-                    company_phone = req.body.company_phone;
-                } else {
+            if (req.user.profile[0].registration_type == 'company') {
+                let check_company_phone = phoneUtil.parseAndKeepRawInput(req.body.company_phone, 'ID');
+                if (!phoneUtil.isPossibleNumber(check_company_phone)) {
                     error_message = "Nomor Telepon Perusahaan tidak valid";
                     req.flash('error_message', error_message);
-                    req.flash('request', request);
                     return res.redirect('back');
                 }
             }
             let data = {
                 email: req.body.email,
                 profile: [{
+                    registration_type: req.user.profile[0].registration_type,
                     name: req.body.name,
                     phone: req.body.phone,
                     established_place: req.body.established_place,
@@ -332,6 +361,106 @@ router.post('/profile/:user_id', isLoggedIn, isInvestor, isVerified, function (r
         }
     }
 });
+router.post('/profile/:user_id/occupation', isLoggedIn, isInvestor, isVerified, function (req, res) {
+    let error_message;
+    let success_message;
+
+    req.checkBody('income', 'Penghasilan per Bulan wajib dipilih').notEmpty();
+    req.checkBody('income_source', 'Sumber Dana wajib dipilih').notEmpty();
+    req.checkBody('company_address', 'Alamat Perusahaan tidak boleh lebih dari 250 karakter').isLength({
+        max: 250
+    });
+    req.checkBody('company_name', 'Nama Perusahaan tidak boleh lebih dari 255 karakter').isLength({
+        max: 255
+    });
+    req.checkBody('occupation', 'Pekerjaan wajib dipilih').notEmpty();
+
+    let errors = req.validationErrors();
+
+    if (errors) {
+        error_message = errors[errors.length - 1].msg;
+        req.flash('error_message', error_message);
+        return res.redirect('back');
+    } else {
+        updateUser(req.user, {
+                occupation: [{
+                    occupation: req.body.occupation,
+                    company_name: req.body.company_name,
+                    company_address: req.body.company_address,
+                    position: req.body.position,
+                    income_source: req.body.income_source,
+                    income: req.body.income,
+                }]
+            },
+            function (error, user) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    req.flash('request', request);
+                    return res.redirect('back');
+                }
+                if (!user) {
+                    error_message = "User tidak tersedia";
+                    req.flash('error_message', error_message);
+                    req.flash('request', request);
+                    return res.redirect('back');
+                } else {
+                    success_message = "Berhasil memperbarui data."
+                    req.flash('success_message', success_message);
+                    return res.redirect('back');
+                }
+            });
+    }
+});
+router.post('/profile/:user_id/pic', isLoggedIn, isInvestor, isVerified, function (req, res) {
+    let error_message;
+    let success_message;
+
+    req.checkBody('pic_birth_date', 'Tanggal Lahir Penanggungjawab wajib diisi.').notEmpty();
+    req.checkBody('pic_name', 'Nama Penanggungjawab tidak boleh lebih dari 255 karakter.').isLength({
+        max: 255
+    });
+    req.checkBody('pic_name', 'Nama Penanggungjawab minimal mengandung 3 karakter.').isLength({
+        min: 3
+    });
+    req.checkBody('pic_name', 'Nama Penanggungjawab wajib diisi').notEmpty();
+
+    let errors = req.validationErrors();
+
+    if (errors) {
+        error_message = errors[errors.length - 1].msg;
+        req.flash('error_message', error_message);
+        req.flash('request', request);
+        return res.redirect('back');
+    } else {
+        updateUser(req.user, {
+            pic: [{
+                pic_name: req.body.pic_name,
+                pic_birth_date: moment(req.body.pic_birth_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                pic_identity_number: req.user.pic[0].pic_identity_number,
+                pic_identity_image: req.user.pic[0].pic_identity_image,
+                pic_identity_selfie_image: req.user.pic[0].pic_identity_selfie_image
+            }]
+        }, function (error, user) {
+            if (error) {
+                error_message = "Terjadi kesalahan-1";
+                req.flash('error_message', error_message);
+                req.flash('request', request);
+                return res.redirect('back');
+            }
+            if (!user) {
+                error_message = "User tidak tersedia";
+                req.flash('error_message', error_message);
+                req.flash('request', request);
+                return res.redirect('back');
+            } else {
+                success_message = "Berhasil memperbarui data";
+                req.flash('success_message', success_message);
+                return res.redirect('back');
+            }
+        });
+    }
+});
 let documentUpload = upload.fields([
     {
         name: 'npwp_image',
@@ -345,6 +474,9 @@ let documentUpload = upload.fields([
 router.post('/profile/:user_id/document', isLoggedIn, isInvestor, isVerified, function (req, res) {
     let error_message;
     let success_message;
+    let business_permit_image_filename = req.user.document[0].business_permit_image;
+    let npwp_image_filename = req.user.document[0].npwp_image;
+
     documentUpload(req, res, async function(err){
         if (err instanceof multer.MulterError) {
             error_message = "Ukuran gambar maksimal 4 MB.";
@@ -355,7 +487,7 @@ router.post('/profile/:user_id/document', isLoggedIn, isInvestor, isVerified, fu
             req.flash('error_message', error_message);
             return res.redirect('back');
         }
-        if (req.user.profile[0].registration_type == 'individual' || req.user.user_type[0].name == "inisiator") {
+        if (req.user.profile[0].registration_type == 'individual') {
             if (req.body.npwp_number != '') {
                 let npwpImage = typeof req.files['npwp_image'] !== "undefined" ? req.files['npwp_image'][0].originalname : '';
                 req.checkBody('npwp_image', 'Format NPWP Perusahaan harus berupa gambar').isImage(npwpImage);
@@ -377,13 +509,11 @@ router.post('/profile/:user_id/document', isLoggedIn, isInvestor, isVerified, fu
             req.flash('error_message', error_message);
             return res.redirect('back');
         } else {
-            let npwp_image_filename = req.body.npwp_image_input;
-            let business_permit_image_filename = req.body.business_permit_image_input;
 
             const imagePath = path.join(__dirname, `../storage/documents/${req.user._id}`);
             const fileUpload = new Resize(imagePath);
 
-            if (req.user.profile[0].registration_type == 'individual' || req.user.user_type[0].name == "inisiator") {
+            if (req.user.profile[0].registration_type == 'individual') {
                 if (req.files['npwp_image']) {
                     npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
                 }
@@ -396,12 +526,12 @@ router.post('/profile/:user_id/document', isLoggedIn, isInvestor, isVerified, fu
             let data = {
                 document: [{
                     identity_number: req.user.document[0].identity_number,
-                    identity_image: req.user.document[0].identity_image_filename,
-                    identity_selfie_image: req.user.document[0].identity_selfie_image_filename,
+                    identity_image: req.user.document[0].identity_image,
+                    identity_selfie_image: req.user.document[0].identity_selfie_image,
                     company_registration_number: req.user.document[0].company_registration_number,
-                    company_registration_image: req.user.document[0].company_registration_image_filename,
+                    company_registration_image: req.user.document[0].company_registration_image,
                     sk_kemenkumham_number: req.user.document[0].k_kemenkumham_number,
-                    sk_kemenkumham_image: req.user.document[0].sk_kemenkumham_image_filename,
+                    sk_kemenkumham_image: req.user.document[0].sk_kemenkumham_image,
                     npwp_number: req.body.npwp_number,
                     npwp_image: npwp_image_filename,
                     business_permit_image: business_permit_image_filename

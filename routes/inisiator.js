@@ -114,6 +114,9 @@ router.get('/profile/:user_id', isLoggedIn, isInisiator, isVerified, function (r
         }
     });
 });
+router.get('/profile/get-image/:user_id/:filename', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    res.download(__dirname+'/../storage/documents/'+req.params.user_id+'/'+req.params.filename);
+});
 router.get('/start-project', isLoggedIn, isInisiator, isVerified, function (req, res) {
     getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
         if (error) {
@@ -1092,7 +1095,7 @@ router.post('/profile/:user_id/occupation', isLoggedIn, isInisiator, isVerified,
                     return res.redirect('back');
                 } else {
                     success_message = "Berhasil memperbarui data."
-                    req.flash('error_message', error_message);
+                    req.flash('success_message', success_message);
                     return res.redirect('back');
                 }
             });
@@ -1121,19 +1124,13 @@ router.post('/profile/:user_id/document', isLoggedIn, isInisiator, isVerified, f
             req.flash('error_message', error_message);
             return res.redirect('back');
         }
-        if (req.user.profile[0].registration_type == 'individual' || req.user.user_type[0].name == "inisiator") {
-            if (req.body.npwp_number != '') {
-                let npwpImage = typeof req.files['npwp_image'] !== "undefined" ? req.files['npwp_image'][0].originalname : '';
-                req.checkBody('npwp_image', 'Format NPWP Perusahaan harus berupa gambar').isImage(npwpImage);
-                req.checkBody('npwp_number', 'Nomor NPWP harus memiliki 15 karakter.').isLength({
-                    min: 15,
-                    max: 15
-                });
-            }
-        }
-        if (req.user.profile[0].registration_type == 'company') {
-            let businessPermitImage = typeof req.files['business_permit_image'] !== "undefined" ? req.files['business_permit_image'][0].originalname : '';
-            req.checkBody('business_permit_image', 'Format Surat Izin Usaha Perdagangan harus berupa gambar').isImage(businessPermitImage);            
+        if (req.body.npwp_number != '') {
+            let npwpImage = typeof req.files['npwp_image'] !== "undefined" ? req.files['npwp_image'][0].originalname : '';
+            req.checkBody('npwp_image', 'Format NPWP Perusahaan harus berupa gambar').isImage(npwpImage);
+            req.checkBody('npwp_number', 'Nomor NPWP harus memiliki 15 karakter.').isLength({
+                min: 15,
+                max: 15
+            });
         }
 
         let errors = req.validationErrors();
@@ -1162,12 +1159,12 @@ router.post('/profile/:user_id/document', isLoggedIn, isInisiator, isVerified, f
             let data = {
                 document: [{
                     identity_number: req.user.document[0].identity_number,
-                    identity_image: req.user.document[0].identity_image_filename,
-                    identity_selfie_image: req.user.document[0].identity_selfie_image_filename,
+                    identity_image: req.user.document[0].identity_image,
+                    identity_selfie_image: req.user.document[0].identity_selfie_image,
                     company_registration_number: req.user.document[0].company_registration_number,
-                    company_registration_image: req.user.document[0].company_registration_image_filename,
+                    company_registration_image: req.user.document[0].company_registration_image,
                     sk_kemenkumham_number: req.user.document[0].k_kemenkumham_number,
-                    sk_kemenkumham_image: req.user.document[0].sk_kemenkumham_image_filename,
+                    sk_kemenkumham_image: req.user.document[0].sk_kemenkumham_image,
                     npwp_number: req.body.npwp_number,
                     npwp_image: npwp_image_filename,
                     business_permit_image: business_permit_image_filename
