@@ -323,7 +323,7 @@
                                                     Dimulai</label>
                                                 <input type="text" name="start_date" class="date form-control"
                                                     id="datepicker" placeholder="Tanggal Proyek Dimulai"
-                                                    value="<%= project.project[0].duration[0].start_date.toLocaleDateString() %>">
+                                                    value="<%= start_date %>">
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label mb-1">Abstrak Proyek</label>
@@ -491,7 +491,8 @@
         var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap4',
-            minDate: today
+            minDate: today,
+            format: 'dd/mm/yyyy'
         });
 
         $(document).on('change', '#category', function(event){
@@ -588,7 +589,8 @@
             $('.activity-datepicker').each(function () {
                 $(this).datepicker({
                     uiLibrary: 'bootstrap4',
-                    minDate: today
+                    minDate: today,
+                    format: 'dd/mm/yyyy'
                 });
             });
         });
@@ -610,17 +612,17 @@
                 var data = [];
                 var budget = 0;
 
-                $('.budget-description')[i].value = JSON.parse('<%- JSON.stringify(project.budget) %>')[i].description;
-                $('.activity-datepicker')[i].value = new Date(JSON.parse('<%- JSON.stringify(project.budget) %>')[i].activity_date).toLocaleDateString();
-                $('.budget-amount')[i].value = formatRupiah(JSON.parse('<%- JSON.stringify(project.budget) %>')[i].amount.toString());
+                $('.budget-description')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].description;
+                $('.activity-datepicker')[i].value = JSON.parse('<%- JSON.stringify(budget) %>')[i].activity_date;
+                $('.budget-amount')[i].value = formatRupiah(JSON.parse('<%- JSON.stringify(budget) %>')[i].amount.toString());
                 i++;
-                if (i < '<%= project.budget.length %>') {
+                if (i < '<%= budget.length %>') {
                     $('.plus').last().click();
                     loopingButton(i);
                 } else {
-                    for (var j = 0; j < '<%= project.budget.length %>'; j++) {
-                        labels[j] = JSON.parse('<%- JSON.stringify(project.budget) %>')[j].description;
-                        data[j] = JSON.parse('<%- JSON.stringify(project.budget) %>')[j].amount;
+                    for (var j = 0; j < '<%= budget.length %>'; j++) {
+                        labels[j] = JSON.parse('<%- JSON.stringify(budget) %>')[j].description;
+                        data[j] = JSON.parse('<%- JSON.stringify(budget) %>')[j].amount;
                         budget += data[j];
                     }
                     for (var j = 0; j < data.length; j++) {
@@ -710,7 +712,8 @@
                 $('.activity-datepicker').each(function () {
                     $(this).datepicker({
                         uiLibrary: 'bootstrap4',
-                        minDate: today
+                        minDate: today,
+                        format: 'dd/mm/yyyy'
                     });
                 });
 

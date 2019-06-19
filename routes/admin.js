@@ -417,6 +417,8 @@ router.get('/project/done', isLoggedIn, isAdmin, function (req, res) {
 });
 router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
+    let budget = [];
+    let activity_date = [];
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             error_message = "Terjadi kesalahan";
@@ -431,9 +433,23 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAdmin, function (req, r
                     return res.redirect('back');   
                 }
                 else {
+                    for (let i = 0; i < project.budget.length; i++) {
+                        if (project.budget[i].activity_date === undefined) {
+                            activity_date[i] = null;
+                        } else {
+                            activity_date[i] = moment(project.budget[i].activity_date).format('DD/MM/YYYY');
+                        }
+                        budget[i] = {
+                            description: project.budget[i].description,
+                            activity_date: activity_date[i],
+                            amount: project.budget[i].amount
+                        };
+                    }
                     let data = {
                         url: 'waiting-detail-project',
                         project: project,
+                        budget: budget,
+                        start_date: moment(project.project[0].duration[0].start_date).format('DD/MM/YYYY'),
                         notifications: notification,
                     }
                     return res.render('pages/admin/project/detail', data);
@@ -446,6 +462,8 @@ router.get('/project/waiting/:project_id/edit', isLoggedIn, isAdmin, function (r
     let error_message;
     let success_message;
     let province_id = null;
+    let budget = [];
+    let activity_date = [];
     request({
         url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
         method: 'GET', // specify the request type
@@ -484,9 +502,23 @@ router.get('/project/waiting/:project_id/edit', isLoggedIn, isAdmin, function (r
                                 return res.redirect('back');   
                             }
                             else {
+                                for (let i = 0; i < project.budget.length; i++) {
+                                    if (project.budget[i].activity_date === undefined) {
+                                        activity_date[i] = null;
+                                    } else {
+                                        activity_date[i] = moment(project.budget[i].activity_date).format('DD/MM/YYYY');
+                                    }
+                                    budget[i] = {
+                                        description: project.budget[i].description,
+                                        activity_date: activity_date[i],
+                                        amount: project.budget[i].amount
+                                    };
+                                }
                                 let data = {
                                     url: 'edit-project',
-                                    project: project, 
+                                    project: project,
+                                    budget: budget,
+                                    start_date: moment(project.project[0].duration[0].start_date).format('DD/MM/YYYY'),
                                     all_category: all_category,
                                     province: JSON.parse(body).semuaprovinsi,
                                     province_id: province_id,
@@ -495,7 +527,6 @@ router.get('/project/waiting/:project_id/edit', isLoggedIn, isAdmin, function (r
                                 return res.render('pages/admin/project/edit', data);
                             }
                         });
-                        
                     })
                     
                 }
@@ -1765,7 +1796,7 @@ router.post('/project/waiting/:project_id/budget', isLoggedIn, isAdmin, function
                 req.body.budget_items.budget_items.forEach((budget_item, index) => {
                     budget[index] = {
                         description: budget_item.description,
-                        activity_date: budget_item.activity_date,
+                        activity_date: moment(budget_item.activity_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
                         amount: budget_item.amount
                     }
                     total_budget = total_budget + parseInt(budget_item.amount);
@@ -1879,7 +1910,7 @@ router.post('/project/waiting/:project_id/project', isLoggedIn, isAdmin, functio
                                 start_campaign: null,
                                 due_campaign: null,
                                 campaign: req.body.campaign,
-                                start_date: req.body.start_date,
+                                start_date: moment(req.body.start_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
                                 due_date: null,
                                 duration: req.body.duration
                             },

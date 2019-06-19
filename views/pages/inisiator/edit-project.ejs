@@ -200,9 +200,9 @@
                                                         value="<%= total_stock %>">
                                                 </div>
                                                 <div class="col col-sm-6">
-                                                    <label class="control-label mb-1">Jumlah Saham Maksimal per Investor</label>
+                                                    <label class="control-label mb-1">Jumlah Saham MaSaham Maksimal per Investor</label>
                                                     <input class="form-control" id="max-invest" name="max_invest"
-                                                        placeholder="Saham Maksimal per Investor" type="number"
+                                                        placeholder="Jumlah Saham Maksimal per Investor" type="number"
                                                         value="<%= max_invest %>">
                                                 </div>
                                             </div>
@@ -535,7 +535,8 @@
         var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap4',
-            minDate: today
+            minDate: today,
+            format: 'dd/mm/yyyy'
         });
 
         $('#category').on('change', function (event) {
@@ -642,7 +643,8 @@
             $('.activity-datepicker').each(function () {
                 $(this).datepicker({
                     uiLibrary: 'bootstrap4',
-                    minDate: today
+                    minDate: today,
+                    format: 'dd/mm/yyyy'
                 });
             });
         });
