@@ -1160,7 +1160,7 @@ router.get('/withdraw/waiting-payment/:project_id/:budget_id', isLoggedIn, isAdm
             return res.redirect('/admin/withdraw/waiting-payment');
         }
         else {
-            if (project.status == 'done') {
+            if (project.status == 'done' || project.status == 'verified') {
                 project.budget.forEach((budget) => {
                     if (budget._id.equals(budget_id)) {
                         if (!budget.alternative_activity_date && budget.status == 'approved') {
@@ -1338,12 +1338,11 @@ router.get('/withdraw/alternative/waiting-approval', isLoggedIn, isAdmin, functi
     let error_message;
     let waiting_withdraws = [];
     let budget_object = null;
-
-    getProjectByStatus("done", function (error, projects) {
+    Project.find({ $or: [{status: "done"}, {status: "verified"}] }, function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/dashboard');
+            return res.redirect('/inisiator/dashboard');
         }
         else {
             projects.forEach((project) => {
@@ -1376,23 +1375,67 @@ router.get('/withdraw/alternative/waiting-approval', isLoggedIn, isAdmin, functi
                                 waiting_withdraws: waiting_withdraws,
                                 notifications: notification
                             }
-                            
                             return res.render('pages/admin/withdraw/waiting-approval-alternative', data);
                         }
                     });
                 }
             });
+        }
+    }).sort({ createdAt: -1 });
+    // getProjectByStatus("done", function (error, projects) {
+    //     if (error) {
+    //         error_message = "Terjadi kesalahan";
+    //         req.flash('error_message', error_message);
+    //         return res.redirect('/admin/dashboard');
+    //     }
+    //     else {
+    //         projects.forEach((project) => {
+    //             project.budget.forEach((budget) => {
+    //                 if (budget.alternative_activity_date && budget.status == 'waiting') {
+    //                     budget_object = budget.toObject();
+    //                     budget_object.alternative_activity_date = moment(budget.alternative_activity_date).format('LL');
+    //                     budget_object.project_id = project._id;
+    //                     budget_object.project_title = project.basic[0].title;
+    //                     waiting_withdraws.push(budget_object);
+    //                 }
+    //             });
+    //         });
+    //         updateNotificationByEntity({entity: 'waiting_approval_alternative_withdraw'}, {status: 'read'}, function (error) {
+    //             if (error) {
+    //                 error_message = "Terjadi kesalahan";
+    //                 req.flash('error_message', error_message);
+    //                 return res.redirect('back');
+    //             }
+    //             else {
+    //                 getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
+    //                     if (error) {
+    //                         error_message = "Terjadi kesalahan";
+    //                         req.flash('error_message', error_message);
+    //                         return res.redirect('back');   
+    //                     }
+    //                     else {
+    //                         let data = {
+    //                             url: "waiting-withdraw-approval-alternative",
+    //                             waiting_withdraws: waiting_withdraws,
+    //                             notifications: notification
+    //                         }
+                            
+    //                         return res.render('pages/admin/withdraw/waiting-approval-alternative', data);
+    //                     }
+    //                 });
+    //             }
+    //         });
 
             
-        }
-    });
+    //     }
+    // });
 });
 router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isAdmin, function(req, res) {
     let error_message;
     let waiting_withdraws = [];
     let budget_object = null;
 
-    getProjectByStatus("done", function (error, projects) {
+    Project.find({ $or: [{status: "done"}, {status: "verified"}] }, function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -1447,7 +1490,7 @@ router.get('/withdraw/alternative/waiting-payment/:project_id/:budget_id', isLog
             return res.redirect('/admin/withdraw/waiting-payment');
         }
         else {
-            if (project.status == 'done') {
+            if (project.status == 'done' || project.status == 'verified') {
                 project.budget.forEach((budget) => {
                     if (budget._id.equals(budget_id)) {
                         if (budget.alternative_activity_date && budget.status == 'approved') {

@@ -597,13 +597,11 @@ router.get('/withdraw/paid', isLoggedIn, isInisiator, isVerified, function (req,
                                 paid_withdraws: paid_withdraws,
                                 notifications: notification
                             }
-                            
                             return res.render('pages/inisiator/withdraw/paid', data);
                         }
                     });
                 }
             });
-            
         }
     });
 })
@@ -649,45 +647,6 @@ router.get('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functio
             });
         }
     }).sort({ createdAt: -1 });
-    // getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
-    //     if (error) {
-    //         error_message = "Terjadi kesalahan";
-    //         req.flash('error_message', error_message);
-    //         return res.redirect('/inisiator/dashboard');
-    //     }
-    //     else {
-    //         projects.forEach((project) => {
-    //             project.budget.forEach((budget) => {
-    //                 if (budget.status == 'waiting') {
-    //                     waiting_budget.push(budget);
-    //                 }
-    //             });
-    //             project_object = project.toObject();
-    //             project_object.budget = waiting_budget;
-    //             project_data.push(project_object);
-    //         });
-
-    //         getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
-    //             if (error) {
-    //                 error_message = "Terjadi kesalahan";
-    //                 req.flash('error_message', error_message);
-    //                 return res.redirect('back');   
-    //             }
-    //             else {
-    //                 let data = {
-    //                     user_id: req.user._id,
-    //                     url: "alternative-withdraw",
-    //                     projects: project_data,
-    //                     notifications: notification
-    //                 }
-                    
-    //                 res.render('pages/inisiator/withdraw/alternative', data);
-    //             }
-    //         });
-    //     }
-    // });
-    
-
 })
 router.get('/withdraw/alternative/waiting-approval', isLoggedIn, isInisiator, isVerified, function (req, res) {
     // alternative_activity_date
@@ -876,6 +835,10 @@ router.get('/withdraw/alternative/paid', isLoggedIn, isInisiator, isVerified, fu
 })
 router.get('/get-activity', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let waiting_budget = [];
+    let goal;
+    let budget_left;
+    let budget_total = 0;
+    let paid_budget = 0;
     getProjectByID(req.query.project_id, function (error, project) {
         if (error) {
             return res.json({
@@ -884,21 +847,50 @@ router.get('/get-activity', isLoggedIn, isInisiator, isVerified, function (req, 
             });
         }
         else {
-            project.budget.forEach((budget) => {
-                if (budget.status == 'waiting') {
-                    waiting_budget.push(budget);
+            getTransactionByProject(project._id, function (error, transactions) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                }
+                else {
+                    transactions.forEach(transaction => {
+                        budget_total = budget_total + transaction.stock_quantity*project.basic[0].stock[0].price;
+                    });
+                    project.budget.forEach(budget =>{
+                        if (budget.status == 'paid') {
+                            if (!budget.alternative_amount) {
+                                paid_budget = paid_budget + budget.amount;
+                            }
+                            else {
+                                paid_budget = paid_budget + budget.alternative_amount;
+                            }
+                        }
+                    });
+                    goal = project.basic[0].stock[0].total*project.basic[0].stock[0].price;
+                    budget_left = budget_total-paid_budget;
+                    console.log(budget_total)
+                    console.log(paid_budget)
+                    project.budget.forEach((budget) => {
+                        if (budget.status == 'waiting' && !budget.alternative_activity_date) {
+                            waiting_budget.push(budget);
+                        }
+                    });
+        
+                    return res.json({
+                        success: true,
+                        goal: goal,
+                        budget_left: budget_left,
+                        activity: waiting_budget
+                    })
                 }
             });
-
-            return res.json({
-                success: true,
-                activity: waiting_budget
-            })
         }
     });
 });
 router.get('/get-activity-detail', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let waiting_budget = null;
+    let activity_date = null
     getProjectByID(req.query.project_id, function (error, project) {
         if (error) {
             return res.json({
@@ -907,23 +899,24 @@ router.get('/get-activity-detail', isLoggedIn, isInisiator, isVerified, function
             });
         }
         else {
+            
             project.budget.forEach((budget) => {
                 if (budget._id == req.query.activity_id) {
                     waiting_budget = budget
                 }
             });
+            if (waiting_budget != null) {
+                activity_date = moment(waiting_budget.activity_date).format('DD/MM/YYYY');
+            }
             return res.json({
                 success: true,
                 activity: waiting_budget,
-                activity_date: waiting_budget.activity_date.toLocaleDateString()
+                activity_date: activity_date
             })
         }
     });
 });
 router.get('/withdraw/get-receipt/:project_id/:filename', isLoggedIn, isInisiator, isVerified, function (req, res) {
-    let error_message;
-    let budget_object = null;
-
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             return res.sendStatus(500);
@@ -1908,187 +1901,229 @@ const officialRecordUpload = multer({
     storage: officialRecordStorage,
     limits: {
         fileSize: 4 * 1024 * 1024,
-    }
-});
+    },
+    fileFilter: function fileFilter (req, file, cb) {
 
-router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, officialRecordUpload.single('official_record'), function (req, res) {
+        // The function should call `cb` with a boolean
+        // to indicate if the file should be accepted
+
+        // To reject this file pass `false`, like so:
+        req.body.amount = parseInt(req.body.amount.split('.').join(""))
+
+        req.checkBody('amount', 'Anggaran tidak boleh kurang dari 1 Rupiah').isInt({
+            min: 1
+        });
+        req.checkBody('amount', 'Anggaran wajib diisi').notEmpty();
+        req.checkBody('activity_date', 'Tanggal kegiatan wajib diisi').notEmpty();
+        if (req.body.add_activity) {
+            req.checkBody('add_activity', 'Nama Kegiatan wajib diisi.').notEmpty();
+        }
+        req.checkBody('activity', 'Kegiatan wajib dipilih').notEmpty();
+        req.checkBody('project', 'Proyek wajib dipilih.').notEmpty();
+        let errors = req.validationErrors();
+        
+        if (errors) {
+            console.log('error express validator');
+            
+            return cb(null, false)
+        }
+        else {            
+            // To accept the file pass `true`, like so:
+
+            getProjectByID(req.body.project, async function (error, project) {
+                if (error) {
+                    console.log('error get project');
+                    
+                    return cb(null, false)
+                }
+                if (!project) {
+                    console.log('error !project');
+                    
+                    return cb(null, false)
+                } else {
+                    if (project.inisiator._id.equals(req.user._id)) {
+                        getTransactionByProject(project._id, function (error, transactions) {
+                            if (error) {
+                                console.log('error get transaction');
+                                
+                                return cb(null, false)
+                            }
+                            else {
+                                let budget_total = 0;
+                                let paid_budget = 0;
+                                transactions.forEach(transaction => {
+                                    budget_total = budget_total + transaction.stock_quantity*project.basic[0].stock[0].price;
+                                });
+                                project.budget.forEach(budget =>{
+                                    if (budget.status == 'paid') {
+                                        if (!budget.alternative_amount) {
+                                            paid_budget = paid_budget + budget.amount;
+                                        }
+                                        else {
+                                            paid_budget = paid_budget + budget.alternative_amount;
+                                        }
+                                    }
+                                });
+                                if (budget_total-paid_budget >= req.body.amount) {
+                                    console.log('success');
+                                    
+                                    return cb(null, true)
+                                }
+                                else {
+                                    console.log('error budget treshold');
+                                    
+                                    return cb(null, false)
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        console.log('error unauthorized project');
+                        
+                        return cb(null, false)
+                    }
+                }
+            });
+        }
+
+        // You can always pass an error if something goes wrong:
+        // cb(new Error('I don\'t have a clue!'))
+    }
+}).single('official_record');
+router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let success_message;
-
-    
-    getProjectByID(req.body.project, async function (error, project) {
-        if (error) {
-            error_message = "Terjadi kesalahan";
+    officialRecordUpload(req, res, function(err) {
+        let budget_total = 0;
+        let paid_budget = 0;
+        if (req.file === undefined) {
+            req.body.amount = parseInt(req.body.amount.split('.').join(""))
+        }
+        req.checkBody('amount', 'Anggaran tidak boleh kurang dari 1 Rupiah').isInt({
+            min: 1
+        });
+        req.checkBody('amount', 'Anggaran wajib diisi').notEmpty();
+        req.checkBody('activity_date', 'Tanggal kegiatan wajib diisi').notEmpty();
+        if (req.body.add_activity) {
+            req.checkBody('add_activity', 'Nama Kegiatan wajib diisi.').notEmpty();
+        }
+        req.checkBody('activity', 'Kegiatan wajib dipilih').notEmpty();
+        req.checkBody('project', 'Proyek wajib dipilih.').notEmpty();
+        let errors = req.validationErrors();
+        if (errors) {
+            error_message = errors[errors.length - 1].msg;
             req.flash('error_message', error_message);
             return res.redirect('back');
         }
-        if (!project) {
-            error_message = "Proyek tidak tersedia";
-            req.flash('error_message', error_message);
-            return res.redirect('back');
-        } else {
-            if (project.inisiator._id.equals(req.user._id)) {
-                if (req.file) {
-                    project.budget.forEach((budget, index) => {
-                        if (budget._id.equals(req.body.activity)) {
-                            project.budget[index].alternative_activity_date = req.body.activity_date;
-                            project.budget[index].alternative_amount = req.body.amount;
-                            project.budget[index].official_record = req.file.filename;
-                            project.save().then(project => {
-                                let notification_data = {
-                                    status: 'unread',
-                                    entity: 'waiting_approval_alternative_withdraw',
-                                    description: 'Pencairan Alternatif Menunggu Persetujuan',
-                                    url: '/admin/withdraw/alternative/waiting-approval',
-                                    budget_id: budget._id,
-                                    sender: req.user._id,
-                                    receiver: '5cdb66e014c79f4bc8a01ee5'
-                                }
-                                let notification = new Notification(notification_data);
-                                createNotification(notification, function(error) {
-                                    if (error) {
-                                        error_message = "Terjadi kesalahan";
-                                        req.flash('error_message', error_message);
-                                        return res.redirect('back');
-                                    }
-                                    else {
-                                        success_message = "Pencairan alternatif berhasil dilakukan.";
-                                        req.flash('success_message', success_message);
-                                        return res.redirect('back');
-                                    }
-                                });
-                            }).catch(error => {
-                                error_message = "Pencairan alternatif gagal dilakukan.";
-                                req.flash('error_message', error_message);
-                                return res.redirect('back');
-                            });
-                        }
-                    });
-                } else {
-                    error_message = "Berita acara wajib diunggah.";
+        else {
+            getProjectByID(req.body.project, async function (error, project) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
                     return res.redirect('back');
                 }
-            }
-            else {
-                error_message = "Proyek tidak tersedia";
-                req.flash('error_message', error_message);
-                return res.redirect('back');
-            }
-            // let budget_dir = path.join(__dirname, `../storage/projects/${req.body.project}/budget`);
-            // fs.access(budget_dir, async (err) => {
-            //     if (err) {
-            //         fs.mkdir(dir, async (err) => {
-            //             if (err) {
-            //                 error_message = "Terjadi kesalahan";
-            //                 req.flash('error_message', error_message);
-            //                 return res.redirect('back');
-            //             }
-            //             else {
-            //                 if (project.inisiator._id.equals(req.user._id)) {
-            //                     if (req.file) {          
-            //                         project.budget.forEach((budget, index) => {
-            //                             if (budget._id.equals(req.body.activity)) {
-            //                                 project.budget[index].alternative_activity_date = req.body.activity_date;
-            //                                 project.budget[index].alternative_amount = req.body.amount;
-            //                                 project.budget[index].official_record = req.file.filename;
-            //                                 project.save().then(project => {
-            //                                     let notification_data = {
-            //                                         status: 'unread',
-            //                                         entity: 'waiting_approval_alternative_withdraw',
-            //                                         description: 'Pencairan Alternatif Menunggu Persetujuan',
-            //                                         url: '/admin/withdraw/alternative/waiting-approval',
-            //                                         budget_id: budget._id,
-            //                                         sender: req.user._id,
-            //                                         receiver: '5cdb66e014c79f4bc8a01ee5'
-            //                                     }
-            //                                     let notification = new Notification(notification_data);
-            //                                     createNotification(notification, function(error) {
-            //                                         if (error) {
-            //                                             error_message = "Terjadi kesalahan";
-            //                                             req.flash('error_message', error_message);
-            //                                             return res.redirect('back');
-            //                                         }
-            //                                         else {
-            //                                             success_message = "Pencairan alternatif berhasil dilakukan.";
-            //                                             req.flash('success_message', success_message);
-            //                                             return res.redirect('back');
-            //                                         }
-            //                                     });
-            //                                 }).catch(error => {
-            //                                     error_message = "Pencairan alternatif gagal dilakukan.";
-            //                                     req.flash('error_message', error_message);
-            //                                     return res.redirect('back');
-            //                                 });
-            //                             }
-            //                         });
-            //                     } else {
-            //                         error_message = "Berita acara wajib diunggah.";
-            //                         req.flash('error_message', error_message);
-            //                         return res.redirect('back');
-            //                     }
-            //                 }
-            //                 else {
-            //                     error_message = "Proyek tidak tersedia";
-            //                     req.flash('error_message', error_message);
-            //                     return res.redirect('back');
-            //                 }
-            //             }
-            //         });
-            //     }
-            //     else {
-            //         if (project.inisiator._id.equals(req.user._id)) {
-            //             if (req.file) {          
-            //                 project.budget.forEach((budget, index) => {
-            //                     if (budget._id.equals(req.body.activity)) {
-            //                         project.budget[index].alternative_activity_date = req.body.activity_date;
-            //                         project.budget[index].alternative_amount = req.body.amount;
-            //                         project.budget[index].official_record = req.file.filename;
-            //                         project.save().then(project => {
-            //                             let notification_data = {
-            //                                 status: 'unread',
-            //                                 entity: 'waiting_approval_alternative_withdraw',
-            //                                 description: 'Pencairan Alternatif Menunggu Persetujuan',
-            //                                 url: '/admin/withdraw/alternative/waiting-approval',
-            //                                 budget_id: budget._id,
-            //                                 sender: req.user._id,
-            //                                 receiver: '5cdb66e014c79f4bc8a01ee5'
-            //                             }
-            //                             let notification = new Notification(notification_data);
-            //                             createNotification(notification, function(error) {
-            //                                 if (error) {
-            //                                     error_message = "Terjadi kesalahan";
-            //                                     req.flash('error_message', error_message);
-            //                                     return res.redirect('back');
-            //                                 }
-            //                                 else {
-            //                                     success_message = "Pencairan alternatif berhasil dilakukan.";
-            //                                     req.flash('success_message', success_message);
-            //                                     return res.redirect('back');
-            //                                 }
-            //                             });
-            //                         }).catch(error => {
-            //                             error_message = "Pencairan alternatif gagal dilakukan.";
-            //                             req.flash('error_message', error_message);
-            //                             return res.redirect('back');
-            //                         });
-            //                     }
-            //                 });
-            //             } else {
-            //                 error_message = "Berita acara wajib diunggah.";
-            //                 req.flash('error_message', error_message);
-            //                 return res.redirect('back');
-            //             }
-            //         }
-            //         else {
-            //             error_message = "Proyek tidak tersedia";
-            //             req.flash('error_message', error_message);
-            //             return res.redirect('back');
-            //         }
-            //     }
-            // });
+                if (!project) {
+                    error_message = "Proyek tidak tersedia";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                } else {
+                    if (project.inisiator._id.equals(req.user._id)) {
+                        getTransactionByProject(project._id, function (error, transactions) {
+                            if (error) {
+                                error_message = "Terjadi kesalahan";
+                                req.flash('error_message', error_message);
+                                return res.redirect('back');
+                            }
+                            else {
+                                transactions.forEach(transaction => {
+                                    budget_total = budget_total + transaction.stock_quantity*project.basic[0].stock[0].price;
+                                });
+                                project.budget.forEach(budget =>{
+                                    if (budget.status == 'paid') {
+                                        if (!budget.alternative_amount) {
+                                            paid_budget = paid_budget + budget.amount;
+                                        }
+                                        else {
+                                            paid_budget = paid_budget + budget.alternative_amount;
+                                        }
+                                    }
+                                });
+                                
+                                if (budget_total-paid_budget >= req.body.amount) {
+                                    if (req.file) {
+                                        if (req.body.add_activity) {
+                                            let budget_data = {
+                                                description: req.body.add_activity,
+                                                alternative_activity_date: moment(req.body.activity_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                                                alternative_amount: req.body.amount,
+                                                status: "waiting",
+                                                receipt: "",
+                                                official_record: req.file.filename
+                                            }
+                                            project.budget.push(budget_data)
+                                        }
+                                        else {
+                                            project.budget.forEach((budget, index) => {
+                                                if (budget._id.equals(req.body.activity)) {
+                                                    project.budget[index].alternative_activity_date = moment(req.body.activity_date, "DD-MM-YYYY").format('MM/DD/YYYY');
+                                                    project.budget[index].alternative_amount = req.body.amount;
+                                                    project.budget[index].official_record = req.file.filename;
+                                                }
+                                            });
+                                        }
+                                        project.save().then(project => {
+                                            let notification_data = {
+                                                status: 'unread',
+                                                entity: 'waiting_approval_alternative_withdraw',
+                                                description: 'Pencairan Alternatif Menunggu Persetujuan',
+                                                url: '/admin/withdraw/alternative/waiting-approval',
+                                                budget_id: req.body.activity,
+                                                sender: req.user._id,
+                                                receiver: '5cdb66e014c79f4bc8a01ee5'
+                                            }
+                                            let notification = new Notification(notification_data);
+                                            createNotification(notification, function(error) {
+                                                if (error) {
+                                                    error_message = "Terjadi kesalahan";
+                                                    req.flash('error_message', error_message);
+                                                    return res.redirect('back');
+                                                }
+                                                else {
+                                                    success_message = "Pencairan alternatif berhasil dilakukan.";
+                                                    req.flash('success_message', success_message);
+                                                    return res.redirect('back');
+                                                }
+                                            });
+                                        }).catch(error => {
+                                            error_message = "Pencairan alternatif gagal dilakukan.";
+                                            req.flash('error_message', error_message);
+                                            return res.redirect('back');
+                                        });
+                                    }
+                                    else {
+                                        error_message = "Berita acara wajib diunggah.";
+                                        req.flash('error_message', error_message);
+                                        return res.redirect('back');
+                                    }
+                                }
+                                else {
+                                    error_message = "Anggaran tidak cukup.";
+                                    req.flash('error_message', error_message);
+                                    return res.redirect('back');
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        error_message = "Proyek tidak tersedia";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    }
+                }
+            });
         }
     });
+    
 });
 
 function isLoggedIn(req, res, next) {
