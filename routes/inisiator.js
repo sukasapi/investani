@@ -646,10 +646,9 @@ router.get('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functio
                 }
             });
         }
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: 1 });
 })
 router.get('/withdraw/alternative/waiting-approval', isLoggedIn, isInisiator, isVerified, function (req, res) {
-    // alternative_activity_date
     let error_message;
     let waiting_withdraws = [];
     let budget_object = null;
@@ -857,7 +856,10 @@ router.get('/get-activity', isLoggedIn, isInisiator, isVerified, function (req, 
                     transactions.forEach(transaction => {
                         budget_total = budget_total + transaction.stock_quantity*project.basic[0].stock[0].price;
                     });
-                    project.budget.forEach(budget =>{
+                    project.budget.forEach(budget => {
+                        if (budget.status == 'waiting' && budget.alternative_amount) {
+                            paid_budget = paid_budget + budget.alternative_amount;
+                        }
                         if (budget.status == 'paid') {
                             if (!budget.alternative_amount) {
                                 paid_budget = paid_budget + budget.amount;
@@ -869,8 +871,6 @@ router.get('/get-activity', isLoggedIn, isInisiator, isVerified, function (req, 
                     });
                     goal = project.basic[0].stock[0].total*project.basic[0].stock[0].price;
                     budget_left = budget_total-paid_budget;
-                    console.log(budget_total)
-                    console.log(paid_budget)
                     project.budget.forEach((budget) => {
                         if (budget.status == 'waiting' && !budget.alternative_activity_date) {
                             waiting_budget.push(budget);
@@ -1922,30 +1922,22 @@ const officialRecordUpload = multer({
         req.checkBody('project', 'Proyek wajib dipilih.').notEmpty();
         let errors = req.validationErrors();
         
-        if (errors) {
-            console.log('error express validator');
-            
+        if (errors) {            
             return cb(null, false)
         }
         else {            
             // To accept the file pass `true`, like so:
 
             getProjectByID(req.body.project, async function (error, project) {
-                if (error) {
-                    console.log('error get project');
-                    
+                if (error) {                    
                     return cb(null, false)
                 }
-                if (!project) {
-                    console.log('error !project');
-                    
+                if (!project) {                    
                     return cb(null, false)
                 } else {
                     if (project.inisiator._id.equals(req.user._id)) {
                         getTransactionByProject(project._id, function (error, transactions) {
-                            if (error) {
-                                console.log('error get transaction');
-                                
+                            if (error) {                                
                                 return cb(null, false)
                             }
                             else {
@@ -1954,7 +1946,10 @@ const officialRecordUpload = multer({
                                 transactions.forEach(transaction => {
                                     budget_total = budget_total + transaction.stock_quantity*project.basic[0].stock[0].price;
                                 });
-                                project.budget.forEach(budget =>{
+                                project.budget.forEach(budget => {
+                                    if (budget.status == 'waiting' && budget.alternative_amount) {
+                                        paid_budget = paid_budget + budget.alternative_amount;
+                                    }
                                     if (budget.status == 'paid') {
                                         if (!budget.alternative_amount) {
                                             paid_budget = paid_budget + budget.amount;
@@ -1964,22 +1959,16 @@ const officialRecordUpload = multer({
                                         }
                                     }
                                 });
-                                if (budget_total-paid_budget >= req.body.amount) {
-                                    console.log('success');
-                                    
+                                if (budget_total-paid_budget >= req.body.amount) {                                    
                                     return cb(null, true)
                                 }
-                                else {
-                                    console.log('error budget treshold');
-                                    
+                                else {                                    
                                     return cb(null, false)
                                 }
                             }
                         });
                     }
-                    else {
-                        console.log('error unauthorized project');
-                        
+                    else {                        
                         return cb(null, false)
                     }
                 }
@@ -2004,7 +1993,7 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functi
         });
         req.checkBody('amount', 'Anggaran wajib diisi').notEmpty();
         req.checkBody('activity_date', 'Tanggal kegiatan wajib diisi').notEmpty();
-        if (req.body.add_activity) {
+        if (req.body.add_activity !== undefined) {
             req.checkBody('add_activity', 'Nama Kegiatan wajib diisi.').notEmpty();
         }
         req.checkBody('activity', 'Kegiatan wajib dipilih').notEmpty();
@@ -2038,7 +2027,10 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functi
                                 transactions.forEach(transaction => {
                                     budget_total = budget_total + transaction.stock_quantity*project.basic[0].stock[0].price;
                                 });
-                                project.budget.forEach(budget =>{
+                                project.budget.forEach(budget => {
+                                    if (budget.status == 'waiting' && budget.alternative_amount) {
+                                        paid_budget = paid_budget + budget.alternative_amount;
+                                    }
                                     if (budget.status == 'paid') {
                                         if (!budget.alternative_amount) {
                                             paid_budget = paid_budget + budget.amount;

@@ -90,7 +90,7 @@
                                                 </td>
                                                 <td><%= paid_withdraw.description %></td>
                                                 <td><%= paid_withdraw.alternative_activity_date %></td>
-                                                <td>Rp. <%= paid_withdraw.alternative_amount %></td>
+                                                <td>Rp. <span class="amount"></span></td>
                                             </tr>
                                         <% }) %>
                                     </tbody>
@@ -130,6 +130,26 @@
     <script src="/js/buttons.colVis.min.js"></script>
     <script src="/js/datatables-init.js"></script>
     <script>
+        <% paid_withdraws.forEach((paid_withdraw, index) => { %>
+            document.getElementsByClassName('amount')[<%= index %>].innerHTML = formatRupiah('<%= paid_withdraw.alternative_amount %>');
+        <% }) %>
+        
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
+
         document.getElementById("alternative-withdraw").className = "menu-item-has-children dropdown active show";
         document.getElementById("alternative-withdraw-link").click();
         document.getElementById("paid-alternative-withdraw-icon").style.color = '#03a9f3';

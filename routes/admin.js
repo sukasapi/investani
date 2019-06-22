@@ -588,6 +588,7 @@ router.get('/project/rejected/:project_id', isLoggedIn, isAdmin, function (req, 
 });
 router.get('/project/open/:project_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
+    let budget_data = [];
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             error_message = "Terjadi kesalahan.";
@@ -600,6 +601,13 @@ router.get('/project/open/:project_id', isLoggedIn, isAdmin, function (req, res)
             return res.redirect('/admin/project/open');
         }
         else {
+            project.budget.forEach((budget, index) => {
+                budget_data[index] = {
+                    description: budget.description,
+                    activity_date: moment(budget.activity_date).format('DD/MM/YYYY'),
+                    amount: budget.amount
+                };
+            });
             getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
@@ -610,6 +618,8 @@ router.get('/project/open/:project_id', isLoggedIn, isAdmin, function (req, res)
                     let data = {
                         url: 'open-detail-project',
                         project: project,
+                        budget: budget_data,
+                        start_date: moment(project.project[0].duration[0].start_date).format('DD/MM/YYYY'),
                         notifications: notification
                     }
                     return res.render('pages/admin/project/detail', data);
@@ -620,13 +630,26 @@ router.get('/project/open/:project_id', isLoggedIn, isAdmin, function (req, res)
 });
 router.get('/project/done/:project_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
+    let budget_data = [];
     getProjectByID(req.params.project_id, function (error, project) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
             return res.redirect('/admin/project/waiting');
         }
+        if (!project) {
+            error_message = "Proyek tidak tersedia.";
+            req.flash('error_message', error_message);
+            return res.redirect('/admin/project/waiting');
+        }
         else {
+            project.budget.forEach((budget, index) => {
+                budget_data[index] = {
+                    description: budget.description,
+                    activity_date: moment(budget.activity_date).format('DD/MM/YYYY'),
+                    amount: budget.amount
+                };
+            });
             getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
@@ -637,6 +660,8 @@ router.get('/project/done/:project_id', isLoggedIn, isAdmin, function (req, res)
                     let data = {
                         url: 'done-detail-project',
                         project: project,
+                        budget: budget_data,
+                        start_date: moment(project.project[0].duration[0].start_date).format('DD/MM/YYYY'),
                         notifications: notification
                     }
                     return res.render('pages/admin/project/detail', data);
@@ -1253,7 +1278,12 @@ router.get('/withdraw/waiting/:project_id/:budget_id/approve', isLoggedIn, isAdm
                     project.save().then(project => {
                         success_message = "Kegiatan dan anggaran berhasil disetujui";
                         req.flash('success_message', success_message);
-                        return res.redirect(`/admin/withdraw/waiting-payment/${project._id}/${budget._id}`);
+                        if (!budget.alternative_amount) {
+                            return res.redirect(`/admin/withdraw/waiting-payment/${project._id}/${budget._id}`);
+                        }
+                        else {
+                            return res.redirect(`/admin/withdraw/alternative/waiting-payment/${project._id}/${budget._id}`);
+                        }
                     }).catch(error => {
                         error_message = "Terjadi kesalahan";
                         req.flash('error_message', error_message);
@@ -2285,7 +2315,7 @@ router.post('/withdraw/waiting-payment/:project_id/:budget_id', isLoggedIn, isAd
             req.flash('error_message', error_message);
             return res.redirect('back');
         }
-        getProjectByID(req.params.project_id, function (error, project) {
+        getProjectByID(req.params.project_id, async function (error, project) {
             if (error) {
                 error_message = "Terjadi kesalahan";
                 req.flash('error_message', error_message);
@@ -2297,150 +2327,76 @@ router.post('/withdraw/waiting-payment/:project_id/:budget_id', isLoggedIn, isAd
                 return res.redirect('back');
             }
             else {
-                if (project.status == 'done') {
-                    fs.access(dir, async (err) => {
-                        const imageUpload = new Resize(dir);
-                        if (err) {
-                            fs.mkdir(dir, async (err) => {
-                                if (err) {
-                                    error_message = "Terjadi Kesalahan";
-                                    req.flash('error_message', error_message);
-                                    return res.redirect('back');
-                                } else {
-                                    if (req.files['receipt']) {
-                                        receipt = await imageUpload.save(req.files['receipt'][0].buffer)
-                                        project.budget.forEach((budget, index) => {
-                                            if (budget._id.equals(req.params.budget_id)) {
-                                                if (budget.status == 'approved') {
-                                                    project.budget[index].status = 'paid';
-                                                    project.budget[index].receipt = receipt;
-                                                    project.save().then(project => {
-                                                        let notification_url;
-                                                        let entity;
-                                                        let description;
-                                                        if (budget.alternative_activity_date) {
-                                                            entity = 'paid_alternative_withdraw';
-                                                            notification_url = '/inisiator/withdraw/alternative/paid';
-                                                            description = 'Pencairan Alternatif Masuk';
-                                                        }
-                                                        else {
-                                                            entity = 'paid_withdraw';
-                                                            notification_url = '/inisiator/withdraw/paid';
-                                                            description = 'Pencairan Masuk';
-                                                        }
-                                                        let notification_data = {
-                                                            status: 'unread',
-                                                            entity: entity,
-                                                            description: description,
-                                                            url: notification_url,
-                                                            budget_id: budget._id,
-                                                            sender: req.user._id,
-                                                            receiver: project.inisiator._id
-                                                        }
-                                                        let notification = new Notification(notification_data);
-                                                        createNotification(notification, function(error) {
-                                                            if (error) {
-                                                                error_message = "Terjadi kesalahan";
-                                                                req.flash('error_message', error_message);
-                                                                return res.redirect('back');
-                                                            }
-                                                            else {
-                                                                success_message = "Bukti transfer berhasil diunggah.";
-                                                                req.flash('success_message', success_message);
-                                                                return res.redirect(notification_url);
-                                                            }
-                                                        });
-                                                    }).catch(error => {
-                                                        error_message = "Terjadi kesalahan";
-                                                        req.flash('error_message', error_message);
-                                                        return res.redirect('back');
-                                                    });
-                                                }
-                                                else {
-                                                    error_message = "Kegiatan dan Anggaran tidak tersedia.";
-                                                    req.flash('error_message', error_message);
-                                                    return res.redirect('back');
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                        error_message = "Bukti transfer wajib diunggah.";
-                                        req.flash('error_message', error_message);
-                                        return res.redirect('back');
-                                    }
-                                }
-                            });
-                        } else {
-                            if (req.files['receipt']) {
-                                receipt = await imageUpload.save(req.files['receipt'][0].buffer)
-                                project.budget.forEach((budget, index) => {
-                                    if (budget._id.equals(req.params.budget_id)) {
-                                        if (budget.status == 'approved') {
-                                            project.budget[index].status = 'paid';
-                                            project.budget[index].receipt = receipt;
-                                            project.save().then(project => {
-                                                let notification_url;
-                                                let entity;
-                                                let description;
-                                                if (budget.alternative_activity_date) {
-                                                    entity = 'paid_alternative_withdraw';
-                                                    notification_url = '/inisiator/withdraw/alternative/paid';
-                                                    description = 'Pencairan Alternatif Masuk';
-                                                }
-                                                else {
-                                                    entity = 'paid_withdraw';
-                                                    notification_url = '/inisiator/withdraw/paid';
-                                                    description = 'Pencairan Masuk';
-                                                }
-                                                let notification_data = {
-                                                    status: 'unread',
-                                                    entity: entity,
-                                                    description: description,
-                                                    url: notification_url,
-                                                    budget_id: budget._id,
-                                                    sender: req.user._id,
-                                                    receiver: project.inisiator._id
-                                                }
-                                                let notification = new Notification(notification_data);
-                                                createNotification(notification, function(error) {
-                                                    if (error) {
-                                                        error_message = "Terjadi kesalahan";
-                                                        req.flash('error_message', error_message);
-                                                        return res.redirect('back');
-                                                    }
-                                                    else {
-                                                        success_message = "Bukti transfer berhasil diunggah.";
-                                                        req.flash('success_message', success_message);
-                                                        return res.redirect(notification_url);
-                                                    }
-                                                });
-                                            }).catch(error => {
+                if (project.status == 'done' || project.status == 'verified') {
+                    const imageUpload = new Resize(dir);
+                    if (req.files['receipt']) {
+                        receipt = await imageUpload.save(req.files['receipt'][0].buffer)
+                        project.budget.forEach((budget, index) => {
+                            if (budget._id.equals(req.params.budget_id)) {
+                                if (budget.status == 'approved') {
+                                    project.budget[index].status = 'paid';
+                                    project.budget[index].receipt = receipt;
+                                    project.save().then(project => {
+                                        let notification_url;
+                                        let entity;
+                                        let description;
+                                        if (budget.alternative_activity_date) {
+                                            entity = 'paid_alternative_withdraw';
+                                            notification_url = '/inisiator/withdraw/alternative/paid';
+                                            description = 'Pencairan Alternatif Masuk';
+                                        }
+                                        else {
+                                            entity = 'paid_withdraw';
+                                            notification_url = '/inisiator/withdraw/paid';
+                                            description = 'Pencairan Masuk';
+                                        }
+                                        let notification_data = {
+                                            status: 'unread',
+                                            entity: entity,
+                                            description: description,
+                                            url: notification_url,
+                                            budget_id: budget._id,
+                                            sender: req.user._id,
+                                            receiver: project.inisiator._id
+                                        }
+                                        let notification = new Notification(notification_data);
+                                        createNotification(notification, function(error) {
+                                            if (error) {
                                                 error_message = "Terjadi kesalahan";
                                                 req.flash('error_message', error_message);
                                                 return res.redirect('back');
-                                            });
-                                        }
-                                        else {
-                                            if (!budget.alternative_activity_date) {
-                                                error_message = "Kegiatan dan Anggaran tidak tersedia.";
-                                                req.flash('error_message', error_message);
-                                                return res.redirect('/admin/withdraw/alternative/waiting-payment');
                                             }
                                             else {
-                                                error_message = "Kegiatan dan Anggaran tidak tersedia.";
-                                                req.flash('error_message', error_message);
-                                                return res.redirect('/admin/withdraw/alternative/alternative/waiting-payment');
+                                                success_message = "Pencairan berhasil dilakukan.";
+                                                req.flash('success_message', success_message);
+                                                return res.redirect('/admin/withdraw/alternative/paid');
                                             }
-                                        }
+                                        });
+                                    }).catch(error => {
+                                        error_message = "Terjadi kesalahan";
+                                        req.flash('error_message', error_message);
+                                        return res.redirect('back');
+                                    });
+                                }
+                                else {
+                                    if (!budget.alternative_activity_date) {
+                                        error_message = "Kegiatan dan Anggaran tidak tersedia.";
+                                        req.flash('error_message', error_message);
+                                        return res.redirect('/admin/withdraw/alternative/waiting-payment');
                                     }
-                                });
-                            } else {
-                                error_message = "Bukti transfer wajib diunggah.";
-                                req.flash('error_message', error_message);
-                                return res.redirect('back');
+                                    else {
+                                        error_message = "Kegiatan dan Anggaran tidak tersedia.";
+                                        req.flash('error_message', error_message);
+                                        return res.redirect('/admin/withdraw/alternative/alternative/waiting-payment');
+                                    }
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        error_message = "Bukti transfer wajib diunggah.";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    }
                 }
                 else {
                     error_message = "Proyek tidak tersedia.";
