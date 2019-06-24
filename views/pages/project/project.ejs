@@ -216,44 +216,46 @@
                                 <h5>dari <%= project.basic[0].stock[0].total %> lembar</h5>
                             </div>
                         </div>
-                        <div class="col-lg-4 single-right-left checkout-left-basket">
-                            <div class="description">
-                                <form action="/investor/project/<%= project._id %>" id="invest-now" method="post">
-                                    <% if (success_message != '') { %>
-                                    <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
-                                        <%= success_message %>
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">×</span>
-                                        </button>
-                                    </div>
-                                    <% } %>
-                                    <% if (error_message != '') { %>
-                                    <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
-                                        <%= error_message %>
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">×</span>
-                                        </button>
-                                    </div>
-                                    <% } %>
-                                    <div class="form-group">
-                                        <label class="control-label mb-1">Jumlah Saham</label>
-                                        <input class="form-control" id="stock-input" min=0 name="stock" type="number">
-                                    </div>
-                                    <div>
-                                        <button id="invest-now-button" type="submit"
-                                            class="btn btn-md btn-success btn-block" style="margin: 0px !important">
-                                            <span aria-hidden="true" class="spinner-border spinner-border-sm"
-                                                id="invest-now-spinner" role="status" style="display: none"></span>
-                                            <span id="invest-now-button-placeholder">Investasi Sekarang</span>
-                                        </button>
-                                    </div>
-                                </form>
+                        <% if (project.status == 'verified') { %>
+                            <div class="col-lg-4 single-right-left checkout-left-basket">
+                                <div class="description">
+                                    <form action="/investor/project/<%= project._id %>" id="invest-now" method="post">
+                                        <% if (success_message != '') { %>
+                                        <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                            <%= success_message %>
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <% } %>
+                                        <% if (error_message != '') { %>
+                                        <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                            <%= error_message %>
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <% } %>
+                                        <div class="form-group">
+                                            <label class="control-label mb-1">Jumlah Saham</label>
+                                            <input class="form-control" id="stock-input" min=0 name="stock" type="number">
+                                        </div>
+                                        <div>
+                                            <button id="invest-now-button" type="submit"
+                                                class="btn btn-md btn-success btn-block" style="margin: 0px !important">
+                                                <span aria-hidden="true" class="spinner-border spinner-border-sm"
+                                                    id="invest-now-spinner" role="status" style="display: none"></span>
+                                                <span id="invest-now-button-placeholder">Investasi Sekarang</span>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <ul>
+                                    <li>Saham <i>:</i> <span>&nbsp x Rp.&nbsp<span class="stock-price"></span></span><span id="stock-quantity">0</span> </li>
+                                    <li>Total <i>:</i> <span>&nbsp Rp.&nbsp<span id="stock-total">0</span></span></li>
+                                </ul>
                             </div>
-                            <ul>
-                              <li>Saham <i>:</i> <span>&nbsp x Rp.&nbsp<span class="stock-price"></span></span><span id="stock-quantity">0</span> </li>
-                              <li>Total <i>:</i> <span>&nbsp Rp.&nbsp<span id="stock-total">0</span></span></li>
-                           </ul>
-                        </div>
+                        <% } %>
                         
                         <div class="clearfix"> </div>
                         <!--/tabs-->

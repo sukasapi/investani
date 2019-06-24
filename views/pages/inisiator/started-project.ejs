@@ -100,7 +100,7 @@
                     <% projects.forEach((project, index) => { %>
                     <div class="col-md-4">
                         <div class="card">
-                            <a href="<% if(project.status == 'done') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'done') { %> /inisiator/project/<%= project._id %>/edit <% } %>">
+                            <a href="<% if(project.status == 'done' ||project.status == 'verified') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'done' && project.status != 'verified') { %> /inisiator/project/<%= project._id %>/edit <% } %>">
                                 <% if (project.image[0]) { %>
                                 <img alt="Card image cap" class="card-img-top"
                                     src="/image/project/<%= project._id %>/<%= project.image[0].filename %>"
@@ -123,7 +123,7 @@
                                                 class="badge badge-warning float-right mt-1">Menunggu</span></small>
                                         <% } %>
                                         <% if (project.status == "verified") { %>
-                                            <small><span class="badge badge-primary float-right mt-1">Terverifikasi</span></small>
+                                            <small><span class="badge badge-primary float-right mt-1">Berlangsung</span></small>
                                         <% } %>
                                         <% if (project.status == "done") { %>
                                             <small><span class="badge badge-success float-right mt-1">Selesai</span></small>
@@ -168,7 +168,7 @@
                                 </div>
                             </div>
                             <footer class="twt-footer">
-                                Harga Saham: <% if (project.basic[0].stock.length != 0) { %> <strong>Rp. <span class="stock-price"></span></strong> <% } %>
+                                Harga Saham:  <strong>Rp. <span class="stock-price"></span></strong>
                             </footer>
                             <div class="card-footer" style="font-size: 12px;">
                                 <div class="card-text text-sm-center">
@@ -212,7 +212,9 @@
     <script src="/js/dashboard-main.js"></script>
     <script>
         <% projects.forEach((project, index) => { %>
-            document.getElementsByClassName('stock-price')[<%= index%>].innerHTML = formatRupiah('<%=project.basic[0].stock[0].price%>');
+            <% if (project.basic[0].stock[0]) { %>
+                document.getElementsByClassName('stock-price')[<%= index%>].innerHTML = formatRupiah('<%= project.basic[0].stock[0].price%>');
+            <% } %>
         <% }); %>
 
         function formatRupiah(angka) {

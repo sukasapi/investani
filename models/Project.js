@@ -63,6 +63,9 @@ let ProjectSchema = mongoose.Schema({
         receipt: {
             type: String
         },
+        message: {
+            type: String
+        },
         official_record: {
             type: String
         }

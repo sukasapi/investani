@@ -420,191 +420,191 @@ router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerif
         }
     });
 });
-router.get('/withdraw/waiting-approval', isLoggedIn, isInisiator, isVerified, function (req, res) {
-    let error_message;
-    let waiting_withdraws = [];
-    let budget_object = null;
+// router.get('/withdraw/waiting-approval', isLoggedIn, isInisiator, isVerified, function (req, res) {
+//     let error_message;
+//     let waiting_withdraws = [];
+//     let budget_object = null;
 
-    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
-        if (error) {
-            error_message = "Terjadi kesalahan";
-            req.flash('error_message', error_message);
-            return res.redirect('/inisiator/dashboard');
-        }
-        else {
-            projects.forEach((project) => {
-                project.budget.forEach((budget) => {
-                    if (moment.duration(moment(budget.activity_date).diff(moment(), 'days')) <= 3 && budget.status == 'waiting') {
-                        budget_object = budget.toObject();
-                        budget_object.activity_date = moment(budget.activity_date).format('LL');
-                        budget_object.project_id = project._id;
-                        budget_object.project_title = project.basic[0].title;
-                        waiting_withdraws.push(budget_object);
-                    }
-                });
-            });
+//     getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+//         if (error) {
+//             error_message = "Terjadi kesalahan";
+//             req.flash('error_message', error_message);
+//             return res.redirect('/inisiator/dashboard');
+//         }
+//         else {
+//             projects.forEach((project) => {
+//                 project.budget.forEach((budget) => {
+//                     if (moment.duration(moment(budget.activity_date).diff(moment(), 'days')) <= 3 && budget.status == 'waiting') {
+//                         budget_object = budget.toObject();
+//                         budget_object.activity_date = moment(budget.activity_date).format('LL');
+//                         budget_object.project_id = project._id;
+//                         budget_object.project_title = project.basic[0].title;
+//                         waiting_withdraws.push(budget_object);
+//                     }
+//                 });
+//             });
 
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
-                if (error) {
-                    error_message = "Terjadi kesalahan";
-                    req.flash('error_message', error_message);
-                    return res.redirect('back');   
-                }
-                else {
+//             getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
+//                 if (error) {
+//                     error_message = "Terjadi kesalahan";
+//                     req.flash('error_message', error_message);
+//                     return res.redirect('back');   
+//                 }
+//                 else {
                     
-                    let data = {
-                        user_id: req.user._id,
-                        url: "waiting-withdraw-approval",
-                        waiting_withdraws: waiting_withdraws,
-                        notifications: notification
-                    }
+//                     let data = {
+//                         user_id: req.user._id,
+//                         url: "waiting-withdraw-approval",
+//                         waiting_withdraws: waiting_withdraws,
+//                         notifications: notification
+//                     }
                     
-                    return res.render('pages/inisiator/withdraw/waiting-approval', data);
-                }
-            });
-        }
-    });
-});
-router.get('/withdraw/waiting-payment', isLoggedIn, isInisiator, isVerified, function(req, res) {
-    let error_message;
-    let waiting_withdraws = [];
-    let budget_object = null;
+//                     return res.render('pages/inisiator/withdraw/waiting-approval', data);
+//                 }
+//             });
+//         }
+//     });
+// });
+// router.get('/withdraw/waiting-payment', isLoggedIn, isInisiator, isVerified, function(req, res) {
+//     let error_message;
+//     let waiting_withdraws = [];
+//     let budget_object = null;
 
-    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
-        if (error) {
-            error_message = "Terjadi kesalahan";
-            req.flash('error_message', error_message);
-            return res.redirect('/inisiator/dashboard');
-        }
-        else {
-            projects.forEach((project) => {
-                project.budget.forEach((budget) => {
-                    if (budget.status == 'approved') {
-                        budget_object = budget.toObject();
-                        budget_object.activity_date = moment(budget.activity_date).format('LL');
-                        budget_object.project_id = project._id;
-                        budget_object.project_title = project.basic[0].title;
-                        waiting_withdraws.push(budget_object);
-                    }
-                });
-            });
+//     getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+//         if (error) {
+//             error_message = "Terjadi kesalahan";
+//             req.flash('error_message', error_message);
+//             return res.redirect('/inisiator/dashboard');
+//         }
+//         else {
+//             projects.forEach((project) => {
+//                 project.budget.forEach((budget) => {
+//                     if (budget.status == 'approved') {
+//                         budget_object = budget.toObject();
+//                         budget_object.activity_date = moment(budget.activity_date).format('LL');
+//                         budget_object.project_id = project._id;
+//                         budget_object.project_title = project.basic[0].title;
+//                         waiting_withdraws.push(budget_object);
+//                     }
+//                 });
+//             });
 
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
-                if (error) {
-                    error_message = "Terjadi kesalahan";
-                    req.flash('error_message', error_message);
-                    return res.redirect('back');   
-                }
-                else {
-                    let data = {
-                        user_id: req.user._id,
-                        url: "waiting-withdraw-payment",
-                        waiting_withdraws: waiting_withdraws,
-                        notifications: notification
-                    }
+//             getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
+//                 if (error) {
+//                     error_message = "Terjadi kesalahan";
+//                     req.flash('error_message', error_message);
+//                     return res.redirect('back');   
+//                 }
+//                 else {
+//                     let data = {
+//                         user_id: req.user._id,
+//                         url: "waiting-withdraw-payment",
+//                         waiting_withdraws: waiting_withdraws,
+//                         notifications: notification
+//                     }
                     
-                    return res.render('pages/inisiator/withdraw/waiting-payment', data);
-                }
-            });
-        }
-    });
-});
-router.get('/withdraw/rejected', isLoggedIn, isInisiator, isVerified, function (req, res) {
-    let error_message;
-    let rejected_withdraws = [];
-    let budget_object = null;
+//                     return res.render('pages/inisiator/withdraw/waiting-payment', data);
+//                 }
+//             });
+//         }
+//     });
+// });
+// router.get('/withdraw/rejected', isLoggedIn, isInisiator, isVerified, function (req, res) {
+//     let error_message;
+//     let rejected_withdraws = [];
+//     let budget_object = null;
 
-    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
-        if (error) {
-            error_message = "Terjadi kesalahan";
-            req.flash('error_message', error_message);
-            return res.redirect('/inisiator/dashboard');
-        }
-        else {
-            projects.forEach((project) => {
-                project.budget.forEach((budget) => {
-                    if (budget.status == 'rejected') {
-                        budget_object = budget.toObject();
-                        budget_object.activity_date = moment(budget.activity_date).format('LL');
-                        budget_object.project_id = project._id;
-                        budget_object.project_title = project.basic[0].title;
-                        rejected_withdraws.push(budget_object);
-                    }
-                });
-            });
+//     getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+//         if (error) {
+//             error_message = "Terjadi kesalahan";
+//             req.flash('error_message', error_message);
+//             return res.redirect('/inisiator/dashboard');
+//         }
+//         else {
+//             projects.forEach((project) => {
+//                 project.budget.forEach((budget) => {
+//                     if (budget.status == 'rejected') {
+//                         budget_object = budget.toObject();
+//                         budget_object.activity_date = moment(budget.activity_date).format('LL');
+//                         budget_object.project_id = project._id;
+//                         budget_object.project_title = project.basic[0].title;
+//                         rejected_withdraws.push(budget_object);
+//                     }
+//                 });
+//             });
 
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
-                if (error) {
-                    error_message = "Terjadi kesalahan";
-                    req.flash('error_message', error_message);
-                    return res.redirect('back');   
-                }
-                else {
-                    let data = {
-                        user_id: req.user._id,
-                        url: "rejected-withdraw",
-                        rejected_withdraws: rejected_withdraws,
-                        notifications: notification
-                    }
+//             getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
+//                 if (error) {
+//                     error_message = "Terjadi kesalahan";
+//                     req.flash('error_message', error_message);
+//                     return res.redirect('back');   
+//                 }
+//                 else {
+//                     let data = {
+//                         user_id: req.user._id,
+//                         url: "rejected-withdraw",
+//                         rejected_withdraws: rejected_withdraws,
+//                         notifications: notification
+//                     }
                     
-                    return res.render('pages/inisiator/withdraw/rejected', data);
-                }
-            });
-        }
-    });
-});
-router.get('/withdraw/paid', isLoggedIn, isInisiator, isVerified, function (req, res) {
-    let error_message;
-    let paid_withdraws = [];
-    let budget_object = null;
+//                     return res.render('pages/inisiator/withdraw/rejected', data);
+//                 }
+//             });
+//         }
+//     });
+// });
+// router.get('/withdraw/paid', isLoggedIn, isInisiator, isVerified, function (req, res) {
+//     let error_message;
+//     let paid_withdraws = [];
+//     let budget_object = null;
 
-    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
-        if (error) {
-            error_message = "Terjadi kesalahan";
-            req.flash('error_message', error_message);
-            return res.redirect('/inisiator/dashboard');
-        }
-        else {
-            projects.forEach((project) => {
-                project.budget.forEach((budget) => {
-                    if (budget.status == 'paid') {
-                        budget_object = budget.toObject();
-                        budget_object.activity_date = moment(budget.activity_date).format('LL');
-                        budget_object.project_id = project._id;
-                        budget_object.project_title = project.basic[0].title;
-                        paid_withdraws.push(budget_object);
-                    }
-                });
-            });
+//     getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+//         if (error) {
+//             error_message = "Terjadi kesalahan";
+//             req.flash('error_message', error_message);
+//             return res.redirect('/inisiator/dashboard');
+//         }
+//         else {
+//             projects.forEach((project) => {
+//                 project.budget.forEach((budget) => {
+//                     if (budget.status == 'paid') {
+//                         budget_object = budget.toObject();
+//                         budget_object.activity_date = moment(budget.activity_date).format('LL');
+//                         budget_object.project_id = project._id;
+//                         budget_object.project_title = project.basic[0].title;
+//                         paid_withdraws.push(budget_object);
+//                     }
+//                 });
+//             });
 
-            updateNotificationByEntity({entity: 'paid_withdraw'}, {status: 'read'}, function (error) {
-                if (error) {
-                    error_message = "Terjadi kesalahan";
-                    req.flash('error_message', error_message);
-                    return res.redirect('back');
-                }
-                else {
-                    getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
-                        if (error) {
-                            error_message = "Terjadi kesalahan";
-                            req.flash('error_message', error_message);
-                            return res.redirect('back');   
-                        }
-                        else {
-                            let data = {
-                                user_id: req.user._id,
-                                url: "paid-withdraw",
-                                paid_withdraws: paid_withdraws,
-                                notifications: notification
-                            }
-                            return res.render('pages/inisiator/withdraw/paid', data);
-                        }
-                    });
-                }
-            });
-        }
-    });
-})
+//             updateNotificationByEntity({entity: 'paid_withdraw'}, {status: 'read'}, function (error) {
+//                 if (error) {
+//                     error_message = "Terjadi kesalahan";
+//                     req.flash('error_message', error_message);
+//                     return res.redirect('back');
+//                 }
+//                 else {
+//                     getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
+//                         if (error) {
+//                             error_message = "Terjadi kesalahan";
+//                             req.flash('error_message', error_message);
+//                             return res.redirect('back');   
+//                         }
+//                         else {
+//                             let data = {
+//                                 user_id: req.user._id,
+//                                 url: "paid-withdraw",
+//                                 paid_withdraws: paid_withdraws,
+//                                 notifications: notification
+//                             }
+//                             return res.render('pages/inisiator/withdraw/paid', data);
+//                         }
+//                     });
+//                 }
+//             });
+//         }
+//     });
+// })
 router.get('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let project_object = null;
@@ -1988,6 +1988,7 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functi
         if (req.file === undefined) {
             req.body.amount = parseInt(req.body.amount.split('.').join(""))
         }
+        req.checkBody('message', 'Pesan wajib diisi').notEmpty();
         req.checkBody('amount', 'Anggaran tidak boleh kurang dari 1 Rupiah').isInt({
             min: 1
         });
@@ -2050,6 +2051,7 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functi
                                                 alternative_amount: req.body.amount,
                                                 status: "waiting",
                                                 receipt: "",
+                                                message: req.body.message,
                                                 official_record: req.file.filename
                                             }
                                             project.budget.push(budget_data)
@@ -2059,6 +2061,7 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functi
                                                 if (budget._id.equals(req.body.activity)) {
                                                     project.budget[index].alternative_activity_date = moment(req.body.activity_date, "DD-MM-YYYY").format('MM/DD/YYYY');
                                                     project.budget[index].alternative_amount = req.body.amount;
+                                                    project.budget[index].message = req.body.message;
                                                     project.budget[index].official_record = req.file.filename;
                                                 }
                                             });
@@ -2067,7 +2070,7 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functi
                                             let notification_data = {
                                                 status: 'unread',
                                                 entity: 'waiting_approval_alternative_withdraw',
-                                                description: 'Pencairan Alternatif Menunggu Persetujuan',
+                                                description: 'Pencairan Menunggu Persetujuan',
                                                 url: '/admin/withdraw/alternative/waiting-approval',
                                                 budget_id: req.body.activity,
                                                 sender: req.user._id,
