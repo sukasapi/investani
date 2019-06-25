@@ -99,6 +99,7 @@ router.post('/register', notLoggedIn, function (req, res) {
                     secretToken: secretToken
                 }
                 const content = await compile('confirmation', data);
+                console.log(content)
                 let mailOptions = {
                     from: '"Investani" <investaninx@gmail.com>',
                     to: email,

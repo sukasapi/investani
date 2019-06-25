@@ -26,6 +26,12 @@ const compile = async function (templateName, data) {
     return ejs.render(html, data);
 };
 
+const compile_email = async function (templateName, data) {
+    const filePath = path.join(__dirname, '../storage/email/', `${templateName}.ejs`);
+    const html = await fsExtra.readFile(filePath, 'utf-8');
+    return ejs.render(html, data);
+};
+
 router.get('/', isLoggedIn, isAdmin, function (req, res) {
     res.redirect('/admin/dashboard');
 });
@@ -1690,29 +1696,69 @@ router.post('/user/inisiator/individual/verify/:id', isLoggedIn, isAdmin, functi
 router.post('/project/waiting/verify/:project_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
     let success_message;
+    let user_email = [];
     
     getProjectByID(req.params.project_id, function(error, project) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
-            return res.redirect('/admin/project/waiting');
+            return res.redirect('back');
         }
         if (!project) {
             error_message = "Proyek tidak tersedia";
             req.flash('error_message', error_message);
             return res.redirect('/admin/project/waiting');
         }
-        else {
+        else { 
             project.project[0].duration[0].start_campaign = moment().format();
             project.project[0].duration[0].due_campaign = moment().add(project.project[0].duration[0].campaign, 'days');
             project.project[0].duration[0].due_date = moment(project.project[0].duration[0].start_date).add(project.project[0].duration[0].duration, 'months');
             project.status = "verified";
             project.save().then(project => {
-                success_message = "Berhasil memverifikasi proyek";
-                req.flash('success_message', success_message);
-                return res.redirect('/admin/project/waiting');
+                User.find({'user_type.name': 'investor', 'user_type.status': 'verified'}, async function (error, users) {
+                    if (error) {
+                        error_message = "Terjadi kesalahan";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    }
+                    else {
+                        users.forEach(user => {
+                            user_email.push(user.email);
+                        });
+                        let transporter = nodemailer.createTransport({
+                            host: 'smtp.gmail.com',
+                            port: 465,
+                            secure: true,
+                            auth: {
+                                user: 'investaninx@gmail.com',
+                                pass: 'investani2019'
+                            }
+                        });
+    
+                        const content = await compile_email('project_promotion', {project: project});
+                        let mailOptions = {
+                            from: '"Investani" <investaninx@gmail.com>',
+                            to: user_email,
+                            subject: "Telah Dibuka! " + project.basic[0].title + " + ROI hingga" + project.project[0].roi + "%, " + project.project[0].duration[0].duration,
+                            html: content
+                        };
+    
+                        transporter.sendMail(mailOptions, (error) => {
+                            if (error) {
+                                error_message = "Email gagal terkirim"; 
+                                req.flash('error_message', error_message);
+                                return res.redirect('back');
+                            }
+                            else {
+                                success_message = "Berhasil memverifikasi proyek";
+                                req.flash('success_message', success_message);
+                                return res.redirect('/admin/project/waiting');    
+                            }
+                        });
+                    }
+                });
             }).catch(error => {
-                error_message = "Terjadi kesalahan";
+                error_message = "Verifikasi proyek gagall.";
                 req.flash('error_message', error_message);
                 return res.redirect('/admin/project/waiting');
             });
