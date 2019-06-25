@@ -26,6 +26,9 @@ let UserSchema = mongoose.Schema({
     registration_type: {
       type: String
     },
+    photo: {
+      type: String
+    },
     name: {
       type: String
     },

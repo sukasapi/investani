@@ -997,102 +997,121 @@ router.post('/start-project', isLoggedIn, isInisiator, isVerified, function (req
     }
 
 });
+let profilePhoto = upload.single('profile_photo');
 router.post('/profile/:user_id', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let success_message;
-
-    req.checkBody('address', 'Alamat Korespondensi tidak boleh lebih dari 250 karakter.').isLength({
-        max: 250
-    });
-    req.checkBody('address', 'Alamat Korespondensi minimal mengandung 10 karakter.').isLength({
-        min: 10
-    });
-    req.checkBody('address', 'Alamat Korespondensi wajib diisi.').notEmpty();
-    req.checkBody('sub_district', 'Kelurahan wajib dipilih.').notEmpty();
-    req.checkBody('district', 'Kecamatan wajib dipilih.').notEmpty();
-    req.checkBody('city', 'Kota wajib dipilih.').notEmpty();
-    req.checkBody('province', 'Provinsi wajib dipilih.').notEmpty();
-    req.checkBody('birth_date', 'Tanggal Lahir wajib diisi.').notEmpty();
-    req.checkBody('gender', 'Jenis Kelamin wajib dipilih.').notEmpty();
-    req.checkBody('phone', 'Nomor Handphone tidak boleh lebih dari 15 karakter.').isLength({
-        max: 15
-    });
-    req.checkBody('phone', 'Nomor Handphone minimal mengandung 5 karakter.').isLength({
-        min: 5
-    });
-    req.checkBody('phone', 'Nomor Handphone wajib diisi.').notEmpty();
-    req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
-    req.checkBody('email', 'Email wajib diisi.').notEmpty();
-    req.checkBody('name', 'Nama Lengkap tidak boleh lebih dari 255 karakter.').isLength({
-        max: 255
-    });
-    req.checkBody('name', 'Nama Lengkap minimal mengandung 3 karakter.').isLength({
-        min: 3
-    });
-    req.checkBody('name', 'Nama Lengkap wajib diisi.').notEmpty();
-
-    let errors = req.validationErrors();
-
-    if (errors) {
-        error_message = errors[errors.length - 1].msg;
-        req.flash('error_message', error_message);
-        req.flash('request', request);
-        return res.redirect('back');
-    }
-    else {
-        let check_phone = phoneUtil.parseAndKeepRawInput(req.body.phone, 'ID');
-        if (phoneUtil.isPossibleNumber(check_phone)) {
-            let data = {
-                email: req.body.email,
-                profile: [{
-                    name: req.body.name,
-                    phone: req.body.phone,
-                    established_place: req.body.established_place,
-                    company_phone: req.body.company_phone,
-                    gender: req.body.gender,
-                    birth_date: moment(req.body.birth_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
-                    province: {
-                        province_id: req.body.province,
-                        province_name: req.body.province_name
-                    },
-                    city: {
-                        city_id: req.body.city,
-                        city_name: req.body.city_name
-                    },
-                    district: {
-                        district_id: req.body.district,
-                        district_name: req.body.district_name
-                    },
-                    sub_district: {
-                        sub_district_id: req.body.sub_district,
-                        sub_district_name: req.body.sub_district_name
-                    },
-                    address: req.body.address
-                }]
-            };
-
-            updateUser(req.user, data, function (error, user) {
-                if (error) {
-                    error_message = "Terjadi kesalahan";
-                    req.flash('error_message', error_message);
-                    return res.redirect('back');
-                }
-                if (!user) {
-                    error_message = "User tidak tersedia";
-                    req.flash('error_message', error_message);
-                    return res.redirect('back');
-                } else {
-                    success_message = "Berhasil memperbarui data";
-                    req.flash('success_message', success_message);
-                    return res.redirect('back');
-                }
-            });
-        } else {
-            error_message = "Nomor Handphone tidak valid";
+    let profile_photo_filename;
+    profilePhoto(req, res, async function(err) {
+        if (err instanceof multer.MulterError) {
+            error_message = "Ukuran gambar maksimal 4 MB.";
+            req.flash('error_message', error_message);
+            return res.redirect('back');
+        } else if (err) {
+            error_message = "Terjadi Kesalahan";
             req.flash('error_message', error_message);
             return res.redirect('back');
         }
-    }
+        req.checkBody('address', 'Alamat Korespondensi tidak boleh lebih dari 250 karakter.').isLength({
+            max: 250
+        });
+        req.checkBody('address', 'Alamat Korespondensi minimal mengandung 10 karakter.').isLength({
+            min: 10
+        });
+        req.checkBody('address', 'Alamat Korespondensi wajib diisi.').notEmpty();
+        req.checkBody('sub_district', 'Kelurahan wajib dipilih.').notEmpty();
+        req.checkBody('district', 'Kecamatan wajib dipilih.').notEmpty();
+        req.checkBody('city', 'Kota wajib dipilih.').notEmpty();
+        req.checkBody('province', 'Provinsi wajib dipilih.').notEmpty();
+        req.checkBody('birth_date', 'Tanggal Lahir wajib diisi.').notEmpty();
+        req.checkBody('gender', 'Jenis Kelamin wajib dipilih.').notEmpty();
+        req.checkBody('phone', 'Nomor Handphone tidak boleh lebih dari 15 karakter.').isLength({
+            max: 15
+        });
+        req.checkBody('phone', 'Nomor Handphone minimal mengandung 5 karakter.').isLength({
+            min: 5
+        });
+        req.checkBody('phone', 'Nomor Handphone wajib diisi.').notEmpty();
+        req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
+        req.checkBody('email', 'Email wajib diisi.').notEmpty();
+        req.checkBody('name', 'Nama Lengkap tidak boleh lebih dari 255 karakter.').isLength({
+            max: 255
+        });
+        req.checkBody('name', 'Nama Lengkap minimal mengandung 3 karakter.').isLength({
+            min: 3
+        });
+        req.checkBody('name', 'Nama Lengkap wajib diisi.').notEmpty();
+        let profilePhotoImage = typeof req.file !== "undefined" ? req.file.originalname : '';
+        req.checkBody('profile_photo', 'Format Foto Profil harus berupa gambar').isImage(profilePhotoImage);
+        let errors = req.validationErrors();
+    
+        if (errors) {
+            error_message = errors[errors.length - 1].msg;
+            req.flash('error_message', error_message);
+            req.flash('request', request);
+            return res.redirect('back');
+        }
+        else {
+            let check_phone = phoneUtil.parseAndKeepRawInput(req.body.phone, 'ID');
+            if (phoneUtil.isPossibleNumber(check_phone)) {
+                if (req.file) {
+                    const imagePath = path.join(__dirname, `../storage/documents/${req.user._id}`);
+                    const fileUpload = new Resize(imagePath);
+                    profile_photo_filename = await fileUpload.save(req.file.buffer);
+                }
+                let data = {
+                    email: req.body.email,
+                    profile: [{
+                        photo: profile_photo_filename,
+                        name: req.body.name,
+                        phone: req.body.phone,
+                        established_place: req.body.established_place,
+                        company_phone: req.body.company_phone,
+                        gender: req.body.gender,
+                        birth_date: moment(req.body.birth_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                        province: {
+                            province_id: req.body.province,
+                            province_name: req.body.province_name
+                        },
+                        city: {
+                            city_id: req.body.city,
+                            city_name: req.body.city_name
+                        },
+                        district: {
+                            district_id: req.body.district,
+                            district_name: req.body.district_name
+                        },
+                        sub_district: {
+                            sub_district_id: req.body.sub_district,
+                            sub_district_name: req.body.sub_district_name
+                        },
+                        address: req.body.address
+                    }]
+                };
+    
+                updateUser(req.user, data, function (error, user) {
+                    if (error) {
+                        error_message = "Terjadi kesalahan";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    }
+                    if (!user) {
+                        error_message = "User tidak tersedia";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    } else {
+                        success_message = "Berhasil memperbarui data";
+                        req.flash('success_message', success_message);
+                        return res.redirect('back');
+                    }
+                });
+            } else {
+                error_message = "Nomor Handphone tidak valid";
+                req.flash('error_message', error_message);
+                return res.redirect('back');
+            }
+        }
+    });
 });
 router.post('/profile/:user_id/occupation', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
