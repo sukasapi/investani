@@ -113,7 +113,7 @@
                     <a class="btn btn-sm btn-success-outline display-4" href="/investor/dashboard">Dashboard</a>
                     <a class="btn btn-sm btn-success display-4" href="/auth/logout">Keluar</a></div>
                 <% } %>
-                <% if (auth && user_type == 'super_user') {%>
+                <% if (auth && (user_type == 'super_admin' || user_type == 'analyst_admin')) {%>
                     <a class="btn btn-sm btn-success-outline display-4" href="/admin/dashboard">Dashboard</a>
                     <a class="btn btn-sm btn-success display-4" href="/auth/logout">Keluar</a></div>
                 <% } %>

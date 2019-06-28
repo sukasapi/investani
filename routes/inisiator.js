@@ -1059,6 +1059,9 @@ router.post('/profile/:user_id', isLoggedIn, isInisiator, isVerified, function (
                     const fileUpload = new Resize(imagePath);
                     profile_photo_filename = await fileUpload.save(req.file.buffer);
                 }
+                else if (req.user.profile[0].photo) {
+                    profile_photo_filename = req.user.profile[0].photo;
+                }
                 let data = {
                     email: req.body.email,
                     profile: [{
@@ -1177,6 +1180,7 @@ let documentUpload = upload.fields([
 router.post('/profile/:user_id/document', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let success_message;
+    let npwp_image_filename = req.user.document[0].npwp_image;
     documentUpload(req, res, async function(err){
         if (err instanceof multer.MulterError) {
             error_message = "Ukuran gambar maksimal 4 MB.";
@@ -1203,8 +1207,7 @@ router.post('/profile/:user_id/document', isLoggedIn, isInisiator, isVerified, f
             req.flash('error_message', error_message);
             return res.redirect('back');
         } else {
-            let npwp_image_filename = req.body.npwp_image_input;
-            let business_permit_image_filename = req.body.business_permit_image_input;
+            
 
             const imagePath = path.join(__dirname, `../storage/documents/${req.user._id}`);
             const fileUpload = new Resize(imagePath);
@@ -1214,11 +1217,7 @@ router.post('/profile/:user_id/document', isLoggedIn, isInisiator, isVerified, f
                     npwp_image_filename = await fileUpload.save(req.files['npwp_image'][0].buffer);
                 }
             }
-            if (req.user.profile[0].registration_type == 'company') {
-                if (req.files['business_permit_image']) {
-                    business_permit_image_filename = await fileUpload.save(req.files['business_permit_image'][0].buffer);
-                }
-            }
+
             let data = {
                 document: [{
                     identity_number: req.user.document[0].identity_number,
@@ -1229,8 +1228,7 @@ router.post('/profile/:user_id/document', isLoggedIn, isInisiator, isVerified, f
                     sk_kemenkumham_number: req.user.document[0].k_kemenkumham_number,
                     sk_kemenkumham_image: req.user.document[0].sk_kemenkumham_image,
                     npwp_number: req.body.npwp_number,
-                    npwp_image: npwp_image_filename,
-                    business_permit_image: business_permit_image_filename
+                    npwp_image: npwp_image_filename
                 }]
             };
 

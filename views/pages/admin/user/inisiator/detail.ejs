@@ -87,83 +87,83 @@
                                         aria-labelledby="pills-home-tab">
                                         <div class="form-group">
                                             <label class=" form-control-label">Nama Lengkap</label>
-                                            <input class="form-control" type="text" value="<%= user.profile[0].name %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.profile[0].name %>" disabled>
                                         </div>
                                         <div class="row form-group">
                                             <div class="col col-md-6">
                                                 <label for="vat" class=" form-control-label">Nomor Handphone</label>
-                                                <input class="form-control" type="text" value="<%= user.profile[0].phone %>" disabled>
+                                                <input class="form-control" type="text" value="<%= inisiator.profile[0].phone %>" disabled>
                                             </div>
                                             <div class="col col-md-6">
                                                 <label for="city" class=" form-control-label">Jenis Kelamin</label>
-                                                <% if (user.profile[0].gender == 'male') { %>
+                                                <% if (inisiator.profile[0].gender == 'male') { %>
                                                     <input class="form-control" type="text" value="Pria" disabled>
                                                 <% } %>
-                                                <% if (user.profile[0].gender == 'female') {%>
+                                                <% if (inisiator.profile[0].gender == 'female') {%>
                                                     <input class="form-control" type="text" value="Wanita" disabled>
                                                 <% } %>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Tanggal Lahir</label>
-                                            <input class="form-control" type="text" value="<%= user.profile[0].birth_date.toLocaleDateString() %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.profile[0].birth_date.toLocaleDateString() %>" disabled>
                                         </div>
                                         <div class="row form-group">
                                             <div class="col col-md-6">
                                                 <label class=" form-control-label">Provinsi</label>
-                                                <input class="form-control" type="text" value="<%= user.profile[0].province[0].province_name %>" disabled>
+                                                <input class="form-control" type="text" value="<%= inisiator.profile[0].province[0].province_name %>" disabled>
                                             </div>
                                             <div class="col col-md-6">
                                                 <label for="city" class=" form-control-label">Kota</label>
-                                                <input class="form-control" type="text" value="<%= user.profile[0].city[0].city_name %>" disabled>
+                                                <input class="form-control" type="text" value="<%= inisiator.profile[0].city[0].city_name %>" disabled>
                                             </div>
                                         </div>
                                         <div class="row form-group">
                                             <div class="col col-md-6">
                                                 <label for="vat" class=" form-control-label">Kecamatan</label>
-                                                <input class="form-control" type="text" value="<%= user.profile[0].district[0].district_name %>" disabled>
+                                                <input class="form-control" type="text" value="<%= inisiator.profile[0].district[0].district_name %>" disabled>
                                             </div>
                                             <div class="col col-md-6">
                                                 <label for="city" class=" form-control-label">Kelurahan</label>
-                                                    <input class="form-control" type="text" value="<%= user.profile[0].sub_district[0].sub_district_name %>" disabled>
+                                                    <input class="form-control" type="text" value="<%= inisiator.profile[0].sub_district[0].sub_district_name %>" disabled>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Alamat Korespondensi</label>
-                                            <input class="form-control" type="text" value="<%= user.profile[0].address %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.profile[0].address %>" disabled>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                                         <div class="form-group">
                                             <label class=" form-control-label">Pekerjaan</label>
-                                            <input class="form-control" type="text" value="<%= user.occupation[0].occupation.charAt(0).toUpperCase() + user.occupation[0].occupation.slice(1) %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.occupation[0].occupation.charAt(0).toUpperCase() + inisiator.occupation[0].occupation.slice(1) %>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Nama Perusahaan</label>
-                                            <input class="form-control" type="text" value="<%= user.occupation[0].company_name %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.occupation[0].company_name %>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Alamat Perusahaan</label>
-                                            <input class="form-control" type="text" value="<%= user.occupation[0].company_address %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.occupation[0].company_address %>" disabled>
                                         </div>
                                         <div class="row form-group">
                                             <div class="col col-md-6">
                                                 <label for="vat" class=" form-control-label">Jabatan</label>
-                                                <% if (user.occupation[0].position == '') { %>
+                                                <% if (inisiator.occupation[0].position == '') { %>
                                                     <input class="form-control" type="text" value="" disabled>
                                                 <% } %>
-                                                <% if (user.occupation[0].position != '') { %>
-                                                    <input class="form-control" type="text" value="<%= user.occupation[0].position %>" disabled>
+                                                <% if (inisiator.occupation[0].position != '') { %>
+                                                    <input class="form-control" type="text" value="<%= inisiator.occupation[0].position %>" disabled>
                                                 <% } %>
                                             </div>
                                             <div class="col col-md-6">
                                                 <label for="vat" class=" form-control-label">Sumber Dana</label>
-                                                <input class="form-control" type="text" value="<%= user.occupation[0].income_source.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') %>" disabled>
+                                                <input class="form-control" type="text" value="<%= inisiator.occupation[0].income_source.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') %>" disabled>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Penghasilan per Bulan</label>
-                                            <input class="form-control" type="text" value="<%= user.occupation[0].income.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.occupation[0].income.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') %>" disabled>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="pills-document" role="tabpanel" aria-labelledby="pills-document-tab">
@@ -171,7 +171,7 @@
                                         <div class="form-group">
                                             <label class=" form-control-label">KTP / Paspor</label>
                                             <div class="input-group">
-                                                <input class="form-control" value="<%= user.document[0].identity_number %>" disabled>
+                                                <input class="form-control" value="<%= inisiator.document[0].identity_number %>" disabled>
                                                 <div class="input-group-btn">
                                                     <button type="button" class="btn btn-primary mb-1" data-toggle="modal" data-target="#identity-image-modal">
                                                         Lihat
@@ -182,7 +182,7 @@
                                         <div class="form-group">
                                             <label class=" form-control-label">NPWP</label>
                                             <div class="input-group">
-                                                <input class="form-control" value="<%= user.document[0].npwp_number %>" disabled>
+                                                <input class="form-control" value="<%= inisiator.document[0].npwp_number %>" disabled>
                                                 <div class="input-group-btn">
                                                     <button type="button" class="btn btn-primary mb-1" data-toggle="modal" data-target="#npwp-image-modal">
                                                         Lihat
@@ -194,31 +194,31 @@
                                     <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
                                         <div class="form-group">
                                             <label class=" form-control-label">Nama Bank</label>
-                                            <input class="form-control" type="text" value="<%= user.bank[0].bank_name.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.bank[0].bank_name.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') %>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Nama Pemilik Rekening</label>
-                                            <input class="form-control" type="text" value="<%= user.bank[0].account_name %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.bank[0].account_name %>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Nomor Rekening</label>
-                                            <input class="form-control" type="text" value="<%= user.bank[0].account_number %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.bank[0].account_number %>" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Cabang</label>
-                                            <input class="form-control" type="text" value="<%= user.bank[0].branch %>" disabled>
+                                            <input class="form-control" type="text" value="<%= inisiator.bank[0].branch %>" disabled>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <div>
-                                    <% if (user.user_type[0].status == 'waiting') { %>
+                                    <% if (inisiator.user_type[0].status == 'waiting') { %>
                                         <button id="verification-button" class="btn btn-lg btn-info btn-block">
                                             <span id="verification-button-text">Verifikasi</span>
                                             <span id="verification-button-process" style="display:none;">Sedang memproses...</span>
                                         </button>
                                     <% } %>
-                                    <% if (user.user_type[0].status == 'verified') { %>
+                                    <% if (inisiator.user_type[0].status == 'verified') { %>
                                         <button class="btn btn-lg btn-info btn-block" disabled>
                                             <span id="verification-button-text">Terverifikasi</span>
                                         </button>
@@ -243,10 +243,10 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="card">
-                                            <img class="card-img-top" src="/admin/user/get-image/<%= user._id %>/<%= user.document[0].identity_image %>" alt="Card image cap">
+                                            <img class="card-img-top" src="/admin/user/get-image/<%= inisiator._id %>/<%= inisiator.document[0].identity_image %>" alt="Card image cap">
                                         </div>
                                         <div class="card">
-                                            <img class="card-img-top" src="/admin/user/get-image/<%= user._id %>/<%= user.document[0].identity_selfie_image %>" alt="Card image cap">
+                                            <img class="card-img-top" src="/admin/user/get-image/<%= inisiator._id %>/<%= inisiator.document[0].identity_selfie_image %>" alt="Card image cap">
                                         </div>
                                     </div>
                                 </div>
@@ -271,7 +271,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="card">
-                                            <img class="card-img-top" src="/admin/user/get-image/<%= user._id %>/<%= user.document[0].npwp_image %>" alt="Card image cap">
+                                            <img class="card-img-top" src="/admin/user/get-image/<%= inisiator._id %>/<%= inisiator.document[0].npwp_image %>" alt="Card image cap">
                                         </div>
                                     </div>
                                 </div>
@@ -320,7 +320,7 @@
         $('#verification-button-text').hide();
         $.ajax({
             type: 'post',
-            url: '/admin/user/inisiator/individual/verify/<%= user._id %>',
+            url: '/admin/user/inisiator/individual/verify/<%= inisiator._id %>',
             data: {},
             success: function(data, status) {
                 if(data.success == true) {

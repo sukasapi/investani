@@ -3,83 +3,82 @@
         <div id="main-menu" class="main-menu collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li id="dashboard">
-                    <a href="/admin/dashboard"><i class="menu-icon fa fa-laptop"></i>Dashboard </a>
+                    <a href="/admin/dashboard"><i class="menu-icon fa fa-laptop"></i>Dashboard</a>
                 </li>
-                <li class="menu-title">User</li><!-- /.menu-title -->
-                <li id="inisiator">
-                    <a href="/admin/user/inisiator/individual"><i class="menu-icon fa fa-laptop"></i>Inisiator </a>
-                </li>
-                <li class="menu-item-has-children dropdown" id="investor">
-                    <a href="#" id="investor-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-table"></i>Investor</a>
-                    <ul class="sub-menu children dropdown-menu">
-                        <li><i class="fa fa-table" id="individual-investor-icon"></i><a href="/admin/user/investor/individual" id="individual-investor-link">Perseorangan</a></li>
-                        <li><i class="fa fa-table" id="company-investor-icon"></i><a href="/admin/user/investor/company" id="company-investor-link">Perusahaan</a></li>
-                    </ul>
-                </li>
+                    <% if (user.user_type[0].name == 'super_admin') { %>
+                        <li class="menu-title">User</li><!-- /.menu-title -->
+                        <li id="inisiator">
+                            <a href="/admin/user/inisiator/individual"><i class="menu-icon fa fa-laptop"></i>Inisiator </a>
+                        </li>
+                        <li class="menu-item-has-children dropdown" id="investor">
+                            <a href="#" id="investor-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="menu-icon fa fa-table"></i>Investor</a>
+                            <ul class="sub-menu children dropdown-menu">
+                                <li><i class="fa fa-table" id="individual-investor-icon"></i><a href="/admin/user/investor/individual" id="individual-investor-link">Perseorangan</a></li>
+                                <li><i class="fa fa-table" id="company-investor-icon"></i><a href="/admin/user/investor/company" id="company-investor-link">Perusahaan</a></li>
+                            </ul>
+                        </li>
+                        <li id="management">
+                            <a href="/admin/user/management"><i class="menu-icon fa fa-laptop"></i>Admin</a>
+                        </li>
+                    <% } %>
                 <li class="menu-title">Proyek</li><!-- /.menu-title -->
-                <li id="waiting-project">
-                    <a href="/admin/project/waiting"><i class="menu-icon fa fa-laptop"></i>Menunggu Verifikasi </a>
-                </li>
-                <li id="rejected-project">
-                    <a href="/admin/project/rejected"><i class="menu-icon fa fa-laptop"></i>Ditolak </a>
-                </li>
-                <li id="open-project">
-                    <a href="/admin/project/open"><i class="menu-icon fa fa-laptop"></i>Sedang Berlangsung </a>
-                </li>
-                <li id="done-project">
-                    <a href="/admin/project/done"><i class="menu-icon fa fa-laptop"></i>Selesai </a>
-                </li>
-                <li class="menu-item-has-children dropdown" id="category">
-                    <a href="#" id="category-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-tasks"></i>Kategori Proyek</a>
-                    <ul class="sub-menu children dropdown-menu">
-                        <li><i class="menu-icon fa fa-fort-awesome" id="category-list-icon"></i><a href="/admin/project/category" id="category-list-link">Daftar Kategori</a></li>
-                        <li><i class="menu-icon ti-themify-logo" id="add-category-icon"></i><a href="/admin/project/add-category" id="add-category-link">Tambah Kategori</a></li>
-                    </ul>
-                </li>
-    
-                <li class="menu-title">Transaksi</li><!-- /.menu-title -->
-                <li class="menu-item-has-children dropdown" id="transaction">
-                    <a href="#" id="transaction-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-tasks"></i>Menunggu</a>
-                    <ul class="sub-menu children dropdown-menu">
-                        <li><i class="menu-icon fa fa-fort-awesome" id="waiting-payment-icon"></i><a href="/admin/transaction/waiting-payment" id="waiting-payment-link">Pembayaran</a></li>
-                        <li><i class="menu-icon ti-themify-logo" id="waiting-verification-icon"></i><a href="/admin/transaction/waiting-verification" id="waiting-verification-link">Verifikasi</a></li>
-                    </ul>
-                </li>
-                <li id="rejected-transaction">
-                    <a href="/admin/transaction/rejected"><i class="menu-icon fa fa-laptop"></i>Ditolak</a>
-                </li>
-                <li class="menu-title">Pencairan</li><!-- /.menu-title -->
-                <li class="menu-item-has-children dropdown" id="normal-withdraw">
-                    <a href="#" id="normal-withdraw-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-tasks"></i>Normal</a>
-                    <ul class="sub-menu children dropdown-menu">
-                        <li><i class="menu-icon fa fa-fort-awesome" id="paid-normal-withdraw-icon"></i><a href="/admin/withdraw/paid" id="paid-normal-withdraw-link">Cair</a></li>
-                        <li><i class="menu-icon fa fa-fort-awesome" id="waiting-approval-normal-withdraw-icon"></i><a href="/admin/withdraw/waiting-approval" id="waiting-approval-normal-withdraw-link">Persetujuan</a></li>
-                        <li><i class="menu-icon fa fa-fort-awesome" id="waiting-payment-normal-withdraw-icon"></i><a href="/admin/withdraw/waiting-payment" id="waiting-payment-normal-withdraw-link">Pembayaran</a></li>
-                        <li><i class="menu-icon fa fa-fort-awesome" id="rejected-normal-withdraw-icon"></i><a href="/admin/withdraw/rejected" id="rejected-normal-withdraw-link">Ditolak</a></li>
-
-                    </ul>
-                </li>
-                <li class="menu-item-has-children dropdown" id="alternative-withdraw">
-                    <a href="#" id="alternative-withdraw-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="menu-icon fa fa-tasks"></i>Alternatif</a>
-                    <ul class="sub-menu children dropdown-menu">
-                        <li><i class="menu-icon fa fa-fort-awesome" id="paid-alternative-withdraw-icon"></i><a href="/admin/withdraw/alternative/paid" id="paid-alternative-withdraw-link">Cair</a></li>
-                        <li><i class="menu-icon fa fa-fort-awesome" id="waiting-approval-alternative-withdraw-icon"></i><a href="/admin/withdraw/alternative/waiting-approval" id="waiting-approval-alternative-withdraw-link">Persetujuan</a></li>
-                        <li><i class="menu-icon fa fa-fort-awesome" id="waiting-payment-alternative-withdraw-icon"></i><a href="/admin/withdraw/alternative/waiting-payment" id="waiting-payment-alternative-withdraw-link">Pembayaran</a></li>
-                        <li><i class="menu-icon fa fa-fort-awesome" id="rejected-alternative-withdraw-icon"></i><a href="/admin/withdraw/alternative/rejected" id="rejected-alternative-withdraw-link">Ditolak</a></li>
-                    </ul>
-                </li>
-                <li class="menu-title">Pengesahan</li><!-- /.menu-title -->
-                <li id="signature-list">
-                    <a href="/admin/signature"><i class="menu-icon fa fa-laptop"></i>Daftar Pengesahan</a>
-                </li>
-                <li id="add-signature">
-                    <a href="/admin/signature/add"><i class="menu-icon fa fa-laptop"></i>Tambah Pengesahan</a>
-                </li>
+                <% if (user.user_type[0].name == 'super_admin') { %>
+                    <li class="menu-item-has-children dropdown" id="category">
+                        <a href="#" id="category-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="menu-icon fa fa-tasks"></i>Kategori Proyek</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="menu-icon fa fa-fort-awesome" id="category-list-icon"></i><a href="/admin/project/category" id="category-list-link">Daftar Kategori</a></li>
+                            <li><i class="menu-icon ti-themify-logo" id="add-category-icon"></i><a href="/admin/project/add-category" id="add-category-link">Tambah Kategori</a></li>
+                        </ul>
+                    </li>
+                <% } %>
+                <% if (user.user_type[0].name == 'analyst_admin') { %>
+                    <li id="waiting-project">
+                        <a href="/admin/project/waiting"><i class="menu-icon fa fa-laptop"></i>Menunggu Verifikasi </a>
+                    </li>
+                    <li id="rejected-project">
+                        <a href="/admin/project/rejected"><i class="menu-icon fa fa-laptop"></i>Ditolak </a>
+                    </li>
+                    <li id="open-project">
+                        <a href="/admin/project/open"><i class="menu-icon fa fa-laptop"></i>Sedang Berlangsung </a>
+                    </li>
+                    <li id="done-project">
+                        <a href="/admin/project/done"><i class="menu-icon fa fa-laptop"></i>Selesai </a>
+                    </li>
+                    <li class="menu-title">Transaksi</li><!-- /.menu-title -->
+                    <li class="menu-item-has-children dropdown" id="transaction">
+                        <a href="#" id="transaction-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="menu-icon fa fa-tasks"></i>Menunggu</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="menu-icon fa fa-fort-awesome" id="waiting-payment-icon"></i><a href="/admin/transaction/waiting-payment" id="waiting-payment-link">Pembayaran</a></li>
+                            <li><i class="menu-icon ti-themify-logo" id="waiting-verification-icon"></i><a href="/admin/transaction/waiting-verification" id="waiting-verification-link">Verifikasi</a></li>
+                        </ul>
+                    </li>
+                    <li id="rejected-transaction">
+                        <a href="/admin/transaction/rejected"><i class="menu-icon fa fa-laptop"></i>Ditolak</a>
+                    </li>
+                    <li class="menu-title">Pencairan</li><!-- /.menu-title -->
+                    <li class="menu-item-has-children dropdown" id="alternative-withdraw">
+                        <a href="#" id="alternative-withdraw-link" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="menu-icon fa fa-tasks"></i>Pencairan</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="menu-icon fa fa-fort-awesome" id="paid-alternative-withdraw-icon"></i><a href="/admin/withdraw/alternative/paid" id="paid-alternative-withdraw-link">Cair</a></li>
+                            <li><i class="menu-icon fa fa-fort-awesome" id="waiting-approval-alternative-withdraw-icon"></i><a href="/admin/withdraw/alternative/waiting-approval" id="waiting-approval-alternative-withdraw-link">Persetujuan</a></li>
+                            <li><i class="menu-icon fa fa-fort-awesome" id="waiting-payment-alternative-withdraw-icon"></i><a href="/admin/withdraw/alternative/waiting-payment" id="waiting-payment-alternative-withdraw-link">Pembayaran</a></li>
+                            <li><i class="menu-icon fa fa-fort-awesome" id="rejected-alternative-withdraw-icon"></i><a href="/admin/withdraw/alternative/rejected" id="rejected-alternative-withdraw-link">Ditolak</a></li>
+                        </ul>
+                    </li>
+                <% } %>
+                <% if (user.user_type[0].name == 'super_admin' || user.user_type[0].name == 'analyst_admin') { %>
+                    <li class="menu-title">Pengesahan</li><!-- /.menu-title -->
+                    <li id="signature-list">
+                        <a href="/admin/signature"><i class="menu-icon fa fa-laptop"></i>Daftar Pengesahan</a>
+                    </li>
+                    <li id="add-signature">
+                        <a href="/admin/signature/add"><i class="menu-icon fa fa-laptop"></i>Tambah Pengesahan</a>
+                    </li>
+                <% } %>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>

@@ -37,8 +37,8 @@ router.get('/change-password/:secretToken', notLoggedIn, function (req, res) {
     res.render('pages/auth/change-password', data);
 });
 router.get('/logout', isLoggedIn, function (req, res) {
-    req.logOut();
     req.flash('success_message', 'Anda berhasil keluar');
+    req.logOut();
     res.redirect('/auth/login');
 });
 
@@ -99,7 +99,6 @@ router.post('/register', notLoggedIn, function (req, res) {
                     secretToken: secretToken
                 }
                 const content = await compile('confirmation', data);
-                console.log(content)
                 let mailOptions = {
                     from: '"Investani" <investaninx@gmail.com>',
                     to: email,
@@ -166,38 +165,48 @@ router.post('/login', notLoggedIn, passport.authenticate('local', { failureRedir
             return res.redirect('/auth/login');
         }
         if (user.active == false) {
-            return res.redirect('/welcome');
-        }
-        if (user.active == true && user.profile.length == 0) {
-            if (user.user_type[0].name == 'super_user') {
+            if (user.user_type[0].name == 'super_admin' || user.user_type[0].name == 'analyst_admin' || user.user_type[0].name == 'cooperative_admin') {
                 return res.redirect('/admin');
             }
             else {
-                return res.redirect('/complete-profile');
+                return res.redirect('/welcome');
             }
         }
-        if (user.active == true && user.profile.length != 0 && user.bank.length == 0) {
-            res.redirect('/complete-profile');
-        }
-        if (user.active == true && user.profile.length != 0 && user.bank.length != 0) {
-            if (user.active == true && user.user_type[0].status == 'verified') {
-                if (user.user_type[0].name == 'investor') {
-                    if (user.contract == '') {
-                        return res.redirect('/contract');
-                    }
-                    else {
-                        return res.redirect('/');
-                    }
+        else {
+            if (user.profile.length == 0) {
+                if (user.user_type[0].name == 'super_admin' || user.user_type[0].name == 'analyst_admin' || user.user_type[0].name == 'cooperative_admin') {
+                    return res.redirect('/admin');
                 }
-                else {                    
-                    return res.redirect('/');
-                }  
+                else {
+                    return res.redirect('/complete-profile');
+                }
             }
             else {
-                return res.redirect('/');
+                if (user.bank.length == 0) {
+                    res.redirect('/complete-profile');
+                }
+                else {
+                    if (user.bank.length != 0) {
+                        if (user.user_type[0].status == 'verified') {
+                            if (user.user_type[0].name == 'investor') {
+                                if (user.contract == '') {
+                                    return res.redirect('/contract');
+                                }
+                                else {
+                                    return res.redirect('/');
+                                }
+                            }
+                            else {                    
+                                return res.redirect('/');
+                            }  
+                        }
+                        else {
+                            return res.redirect('/');
+                        }
+                    }
+                }
             }
         }
-        
     });
     
 });
