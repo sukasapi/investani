@@ -77,7 +77,6 @@
                                             <th>Deskripsi</th>
                                             <th>Tanggal Kegiatan</th>
                                             <th>Jumlah</th>
-                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -93,15 +92,6 @@
                                             <td><%= waiting_withdraw.description %></td>
                                             <td><%= waiting_withdraw.alternative_activity_date %></td>
                                             <td>Rp. <%= waiting_withdraw.alternative_amount %></td>
-                                            <td>
-                                                <div class="input-group-btn">
-                                                    <a href="/admin/withdraw/waiting-payment/<%= waiting_withdraw.project_id %>/<%= waiting_withdraw._id %>">
-                                                        <button class="btn btn-primary">
-                                                            Konfirmasi
-                                                        </button>
-                                                    </a>
-                                                </div>
-                                            </td>
                                         </tr>
                                         <% }) %>
                                     </tbody>

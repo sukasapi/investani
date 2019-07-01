@@ -55,7 +55,7 @@
                     <div class="col-lg-8">
                         <div id="basic-card" class="card">
                             <div class="card-header">
-                                <strong class="card-title">Menambah Pejabat Pengesahan</strong>
+                                <strong class="card-title">Menambah Admin</strong>
                             </div>
                             <div class="card-body">
                                 <form action="/admin/user/management/edit/<%= admin._id %>" method="post">
@@ -81,6 +81,7 @@
                                             <input name="email" type="text" class="form-control"
                                                 placeholder="Email" value="<%= admin.email %>">
                                         </div>
+                                        <% if (user.user_type[0].name == 'super_admin') { %>
                                         <div class="col col-sm-6">
                                             <label class="control-label mb-1">Jenis Admin</label>
                                             <select name="user_type" id="select" class="form-control">
@@ -88,6 +89,7 @@
                                                 <option value="cooperative_admin" <% if (admin.user_type[0].name == 'cooperative_admin') { %>selected<% } %>>Admin Koperasi</option>
                                             </select>
                                         </div>
+                                        <% } %>
                                         <div class="col col-sm-6">
                                             <label class="control-label mb-1">Nama Lengkap</label>
                                             <input name="name" type="text" class="form-control"
@@ -113,13 +115,15 @@
                                             <input name="address" type="text" class="form-control"
                                                 placeholder="Alamat" value="<%= admin.profile[0].address %>">
                                         </div>
-                                        <div class="col col-sm-6">
-                                            <label class="control-label mb-1">Status</label>
-                                            <select name="active" id="select" class="form-control">
-                                                <option value="1" <% if (admin.active == true) { %>selected<% } %>>Aktif</option>
-                                                <option value="0" <% if (admin.active == false) { %>selected<% } %>>Nonaktif</option>
-                                            </select>
-                                        </div>
+                                        <% if (user.user_type[0].name == 'super_admin') { %>
+                                            <div class="col col-sm-6">
+                                                <label class="control-label mb-1">Status</label>
+                                                <select name="active" id="select" class="form-control">
+                                                    <option value="1" <% if (admin.active == true) { %>selected<% } %>>Aktif</option>
+                                                    <option value="0" <% if (admin.active == false) { %>selected<% } %>>Nonaktif</option>
+                                                </select>
+                                            </div>
+                                        <% } %>
                                     </div>
                                     <div class="row form-group">
                                         <div class="col col-sm-12">

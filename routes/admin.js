@@ -1,5 +1,5 @@
 import express from 'express';
-import { User, getUserByID, createUser, updateUser } from '../models/User';
+import { User, getUserByID, createUser, getUserByEmail } from '../models/User';
 import { getProjectByStatus, getProjectByID, updateProject, Project } from '../models/Project';
 import { Category, createCategory } from '../models/Category';
 import { getTransactionByStatus, getTransactionById } from '../models/Transaction';
@@ -310,8 +310,15 @@ router.get('/user/management/add', isLoggedIn, isSuperAdmin, function (req, res)
         }
     });
 });
-router.get('/user/management/detail/:user_id', isLoggedIn, isSuperAdmin, function (req, res) {
+router.get('/user/management/detail/:user_id', isLoggedIn, isSuperandCooperativeAdmin, function (req, res) {
     let error_message;
+    if (req.user.user_type[0].name == 'cooperative_admin') {
+        if (!req.user._id.equals(req.params.user_id)) {
+            error_message = "User tidak tersedia.";
+            req.flash('error_message', error_message);
+            return res.redirect('back');
+        }
+    }
     User.findOne({'_id': req.params.user_id, $or: [{'user_type.name': 'analyst_admin'}, {'user_type.name': 'cooperative_admin'}]}, function (error, user) {
         if (error) {
             error_message = "Terjadi kesalahan";
@@ -331,7 +338,6 @@ router.get('/user/management/detail/:user_id', isLoggedIn, isSuperAdmin, functio
                     return res.redirect('back');   
                 }
                 else {
-                    console.log(user)
                     let data = {
                         url: 'management-detail',
                         admin: user,
@@ -781,7 +787,7 @@ router.get('/project/add-category', isLoggedIn, isSuperAdmin, function (req, res
         }
     });
 });
-router.get('/transaction/waiting-payment', isLoggedIn, isAnalystAdmin, function (req, res) {
+router.get('/transaction/waiting-payment', isLoggedIn, isCooperativeAdmin, function (req, res) {
     let error_message;
     let createdAt = [];
     let due_date = [];
@@ -825,7 +831,7 @@ router.get('/transaction/waiting-payment', isLoggedIn, isAnalystAdmin, function 
         } 
     });
 });
-router.get('/transaction/waiting-verification', isLoggedIn, isAnalystAdmin, function (req, res) {
+router.get('/transaction/waiting-verification', isLoggedIn, isCooperativeAdmin, function (req, res) {
     let error_message;
     let createdAt = [];
     let due_date = [];
@@ -875,7 +881,7 @@ router.get('/transaction/waiting-verification', isLoggedIn, isAnalystAdmin, func
         } 
     });
 });
-router.get('/transaction/rejected', isLoggedIn, isAnalystAdmin, function (req, res) {
+router.get('/transaction/rejected', isLoggedIn, isCooperativeAdmin, function (req, res) {
     let error_message;
     let createdAt = [];
     let due_date = [];
@@ -919,7 +925,7 @@ router.get('/transaction/rejected', isLoggedIn, isAnalystAdmin, function (req, r
         } 
     });
 });
-router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAnalystAdmin, function (req, res) {
+router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isCooperativeAdmin, function (req, res) {
     let error_message;
     let success_message;
     if (req.query.position) {
@@ -1052,7 +1058,7 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isAnalystA
         return res.redirect('/admin/transaction/waiting-verification');
     }
 });
-router.get('/transaction/waiting/:transaction_id/reject', isLoggedIn, isAnalystAdmin, function (req, res) {
+router.get('/transaction/waiting/:transaction_id/reject', isLoggedIn, isCooperativeAdmin, function (req, res) {
     let error_message;
     let success_message;
     getTransactionById(req.params.transaction_id, function (error, transaction) {
@@ -1097,10 +1103,10 @@ router.get('/transaction/waiting/:transaction_id/reject', isLoggedIn, isAnalystA
         }
     });
 })
-router.get('/transaction/get-receipt/:project_id/:filename', isLoggedIn, isAnalystAdmin, function (req, res) {
+router.get('/transaction/get-receipt/:project_id/:filename', isLoggedIn, isCooperativeAdmin, function (req, res) {
     res.download(__dirname+'/../storage/projects/'+req.params.project_id+'/transactions/'+req.params.filename);
 });
-router.get('/signature', isLoggedIn, isSuperAdmin, function (req, res) {
+router.get('/signature', isLoggedIn, isSuperandCooperativeAdmin, function (req, res) {
     Signature.find({}, function (error, signatures) {
         if (error) {
             let error_message = "Terjadi kesalahan.";
@@ -1126,7 +1132,7 @@ router.get('/signature', isLoggedIn, isSuperAdmin, function (req, res) {
         }
     });
 });
-router.get('/signature/add', isLoggedIn, isSuperAdmin, function (req, res) {
+router.get('/signature/add', isLoggedIn, isSuperandCooperativeAdmin, function (req, res) {
     getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
         if (error) {
             error_message = "Terjadi kesalahan";
@@ -1142,7 +1148,7 @@ router.get('/signature/add', isLoggedIn, isSuperAdmin, function (req, res) {
         }
     });
 });
-router.get('/signature/get-signature/:filename', isLoggedIn, isSuperAdmin, function (req, res) {
+router.get('/signature/get-signature/:filename', isLoggedIn, isSuperandCooperativeAdmin, function (req, res) {
     res.download(__dirname+'/../storage/signatures/'+req.params.filename);
 });
 // router.get('/withdraw/waiting-approval', isLoggedIn, isSuperAdmin, function(req, res) {
@@ -1528,7 +1534,7 @@ router.get('/withdraw/alternative/waiting-approval', isLoggedIn, isAnalystAdmin,
     //     }
     // });
 });
-router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isAnalystAdmin, function(req, res) {
+router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isCooperativeAdmin, function(req, res) {
     let error_message;
     let waiting_withdraws = [];
     let budget_object = null;
@@ -1571,7 +1577,7 @@ router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isAnalystAdmin, 
         }
     });
 });
-router.get('/withdraw/alternative/waiting-payment/:project_id/:budget_id', isLoggedIn, isAnalystAdmin, function(req, res) {
+router.get('/withdraw/alternative/waiting-payment/:project_id/:budget_id', isLoggedIn, isCooperativeAdmin, function(req, res) {
     let error_message;
     let budget_id = req.params.budget_id;
     let budget_object = null;
@@ -1623,7 +1629,7 @@ router.get('/withdraw/alternative/waiting-payment/:project_id/:budget_id', isLog
         }
     });
 });
-router.get('/withdraw/alternative/rejected', isLoggedIn, isAnalystAdmin, function(req, res) {
+router.get('/withdraw/alternative/rejected', isLoggedIn, isAnalystandCooperativeAdmin, function(req, res) {
     let error_message;
     let rejected_withdraws = [];
     let budget_object = null;
@@ -1666,7 +1672,7 @@ router.get('/withdraw/alternative/rejected', isLoggedIn, isAnalystAdmin, functio
         }
     });
 });
-router.get('/withdraw/alternative/paid', isLoggedIn, isAnalystAdmin, function(req, res) {
+router.get('/withdraw/alternative/paid', isLoggedIn, isAnalystandCooperativeAdmin, function(req, res) {
     let error_message;
     let paid_withdraws = [];
     let budget_object = null;
@@ -1697,6 +1703,7 @@ router.get('/withdraw/alternative/paid', isLoggedIn, isAnalystAdmin, function(re
                     return res.redirect('back');   
                 }
                 else {
+                    console.log(paid_withdraws)
                     let data = {
                         url: "paid-withdraw-approval-alternative",
                         paid_withdraws: paid_withdraws,
@@ -1709,7 +1716,7 @@ router.get('/withdraw/alternative/paid', isLoggedIn, isAnalystAdmin, function(re
         }
     });
 });
-router.get('/withdraw/get-receipt/:project_id/:filename', isLoggedIn, isAnalystAdmin, function (req, res) {
+router.get('/withdraw/get-receipt/:project_id/:filename', isLoggedIn, isAnalystandCooperativeAdmin, function (req, res) {
     res.download(__dirname+'/../storage/projects/'+req.params.project_id+'/budget/'+req.params.filename);
 });
 
@@ -1771,7 +1778,7 @@ router.post('/user/inisiator/individual/verify/:id', isLoggedIn, isSuperAdmin, f
         }
     });
 });
-router.post('/user/management/add', isLoggedIn, isSuperAdmin, async function (req, res) {
+router.post('/user/management/add', isLoggedIn, isSuperAdmin, function (req, res) {
     let success_message;
     let error_message;
     
@@ -1792,71 +1799,85 @@ router.post('/user/management/add', isLoggedIn, isSuperAdmin, async function (re
         return res.redirect('back');
     }
     else {
-        let password = uuidv4().slice(0, -28);
-        let user = new User({
-            email: req.body.email,
-            password: password,
-            user_type: [{
-                name: req.body.user_type,
-                status: 'verified'
-            }],
-            active: true,
-            profile: [{
-                name: req.body.name,
-                address: req.body.address
-            }],
-            occupation: [{
-                company_name: req.body.company_name,
-                position: req.body.position
-            }],
-            document: [{
-                identity_number: req.body.identity_number    
-            }]
-        });
-        let transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true,
-            auth: {
-                user: 'investaninx@gmail.com',
-                pass: 'investani2019'
-            }
-        });
-        let data =  {
-            user: user
-        }
-        const content = await compile_email('admin-password', data);
-        let mailOptions = {
-            from: '"Investani" <investaninx@gmail.com>',
-            to: user.email,
-            subject: "Kata Sandi Admin",
-            html: content
-        };
-        transporter.sendMail(mailOptions, async (error) => {
+        getUserByEmail(req.body.email, async function (error, user) {
             if (error) {
                 error_message = "Email gagal terkirim"; 
                 req.flash('error_message', error_message);
                 return res.redirect('back');
             }
+            if (user) {
+                error_message = "Email sudah terpakai."; 
+                req.flash('error_message', error_message);
+                return res.redirect('/admin/user/management/add');
+            }
             else {
-                createUser(user, function (error) {
+                let user = new User({
+                    email: req.body.email,
+                    password: uuidv4().slice(0, -28),
+                    user_type: [{
+                        name: req.body.user_type,
+                        status: 'verified'
+                    }],
+                    active: true,
+                    profile: [{
+                        name: req.body.name,
+                        address: req.body.address
+                    }],
+                    occupation: [{
+                        company_name: req.body.company_name,
+                        position: req.body.position
+                    }],
+                    document: [{
+                        identity_number: req.body.identity_number    
+                    }]
+                });
+                let transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: 'investaninx@gmail.com',
+                        pass: 'investani2019'
+                    }
+                });
+                let data =  {
+                    user: user
+                }
+                const content = await compile_email('admin-password', data);
+                let mailOptions = {
+                    from: '"Investani" <investaninx@gmail.com>',
+                    to: user.email,
+                    subject: "Kata Sandi Admin",
+                    html: content
+                };
+                transporter.sendMail(mailOptions, (error) => {
                     if (error) {
-                        error_message = "Terjadi Kesalahan";
+                        error_message = "Email gagal terkirim"; 
                         req.flash('error_message', error_message);
                         return res.redirect('back');
                     }
                     else {
-                        success_message = "Berhasil membuat admin baru.";
-                        req.flash('success_message', success_message);
-                        return res.redirect('back');
-                        
+                        createUser(user, function (error) {
+                            if (error) {
+                                error_message = "Terjadi Kesalahan";
+                                req.flash('error_message', error_message);
+                                return res.redirect('back');
+                            }
+                            else {
+                                success_message = "Berhasil membuat admin baru.";
+                                req.flash('success_message', success_message);
+                                return res.redirect('back');
+                                
+                            }
+                        });
                     }
                 });
             }
         });
+        
     }
 });
-router.post('/user/management/edit/:user_id', isLoggedIn, isSuperAdmin, function (req, res) {
+router.post('/user/management/edit/:user_id', isLoggedIn, isSuperandCooperativeAdmin, function (req, res) {
     let success_message;
     let error_message;
     
@@ -1865,7 +1886,9 @@ router.post('/user/management/edit/:user_id', isLoggedIn, isSuperAdmin, function
     req.checkBody('identity_number', 'NIK wajib diisi.').notEmpty();
     req.checkBody('company_name', 'Nama perusahaan wajib diisi.').notEmpty();
     req.checkBody('name', 'Nama lengkap wajib diisi.').notEmpty();
-    req.checkBody('user_type', 'Jenis admin wajib dipilih.').notEmpty();
+    if (req.user.user_type[0].name == 'super_admin') {
+        req.checkBody('user_type', 'Jenis admin wajib dipilih.').notEmpty();
+    }
     req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
     req.checkBody('email', 'Email wajib diisi.').notEmpty();
 
@@ -1877,6 +1900,13 @@ router.post('/user/management/edit/:user_id', isLoggedIn, isSuperAdmin, function
         return res.redirect('back');
     }
     else {
+        if (req.user.user_type[0].name == 'cooperative_admin') {
+            if (!req.user._id.equals(req.params.user_id)) {
+                error_message = "User tidak tersedia.";
+                req.flash('error_message', error_message);
+                return res.redirect('back');
+            }
+        }
         User.findOne({'_id': req.params.user_id, $or: [{'user_type.name': 'analyst_admin'}, {'user_type.name': 'cooperative_admin'}]}, function (error, user) {
             if (error) {
                 error_message = "Terjadi Kesalahan";
@@ -1884,30 +1914,72 @@ router.post('/user/management/edit/:user_id', isLoggedIn, isSuperAdmin, function
                 return res.redirect('back');
             }
             else {
-                user.email = req.body.email;
-                user.user_type[0].name = req.body.user_type;
-                user.profile[0].name = req.body.name;
-                user.occupation[0].company_name = req.body.company_name;
-                user.document[0].identity_number = req.body.identity_number;
-                user.occupation[0].position = req.body.position;
-                user.profile[0].address = req.body.address;
-                if (req.body.active == '1') {
-                    user.active = true;
+                if (user.email != req.body.email) {
+                    getUserByEmail(req.body.email, function (error, user, next) {
+                        if (error) {
+                            error_message = "Terjadi Kesalahan";
+                            req.flash('error_message', error_message);
+                            return res.redirect('back');
+                        }
+                        if (user) {
+                            error_message = "Email sudah terpakai.";
+                            req.flash('error_message', error_message);
+                            return res.redirect('back');
+                        }
+                        else {
+                            user.email = req.body.email;
+                            user.user_type[0].name = req.body.user_type;
+                            user.profile[0].name = req.body.name;
+                            user.occupation[0].company_name = req.body.company_name;
+                            user.document[0].identity_number = req.body.identity_number;
+                            user.occupation[0].position = req.body.position;
+                            user.profile[0].address = req.body.address;
+                            if (req.body.active == '1') {
+                                user.active = true;
+                            }
+                            else {
+                                user.active = false;
+                            }
+                            user.save().then(user => {
+                                success_message = "Berhasil memperbarui data admin.";
+                                req.flash('success_message', success_message);
+                                return res.redirect('back');
+                            }).catch(error => {
+                                error_message = "Gagal memperbarui data admin.";
+                                req.flash('error_message', error_message);
+                                return res.redirect('back');
+                            });
+                        }
+                    })
                 }
                 else {
-                    user.active = false;
+                    user.email = req.body.email;
+                    if (req.body.user_type) {
+                        user.user_type[0].name = req.body.user_type;
+                    }
+                    user.profile[0].name = req.body.name;
+                    user.occupation[0].company_name = req.body.company_name;
+                    user.document[0].identity_number = req.body.identity_number;
+                    user.occupation[0].position = req.body.position;
+                    user.profile[0].address = req.body.address;
+                    if (req.body.active == '1' || req.user.user_type[0].name == 'cooperative_admin') {
+                        user.active = true;
+                    }
+                    else {
+                        user.active = false;
+                    }
+                    user.save().then(user => {
+                        success_message = "Berhasil memperbarui data admin.";
+                        req.flash('success_message', success_message);
+                        return res.redirect('back');
+                    }).catch(error => {
+                        error_message = "Gagal memperbarui data admin.";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    });
                 }
-                user.save().then(user => {
-                    success_message = "Berhasil memperbarui data admin.";
-                    req.flash('success_message', success_message);
-                    return res.redirect('back');
-                }).catch(error => {
-                    error_message = "Gagal memperbarui data admin.";
-                    req.flash('error_message', error_message);
-                    return res.redirect('back');
-                });
             }
-        })
+        });
     }
 })
 router.post('/project/waiting/verify/:project_id', isLoggedIn, isAnalystAdmin, function (req, res) {
@@ -2415,7 +2487,7 @@ router.post('/project/waiting/:project_id/image', isLoggedIn, isAnalystAdmin, fu
         });
     });
 });
-router.post('/project/add-category', isLoggedIn, isSuperAdmin, function (req, res) {
+router.post('/project/add-category', isLoggedIn, isSuperandCooperativeAdmin, function (req, res) {
     let error_message;
     let success_message;
 
@@ -2476,8 +2548,8 @@ router.post('/project/add-category', isLoggedIn, isSuperAdmin, function (req, re
         });
     }
 });
-
-router.post('/signature/add', isLoggedIn, isSuperAdmin, function (req, res) {
+let signatureUpload = upload.single('signature');
+router.post('/signature/add', isLoggedIn, isSuperandCooperativeAdmin, function (req, res) {
     signatureUpload(req, res, async function (err) {
         let success_message;
         let error_message;
@@ -2498,6 +2570,7 @@ router.post('/signature/add', isLoggedIn, isSuperAdmin, function (req, res) {
         }
         else {
             if (err instanceof multer.MulterError) {
+                console.log(err)
                 error_message = "Ukuran gambar terlalu besar";
                 req.flash('error_message', error_message);
                 return res.redirect(`/admin/signature/add`);
@@ -2542,7 +2615,7 @@ let receiptUpload = upload.fields([{
     name: 'receipt',
     maxCount: 1
 }]);
-router.post('/withdraw/waiting-payment/:project_id/:budget_id', isLoggedIn, isAnalystAdmin, function (req, res) {
+router.post('/withdraw/waiting-payment/:project_id/:budget_id', isLoggedIn, isCooperativeAdmin, function (req, res) {
     receiptUpload(req, res, function (err) {
         let error_message;
         let success_message;
@@ -2667,6 +2740,25 @@ function isAdmin(req, res, next) {
         res.redirect('/');
     }
 }
+
+function isSuperandCooperativeAdmin(req, res, next) {
+    if ((req.user.user_type[0].name == 'super_admin' || req.user.user_type[0].name == 'cooperative_admin') && req.user.active == true) {
+        next();
+    }
+    else {
+        res.redirect('/');
+    }
+}
+
+function isAnalystandCooperativeAdmin(req, res, next) {
+    if ((req.user.user_type[0].name == 'analyst_admin' || req.user.user_type[0].name == 'cooperative_admin') && req.user.active == true) {
+        next();
+    }
+    else {
+        res.redirect('/');
+    }
+}
+
 function isSuperAdmin(req, res, next) {
     if (req.user.user_type[0].name == 'super_admin' && req.user.active == true) {
         next();
@@ -2678,6 +2770,15 @@ function isSuperAdmin(req, res, next) {
 
 function isAnalystAdmin(req, res, next) {
     if (req.user.user_type[0].name == 'analyst_admin' && req.user.active == true) {
+        next();
+    }
+    else {
+        res.redirect('/');
+    }
+}
+
+function isCooperativeAdmin(req, res, next) {
+    if (req.user.user_type[0].name == 'cooperative_admin' && req.user.active == true) {
         next();
     }
     else {

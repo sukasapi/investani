@@ -379,6 +379,11 @@ function (req, email, password, done) {
             req.flash('request', request);
             return done(null, false);
         }
+        if (!user.active) {
+            req.flash('error_message', 'User tidak aktif.');
+            req.flash('request', request);
+            return done(null, false);
+        }
         comparePassword(password, user.password, function (err, isMatch) {
             if (err) {
                 req.flash('request', request);

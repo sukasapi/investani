@@ -77,6 +77,7 @@
                                             <th>Deskripsi</th>
                                             <th>Tanggal Kegiatan</th>
                                             <th>Jumlah</th>
+                                            <th>Bukti</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -91,7 +92,48 @@
                                                 <td><%= paid_withdraw.description %></td>
                                                 <td><%= paid_withdraw.alternative_activity_date %></td>
                                                 <td>Rp. <span class="amount"></span></td>
+                                                <td>
+                                                    <div class="input-group-btn">
+                                                        <button type="button" class="btn btn-primary mb-1"
+                                                            data-toggle="modal" data-target="#receipt-modal-<%= index %>">
+                                                            Lihat
+                                                        </button>
+                                                    </div>
+                                                </td>
                                             </tr>
+                                            <div aria-hidden="true" aria-labelledby="smallmodalLabel" class="modal fade"
+                                            data-keyboard="false" id="receipt-modal-<%= index %>" role="dialog" tabindex="-1">
+                                                <div id="full-loader" class="loading" style="display: none;">Loading&#8230;</div>
+                                                <div class="modal-dialog modal-md" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="smallmodalLabel">Bukti Pencairan
+                                                        </h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="card">
+                                                                    <img class="card-img-top"
+                                                                        src="/admin/withdraw/get-receipt/<%= paid_withdraw.project_id %>/<%= paid_withdraw.receipt %>"
+                                                                        alt="Card image cap">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Tutup</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <% }) %>
                                     </tbody>
                                 </table>
