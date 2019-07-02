@@ -40,7 +40,7 @@ router.use(expressValidator({
 
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
-router.get('/', isLoggedIn, isNoContract, isUser, function (req, res) {
+router.get('/', isLoggedIn, isNoContract, isUser, isActive, function (req, res) {
     request({
         url: 'http://dev.farizdotid.com/api/daerahindonesia/provinsi', //URL to hit
         method: 'GET', // specify the request type
@@ -220,8 +220,11 @@ router.get('/', isLoggedIn, isNoContract, isUser, function (req, res) {
                 bank_name: bank_name,
                 account_name: account_name,
                 account_number: account_number,
-                branch: branch
+                branch: branch,
+                //
+                max_date: moment().subtract(17, 'years').format('DD/MM/YYYY')
             };
+            
             res.render('pages/profile/complete-profile', data);
         }
     });
@@ -290,14 +293,17 @@ router.get('/get-sub_district', isLoggedIn, function (req, res) {
         });
 });
 
-router.post('/', isLoggedIn, isNoContract, isUser, function (req, res) {
+router.post('/', isLoggedIn, isNoContract, isUser, isActive, function (req, res) {
     let error_message;
     let success_message;
     let registration_type = req.body.registration_type;
     let name = req.body.name;
     let phone = req.body.phone;
     let gender = req.body.gender;
-    let birth_date = moment(req.body.birth_date, "DD-MM-YYYY").format('MM/DD/YYYY');
+    let birth_date
+    if (req.body.birth_date) {
+        birth_date = moment(req.body.birth_date, "DD-MM-YYYY").format('MM/DD/YYYY');
+    }
     let province = {
         province_id: req.body.province,
         province_name: req.body.province_name
@@ -427,6 +433,13 @@ router.post('/', isLoggedIn, isNoContract, isUser, function (req, res) {
                     return res.redirect('/complete-profile');
                 }
             }
+            if (registration_type == 'individual' && moment.duration(moment(moment()).diff(birth_date))._data.years < 17) {
+                error_message = "Usia harus lebih dari 17 tahun.";
+                req.flash('error_message', error_message);
+                req.flash('request', request);
+                return res.redirect('/complete-profile');
+            }
+            
             let data = {
                 profile: [{
                     registration_type: registration_type,
@@ -493,7 +506,7 @@ router.post('/', isLoggedIn, isNoContract, isUser, function (req, res) {
     }
 });
 
-router.post('/occupation', isLoggedIn, isNoContract, isUser, function (req, res) {
+router.post('/occupation', isLoggedIn, isNoContract, isUser, isActive, function (req, res) {
     let error_message;
     let occupation = req.body.occupation;
     let company_name = req.body.company_name;
@@ -590,7 +603,7 @@ router.post('/occupation', isLoggedIn, isNoContract, isUser, function (req, res)
     }
 });
 
-router.post('/pic', isLoggedIn, isNoContract, isUser, upload.fields([{
+router.post('/pic', isLoggedIn, isNoContract, isUser, isActive, upload.fields([{
     name: 'pic_identity_image',
     maxCount: 1
 }, {
@@ -779,7 +792,7 @@ let documentUpload = upload.fields([
         maxCount: 1
     }
 ]);
-router.post('/document', isLoggedIn, isNoContract, isUser, function (req, res) {
+router.post('/document', isLoggedIn, isNoContract, isUser, isActive, function (req, res) {
     let error_message;
     documentUpload(req, res, async function(err) {
         if (err instanceof multer.MulterError) {
@@ -1051,7 +1064,7 @@ router.post('/document', isLoggedIn, isNoContract, isUser, function (req, res) {
     });
 });
 
-router.post('/bank', isLoggedIn, isNoContract, isUser, function (req, res) {
+router.post('/bank', isLoggedIn, isNoContract, isUser, isActive, function (req, res) {
     let error_message;
     let success_message;
     let bank_name = req.body.bank_name;
@@ -1185,6 +1198,16 @@ function isUser(req, res, next) {
         next();
     } else {
         res.redirect('/');
+    }
+}
+
+function isActive(req, res, next) {
+    if (req.user.active == true) {
+        next();
+    } else {
+        let error_message = "Akun anda belum aktif.";
+        req.flash('error_message', error_message);
+        return res.redirect('/');
     }
 }
 

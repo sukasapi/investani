@@ -379,7 +379,7 @@ function (req, email, password, done) {
             req.flash('request', request);
             return done(null, false);
         }
-        if (!user.active) {
+        if ((user.user_type[0].name == 'analyst_admin' || user.user_type[0].name == 'cooperative_admin') && !user.active) {
             req.flash('error_message', 'User tidak aktif.');
             req.flash('request', request);
             return done(null, false);
