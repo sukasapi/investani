@@ -197,22 +197,6 @@
                                     </div>
                                     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                                         <form action="/inisiator/profile/<%= user._id %>/occupation" method="post">
-                                            <% if (error_message != '') { %>
-                                                <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
-                                                    <%= error_message %>
-                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                            <% } %>
-                                            <% if (success_message != '') { %>
-                                                <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
-                                                    <%= success_message %>
-                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                            <% } %>
                                             <div class="form-group">
                                                 <label class=" form-control-label">Pekerjaan</label>
                                                 <select name="occupation" class="form-control">
@@ -281,22 +265,6 @@
                                     </div>
                                     <div class="tab-pane fade" id="pills-document" role="tabpanel" aria-labelledby="pills-document-tab">
                                         <form action="/inisiator/profile/<%= user._id %>/document" enctype="multipart/form-data" method="post">
-                                            <% if (error_message != '') { %>
-                                                <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
-                                                    <%= error_message %>
-                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                            <% } %>
-                                            <% if (success_message != '') { %>
-                                                <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
-                                                    <%= success_message %>
-                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                            <% } %>
                                             <div class="form-group">
                                                 <label class=" form-control-label">NPWP (Opsional)</label>
                                                 <input class="form-control" name="npwp_number" type="number" placeholder="Nomor NPWP" value="<%= user.document[0].npwp_number %>">
@@ -515,7 +483,8 @@
     <script>
         $('#datepicker').datepicker({
 			uiLibrary: 'bootstrap4',
-			format: 'dd/mm/yyyy'
+            format: 'dd/mm/yyyy',
+            maxDate: '<%= max_date %>'
         });
         $('.dropify').dropify();
 
@@ -603,9 +572,6 @@
                         $('#city-placeholder').attr('selected');
 						$('#district-placeholder').attr('selected');
 						$('#sub-district-placeholder').attr('selected');
-						$('#city-placeholder').attr('disabled', 'disabled');
-						$('#district-placeholder').attr('disabled', 'disabled');
-						$('#sub-district-placeholder').attr('disabled', 'disabled');
                         
 						for (let index = 0; index < data.city.length; index++) {
 							if (data.city[index].id == <%= user.profile[0].city[0].city_id %>) {
@@ -614,7 +580,11 @@
                             else {
                                 $('#city').append('<option class="city-option" value="'+data.city[index].id+'" >'+data.city[index].nama+'</option>');
                             }
-						}
+                        }
+
+                        $('#city-placeholder').attr('disabled', 'disabled');
+						$('#district-placeholder').attr('disabled', 'disabled');
+						$('#sub-district-placeholder').attr('disabled', 'disabled');
 					}
 				}
 			})
@@ -639,8 +609,6 @@
 						$('#sub-district-placeholder').removeAttr('disabled');
 						$('#district-placeholder').attr('selected');
 						$('#sub-district-placeholder').attr('selected');
-						$('#district-placeholder').attr('disabled', 'disabled');
-                        $('#sub-district-placeholder').attr('disabled', 'disabled');
                         
 						for (let index = 0; index < data.district.length; index++) {
 							if (data.district[index].id == <%= user.profile[0].district[0].district_id %>) {
@@ -649,7 +617,10 @@
                             else {
                                 $('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama + '</option>');
                             }
-						}
+                        }
+                        
+                        $('#district-placeholder').attr('disabled', 'disabled');
+                        $('#sub-district-placeholder').attr('disabled', 'disabled');
 					}
 				}
 			})
@@ -671,7 +642,6 @@
                         $('.sub_ditrict-option').remove();
                         $('#sub-district-placeholder').removeAttr('disabled');
 						$('#sub-district-placeholder').attr('selected');
-                        $('#sub-district-placeholder').attr('disabled', 'disabled');
                         
 						for (let index = 0; index < data.sub_district.length; index++) {
 							if ( data.sub_district[index].id == <%= user.profile[0].sub_district[0].sub_district_id %>) {
@@ -680,7 +650,9 @@
                             else {
                                 $('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama + '</option>');
                             }
-						}
+                        }
+                        
+                        $('#sub-district-placeholder').attr('disabled', 'disabled');
 					}
 				}
 			})

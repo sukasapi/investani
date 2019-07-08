@@ -105,6 +105,7 @@ router.get('/profile/:user_id', isLoggedIn, isInisiator, isVerified, function (r
                         user_id: req.user._id,
                         birth_date: moment(req.user.profile[0].birth_date).format('DD/MM/YYYY'),
                         province: JSON.parse(body).semuaprovinsi,
+                        max_date: moment().subtract(17, 'years').format('DD/MM/YYYY'),
                         notifications: notification,
                         url: "inisiator-my-profile"
                     }
@@ -1043,6 +1044,7 @@ router.post('/profile/:user_id', isLoggedIn, isInisiator, isVerified, function (
         req.checkBody('name', 'Nama Lengkap wajib diisi.').notEmpty();
         let profilePhotoImage = typeof req.file !== "undefined" ? req.file.originalname : '';
         req.checkBody('profile_photo', 'Format Foto Profil harus berupa gambar').isImage(profilePhotoImage);
+        
         let errors = req.validationErrors();
     
         if (errors) {
@@ -1062,6 +1064,12 @@ router.post('/profile/:user_id', isLoggedIn, isInisiator, isVerified, function (
                 else if (req.user.profile[0].photo) {
                     profile_photo_filename = req.user.profile[0].photo;
                 }
+                let birth_date = moment(req.body.birth_date, "DD-MM-YYYY").format();
+                if (moment.duration(moment().diff(birth_date))._data.years < 17) {
+                    error_message = "Usia harus lebih dari 17 tahun.";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                }
                 let data = {
                     email: req.body.email,
                     profile: [{
@@ -1071,7 +1079,7 @@ router.post('/profile/:user_id', isLoggedIn, isInisiator, isVerified, function (
                         established_place: req.body.established_place,
                         company_phone: req.body.company_phone,
                         gender: req.body.gender,
-                        birth_date: moment(req.body.birth_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                        birth_date: birth_date,
                         province: {
                             province_id: req.body.province,
                             province_name: req.body.province_name
@@ -1459,7 +1467,7 @@ router.post('/project/:project_id/budget', isLoggedIn, isInisiator, isVerified, 
                 req.body.budget_items.budget_items.forEach((budget_item, index) => {
                     budget[index] = {
                         description: budget_item.description,
-                        activity_date: moment(budget_item.activity_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                        activity_date: moment(budget_item.activity_date, "DD-MM-YYYY").format(),
                         amount: budget_item.amount,
                         status: "waiting",
                         receipt: ""
@@ -1593,7 +1601,7 @@ router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified,
                                 start_campaign: null,
                                 due_campaign: null,
                                 campaign: req.body.campaign,
-                                start_date: moment(req.body.start_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                                start_date: moment(req.body.start_date, "DD-MM-YYYY").format(),
                                 due_date: null,
                                 duration: req.body.duration
                             },
@@ -2064,7 +2072,7 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functi
                                         if (req.body.add_activity) {
                                             let budget_data = {
                                                 description: req.body.add_activity,
-                                                alternative_activity_date: moment(req.body.activity_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                                                alternative_activity_date: moment(req.body.activity_date, "DD-MM-YYYY").format(),
                                                 alternative_amount: req.body.amount,
                                                 status: "waiting",
                                                 receipt: "",
@@ -2076,7 +2084,7 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functi
                                         else {
                                             project.budget.forEach((budget, index) => {
                                                 if (budget._id.equals(req.body.activity)) {
-                                                    project.budget[index].alternative_activity_date = moment(req.body.activity_date, "DD-MM-YYYY").format('MM/DD/YYYY');
+                                                    project.budget[index].alternative_activity_date = moment(req.body.activity_date, "DD-MM-YYYY").format();
                                                     project.budget[index].alternative_amount = req.body.amount;
                                                     project.budget[index].message = req.body.message;
                                                     project.budget[index].official_record = req.file.filename;

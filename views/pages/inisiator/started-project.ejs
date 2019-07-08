@@ -217,7 +217,7 @@
             <% if (project.basic[0].stock[0]) { %>
                 document.getElementsByClassName('stock-price')[<%= index%>].innerHTML = formatRupiah('<%= project.basic[0].stock[0].price%>');
             <% } %>
-            2document.getElementsByClassName('target')[<%= index%>].innerHTML = formatRupiah('<%= goal %>');
+            document.getElementsByClassName('target')[<%= index%>].innerHTML = formatRupiah('<%= goal %>');
         <% }); %>
 
         function formatRupiah(angka) {

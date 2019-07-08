@@ -2188,7 +2188,7 @@ router.post('/project/waiting/:project_id/budget', isLoggedIn, isAnalystAdmin, f
                 req.body.budget_items.budget_items.forEach((budget_item, index) => {
                     budget[index] = {
                         description: budget_item.description,
-                        activity_date: moment(budget_item.activity_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                        activity_date: moment(budget_item.activity_date, "DD-MM-YYYY").format(),
                         amount: budget_item.amount
                     }
                     total_budget = total_budget + parseInt(budget_item.amount);
@@ -2302,7 +2302,7 @@ router.post('/project/waiting/:project_id/project', isLoggedIn, isAnalystAdmin, 
                                 start_campaign: null,
                                 due_campaign: null,
                                 campaign: req.body.campaign,
-                                start_date: moment(req.body.start_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                                start_date: moment(req.body.start_date, "DD-MM-YYYY").format(),
                                 due_date: null,
                                 duration: req.body.duration
                             },

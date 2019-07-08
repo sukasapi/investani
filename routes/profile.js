@@ -302,7 +302,7 @@ router.post('/', isLoggedIn, isNoContract, isUser, isActive, function (req, res)
     let gender = req.body.gender;
     let birth_date
     if (req.body.birth_date) {
-        birth_date = moment(req.body.birth_date, "DD-MM-YYYY").format('MM/DD/YYYY');
+        birth_date = moment(req.body.birth_date, "DD-MM-YYYY").format();
     }
     let province = {
         province_id: req.body.province,
@@ -433,7 +433,7 @@ router.post('/', isLoggedIn, isNoContract, isUser, isActive, function (req, res)
                     return res.redirect('/complete-profile');
                 }
             }
-            if (registration_type == 'individual' && moment.duration(moment(moment()).diff(birth_date))._data.years < 17) {
+            if (registration_type == 'individual' && moment.duration(moment().diff(birth_date))._data.years < 17) {
                 error_message = "Usia harus lebih dari 17 tahun.";
                 req.flash('error_message', error_message);
                 req.flash('request', request);
@@ -743,7 +743,7 @@ router.post('/pic', isLoggedIn, isNoContract, isUser, isActive, upload.fields([{
         updateUser(req.user, {
             pic: [{
                 pic_name: pic_name,
-                pic_birth_date: moment(pic_birth_date, "DD-MM-YYYY").format('MM/DD/YYYY'),
+                pic_birth_date: moment(pic_birth_date, "DD-MM-YYYY").format(),
                 pic_identity_number: pic_identity_number,
                 pic_identity_image: pic_identity_image_filename,
                 pic_identity_selfie_image: pic_identity_selfie_image_filename

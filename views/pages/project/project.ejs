@@ -238,7 +238,7 @@
                                         <% } %>
                                         <div class="form-group">
                                             <label class="control-label mb-1">Jumlah Saham</label>
-                                            <input class="form-control" id="stock-input" min=0 name="stock" type="number">
+                                            <input class="form-control" id="stock-input" max=<%= project.basic[0].stock[0].temp %> min=0 name="stock" type="number">
                                         </div>
                                         <div>
                                             <button id="invest-now-button" type="submit"
@@ -251,8 +251,9 @@
                                     </form>
                                 </div>
                                 <ul>
-                                    <li>Saham <i>:</i> <span>&nbsp x Rp.&nbsp<span class="stock-price"></span></span><span id="stock-quantity">0</span> </li>
-                                    <li>Total <i>:</i> <span>&nbsp Rp.&nbsp<span id="stock-total">0</span></span></li>
+                                    <li>Saham : <span>&nbsp x Rp.&nbsp<span class="stock-price"></span></span><span id="stock-quantity">0</span> </li>
+                                    <li>Total : <span>&nbsp Rp.&nbsp<span id="stock-total">0</span></span></li>
+                                    <li>Pengembalian Modal +<br> Keuntungan : <span>&nbsp Rp.&nbsp<span id="profit">0</span></span></li>
                                 </ul>
                             </div>
                         <% } %>
@@ -519,8 +520,10 @@
         document.getElementById("stock-input").addEventListener('input', function(e) {
             var stock_input = document.getElementById("stock-input").value;
             var total = stock_input*<%= project.basic[0].stock[0].price %>
+            var profit = total + total*<%= project.project[0].roi %>/100
             document.getElementById("stock-quantity").innerHTML = stock_input
-            document.getElementById("stock-total").innerHTML = formatRupiah(total.toString())
+            document.getElementById("stock-total").innerHTML = formatRupiah(total.toString());
+            document.getElementById("profit").innerHTML = formatRupiah(profit.toString());
         })
         
         $('#invest-now').on('submit', function (event) {
