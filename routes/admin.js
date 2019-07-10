@@ -942,6 +942,7 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isCooperat
             }
             else {
                 getTransactionById(req.params.transaction_id, function (error, transaction) {
+                    console.log(transaction)
                     if (error) {
                         error_message = "Terjadi kesalahan.";
                         req.flash('error_message', error_message);
@@ -980,7 +981,7 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isCooperat
                                     await page.setContent(certificate);
                                     await page.emulateMedia('screen');
                                     await page.pdf({
-                                        path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`,
+                                        path: `storage/projects/${project._id}/transactions/${ transaction._id + ".pdf" }`,
                                         width: '725px',
                                         height: '541px',
                                         printBackground: true
@@ -1004,7 +1005,7 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isCooperat
                                         attachments: [
                                             {
                                                 filename: 'sertifikat investani.pdf',
-                                                path: `storage/projects/${project._id}/transactions/${ transaction.receipt.slice(0, -4) + ".pdf" }`
+                                                path: `storage/projects/${project._id}/transactions/${ transaction._id + ".pdf" }`
                                             }
                                         ]
                                     };
@@ -1703,7 +1704,6 @@ router.get('/withdraw/alternative/paid', isLoggedIn, isAnalystandCooperativeAdmi
                     return res.redirect('back');   
                 }
                 else {
-                    console.log(paid_withdraws)
                     let data = {
                         url: "paid-withdraw-approval-alternative",
                         paid_withdraws: paid_withdraws,

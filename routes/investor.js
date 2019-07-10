@@ -229,10 +229,10 @@ router.get('/transaction/get-receipt/:transaction_id/:filename', isLoggedIn, isI
         }
     });
 });
-router.get('/transaction/get-certificate/:transaction_id/:filename', isLoggedIn, isInvestor, isVerified, function (req, res) {
+router.get('/transaction/get-certificate/:transaction_id', isLoggedIn, isInvestor, isVerified, function (req, res) {
     getTransactionById(req.params.transaction_id, function (error, transaction) {
-        if (transaction.investor._id.equals(req.user._id)) {
-            res.download(__dirname + '/../storage/projects/' + transaction.project._id + '/transactions/' + req.params.filename.slice(0, -4) + ".pdf");
+        if (transaction && transaction.investor._id.equals(req.user._id)) {
+            res.download(__dirname + '/../storage/projects/' + transaction.project._id + '/transactions/' + req.params.transaction_id + ".pdf");
         }
     });
 });
@@ -799,21 +799,18 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, isVerified, function
         }
     });
 });
-let receiptUpload = upload.fields([{
-    name: 'receipt',
-    maxCount: 1
-}]);
+let receiptUpload = upload.any();
 router.post('/transaction/waiting-payment/:transaction_id/:project_id', isLoggedIn, isInvestor, isVerified, function (req, res) {
     receiptUpload(req, res, function (err) {
-        let error_message;
-        let success_message;
         const dir = path.join(__dirname, `../storage/projects/${req.params.project_id}/transactions`);
         const imageUpload = new Resize(dir);
-        let receipt;
+        let success_message;
+        let error_message;
+
         if (err instanceof multer.MulterError) {
             error_message = "Ukuran gambar terlalu besar";
             req.flash('error_message', error_message);
-            return res.redirect(`/transaction/waiting-payment/${req.params.transaction_id}`);
+            return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
         } else if (err) {
             error_message = "Terjadi Kesalahan";
             req.flash('error_message', error_message);
@@ -832,29 +829,33 @@ router.post('/transaction/waiting-payment/:transaction_id/:project_id', isLogged
             } else {
                 if (transaction.investor._id.equals(req.user._id)) {
                     if (moment.duration(moment(transaction.due_date).diff(moment()))._milliseconds > 0) {
-                        if (req.files['receipt']) {
-                            receipt = await imageUpload.save(req.files['receipt'][0].buffer);
-                            let data = {
-                                status: 'waiting_verification',
-                                receipt: receipt,
-                                payment_date: moment().format()
+                        if (req.files) {
+                            for (let i = 0; i < req.files.length; i++) {
+                                let receipt_file = await imageUpload.save(req.files[i].buffer);
+                                transaction.receipt.forEach((receipt, index) => {
+                                    if (req.files[i].fieldname == receipt.filename) {
+                                        transaction.receipt[index].filename = receipt_file;
+                                        transaction.receipt[index].payment_date = moment().format()
+                                    }
+                                });
+                                if (req.files[i].fieldname == 'receipt') {
+                                    transaction.receipt.push({
+                                        filename: receipt_file,
+                                        payment_date: moment().format()
+                                    })
+                                }
                             }
-                            updateTransaction(req.params.transaction_id, data, function (error, transaction) {
-                                if (error) {
-                                    error_message = "Terjadi kesalahan";
-                                    req.flash('error_message', error_message);
-                                    return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
-                                }
-                                if (!transaction) {
-                                    error_message = "Proyek tidak tersedia";
-                                    req.flash('error_message', error_message);
-                                    return res.redirect(`/investor/transaction/waiting-payment/${req.params.transaction_id}`);
-                                } else {
-                                    success_message = "Berhasil mengunggah bukti transaksi.";
-                                    req.flash('success_message', success_message);
-                                    return res.redirect('/investor/transaction/waiting-verification/');
-                                }
-                            });
+                            transaction.status = 'waiting_verification';
+                            
+                            transaction.save().then(transaction => {
+                                success_message = "Berhasil mengunggah bukti transaksi.";
+                                req.flash('success_message', success_message);
+                                return res.redirect('/investor/transaction/waiting-verification/');
+                            }).catch(error => {
+                                error_message = "Terjadi kesalahan";
+                                req.flash('error_message', error_message);
+                                return res.redirect('back');
+                            })
                         } else {
                             error_message = "Bukti transaksi wajib diunggah.";
                             req.flash('error_message', error_message);

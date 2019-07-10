@@ -10,13 +10,15 @@ let TransactionSchema = mongoose.Schema({
     status: {
         type: String
     },
-    receipt: {
-        type: String
-    },
+    receipt: [{
+        filename: {
+            type: String
+        },
+        payment_date: {
+            type: Date
+        },
+    }],
     due_date: {
-        type: Date
-    },
-    payment_date: {
         type: Date
     },
     project: { type: Schema.Types.ObjectId, ref: 'Project' },
