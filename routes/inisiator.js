@@ -14,7 +14,7 @@ import {
 } from '../models/Category';
 import { getTransactionByProject } from '../models/Transaction';
 import { Notification, createNotification, getNotificationByReceiverAndStatus, updateNotificationByEntity } from '../models/Notification';
-import { updateUser } from "../models/User";
+import { User, updateUser } from "../models/User";
 import path from 'path';
 import uuidv4 from 'uuid/v4';
 import Resize from '../Resize';
@@ -654,7 +654,7 @@ router.get('/withdraw/alternative/waiting-approval', isLoggedIn, isInisiator, is
     let waiting_withdraws = [];
     let budget_object = null;
 
-    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+    Project.find({ inisiator: req.user._id, $or: [{status: "done"}, {status: "verified"}] }, function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -691,14 +691,14 @@ router.get('/withdraw/alternative/waiting-approval', isLoggedIn, isInisiator, is
                 }
             });
         }
-    });
+    }).sort({ createdAt: 1 });
 });
 router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let waiting_withdraws = [];
     let budget_object = null;
 
-    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+    Project.find({ inisiator: req.user._id, $or: [{status: "done"}, {status: "verified"}] }, function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -735,14 +735,14 @@ router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isInisiator, isV
                 }
             });
         }
-    });
+    }).sort({ createdAt: 1 });
 });
 router.get('/withdraw/alternative/rejected', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let rejected_withdraws = [];
     let budget_object = null;
 
-    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+    Project.find({ inisiator: req.user._id, $or: [{status: "done"}, {status: "verified"}] }, function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -778,14 +778,14 @@ router.get('/withdraw/alternative/rejected', isLoggedIn, isInisiator, isVerified
                 }
             });
         }
-    });
+    }).sort({ createdAt: 1 });
 });
 router.get('/withdraw/alternative/paid', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let error_message;
     let paid_withdraws = [];
     let budget_object = null;
 
-    getProjectByInisiatorAndStatus(req.user._id, "done", function (error, projects) {
+    Project.find({ inisiator: req.user._id, $or: [{status: "done"}, {status: "verified"}] }, function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -831,7 +831,7 @@ router.get('/withdraw/alternative/paid', isLoggedIn, isInisiator, isVerified, fu
             });
 
         }
-    });
+    }).sort({ createdAt: 1 });
 })
 router.get('/get-activity', isLoggedIn, isInisiator, isVerified, function (req, res) {
     let waiting_budget = [];
@@ -2099,7 +2099,7 @@ router.post('/withdraw/alternative', isLoggedIn, isInisiator, isVerified, functi
                                                 url: '/admin/withdraw/alternative/waiting-approval',
                                                 budget_id: req.body.activity,
                                                 sender: req.user._id,
-                                                receiver: '5cdb66e014c79f4bc8a01ee5'
+                                                receiver: 'analyst_admin'
                                             }
                                             let notification = new Notification(notification_data);
                                             createNotification(notification, function(error) {

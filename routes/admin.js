@@ -38,7 +38,7 @@ router.get('/', isLoggedIn, isAdmin, function (req, res) {
 });
 router.get('/dashboard', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
-    getProjectByStatus("done", function (error, projects) {
+    Project.find({ $or: [{status: "done"}, {status: "verified"}] }, function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -52,10 +52,10 @@ router.get('/dashboard', isLoggedIn, isAdmin, function (req, res) {
                             status: 'unread',
                             entity: 'waiting_approval_withdraw',
                             description: 'Pencairan Menunggu Persetujuan',
-                            url: '/admin/withdraw/waiting-approval',
+                            url: '/admin/withdraw/alternative/waiting-approval',
                             budget_id: budget._id,
                             sender: req.user._id,
-                            receiver: req.user._id
+                            receiver: 'analyst_admin'
                         }
                         Notification.find({'budget_id': budget._id}, function(error, notifications) {
                             if (error) {
@@ -78,7 +78,7 @@ router.get('/dashboard', isLoggedIn, isAdmin, function (req, res) {
                     }
                 });
             });
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -111,7 +111,7 @@ router.get('/user/investor/individual', isLoggedIn, isSuperAdmin, function (req,
             return res.redirect('back');
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -138,7 +138,7 @@ router.get('/user/investor/individual/:id', isLoggedIn, isSuperAdmin, function (
             return res.redirect('/admin/dashboard');
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -165,7 +165,7 @@ router.get('/user/investor/company', isLoggedIn, isSuperAdmin, function (req, re
             return res.redirect('/admin/dashboard');
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -193,7 +193,7 @@ router.get('/user/investor/company/:id', isLoggedIn, isSuperAdmin, function (req
             return res.redirect('/admin/dashboard');
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -223,7 +223,7 @@ router.get('/user/inisiator/individual', isLoggedIn, isSuperAdmin, function (req
             return res.redirect('/admin/dashboard');
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -249,7 +249,7 @@ router.get('/user/inisiator/individual/:id', isLoggedIn, isSuperAdmin, function 
             return res.redirect('back');   
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -275,7 +275,7 @@ router.get('/user/management', isLoggedIn, isSuperAdmin, function (req, res) {
             return res.redirect('back');   
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -295,7 +295,7 @@ router.get('/user/management', isLoggedIn, isSuperAdmin, function (req, res) {
     });
 });
 router.get('/user/management/add', isLoggedIn, isSuperAdmin, function (req, res) {
-    getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+    getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -310,9 +310,9 @@ router.get('/user/management/add', isLoggedIn, isSuperAdmin, function (req, res)
         }
     });
 });
-router.get('/user/management/detail/:user_id', isLoggedIn, isSuperandCooperativeAdmin, function (req, res) {
+router.get('/user/management/detail/:user_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
-    if (req.user.user_type[0].name == 'cooperative_admin') {
+    if (req.user.user_type[0].name != 'super_admin') {
         if (!req.user._id.equals(req.params.user_id)) {
             error_message = "User tidak tersedia.";
             req.flash('error_message', error_message);
@@ -331,7 +331,7 @@ router.get('/user/management/detail/:user_id', isLoggedIn, isSuperandCooperative
             return res.redirect('back');   
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -363,7 +363,7 @@ router.get('/project/waiting', isLoggedIn, isAnalystAdmin, function (req, res) {
             return res.redirect('/admin/dashboard');
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -393,7 +393,7 @@ router.get('/project/rejected', isLoggedIn, isAnalystAdmin, function (req, res) 
             return res.redirect('/admin/dashboard');
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -431,7 +431,7 @@ router.get('/project/open', isLoggedIn, isAnalystAdmin, function (req, res) {
                 }
             });
 
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -470,7 +470,7 @@ router.get('/project/done', isLoggedIn, isAnalystAdmin, function (req, res) {
                 }
             });
 
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -500,7 +500,7 @@ router.get('/project/waiting/:project_id', isLoggedIn, isAnalystAdmin, function 
             return res.redirect('/admin/project/waiting');
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -569,7 +569,7 @@ router.get('/project/waiting/:project_id/edit', isLoggedIn, isAnalystAdmin, func
                             req.flash('error_message', error_message);
                             return res.redirect(`/admin/project/waiting/${req.params.project_id}`);
                         }
-                        getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+                        getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                             if (error) {
                                 error_message = "Terjadi kesalahan";
                                 req.flash('error_message', error_message);
@@ -642,7 +642,7 @@ router.get('/project/rejected/:project_id', isLoggedIn, isAnalystAdmin, function
             return res.redirect('/admin/project/waiting');
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -682,7 +682,7 @@ router.get('/project/open/:project_id', isLoggedIn, isAnalystAdmin, function (re
                     amount: budget.amount
                 };
             });
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -724,7 +724,7 @@ router.get('/project/done/:project_id', isLoggedIn, isAnalystAdmin, function (re
                     amount: budget.amount
                 };
             });
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -753,7 +753,7 @@ router.get('/project/category', isLoggedIn, isSuperAdmin, function (req, res) {
             return res.redirect('/admin/dashboard');
         }
         else {
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -772,7 +772,7 @@ router.get('/project/category', isLoggedIn, isSuperAdmin, function (req, res) {
     });
 });
 router.get('/project/add-category', isLoggedIn, isSuperAdmin, function (req, res) {
-    getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+    getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -809,7 +809,7 @@ router.get('/transaction/waiting-payment', isLoggedIn, isCooperativeAdmin, funct
                     expired[index] = true;
                 }
             });
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -856,7 +856,7 @@ router.get('/transaction/waiting-verification', isLoggedIn, isCooperativeAdmin, 
                         payment_date[index] = moment(transaction.payment_date).format('lll');
                     });
 
-                    getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+                    getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                         if (error) {
                             error_message = "Terjadi kesalahan";
                             req.flash('error_message', error_message);
@@ -903,7 +903,7 @@ router.get('/transaction/rejected', isLoggedIn, isCooperativeAdmin, function (re
                     payment_date[index] = moment(transaction.payment_date).format('lll');
                 }
             });
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -942,7 +942,6 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isCooperat
             }
             else {
                 getTransactionById(req.params.transaction_id, function (error, transaction) {
-                    console.log(transaction)
                     if (error) {
                         error_message = "Terjadi kesalahan.";
                         req.flash('error_message', error_message);
@@ -1115,7 +1114,7 @@ router.get('/signature', isLoggedIn, isSuperandCooperativeAdmin, function (req, 
             return res.redirect('/admin/dashboard');
         }
         else { 
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -1134,7 +1133,7 @@ router.get('/signature', isLoggedIn, isSuperandCooperativeAdmin, function (req, 
     });
 });
 router.get('/signature/add', isLoggedIn, isSuperandCooperativeAdmin, function (req, res) {
-    getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+    getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -1353,12 +1352,7 @@ router.get('/withdraw/waiting/:project_id/:budget_id/approve', isLoggedIn, isAna
                     project.save().then(project => {
                         success_message = "Kegiatan dan anggaran berhasil disetujui";
                         req.flash('success_message', success_message);
-                        if (!budget.alternative_amount) {
-                            return res.redirect(`/admin/withdraw/waiting-payment/${project._id}/${budget._id}`);
-                        }
-                        else {
-                            return res.redirect(`/admin/withdraw/alternative/waiting-payment/${project._id}/${budget._id}`);
-                        }
+                        return res.redirect('back');
                     }).catch(error => {
                         error_message = "Terjadi kesalahan";
                         req.flash('error_message', error_message);
@@ -1468,7 +1462,7 @@ router.get('/withdraw/alternative/waiting-approval', isLoggedIn, isAnalystAdmin,
                     return res.redirect('back');
                 }
                 else {
-                    getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+                    getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                         if (error) {
                             error_message = "Terjadi kesalahan";
                             req.flash('error_message', error_message);
@@ -1559,7 +1553,7 @@ router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isCooperativeAdm
                 });
             });
 
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -1576,7 +1570,7 @@ router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isCooperativeAdm
                 }
             });
         }
-    });
+    }).sort({ createdAt: -1 });
 });
 router.get('/withdraw/alternative/waiting-payment/:project_id/:budget_id', isLoggedIn, isCooperativeAdmin, function(req, res) {
     let error_message;
@@ -1602,7 +1596,7 @@ router.get('/withdraw/alternative/waiting-payment/:project_id/:budget_id', isLog
                             budget_object = budget.toObject();
                             budget_object.alternative_activity_date = moment(budget.alternative_activity_date).format('LL');
                             
-                            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+                            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                                 if (error) {
                                     error_message = "Terjadi kesalahan";
                                     req.flash('error_message', error_message);
@@ -1635,7 +1629,7 @@ router.get('/withdraw/alternative/rejected', isLoggedIn, isAnalystandCooperative
     let rejected_withdraws = [];
     let budget_object = null;
 
-    getProjectByStatus("done", function (error, projects) {
+    Project.find({ $or: [{status: "done"}, {status: "verified"}] }, function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -1654,7 +1648,7 @@ router.get('/withdraw/alternative/rejected', isLoggedIn, isAnalystandCooperative
                 });
             });
 
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -1671,14 +1665,14 @@ router.get('/withdraw/alternative/rejected', isLoggedIn, isAnalystandCooperative
                 }
             });
         }
-    });
+    }).sort({ createdAt: -1 });
 });
 router.get('/withdraw/alternative/paid', isLoggedIn, isAnalystandCooperativeAdmin, function(req, res) {
     let error_message;
     let paid_withdraws = [];
     let budget_object = null;
 
-    getProjectByStatus("done", function (error, projects) {
+    Project.find({ $or: [{status: "done"}, {status: "verified"}] }, function (error, projects) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -1697,7 +1691,7 @@ router.get('/withdraw/alternative/paid', isLoggedIn, isAnalystandCooperativeAdmi
                 });
             });
 
-            getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notifications) {
+            getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
                 if (error) {
                     error_message = "Terjadi kesalahan";
                     req.flash('error_message', error_message);
@@ -1714,7 +1708,7 @@ router.get('/withdraw/alternative/paid', isLoggedIn, isAnalystandCooperativeAdmi
                 }
             });
         }
-    });
+    }).sort({ createdAt: -1 });
 });
 router.get('/withdraw/get-receipt/:project_id/:filename', isLoggedIn, isAnalystandCooperativeAdmin, function (req, res) {
     res.download(__dirname+'/../storage/projects/'+req.params.project_id+'/budget/'+req.params.filename);
@@ -1877,7 +1871,7 @@ router.post('/user/management/add', isLoggedIn, isSuperAdmin, function (req, res
         
     }
 });
-router.post('/user/management/edit/:user_id', isLoggedIn, isSuperandCooperativeAdmin, function (req, res) {
+router.post('/user/management/edit/:user_id', isLoggedIn, isAdmin, function (req, res) {
     let success_message;
     let error_message;
     
@@ -1962,7 +1956,7 @@ router.post('/user/management/edit/:user_id', isLoggedIn, isSuperandCooperativeA
                     user.document[0].identity_number = req.body.identity_number;
                     user.occupation[0].position = req.body.position;
                     user.profile[0].address = req.body.address;
-                    if (req.body.active == '1' || req.user.user_type[0].name == 'cooperative_admin') {
+                    if (req.body.active == '1' || req.user.user_type[0].name == 'cooperative_admin' || req.user.user_type[0].name == 'analyst_admin') {
                         user.active = true;
                     }
                     else {
@@ -2570,7 +2564,6 @@ router.post('/signature/add', isLoggedIn, isSuperandCooperativeAdmin, function (
         }
         else {
             if (err instanceof multer.MulterError) {
-                console.log(err)
                 error_message = "Ukuran gambar terlalu besar";
                 req.flash('error_message', error_message);
                 return res.redirect(`/admin/signature/add`);

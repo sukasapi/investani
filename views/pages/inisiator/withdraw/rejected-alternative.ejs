@@ -89,7 +89,7 @@
                                                 </td>
                                                 <td><%= rejected_withdraw.description %></td>
                                                 <td><%= rejected_withdraw.alternative_activity_date %></td>
-                                                <td>Rp. <%= rejected_withdraw.alternative_amount %></td>
+                                                <td>Rp. <span class="amount"></td>
                                             </tr>
                                         <% }) %>
                                     </tbody>
@@ -128,6 +128,31 @@
     <script src="/js/buttons.colVis.min.js"></script>
     <script src="/js/datatables-init.js"></script>
     <script>
+        <% rejected_withdraws.forEach((rejected_withdraw, index) => { %>
+            document.getElementsByClassName('amount')[<%= index %>].innerHTML = formatRupiah('<%= rejected_withdraw.alternative_amount %>');
+        <% }) %>
+        
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
+
+        document.getElementById("alternative-withdraw").className = "menu-item-has-children dropdown active show";
+        document.getElementById("alternative-withdraw-link").click();
+        document.getElementById("paid-alternative-withdraw-icon").style.color = '#03a9f3';
+        document.getElementById("paid-alternative-withdraw-link").style.color = '#03a9f3';
+
         document.getElementById("alternative-withdraw").className = "menu-item-has-children dropdown active show";
         document.getElementById("alternative-withdraw-link").click();
         document.getElementById("rejected-alternative-withdraw-icon").style.color = '#03a9f3';

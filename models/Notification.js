@@ -22,7 +22,7 @@ let NotificationSchema = mongoose.Schema({
         type: Schema.Types.ObjectId, ref: 'User'        
     },
     receiver: {
-        type: Schema.Types.ObjectId, ref: 'User'
+        type: String
     },
     
 },
