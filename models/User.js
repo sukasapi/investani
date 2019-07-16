@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+const Schema = mongoose.Schema;
+
 let UserSchema = mongoose.Schema({
   email: {
     type: String
@@ -168,7 +170,13 @@ let UserSchema = mongoose.Schema({
   }],
   contract : {
     type: String
-  }
+  },
+  createdBy: {
+    type: Schema.Types.ObjectId, ref: 'User'
+  },
+  updatedBy: {
+    type: Schema.Types.ObjectId, ref: 'User'
+  },
 },
 {
   timestamps: true

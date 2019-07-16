@@ -1823,7 +1823,9 @@ router.post('/user/management/add', isLoggedIn, isSuperAdmin, function (req, res
                     }],
                     document: [{
                         identity_number: req.body.identity_number    
-                    }]
+                    }],
+                    createdBy: req.user._id,
+                    updatedBy: req.user._id
                 });
                 let transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
@@ -1928,6 +1930,7 @@ router.post('/user/management/edit/:user_id', isLoggedIn, isAdmin, function (req
                             user.document[0].identity_number = req.body.identity_number;
                             user.occupation[0].position = req.body.position;
                             user.profile[0].address = req.body.address;
+                            user.updatedAt = req.user._id;
                             if (req.body.active == '1') {
                                 user.active = true;
                             }
@@ -1956,6 +1959,7 @@ router.post('/user/management/edit/:user_id', isLoggedIn, isAdmin, function (req
                     user.document[0].identity_number = req.body.identity_number;
                     user.occupation[0].position = req.body.position;
                     user.profile[0].address = req.body.address;
+                    user.updatedBy = req.user._id;
                     if (req.body.active == '1' || req.user.user_type[0].name == 'cooperative_admin' || req.user.user_type[0].name == 'analyst_admin') {
                         user.active = true;
                     }
