@@ -72,6 +72,8 @@
                                             <th>Nama Perusahaan</th>
                                             <th>Jenis</th>
                                             <th>Status</th>
+                                            <th>Dibuat oleh</th>
+                                            <th>Terakhir Diubah oleh</th>
                                             <th>Detail</th>
                                         </tr>
                                     </thead>
@@ -94,6 +96,16 @@
                                                 <% } %>
                                                 <% if (user.active == false ) { %>
                                                     Nonaktif
+                                                <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if (user.createdBy) { %> 
+                                                        <%= user.createdBy.email %>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                <% if (user.updatedBy) { %> 
+                                                    <%= user.updatedBy.email %>
                                                 <% } %>
                                                 </td>
                                                 <td>

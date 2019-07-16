@@ -290,9 +290,8 @@ router.get('/user/management', isLoggedIn, isSuperAdmin, function (req, res) {
                     return res.render('pages/admin/user/management/management', data)
                 }
             });
-            
         }
-    });
+    }).populate('createdBy').populate('updatedBy');
 });
 router.get('/user/management/add', isLoggedIn, isSuperAdmin, function (req, res) {
     getNotificationByReceiverAndStatus(req.user.user_type[0].name, "unread", function (error, notifications) {
