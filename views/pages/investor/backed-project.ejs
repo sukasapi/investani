@@ -41,7 +41,7 @@
             font-size: 12px;
         }
         .weather-category ul li {
-            width: 32%;
+            width: 49%;
             text-align: center;
             border-right: 1px solid #e6e6e6;
             display: inline-block;
@@ -124,25 +124,21 @@
                                     <ul>
                                         <li>
                                             Imbal Hasil
-                                            <h6>
-                                            <% if (project.project[0]) { %>
-                                                <%=project.project[0].roi%>
-                                            <% } %>
-                                            %
-                                            </h6>
+                                            <h6><%=project.project[0].roi%>%</h6>
                                         </li>
                                         <li>
                                             Durasi Proyek
-                                            <h6>
-                                                <% if (project.project[0]) { %>
-                                                    <%= project.project[0].duration[0].duration %>
-                                                <% } %>
-                                                Bulan
-                                            </h6>
+                                            <h6><%=project.project[0].duration[0].duration%> Bulan</h6>
+                                        </li>
+                                    </ul>
+                                    <ul>
+                                        <li>
+                                            Sisa Durasi
+                                            <h6><%= durations[index] %> hari</h6>
                                         </li>
                                         <li>
-                                            Tersisa
-                                            <h6><%= durations[index] %> Hari</h6>
+                                            Sisa Saham
+                                            <h6><%= project.basic[0].stock[0].temp %> Lembar</h6>
                                         </li>
                                     </ul>
                                 </div>

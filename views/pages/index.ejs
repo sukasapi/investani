@@ -38,7 +38,7 @@
         font-size: 12px;
     }
     .weather-category ul li {
-        width: 32%;
+        width: 49%;
         text-align: center;
         border-right: 1px solid #e6e6e6;
         display: inline-block;
@@ -244,9 +244,15 @@
                                             Durasi Proyek
                                             <h6><%=project.project[0].duration[0].duration%> Bulan</h6>
                                         </li>
+                                    </ul>
+                                    <ul>
                                         <li>
-                                            Tersisa
+                                            Sisa Durasi
                                             <h6><%= durations[index] %> hari</h6>
+                                        </li>
+                                        <li>
+                                            Sisa Saham
+                                            <h6><%= project.basic[0].stock[0].temp %> Lembar</h6>
                                         </li>
                                     </ul>
                                 </div>
