@@ -77,7 +77,6 @@
                                             <th>Deskripsi</th>
                                             <th>Tanggal Kegiatan</th>
                                             <th>Jumlah</th>
-                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -92,16 +91,7 @@
                                             </td>
                                             <td><%= waiting_withdraw.description %></td>
                                             <td><%= waiting_withdraw.alternative_activity_date %></td>
-                                            <td>Rp. <%= waiting_withdraw.alternative_amount %></td>
-                                            <td>
-                                                <div class="input-group-btn">
-                                                    <a href="/admin/withdraw/waiting-payment/<%= waiting_withdraw.project_id %>/<%= waiting_withdraw._id %>">
-                                                        <button class="btn btn-primary">
-                                                            Konfirmasi
-                                                        </button>
-                                                    </a>
-                                                </div>
-                                            </td>
+                                            <td>Rp. <span class="amount"></td>
                                         </tr>
                                         <% }) %>
                                     </tbody>
@@ -140,6 +130,26 @@
     <script src="/js/buttons.colVis.min.js"></script>
     <script src="/js/datatables-init.js"></script>
     <script>
+        <% waiting_withdraws.forEach((waiting_withdraw, index) => { %>
+            document.getElementsByClassName('amount')[<%= index %>].innerHTML = formatRupiah('<%= waiting_withdraw.alternative_amount %>');
+        <% }) %>
+        
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
+        
         document.getElementById("alternative-withdraw").className = "menu-item-has-children dropdown active show";
         document.getElementById("alternative-withdraw-link").click();
         document.getElementById("waiting-payment-alternative-withdraw-icon").style.color = '#03a9f3';

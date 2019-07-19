@@ -45,20 +45,22 @@
 
         <% include ../../../partials/admin/breadcrumbs-dashboard %>
         <% if (success_message != '') { %>
-            <div class="sufee-alert alert with-close alert-success alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
-                <%= success_message %>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
+        <div class="sufee-alert alert with-close alert-success alert-dismissible fade show"
+            style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
+            <%= success_message %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
         <% } %>
         <% if (error_message != '') { %>
-            <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show" style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
-                <%= error_message %>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
+        <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show"
+            style="float: left; margin-top: 30px; margin-left: 1.875em; width: 94.3872778%;">
+            <%= error_message %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
         <% } %>
         <div class="content">
             <div class="animated fadeIn">
@@ -82,31 +84,35 @@
                                     </thead>
                                     <tbody>
                                         <% waiting_withdraws.forEach((waiting_withdraw, index) => { %>
-                                            <tr>
-                                                <td><%= index+1 %></td>
-                                                <td>
-                                                    <a href="/project/<%= waiting_withdraw.project_id %>" style="color: #007bff">
-                                                        <%= waiting_withdraw.project_title %>
-                                                    </a>
-                                                </td>
-                                                <td><%= waiting_withdraw.description %></td>
-                                                <td><%= waiting_withdraw.alternative_activity_date %></td>
-                                                <td>Rp. <%= waiting_withdraw.alternative_amount %></td>
-                                                <td>
-                                                    <div class="input-group-btn">
-                                                        <button type="button" class="btn btn-primary mb-1"
-                                                            data-toggle="modal" data-target="#approval-modal">
-                                                            Lihat
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <div aria-hidden="true" aria-labelledby="smallmodalLabel" class="modal fade" data-keyboard="false" id="approval-modal" role="dialog" tabindex="-1">
-                                            <div id="full-loader" class="loading" style="display: none;">Loading&#8230;</div>
+                                        <tr>
+                                            <td><%= index+1 %></td>
+                                            <td>
+                                                <a href="/project/<%= waiting_withdraw.project_id %>"
+                                                    style="color: #007bff">
+                                                    <%= waiting_withdraw.project_title %>
+                                                </a>
+                                            </td>
+                                            <td><%= waiting_withdraw.description %></td>
+                                            <td><%= waiting_withdraw.alternative_activity_date %></td>
+                                            <td>Rp. <span class="amount"></span></td>
+                                            <td>
+                                                <div class="input-group-btn">
+                                                    <button type="button" class="btn btn-primary mb-1"
+                                                        data-toggle="modal" data-target="#approval-modal">
+                                                        Lihat
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div aria-hidden="true" aria-labelledby="smallmodalLabel" class="modal fade"
+                                            data-keyboard="false" id="approval-modal" role="dialog" tabindex="-1">
+                                            <div id="full-loader" class="loading" style="display: none;">Loading&#8230;
+                                            </div>
                                             <div class="modal-dialog modal-md" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="smallmodalLabel">Persetujuan Kegiatan dan Anggaran
+                                                        <h5 class="modal-title" id="smallmodalLabel">Persetujuan
+                                                            Kegiatan dan Anggaran
                                                         </h5>
                                                         <button type="button" class="close" data-dismiss="modal"
                                                             aria-label="Close">
@@ -115,19 +121,24 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <p>
-                                                            Apakah anda menyetujui pencairan kegiatan dan anggaran ini?
+                                                            <b>Pesan:</b> <%= waiting_withdraw.message %> 
                                                         </p>
+                                                        
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <a href="/admin/withdraw/waiting/<%= waiting_withdraw.project_id %>/<%= waiting_withdraw._id %>/reject">
-                                                            <button type="button"
-                                                                class="btn btn-danger">Tolak</button>
+                                                        <p>
+                                                            Apakah anda menyetujui pencairan kegiatan dan anggaran ini?
+                                                        </p>
+                                                        <a
+                                                            href="/admin/withdraw/waiting/<%= waiting_withdraw.project_id %>/<%= waiting_withdraw._id %>/reject">
+                                                            <button type="button" class="btn btn-danger">Tolak</button>
                                                         </a>
-                                                        <a href="/admin/withdraw/waiting/<%= waiting_withdraw.project_id %>/<%= waiting_withdraw._id %>/approve">
+                                                        <a
+                                                            href="/admin/withdraw/waiting/<%= waiting_withdraw.project_id %>/<%= waiting_withdraw._id %>/approve">
                                                             <button type="button"
                                                                 class="btn btn-primary verification-button">Setuju</button>
                                                         </a>
-                                                            
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -168,6 +179,25 @@
     <script src="/js/buttons.colVis.min.js"></script>
     <script src="/js/datatables-init.js"></script>
     <script>
+        <% waiting_withdraws.forEach((waiting_withdraw, index) => { %>
+            document.getElementsByClassName('amount')[ <%= index %> ].innerHTML = formatRupiah('<%= waiting_withdraw.alternative_amount %>'); 
+        <% }) %>
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
+
         document.getElementById("alternative-withdraw").className = "menu-item-has-children dropdown active show";
         document.getElementById("alternative-withdraw-link").click();
         document.getElementById("waiting-approval-alternative-withdraw-icon").style.color = '#03a9f3';

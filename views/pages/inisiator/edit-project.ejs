@@ -22,6 +22,7 @@
     <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="/css/dashboard-style.css">
     <link rel="stylesheet" href="/css/dropify.min.css">
@@ -43,6 +44,14 @@
 
         .ck-editor__editable {
             min-height: 300px;
+        }
+        #custom-handle {
+            width: 3em;
+            height: 1.6em;
+            top: 50%;
+            margin-top: -.8em;
+            text-align: center;
+            line-height: 1.6em;
         }
     </style>
 </head>
@@ -202,7 +211,7 @@
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Jumlah Saham Maksimal per Investor</label>
                                                     <input class="form-control" id="max-invest" name="max_invest"
-                                                        placeholder="Saham Maksimal per Investor" type="number"
+                                                        placeholder="Jumlah Saham Maksimal per Investor" type="number"
                                                         value="<%= max_invest %>">
                                                 </div>
                                             </div>
@@ -323,8 +332,9 @@
                                             <div class="row form-group">
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Imbal Hasil/RoI (%)</label>
-                                                    <input class="form-control" id="roi" name="roi" placeholder="Imbal Hasil (RoI)"
-                                                        type="number" value="<%= roi %>">
+                                                    <input id="slider" width="470"/>
+                                                    <input class="form-control" id="roi" max="100" min="0" name="roi" placeholder="Imbal Hasil (RoI)"
+                                                        type="number" value="<%= roi %>" style="width: 15%" >
                                                 </div>
                                                 <div class="col col-sm-6">
                                                     <label class="control-label mb-1">Durasi Proyek (Bulan)</label>
@@ -467,12 +477,27 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="/js/dashboard-main.js"></script>
 
-    <script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
     <script src="/js/dropify.min.js"></script>
     <script src="/js/dynamic-form.js"></script>
     <!--  Chart js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.bundle.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
+    <script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
+    <script>
+        $('#slider').slider({
+            max: 100,
+            min: 0,
+            value: <%= (roi/100)*470 %>,
+            uiLibrary: 'bootstrap4',
+            slide: function (e, value) {
+                document.getElementById('roi').value = value;
+            }
+        });
+        document.getElementById('roi').value = <%= roi %>;
+        document.getElementById('roi').addEventListener('input', function (e) {
+            $('#slider').slider().value(document.getElementById('roi').value)
+        });
+    </script>
     <script>
         ClassicEditor
             .create(document.querySelector('#editor'), {
@@ -535,7 +560,8 @@
         var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap4',
-            minDate: today
+            minDate: today,
+            format: 'dd/mm/yyyy'
         });
 
         $('#category').on('change', function (event) {
@@ -642,7 +668,8 @@
             $('.activity-datepicker').each(function () {
                 $(this).datepicker({
                     uiLibrary: 'bootstrap4',
-                    minDate: today
+                    minDate: today,
+                    format: 'dd/mm/yyyy'
                 });
             });
         });

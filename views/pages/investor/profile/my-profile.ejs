@@ -1,0 +1,830 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ela Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="/css/dashboard-style.css">
+    <link rel="stylesheet" href="/css/dropify.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+    <style>
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
+			-webkit-appearance: none; 
+			margin: 0; 
+        }
+        .form-control-file{
+            width: 89%;
+            padding: 5px 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
+        }
+	</style>
+</head>
+
+<body>
+    <!-- Left Panel -->
+
+    <% include ../../../partials/investor/aside-dashboard %>
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <% include ../../../partials/investor/header-dashboard %>
+        <!-- Header-->
+
+        <% include ../../../partials/investor/breadcrumbs-dashboard %>
+
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill"
+                                            href="#pills-home" role="tab" aria-controls="pills-home"
+                                            aria-selected="true">Profil</a>
+                                    </li>
+                                    <% if (user.profile[0].registration_type == "individual") { %>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill"
+                                            href="#pills-profile" role="tab" aria-controls="pills-profile"
+                                            aria-selected="false">Pekerjaan</a>
+                                    </li>
+                                    <% } %>
+                                    <% if (user.profile[0].registration_type == "company") { %>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill"
+                                            href="#pills-profile" role="tab" aria-controls="pills-profile"
+                                            aria-selected="false">Penanggungjawab</a>
+                                    </li>
+                                    <% } %>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-document-tab" data-toggle="pill"
+                                            href="#pills-document" role="tab" aria-controls="pills-document"
+                                            aria-selected="false">Dokumen</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-contact-tab" data-toggle="pill"
+                                            href="#pills-contact" role="tab" aria-controls="pills-contact"
+                                            aria-selected="false">Bank</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="pills-tabContent">
+                                    <% if (user.profile[0].registration_type == "individual") { %>
+                                        <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
+                                            aria-labelledby="pills-home-tab">
+                                            <form action="/investor/profile/<%= user._id %>" enctype="multipart/form-data" method="post">
+                                                <% if (error_message != '') { %>
+                                                    <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                        <%= error_message %>
+                                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                <% } %>
+                                                <% if (success_message != '') { %>
+                                                    <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                        <%= success_message %>
+                                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                <% } %>
+                                                <div class="row form-group">
+                                                    <div class="col col-md-6">
+                                                        <label class=" form-control-label">Foto Profil</label>
+                                                        <%if (!user.profile[0].photo) {%>
+                                                            <input type="file" class="dropify" data-default-file="/images/default.jpg" data-height="150" name="profile_photo" accept="image/*" />
+                                                        <% } %>
+                                                        <%if (user.profile[0].photo) {%>
+                                                            <input type="file" class="dropify" data-default-file="/investor/profile/get-image/<%= user._id %>/<%= user.profile[0].photo %>" data-height="150" name="profile_photo" accept="image/*" />
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col col-md-6">
+                                                        <label class=" form-control-label">Nama Lengkap</label>
+                                                        <input class="form-control" name="name" type="text" value="<%= user.profile[0].name %>">
+                                                    </div>
+                                                    <div class="col col-md-6">
+                                                        <label class=" form-control-label">Email</label>
+                                                        <input class="form-control" name="email" type="email" value="<%= user.email %>">
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col col-md-6">
+                                                        <label for="vat" class=" form-control-label">Nomor Handphone</label>
+                                                        <input class="form-control" name="phone" pattern="^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$" type="text" value="<%= user.profile[0].phone %>">
+                                                    </div>
+                                                    <div class="col col-md-6">
+                                                        <label for="gender" class=" form-control-label">Jenis Kelamin</label>
+                                                        <select name="gender" class="form-control">
+                                                            <option value="male" <% if (user.profile[0].gender == 'male') { %> selected <% } %>>Pria</option>
+                                                            <option value="female" <% if (user.profile[0].gender == 'female') {%> selected <% } %>>Wanita</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class=" form-control-label">Tanggal Lahir</label>
+                                                    <input class="form-control" id="datepicker" name="birth_date" type="text" value="<%= birth_date %>">
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col col-md-6">
+                                                        <label class=" form-control-label">Provinsi</label>
+                                                        <select class="form-control" id="province" name="province">
+                                                            <% for(var i = 0; i < province.length; i++) {%>
+                                                                <% if (province[i].id == user.profile[0].province[0].province_id) { %>
+                                                                    <option value="<%= province[i].id %>" selected><%= province[i].nama %></option>
+                                                                <% } else { %>
+                                                                    <option value="<%= province[i].id %>"><%= province[i].nama %></option>
+                                                                <% }%>
+                                                            <% } %>
+                                                        </select>
+                                                        <input class="form-control" id="province-name" name="province_name" style="display: none" type="text" value="<%= user.profile[0].province[0].province_name %>">
+                                                    </div>
+                                                    <div class="col col-md-6">
+                                                        <label for="city" class=" form-control-label">Kota</label>
+                                                        <select class="form-control" id="city" name="city">
+                                                            <option id="city-placeholder" value="" disabled selected>Pilih kota</option>
+                                                        </select>
+                                                        <input class="form-control" id="city-name" name="city_name" style="display: none" type="text" value="<%= user.profile[0].city[0].city_name %>">
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col col-md-6">
+                                                        <label for="vat" class=" form-control-label">Kecamatan</label>
+                                                        <select class="form-control" id="district" name="district">
+                                                            <option id="district-placeholder" value="" disabled selected>Pilih kecamatan</option>
+                                                        </select>
+                                                        <input class="form-control" id="district-name" name="district_name" style="display: none" type="text" value="<%= user.profile[0].district[0].district_name %>">
+                                                    </div>
+                                                    <div class="col col-md-6">
+                                                        <label for="city" class=" form-control-label">Kelurahan</label>
+                                                        <select class="form-control" id="sub-district" name="sub_district">
+                                                            <option id="sub-district-placeholder" value="" disabled selected>Pilih desa</option>
+                                                        </select>
+                                                        <input class="form-control" id="sub-district-name" name="sub_district_name" style="display: none" type="text" value="<%= user.profile[0].sub_district[0].sub_district_name %>">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class=" form-control-label">Alamat Korespondensi</label>
+                                                    <input class="form-control" name="address" type="text" value="<%= user.profile[0].address %>">
+                                                </div>
+                                                <button class="btn btn-lg btn-warning btn-block" type="submit">
+                                                    <span id="verification-button-text">Simpan</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                            <form action="/investor/profile/<%= user._id %>/occupation" method="post">
+                                                <div class="form-group">
+                                                    <label class=" form-control-label">Pekerjaan</label>
+                                                    <select name="occupation" class="form-control">
+                                                        <option disabled selected>Pilih pekerjaan</option>
+                                                        <option value="Karyawan swasta" <% if (user.occupation[0].occupation == "Karyawan swasta") { %> selected <% } %>>Karyawan swasta</option>
+                                                        <option value="Pegawai negeri sipil" <% if (user.occupation[0].occupation == "Pegawai negeri sipil") { %> selected <% } %>>Pegawai negeri sipil</option>
+                                                        <option value="Pengusaha" <% if (user.occupation[0].occupation == "Pengusaha") { %> selected <% } %>>Pengusaha</option>
+                                                        <option value="TNI / Polisi" <% if (user.occupation[0].occupation == "TNI / Polisi") { %> selected <% } %>>TNI / Polisi</option>
+                                                        <option value="Karyawan BUMN" <% if (user.occupation[0].occupation == "Karyawan BUMN") { %> selected <% } %>>Karyawan BUMN</option>
+                                                        <option value="Pensiun" <% if (user.occupation[0].occupation == "Pensiun") { %> selected <% } %>>Pensiun</option>
+                                                        <option value="Ibu/Bapak rumah tangga" <% if (user.occupation[0].occupation == "Ibu/Bapak rumah tangga") { %> selected <% } %>>Ibu/Bapak rumah tangga</option>
+                                                        <option value="Pelajar" <% if (user.occupation[0].occupation == "Pelajar") { %> selected <% } %>>Pelajar</option>
+                                                        <option value="Profesional" <% if (user.occupation[0].occupation == "Profesional") { %> selected <% } %>>Profesional</option>
+                                                        <option value="Lainnya" <% if (user.occupation[0].occupation == "Lainnya") { %> selected <% } %>>Lainnya</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class=" form-control-label">Nama Perusahaan (Opsional)</label>
+                                                    <input class="form-control" name="company_name" type="text" value="<%= user.occupation[0].company_name %>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class=" form-control-label">Alamat Perusahaan (Opsional)</label>
+                                                    <input class="form-control" name="company_address" type="text" value="<%= user.occupation[0].company_address %>">
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col col-md-6">
+                                                        <label for="vat" class=" form-control-label">Jabatan (Opsional)</label>
+                                                        <select name="position" class="form-control">
+                                                            <option selected disabled>Pilih jabatan</option>
+                                                            <option value="komisaris" <% if (user.occupation[0].position == 'komisaris' ) { %> selected <% } %>>Komisaris (setara non-eksekutif)</option>
+                                                            <option value="eksekutif_perusahaan" <% if (user.occupation[0].position == 'eksekutif_perusahaan' ) { %> selected <% } %>>Eksekutif Perusahaan (setara direksi)</option>
+                                                            <option value="manajer" <% if (user.occupation[0].position == 'manajer' ) { %> selected <% } %>>Manajer (atau setara)</option>
+                                                            <option value="kepala_bagian_supervisor" <% if (user.occupation[0].position == 'kepala_bagian_supervisor' ) { %> selected <% } %>>Kepala Bagian/Supervisor</option>
+                                                            <option value="karyawan_staff" <% if (user.occupation[0].position == 'karyawan_staff' ) { %> selected <% } %>>Karyawan/Staff</option>
+                                                            <option value="lainnya" <% if (user.occupation[0].position == 'lainnya' ) { %> selected <% } %>>Lainnya</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col col-md-6">
+                                                        <label for="vat" class=" form-control-label">Sumber Dana</label>
+                                                        <select name="income_source" class="form-control">
+                                                            <option disabled selected>Pilih sumber dana</option>
+                                                            <option value="penghasilan_rutin_gaji" <% if (user.occupation[0].income_source == "penghasilan_rutin_gaji") { %> selected <% } %>>Penghasilan rutin/Gaji</option>
+                                                            <option value="usaha_bisnis" <% if (user.occupation[0].income_source == "usaha_bisnis") { %> selected <% } %>>Usaha/Bisnis</option>
+                                                            <option value="hasil_investasi" <% if (user.occupation[0].income_source == "hasil_investasi") { %> selected <% } %>>Hasil Investani</option>
+                                                            <option value="warisan" <% if (user.occupation[0].income_source == "warisan") { %> selected <% } %>>Warisan</option>
+                                                            <option value="hadiah" <% if (user.occupation[0].income_source == "hadiah") { %> selected <% } %>>Hadiah</option>
+                                                            <option value="lainnya" <% if (user.occupation[0].income_source == "lainnya") { %> selected <% } %>>Lainnya</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class=" form-control-label">Penghasilan per Bulan</label>
+                                                    <select name="income" id="income" class="form-control">
+                                                        <option disabled selected>Pilih penghasilan</option>
+                                                        <option value="5 juta" <% if (user.occupation[0].income == "5 juta") { %> selected <% } %>>s/d 5 juta</option>
+                                                        <option value="5 - 10 juta" <% if (user.occupation[0].income == "5 - 10 juta") { %> selected <% } %>>5 - 10 juta</option>
+                                                        <option value="10 - 20 juta" <% if (user.occupation[0].income == "10 - 20 juta") { %> selected <% } %>>10 - 20 juta</option>
+                                                        <option value="20 - 50 juta" <% if (user.occupation[0].income == "20 - 50 juta") { %> selected <% } %>>20 - 50 juta</option>
+                                                        <option value="di atas 50 juta" <% if (user.occupation[0].income == "di atas 50 juta") { %> selected <% } %>>di atas 50 juta</option>
+                                                    </select>
+                                                </div>
+                                                <button class="btn btn-lg btn-warning btn-block" type="submit">
+                                                    <span id="verification-button-text">Simpan</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane fade" id="pills-document" role="tabpanel" aria-labelledby="pills-document-tab">
+                                            <form action="/investor/profile/<%= user._id %>/document" enctype="multipart/form-data" method="post">
+                                                <div class="form-group">
+                                                    <label class=" form-control-label">NPWP (Opsional)</label>
+                                                    <input class="form-control" name="npwp_number" type="number" placeholder="Nomor NPWP" value="<%= user.document[0].npwp_number %>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class=" form-control-label">Unggah NPWP (Opsional)</label>
+                                                    <div class="input-group">
+                                                        <input accept="image/*" class="form-control-file" name="npwp_image" type="file">
+                                                        <div class="input-group-btn">
+                                                            <button type="button" class="btn btn-primary mb-1"
+                                                                data-toggle="modal" data-target="#npwp-image-modal">
+                                                                Lihat
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" name="npwp_image_input" value="<%= user.document[0].npwp_image %>" style="display: none">
+                                                    <label for="exampleFormControlFile1" id="npwp-image-filename-label"><%= user.document[0].npwp_image %></label>
+                                                </div>
+                                                <button class="btn btn-lg btn-warning btn-block" type="submit">
+                                                    <span id="verification-button-text">Simpan</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    <% } %>
+                                    <% if (user.profile[0].registration_type == "company") { %>
+                                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
+                                        aria-labelledby="pills-home-tab">
+                                        <form action="/investor/profile/<%= user._id %>" enctype="multipart/form-data" method="post">
+                                            <% if (error_message != '') { %>
+                                                <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                                    <%= error_message %>
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                            <% } %>
+                                            <% if (success_message != '') { %>
+                                                <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                                    <%= success_message %>
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                            <% } %>
+                                            <div class="row form-group">
+                                                <div class="col col-md-6">
+                                                    <label class=" form-control-label">Foto Profil</label>
+                                                    <%if (!user.profile[0].photo) {%>
+                                                        <input type="file" class="dropify" data-default-file="/images/default.jpg" data-height="150" name="profile_photo" accept="image/*" />
+                                                    <% } %>
+                                                    <%if (user.profile[0].photo) {%>
+                                                        <input type="file" class="dropify" data-default-file="/investor/profile/get-image/<%= user._id %>/<%= user.profile[0].photo %>" data-height="150" name="profile_photo" accept="image/*" />
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-md-6">
+                                                    <label class=" form-control-label">Nama Perusahaan</label>
+                                                    <input class="form-control" name="name" type="text" value="<%= user.profile[0].name %>">
+                                                </div>
+                                                <div class="col col-md-6">
+                                                    <label class=" form-control-label">Email</label>
+                                                    <input class="form-control" name="email" type="email" value="<%= user.email %>">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Nomor Handphone Penanggungjawab</label>
+                                                <input class="form-control" name="phone" type="text" value="<%= user.profile[0].phone %>">
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-md-6">
+                                                <label class=" form-control-label">Tempat Didirikan</label>
+                                                <input class="form-control" name="established_place" type="text" value="<%= user.profile[0].established_place %>">
+                                                </div>
+                                                <div class="col col-md-6">
+                                                <label class=" form-control-label">Telepon Perusahaan</label>
+                                                <input class="form-control" name="company_phone" type="text" value="<%= user.profile[0].company_phone %>">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Tanggal Berdiri</label>
+                                                <input class="form-control" id="datepicker" name="birth_date" type="text"
+                                                    value="<%= birth_date %>">
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-md-6">
+                                                    <label class=" form-control-label">Provinsi</label>
+                                                    <select class="form-control" id="province" name="province">
+                                                        <% for(var i = 0; i < province.length; i++) {%>
+                                                            <% if (province[i].id == user.profile[0].province[0].province_id) { %>
+                                                                <option value="<%= province[i].id %>" selected><%= province[i].nama %></option>
+                                                            <% } else { %>
+                                                                <option value="<%= province[i].id %>"><%= province[i].nama %></option>
+                                                            <% }%>
+                                                        <% } %>
+                                                    </select>
+                                                    <input class="form-control" id="province-name" name="province_name" style="display: none" type="text" value="<%= user.profile[0].province[0].province_name %>">
+                                                </div>
+                                                <div class="col col-md-6">
+                                                    <label for="city" class=" form-control-label">Kota</label>
+                                                    <select class="form-control" id="city" name="city">
+                                                        <option id="city-placeholder" value="" disabled selected>Pilih kota</option>
+                                                    </select>
+                                                    <input class="form-control" id="city-name" name="city_name" style="display: none" type="text" value="<%= user.profile[0].city[0].city_name %>">
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col col-md-6">
+                                                    <label for="vat" class=" form-control-label">Kecamatan</label>
+                                                    <select class="form-control" id="district" name="district">
+                                                        <option id="district-placeholder" value="" disabled selected>Pilih kecamatan</option>
+                                                    </select>
+                                                    <input class="form-control" id="district-name" name="district_name" style="display: none" type="text" value="<%= user.profile[0].district[0].district_name %>">
+                                                </div>
+                                                <div class="col col-md-6">
+                                                    <label for="city" class=" form-control-label">Kelurahan</label>
+                                                    <select class="form-control" id="sub-district" name="sub_district">
+                                                        <option id="sub-district-placeholder" value="" disabled selected>Pilih desa</option>
+                                                    </select>
+                                                    <input class="form-control" id="sub-district-name" name="sub_district_name" style="display: none" type="text" value="<%= user.profile[0].sub_district[0].sub_district_name %>">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Alamat Perusahaan</label>
+                                                <input class="form-control" name="address" type="text" value="<%= user.profile[0].address %>">
+                                            </div>
+                                            <button class="btn btn-lg btn-warning btn-block" type="submit">
+                                                <span id="verification-button-text">Simpan</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-profile" role="tabpanel"
+                                        aria-labelledby="pills-profile-tab">
+                                        <form action="/investor/profile/<%= user._id %>/pic" method="post">
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Nama Penanggungjawab</label>
+                                                <input class="form-control" name="pic_name" type="text" value="<%= user.pic[0].pic_name %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Tanggal Lahir Penanggungjawab</label>
+                                                <input class="form-control" id="pic-datepicker" name="pic_birth_date" type="text" value="<%= pic_birth_date %>">
+                                            </div>
+                                            <button class="btn btn-lg btn-warning btn-block" type="submit">
+                                                <span id="verification-button-text">Simpan</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-document" role="tabpanel"
+                                        aria-labelledby="pills-document-tab">
+                                        <form action="/investor/profile/<%= user._id %>/document" enctype="multipart/form-data" method="post">
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Surat Izin Usaha Perdagangan</label>
+                                                <div class="input-group">
+                                                    <input accept="image/*" class="form-control-file" name="business_permit_image" type="file">
+                                                    <div class="input-group-btn">
+                                                        <button type="button" class="btn btn-primary mb-1"
+                                                            data-toggle="modal" data-target="#business-permit-image-modal">
+                                                            Lihat
+                                                        </button>
+                                                    </div>
+                                                    <label for="exampleFormControlFile1"><%= user.document[0].business_permit_image %></label>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-lg btn-warning btn-block" type="submit">
+                                                <span id="verification-button-text">Simpan</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <% } %>
+                                    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                                        <form action="/investor/profile/<%= user._id %>/bank" method="post">
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Nama Bank</label>
+                                                <select name="bank_name" id="bank-name" class="form-control">
+												<option disabled selected>Pilih nama bank</option>
+												<option <% if (user.bank[0].bank_name == 'BRI') { %> selected <% } %> value="BRI">BRI</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Mandiri') { %>selected<% } %> value="Bank Mandiri">Bank Mandiri</option>
+												<option <% if (user.bank[0].bank_name == 'BNI') { %>selected<% } %> value="BNI">BNI</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Danamon') { %>selected<% } %> value="Bank Danamon">Bank Danamon</option>
+												<option <% if (user.bank[0].bank_name == 'Permata Bank') { %>selected<% } %> value="Permata Bank">Permata Bank</option>
+												<option <% if (user.bank[0].bank_name == 'BCA') { %>selected<% } %> value="BCA">BCA</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Maybank') { %>selected<% } %> value="Bank Maybank">Bank Maybank</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Panin') { %>selected<% } %> value="Bank Panin">Bank Panin</option>
+												<option <% if (user.bank[0].bank_name == 'Bank CIMB Niaga') { %>selected<% } %> value="Bank CIMB Niaga">Bank CIMB Niaga</option>
+												<option <% if (user.bank[0].bank_name == 'Bank UOB Indonesia') { %>selected<% } %> value="Bank UOB Indonesia">Bank UOB Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'Bank OCBC NISP') { %>selected<% } %> value="Bank OCBC NISP">Bank OCBC NISP</option>
+												<option <% if (user.bank[0].bank_name == 'American Express Bank Ltd') { %>selected<% } %> value="American Express Bank Ltd">American Express Bank Ltd</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Citibank') { %>selected<% } %> value="Bank Citibank">Bank Citibank</option>
+												<option <% if (user.bank[0].bank_name == 'Jp. Morgan Chase Bank, N.A') { %>selected<% } %> value="Jp. Morgan Chase Bank, N.A">Jp. Morgan Chase Bank, N.A</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Of America, N.A') { %>selected<% } %> value="Bank Of America, N.A">Bank Of America, N.A</option>
+												<option <% if (user.bank[0].bank_name == 'Ing Indonesia Bank') { %>selected<% } %> value="Ing Indonesia Bank">Ing Indonesia Bank</option>
+												<option <% if (user.bank[0].bank_name == 'China Construction Bank') { %>selected<% } %> value="China Construction Bank">China Construction Bank</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Artha Graha') { %>selected<% } %> value="Bank Artha Graha">Bank Artha Graha</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Credit Agricole Indosuez') { %>selected<% } %> value="Bank Credit Agricole Indosuez">Bank Credit Agricole Indosuez</option>
+												<option <% if (user.bank[0].bank_name == 'The Bangkok Bank Comp. Ltd') { %>selected<% } %> value="The Bangkok Bank Comp. Ltd">The Bangkok Bank Comp. Ltd</option>
+												<option <% if (user.bank[0].bank_name == 'HSBC Indonesia') { %>selected<% } %> value="HSBC Indonesia">HSBC Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'MUFG Bank Ltd') { %>selected<% } %> value="MUFG Bank Ltd">MUFG Bank Ltd</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Sumitomo Mitsui Indonesia') { %>selected<% } %> value="Bank Sumitomo Mitsui Indonesia">Bank Sumitomo Mitsui Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'Bank DBS Indonesia') { %>selected<% } %> value="Bank DBS Indonesia">Bank DBS Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Resona Perdania') { %>selected<% } %> value="Bank Resona Perdania">Bank Resona Perdania</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Mizuho Indonesia') { %>selected<% } %> value="Bank Mizuho Indonesia">Bank Mizuho Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'Standard Chartered Bank') { %>selected<% } %> value="Standard Chartered Bank">Standard Chartered Bank</option>
+												<option <% if (user.bank[0].bank_name == 'Bank ABN AMRO') { %>selected<% } %> value="Bank ABN AMRO">Bank ABN AMRO</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Capital Indonesia, Tbk') { %>selected<% } %> value="Bank Capital Indonesia, Tbk">Bank Capital Indonesia, Tbk.</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Bnp Paribas Indonesia') { %>selected<% } %> value="Bank Bnp Paribas Indonesia">Bank Bnp Paribas Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'Anz Panin Bank') { %>selected<% } %> value="Anz Panin Bank">Anz Panin Bank</option>
+												<option <% if (user.bank[0].bank_name == 'Deutsche Bank Ag') { %>selected<% } %> value="Deutsche Bank Ag">Deutsche Bank Ag</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Woori Indonesia') { %>selected<% } %> value="Bank Woori Indonesia">Bank Woori Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Of China Limited') { %>selected<% } %> value="Bank Of China Limited">Bank Of China Limited</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Bumi Arta') { %>selected<% } %> value="Bank Bumi Arta">Bank Bumi Arta</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Rabobank Indonesia') { %>selected<% } %> value="Bank Rabobank Indonesia">Bank Rabobank Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Mayapada') { %>selected<% } %> value="Bank Mayapada">Bank Mayapada</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Jabar') { %>selected<% } %> value="Bank Jabar">Bank Jabar</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Dki') { %>selected<% } %> value="Bank Dki">Bank Dki</option>
+												<option <% if (user.bank[0].bank_name == 'Bpd Diy') { %>selected<% } %> value="Bpd Diy">Bpd Diy</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Jateng') { %>selected<% } %> value="Bank Jateng">Bank Jateng</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Jatim') { %>selected<% } %> value="Bank Jatim">Bank Jatim</option>
+												<option <% if (user.bank[0].bank_name == 'Bpd Jambi') { %>selected<% } %> value="Bpd Jambi">Bpd Jambi</option>
+												<option <% if (user.bank[0].bank_name == 'Bpd Aceh') { %>selected<% } %> value="Bpd Aceh">Bpd Aceh</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Sumut') { %>selected<% } %> value="Bank Sumut">Bank Sumut</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Nagari') { %>selected<% } %> value="Bank Nagari">Bank Nagari</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Riau') { %>selected<% } %> value="Bank Riau">Bank Riau</option>
+												<option <% if (user.bank[0].bank_name == 'Bank Sumsel') { %>selected<% } %> value="Bank Sumsel">Bank Sumsel</option>
+												<option <% if (user.bank[0].bank_name == 'bank_lampung') { %>selected<% } %> value="bank_lampung">Bank Lampung</option>
+												<option <% if (user.bank[0].bank_name == 'bpd_kalsel') { %>selected<% } %> value="bpd_kalsel">Bpd Kalsel</option>
+												<option <% if (user.bank[0].bank_name == 'bpd_kalimantan_barat') { %>selected<% } %> value="bpd_kalimantan_barat">Bpd Kalimantan Barat</option>
+												<option <% if (user.bank[0].bank_name == 'bpd_kaltim') { %>selected<% } %> value="bpd_kaltim">Bpd Kaltim</option>
+												<option <% if (user.bank[0].bank_name == 'bpd_kalteng') { %>selected<% } %> value="bpd_kalteng">Bpd Kalteng</option>
+												<option <% if (user.bank[0].bank_name == 'bpd_sulsel') { %>selected<% } %> value="bpd_sulsel">Bpd Sulsel</option>
+												<option <% if (user.bank[0].bank_name == 'bpd_sulut') { %>selected<% } %> value="bpd_sulut">Bank Sulut</option>
+												<option <% if (user.bank[0].bank_name == 'bpd_ntb') { %>selected<% } %> value="bpd_ntb">Bpd Ntb</option>
+												<option <% if (user.bank[0].bank_name == 'bpd_bali') { %>selected<% } %> value="bpd_bali">Bpd Bali</option>
+												<option <% if (user.bank[0].bank_name == 'bank_ntt') { %>selected<% } %> value="bank_ntt">Bank Ntt</option>
+												<option <% if (user.bank[0].bank_name == 'bank_maluku') { %>selected<% } %> value="bank_maluku">Bank Maluku</option>
+												<option <% if (user.bank[0].bank_name == 'bpd_papua') { %>selected<% } %> value="bpd_papua">Bpd Papua</option>
+												<option <% if (user.bank[0].bank_name == 'bank_bengkulu') { %>selected<% } %> value="bank_bengkulu">Bank Bengkulu</option>
+												<option <% if (user.bank[0].bank_name == 'bpd_sulawesi_tengah') { %>selected<% } %> value="bpd_sulawesi_tengah">Bpd Sulawesi Tengah</option>
+												<option <% if (user.bank[0].bank_name == 'bank_sultra') { %>selected<% } %> value="bank_sultra">Bank Sultra</option>
+												<option <% if (user.bank[0].bank_name == 'bank_nusantara_parahyangan') { %>selected<% } %> value="bank_nusantara_parahyangan">Bank Nusantara Parahyangan</option>
+												<option <% if (user.bank[0].bank_name == 'bank_of_india_indonesia') { %>selected<% } %> value="bank_of_india_indonesia">Bank Of India Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bank_muamalat') { %>selected<% } %> value="bank_muamalat">Bank Muamalat</option>
+												<option <% if (user.bank[0].bank_name == 'bank_mestika') { %>selected<% } %> value="bank_mestika">Bank Mestika</option>
+												<option <% if (user.bank[0].bank_name == 'bank_shinhan_indonesia') { %>selected<% } %> value="bank_shinhan_indonesia">Bank Shinhan Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bank_sinarmas') { %>selected<% } %> value="bank_sinarmas">Bank Sinarmas</option>
+												<option <% if (user.bank[0].bank_name == 'bank_maspion') { %>selected<% } %> value="bank_maspion">Bank Maspion</option>
+												<option <% if (user.bank[0].bank_name == 'bank_ganesha') { %>selected<% } %> value="bank_ganesha">Bank Ganesha</option>
+												<option <% if (user.bank[0].bank_name == 'bank_icbc_indonesia') { %>selected<% } %> value="bank_icbc_indonesia">Bank Icbc Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bang_tabungan_negara_persero') { %>selected<% } %> value="bang_tabungan_negara_persero">Bank Tabungan Negara (persero)</option>
+												<option <% if (user.bank[0].bank_name == 'bank_tabungan_pensiunan_nasional') { %>selected<% } %> value="bank_tabungan_pensiunan_nasional">Bank Tabungan Pensiunan Nasional</option>
+												<option <% if (user.bank[0].bank_name == 'bank_mega') { %>selected<% } %> value="bank_mega">Bank Mega</option>
+												<option <% if (user.bank[0].bank_name == 'bank_bukoping') { %>selected<% } %> value="bank_bukoping">Bank Bukopin</option>
+												<option <% if (user.bank[0].bank_name == 'bank_syariah_mandiri') { %>selected<% } %> value="bank_syariah_mandiri">Bank Syariah Mandiri</option>
+												<option <% if (user.bank[0].bank_name == 'bank_bisnis_internasional') { %>selected<% } %> value="bank_bisnis_internasional">Bank Bisnis Internasional</option>
+												<option <% if (user.bank[0].bank_name == 'bank_oke_indonesia') { %>selected<% } %> value="bank_oke_indonesia">Bank Oke Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bank_jasa_jakarta') { %>selected<% } %> value="bank_jasa_jakarta">Bank Jasa Jakarta</option>
+												<option <% if (user.bank[0].bank_name == 'bank_keb_hana_indonesia') { %>selected<% } %> value="bank_keb_hana_indonesia">Bank Keb Hana Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bank_yudha_bhakti') { %>selected<% } %> value="bank_yudha_bhakti">Bank Yudha Bhakti</option>
+												<option <% if (user.bank[0].bank_name == 'bank_mitraniaga') { %>selected<% } %> value="bank_mitraniaga">Bank Mitraniaga</option>
+												<option <% if (user.bank[0].bank_name == 'bank_bri_agro_niaga') { %>selected<% } %> value="bank_bri_agro_niaga">Bank BRI Agro Niaga</option>
+												<option <% if (user.bank[0].bank_name == 'bank_sbi_indonesia') { %>selected<% } %> value="bank_sbi_indonesia">Bank Sbi Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bank_royal_indonesia') { %>selected<% } %> value="bank_royal_indonesia">Bank Royal Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bank_natioal_nobu') { %>selected<% } %> value="bank_natioal_nobu">Bank Natioal Nobu</option>
+												<option <% if (user.bank[0].bank_name == 'bank_syariah_mega') { %>selected<% } %> value="bank_syariah_mega">Bank Syariah Mega</option>
+												<option <% if (user.bank[0].bank_name == 'bank_ina_perdana') { %>selected<% } %> value="bank_ina_perdana">Bank Ina Perdana</option>
+												<option <% if (user.bank[0].bank_name == 'prima_master_bank') { %>selected<% } %> value="prima_master_bank">Prima Master Bank</option>
+												<option <% if (user.bank[0].bank_name == 'bank_barclays_indonesia') { %>selected<% } %> value="bank_barclays_indonesia">Bank Barclays Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bank_dinar_indonesia') { %>selected<% } %> value="bank_dinar_indonesia">Bank Dinar Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bank_amar_indonesia') { %>selected<% } %> value="bank_amar_indonesia">Bank Amar Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bank_kesejahteraan_ekonomi') { %>selected<% } %> value="bank_kesejahteraan_ekonomi">Bank Kesejahteraan Ekonomi</option>
+												<option <% if (user.bank[0].bank_name == 'bank_artos_ind') { %>selected<% } %> value="bank_artos_ind">Bank Artos Ind</option>
+												<option <% if (user.bank[0].bank_name == 'bank_multi_arta_sentosa') { %>selected<% } %> value="bank_multi_arta_sentosa">Bank Multi Arta Sentosa</option>
+												<option <% if (user.bank[0].bank_name == 'bank_mayora') { %>selected<% } %> value="bank_mayora">Bank Mayora</option>
+												<option <% if (user.bank[0].bank_name == 'bank_index_selindo') { %>selected<% } %> value="bank_index_selindo">Bank Index Selindo</option>
+												<option <% if (user.bank[0].bank_name == 'bank_victoria_international') { %>selected<% } %> value="bank_victoria_international">Bank Victoria International</option>
+												<option <% if (user.bank[0].bank_name == 'bank_fama_internasional') { %>selected<% } %> value="bank_fama_internasional">Bank Fama Internasional</option>
+												<option <% if (user.bank[0].bank_name == 'bank_mandiri_taspen_pos') { %>selected<% } %> value="bank_mandiri_taspen_pos">Bank Mandiri Taspen Pos</option>
+												<option <% if (user.bank[0].bank_name == 'bank_harda') { %>selected<% } %> value="bank_harda">Bank Harda</option>
+												<option <% if (user.bank[0].bank_name == 'bank_ctbc_indonesia') { %>selected<% } %> value="bank_ctbc_indonesia">Bank CTBC Indonesia</option>
+												<option <% if (user.bank[0].bank_name == 'bank_commonwealth') { %>selected<% } %> value="bank_commonwealth">Bank Commonwealth</option>
+												<option <% if (user.bank[0].bank_name == 'bank_syariah_bukoping') { %>selected<% } %> value="bank_syariah_bukoping">Bank Syariah Bukopin</option>
+												<option <% if (user.bank[0].bank_name == 'bank_syariah_bca') { %>selected<% } %> value="bank_syariah_bca">Bank Syariah BCA</option>
+												<option <% if (user.bank[0].bank_name == 'bank_tabungan_pensiunan_nasional_syariah') { %>selected<% } %> value="bank_tabungan_pensiunan_nasional_syariah">Bank Tabungan Pensiunan Nasional Syariah</option>
+												<option <% if (user.bank[0].bank_name == 'bank_syariah_maybank') { %>selected<% } %> value="bank_syariah_maybank">Bank Syariah Maybank</option>
+												<option <% if (user.bank[0].bank_name == 'bank_bni_syariah') { %>selected<% } %> value="bank_bni_syariah">Bank BNI Syariah</option>
+												<option <% if (user.bank[0].bank_name == 'bank_victoria_syariah') { %>selected<% } %> value="bank_victoria_syariah">Bank Victoria Syariah</option>
+												<option <% if (user.bank[0].bank_name == 'bank_bri_syariah') { %>selected<% } %> value="bank_bri_syariah">Bank BRI Syariah</option>
+												<option <% if (user.bank[0].bank_name == 'bank_panin_syariah') { %>selected<% } %> value="bank_panin_syariah">Bank Panin Syariah</option>
+												<option <% if (user.bank[0].bank_name == 'bank_cimb_niaga_syariah') { %>selected<% } %> value="bank_cimb_niaga_syariah">Bank CIMB Niaga Syariah</option>
+											</select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Nama Pemilik Rekening</label>
+                                                <input class="form-control" name="account_name" type="text" value="<%= user.bank[0].account_name %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Nomor Rekening</label>
+                                                <input class="form-control" name="account_number" type="text" value="<%= user.bank[0].account_number %>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class=" form-control-label">Cabang</label>
+                                                <input class="form-control" name="branch" type="text" value="<%= user.bank[0].branch %>">
+                                            </div>
+                                            <button class="btn btn-lg btn-warning btn-block" type="submit">
+                                                <span id="verification-button-text">Simpan</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="business-permit-image-modal" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="smallmodalLabel">Surat Izin Usaha Perdagangan</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <% if ( user.document[0].business_permit_image) { %>
+                                                <img class="card-img-top" src="/investor/profile/get-image/<%= user._id %>/<%= user.document[0].business_permit_image %>" alt="Card image cap">
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+
+        <div class="clearfix"></div>
+        <% include ../../../partials/inisiator/footer-dashboard %>
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
+    <script src="/js/dashboard-main.js"></script>
+    <script src="/js/dropify.min.js"></script>
+    <script>
+        $('.dropify').dropify();
+        <% if (user.profile[0].registration_type == "individual") { %>
+            $('#datepicker').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'dd/mm/yyyy',
+                maxDate: '<%= max_date %>'
+            });
+        <% } %>
+        <% if (user.profile[0].registration_type == "company") { %>
+            $('#datepicker').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'dd/mm/yyyy'
+            });
+        <% } %>
+        $('#pic-datepicker').datepicker({
+			uiLibrary: 'bootstrap4',
+            format: 'dd/mm/yyyy',
+            maxDate: '<%= max_date %>'
+		});
+
+        $.when(
+            $.ajax({
+                type: 'get',
+                url: '/complete-profile/get-city',
+                data: {
+                    'province_id': <%= user.profile[0].province[0].province_id %>
+                },
+                success: function(data, status) {
+                    if(data.success == true) {
+                        for (let index = 0; index < data.city.length; index++) {
+                            if (data.city[index].id == <%= user.profile[0].city[0].city_id %>) {
+                                $('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
+                            }
+                            else {
+                                $('#city').append('<option class="city-option" value="'+data.city[index].id+'" >'+data.city[index].nama+'</option>');
+                            }
+                        }
+                    }
+                }
+            }),
+
+            $.ajax({
+                type: "GET",
+                url: '/complete-profile/get-district',
+                data: {
+                    'city_id': <%= user.profile[0].city[0].city_id %>
+                },
+                success: function(data, status) {
+                    if(data.success == true) {
+                        for (let index = 0; index < data.district.length; index++) {
+                            if (data.district[index].id == <%= user.profile[0].district[0].district_id %>) {
+                                $('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama+'</option>');
+                            }
+                            else {
+                                $('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
+                            }
+                        }
+                    }
+                }
+            }),
+            $.ajax({
+                type: "GET",
+                url: '/complete-profile/get-sub_district',
+                data: {
+                    'district_id': <%= user.profile[0].district[0].district_id %>
+                },
+                success: function(data, status) {
+                    if(data.success == true) {
+                        for (let index = 0; index < data.sub_district.length; index++) {
+                            if (data.sub_district[index].id == <%= user.profile[0].sub_district[0].sub_district_id %>) {
+                                $('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama+'</option>');
+                            }
+                            else {
+                                $('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
+                            }
+                        }
+                    }
+                }
+            })
+        ).then(function() {
+        });
+        
+        $('#province').on('change', function (event) {
+			event.preventDefault();
+			var province_id = $(this).val();
+			var province_name = $('#province option:selected').text();
+			$('#province-name').val(province_name);
+			$.ajax({
+				type: "GET",
+				url: '/complete-profile/get-city',
+				data: {
+					'province_id': province_id
+				},
+				success: function (data, status) {
+					if (data.success == true) {
+						$('.city-option').remove();
+						$('.ditrict-option').remove();
+                        $('.sub_ditrict-option').remove();
+                        $('#city-placeholder').removeAttr('disabled');
+						$('#district-placeholder').removeAttr('disabled');
+                        $('#sub-district-placeholder').removeAttr('disabled');
+                        $('#city-placeholder').attr('selected');
+						$('#district-placeholder').attr('selected');
+						$('#sub-district-placeholder').attr('selected');
+                        
+						for (let index = 0; index < data.city.length; index++) {
+							if (data.city[index].id == <%= user.profile[0].city[0].city_id %>) {
+                                $('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
+                            }
+                            else {
+                                $('#city').append('<option class="city-option" value="'+data.city[index].id+'" >'+data.city[index].nama+'</option>');
+                            }
+                        }
+                        
+                        $('#city-placeholder').attr('disabled', 'disabled');
+						$('#district-placeholder').attr('disabled', 'disabled');
+						$('#sub-district-placeholder').attr('disabled', 'disabled');
+					}
+				}
+			})
+        });
+        
+        $('#city').on('change', function (event) {
+			event.preventDefault();
+			var city_id = $(this).val();
+			var city_name = $('#city option:selected').text();
+			$('#city-name').val(city_name);
+			$.ajax({
+				type: "GET",
+				url: '/complete-profile/get-district',
+				data: {
+					'city_id': city_id
+				},
+				success: function (data, status) {
+					if (data.success == true) {
+						$('.ditrict-option').remove();
+						$('.sub_ditrict-option').remove();
+						$('#district-placeholder').removeAttr('disabled');
+						$('#sub-district-placeholder').removeAttr('disabled');
+						$('#district-placeholder').attr('selected');
+						$('#sub-district-placeholder').attr('selected');
+                        
+						for (let index = 0; index < data.district.length; index++) {
+							if (data.district[index].id == <%= user.profile[0].district[0].district_id %>) {
+                                $('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama + '</option>');
+                            }
+                            else {
+                                $('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama + '</option>');
+                            }
+                        }
+                        
+                        $('#district-placeholder').attr('disabled', 'disabled');
+                        $('#sub-district-placeholder').attr('disabled', 'disabled');
+					}
+				}
+			})
+		});
+
+		$('#district').on('change', function (event) {
+			event.preventDefault();
+			var district_id = $(this).val();
+			var district_name = $('#district option:selected').text();
+			$('#district-name').val(district_name);
+			$.ajax({
+				type: "GET",
+				url: '/complete-profile/get-sub_district',
+				data: {
+					'district_id': district_id
+				},
+				success: function (data, status) {
+					if (data.success == true) {
+                        $('.sub_ditrict-option').remove();
+                        $('#sub-district-placeholder').removeAttr('disabled');
+						$('#sub-district-placeholder').attr('selected');
+                        
+						for (let index = 0; index < data.sub_district.length; index++) {
+							if ( data.sub_district[index].id == <%= user.profile[0].sub_district[0].sub_district_id %>) {
+                                $('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama + '</option>');
+                            }
+                            else {
+                                $('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama + '</option>');
+                            }
+						}
+                    }
+                    
+                    $('#sub-district-placeholder').attr('disabled', 'disabled');
+
+				}
+			})
+		});
+
+		$('#sub-district').on('change', function (event) {
+			event.preventDefault();
+			var sub_district_name = $('#sub-district option:selected').text();
+			$('#sub-district-name').val(sub_district_name);
+		});
+    </script>
+</body>
+
+</html>

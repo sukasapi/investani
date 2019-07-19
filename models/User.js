@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+const Schema = mongoose.Schema;
+
 let UserSchema = mongoose.Schema({
   email: {
     type: String
@@ -24,6 +26,9 @@ let UserSchema = mongoose.Schema({
   },
   profile: [{
     registration_type: {
+      type: String
+    },
+    photo: {
       type: String
     },
     name: {
@@ -108,7 +113,7 @@ let UserSchema = mongoose.Schema({
       type: Date
     },
     pic_identity_number: {
-      type: Number
+      type: String
     },
     pic_identity_image: {
       type: String
@@ -119,7 +124,7 @@ let UserSchema = mongoose.Schema({
   }],
   document: [{
     identity_number: {
-      type: Number
+      type: String
     },
     identity_image: {
       type: String
@@ -128,19 +133,19 @@ let UserSchema = mongoose.Schema({
       type: String
     },
     npwp_number: {
-      type: Number
+      type: String
     },
     npwp_image: {
       type: String
     },
     company_registration_number: {
-      type: Number
+      type: String
     },
     company_registration_image: {
       type: String
     },
     sk_kemenkumham_number: {
-      type: Number
+      type: String
     },
     sk_kemenkumham_image: {
       type: String
@@ -165,7 +170,13 @@ let UserSchema = mongoose.Schema({
   }],
   contract : {
     type: String
-  }
+  },
+  createdBy: {
+    type: Schema.Types.ObjectId, ref: 'User'
+  },
+  updatedBy: {
+    type: Schema.Types.ObjectId, ref: 'User'
+  },
 },
 {
   timestamps: true

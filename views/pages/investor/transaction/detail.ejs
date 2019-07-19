@@ -22,6 +22,7 @@
 
     <link rel="stylesheet" href="/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="/css/dashboard-style.css">
+    <link rel="stylesheet" href="/css/dropify.min.css">
 </head>
 
 <body>
@@ -96,9 +97,15 @@
                                                 </button>
                                             </div>
                                             <% } %>
-                                            <div class="form-group">
-                                                <label class="control-label mb-1">Bukti Transaksi</label>
-                                                <input accept="image/*" class="form-control-file" id="receipt" name="receipt" type="file">
+                                            <div class="row form-group">
+                                                <% transaction.receipt.forEach(receipt => { %>
+                                                    <div class="col col-sm-6">
+                                                        <input type="file" class="dropify" data-default-file="/investor/transaction/get-receipt/<%= transaction._id %>/<%= receipt.filename %>" data-height="262.33" name="<%= receipt.filename %>" accept="image/*" />
+                                                    </div>
+                                                <% }); %>
+                                                <div class="col col-sm-6">
+                                                    <input type="file" class="dropify" data-height="262.33" name="receipt" accept="image/*" />
+                                                </div>
                                             </div>
                                             <div>
                                                 <button id="payment-form-button" type="submit" class="btn btn-lg btn-info btn-block">
@@ -138,7 +145,10 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="/js/dashboard-main.js"></script>
-
+    <script src="/js/dropify.min.js"></script>
+    <script>
+        $('.dropify').dropify();
+    </script>
     <script>
         document.getElementById("my-transaction").className = "menu-item-has-children dropdown show";
         document.getElementById("my-transaction-link").setAttribute('aria-expanded', 'true');

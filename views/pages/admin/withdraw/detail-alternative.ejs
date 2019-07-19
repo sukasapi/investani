@@ -80,7 +80,7 @@
                                        Nama Pemilik <br><strong><%= project.inisiator.bank[0].account_name %> </strong> <strong class="pull-right"><%= project.inisiator.bank[0].bank_name %></strong>
                                     </li>
                                     <li class="list-group-item">
-                                       Jumlah <br><strong><%= budget.alternative_amount %></strong>
+                                       Jumlah <br><strong id="amount"></strong>
                                     </li>
                                 </ul>
                                     
@@ -157,15 +157,32 @@
     <script src="/js/dashboard-main.js"></script>
 
     <script>
-        document.getElementById("my-transaction").className = "menu-item-has-children dropdown show";
-        document.getElementById("my-transaction-link").setAttribute('aria-expanded', 'true');
-        document.getElementById("my-transaction-sub-menu").className = "sub-menu children dropdown-menu show";
-        document.getElementById("waiting-payment-icon").setAttribute('style', 'color: #03a9f3');
-        document.getElementById("waiting-payment-link").setAttribute('style', 'color: #03a9f3');
+        document.getElementById("alternative-withdraw").className = "menu-item-has-children dropdown active show";
+        document.getElementById("alternative-withdraw-link").click();
+        document.getElementById("waiting-payment-alternative-withdraw-icon").style.color = '#03a9f3';
+        document.getElementById("waiting-payment-alternative-withdraw-link").style.color = '#03a9f3';
         $('#payment-form').on('submit', function (event) {
             $('#payment-form-button').attr('disabled', 'disabled');
             $('#payment-form-spinner').show();
         });
+
+        document.getElementById('amount').innerHTML = 'Rp. '+ formatRupiah('<%= budget.alternative_amount %>')
+        
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
     </script>
 </body>
 

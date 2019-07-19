@@ -20,7 +20,7 @@
 	<style>
 		input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
 			-webkit-appearance: none; 
-			margin: 0; 
+			margin: 0;
 		}
 	</style>
 </head>
@@ -138,7 +138,7 @@
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
-											<label class="control-label mb-1" id="date-picker-label">Tanggal Lahir</label>
+											<label class="control-label mb-1" id="datepicker-label">Tanggal Lahir</label>
 											<input type="text" name="birth_date" class="date" id="datepicker" placeholder="Tanggal Lahir" style="width: 90%" <% if (request[0]) { %> value="<%= request[0].birth_date %>" <% } %>>
 										</div>
 									</div>
@@ -146,7 +146,7 @@
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Provinsi</label>
 											<select name="province" id="province" class="form-control">
-												<option disabled selected>Pilih provinsi</option>
+												<option id="province-placeholder" disabled selected>Pilih provinsi</option>
 												<% for(var i = 0; i < province.length; i++) {%>
 													<% if (province[i].id == province_id) { %>
 														<option value="<%= province[i].id %>" selected><%= province[i].nama %></option>
@@ -262,16 +262,16 @@
 											<label class="control-label mb-1">Pekerjaan</label>
 											<select name="occupation" id="occupation" class="form-control">
 												<option disabled selected>Pilih pekerjaan</option>
-												<option value="karyawan_swasta" <% if (request[0] && request[0].occupation == "karyawan_swasta") { %> selected <% } %>>Karyawan swasta</option>
-												<option value="pegawai_negeri_sipil" <% if (request[0] && request[0].occupation == "pegawai_negeri_sipil") { %> selected <% } %>>Pegawai negeri sipil</option>
-												<option value="pengusaha" <% if (request[0] && request[0].occupation == "pengusaha") { %> selected <% } %>>Pengusaha</option>
-												<option value="tni_polisi" <% if (request[0] && request[0].occupation == "tni_polisi") { %> selected <% } %>>TNI / Polisi</option>
-												<option value="karyawan_bumn" <% if (request[0] && request[0].occupation == "karyawan_bumn") { %> selected <% } %>>Karyawan BUMN</option>
-												<option value="pensiun" <% if (request[0] && request[0].occupation == "pensiun") { %> selected <% } %>>Pensiun</option>
-												<option value="ibu_bapak_rumah_tangga" <% if (request[0] && request[0].occupation == "ibu_bapak_rumah_tangga") { %> selected <% } %>>Ibu/Bapak rumah tangga</option>
-												<option value="pelajar" <% if (request[0] && request[0].occupation == "pelajar") { %> selected <% } %>>Pelajar</option>
-												<option value="profesional" <% if (request[0] && request[0].occupation == "profesional") { %> selected <% } %>>Profesional</option>
-												<option value="lainnya" <% if (request[0] && request[0].occupation == "lainnya") { %> selected <% } %>>Lainnya</option>
+												<option value="Karyawan swasta" <% if (request[0] && request[0].occupation == "Karyawan swasta") { %> selected <% } %>>Karyawan swasta</option>
+												<option value="Pegawai negeri sipil" <% if (request[0] && request[0].occupation == "Pegawai negeri sipil") { %> selected <% } %>>Pegawai negeri sipil</option>
+												<option value="Pengusaha" <% if (request[0] && request[0].occupation == "Pengusaha") { %> selected <% } %>>Pengusaha</option>
+												<option value="TNI / Polisi" <% if (request[0] && request[0].occupation == "TNI / Polisi") { %> selected <% } %>>TNI / Polisi</option>
+												<option value="Karyawan BUMN" <% if (request[0] && request[0].occupation == "Karyawan BUMN") { %> selected <% } %>>Karyawan BUMN</option>
+												<option value="Pensiun" <% if (request[0] && request[0].occupation == "Pensiun") { %> selected <% } %>>Pensiun</option>
+												<option value="Ibu/Bapak rumah tangga" <% if (request[0] && request[0].occupation == "Ibu/Bapak rumah tangga") { %> selected <% } %>>Ibu/Bapak rumah tangga</option>
+												<option value="Pelajar" <% if (request[0] && request[0].occupation == "Pelajar") { %> selected <% } %>>Pelajar</option>
+												<option value="Profesional" <% if (request[0] && request[0].occupation == "Profesional") { %> selected <% } %>>Profesional</option>
+												<option value="Lainnya" <% if (request[0] && request[0].occupation == "Lainnya") { %> selected <% } %>>Lainnya</option>
 											</select>
 											<span class="select-btn">
 												<i class="zmdi zmdi-chevron-down"></i>
@@ -281,19 +281,19 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Nama Perusahaan (opsional)</label>
-											<input class="form-control" id="company-name" name="company_name" placeholder="Nama Perusahaan (opsional)"
+											<input class="form-control" id="company-name" name="company_name"
 											 type="text" <% if (request[0]) { %> value="<%= request[0].company_name %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Alamat Perusahaan (opsional)</label>
-											<input class="form-control" id="company-address" name="company_address" placeholder="Alamat Perusahaan (opsional)"
+											<input class="form-control" id="company-address" name="company_address"
 											 type="text" <% if (request[0]) { %> value="<%= request[0].company_address %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">
-										<div class="form-holder" id="position-input">
+										<div class="form-holder form-holder-2" id="position-input">
 											<label class="control-label mb-1">Jabatan (opsional)</label>
 											<select name="position" id="position" class="form-control">
 												<option selected disabled>Pilih jabatan</option>
@@ -308,7 +308,9 @@
 												<i class="zmdi zmdi-chevron-down"></i>
 											</span>
 										</div>
-										<div class="form-holder" id="income-input">
+									</div>
+									<div class="form-row">
+										<div class="form-holder form-holder-2" id="income-input">
 											<label class="control-label mb-1">Sumber Dana</label>
 											<select name="income_source" id="income-source" class="form-control">
 												<option disabled selected>Pilih sumber dana</option>
@@ -408,7 +410,7 @@
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1">Nomor KTP / Paspor Penanggungjawab</label>
 											<input class="form-control" id="pic-identity-number" name="pic_identity_number" placeholder="Nomor KTP / Paspor Penanggungjawab"
-											 type="number" <% if (request[0]) { %> value="<%= request[0].pic_identity_number %>" <% } %>>
+											 type="text" <% if (request[0]) { %> value="<%= request[0].pic_identity_number %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">
@@ -483,19 +485,19 @@
 										<div class="form-holder form-holder-2" id="identity-number-input">
 											<label class="control-label mb-1">Nomor KTP / Paspor</label>
 											<input class="form-control" id="identity-number" name="identity_number" placeholder="Nomor KTP / Paspor"
-											 type="number" <% if (request[0]) { %> value="<%= request[0].identity_number %>" <% } %>>
+											 type="text" <% if (request[0]) { %> value="<%= request[0].identity_number %>" <% } %>>
 										</div>
 										<div class="form-holder form-holder-2" id="company-registration-number-input" style="display: none">
 											<label class="control-label mb-1">Nomor Tanda Daftar Perusahaan</label>
 											<input class="form-control" id="company-registration-number" name="company_registration_number" placeholder="Nomor Tanda Daftar Perusahaan"
-											 type="number" <% if (request[0]) { %> value="<%= request[0].company_registration_number %>" <% } %>>
+											 type="text" <% if (request[0]) { %> value="<%= request[0].company_registration_number %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2" id="identity-image-input">
 											<label class="control-label mb-1">Unggah Foto KTP/ Paspor</label>
 											<input accept="image/*" class="form-control-file" id="identity-image" name="identity_image" type="file">
-											<input type="text" name="npwp_image_input" value="<%= identity_image %>" style="display: none">
+											<input type="text" name="identity_image_input" value="<%= identity_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="identity-image-label" style="display: none"></label>
 										</div>
 										<div class="form-holder form-holder-2" id="company-registration-image-input" style="display: none">
@@ -516,14 +518,14 @@
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1" id="npwp-number-label">Nomor NPWP (opsional)</label>
-											<input class="form-control" id="npwp-number" name="npwp_number" type="number" placeholder="Nomor NPWP" <% if (request[0]) { %> value="<%= request[0].npwp_number %>" <% } %>>
+											<input class="form-control" id="npwp-number" name="npwp_number" type="text" placeholder="Nomor NPWP" <% if (request[0]) { %> value="<%= request[0].npwp_number %>" <% } %>>
 										</div>
 									</div>
 									<div class="form-row">
 										<div class="form-holder form-holder-2">
 											<label class="control-label mb-1" id="npwp-image-label">Unggah NPWP (opsional)</label>
 											<input accept="image/*" class="form-control-file" id="npwp-image" name="npwp_image" type="file">
-											<input type="text" name="npwp_image_input" value="<%= identity_image %>" style="display: none">
+											<input type="text" name="npwp_image_input" value="<%= npwp_image %>" style="display: none">
 											<label for="exampleFormControlFile1" id="npwp-image-filename-label" style="display: none"></label>
 										</div>
 									</div>
@@ -564,12 +566,20 @@
 				<!-- Bank -->
 				<form action="/complete-profile/bank" class="form-register" id="bank-form" method="post" style="display:none">
 					<% if (error_message != '') { %>
-					<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
-						<%= error_message %>
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
+						<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+							<%= error_message %>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<% } %>
+						<% if (success_message != '') { %>
+						<div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+							<%= success_message %>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
 					<% } %>
 					<div id="form-total" role="application" class="wizard clearfix">
 						<div class="steps clearfix">
@@ -765,11 +775,23 @@
 	 crossorigin="anonymous"></script>
 	<script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
 	<script>
+		
 		$('#datepicker').datepicker({
-			uiLibrary: 'bootstrap4'
+			uiLibrary: 'bootstrap4',
+			format: 'dd/mm/yyyy',
+			maxDate: '<%= max_date %>'
 		});
+		<% if (request[0] && request[0].registration_type == 'company') { %>
+			$('#datepicker').datepicker().destroy();
+			$('#datepicker').datepicker({
+				uiLibrary: 'bootstrap4',
+				format: 'dd/mm/yyyy',
+			});
+		<% } %>
 		$('#pic-datepicker').datepicker({
-			uiLibrary: 'bootstrap4'
+			uiLibrary: 'bootstrap4',
+			format: 'dd/mm/yyyy',
+			maxDate: '<%= max_date %>'
 		});
 
 		$('#profile-form').on('submit', function (event) {
@@ -1033,7 +1055,6 @@
 						$('#occupation-form').show();
 						$('#profile-form').hide();
 						$('#document-form').hide();
-
 						$('#occupation').val('<%= occupation %>');
 						$('#company-name').val('<%= company_name %>');
 						$('#company-address').val('<%= company_address %>');
@@ -1611,137 +1632,140 @@
 			var province_id = <%= request[0].province.province_id %>;
 			var province_name = '<%= request[0].province.province_name %>';
 			$('#province-name').val(province_name);
-			$.ajax({
-				type: "GET",
-				url: '/complete-profile/get-city',
-				data: {
-					'province_id': province_id
-				},
-				success: function (data, status) {
-					if (data.success == true) {
-						$('.city-option').remove();
-						$('.ditrict-option').remove();
-						$('.sub_ditrict-option').remove();
-
-						$('#city-placeholder').removeAttr('disabled');
-						$('#district-placeholder').removeAttr('disabled');
-						$('#sub-district-placeholder').removeAttr('disabled');
-
-						$('#city-placeholder').attr('selected');
-						$('#district-placeholder').attr('selected');
-						$('#sub-district-placeholder').attr('selected');
-
-						$('#city-placeholder').attr('disabled');
-						$('#district-placeholder').attr('disabled');
-						$('#sub-district-placeholder').attr('disabled');
-						for (let index = 0; index < data.city.length; index++) {
-							if ('<%= request[0].city.city_name %>' == data.city[index].nama) {
-								$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
-							}
-							else {
-								$('#city').append('<option class="city-option" value="'+data.city[index].id+'" >'+data.city[index].nama+'</option>');
-							}
-						}
-					}
-				}
-			})
 		<% } %>
 		<% if (request[0] && request[0].city.city_name) { %>
 			var city_id = <%= request[0].city.city_id %>;
 			var city_name = '<%= request[0].city.city_name %>';
 			$('#city-name').val(city_name);
-			$.ajax({
-				type: "GET",
-				url: '/complete-profile/get-district',
-				data: {
-					'city_id': city_id
-				},
-				success: function (data, status) {
-					if (data.success == true) {
-						$('.ditrict-option').remove();
-						$('.sub_ditrict-option').remove();
+		<% } %>
+		<% if (request[0] && request[0].district.district_name) { %>
+			var district_id = <%= request[0].district.district_id %>
+			var district_name = '<%= request[0].district.district_name %>';
+			$('#district-name').val(district_name);
+		<% } %>
+		$.when(
+			<% if (request[0] && request[0].province.province_name) { %>
+				$.ajax({
+					type: "GET",
+					url: '/complete-profile/get-city',
+					async: false,
+					data: {
+						'province_id': province_id
+					},
+					success: function (data, status) {
+						if (data.success == true) {
+							$('.city-option').remove();
+							$('.ditrict-option').remove();
+							$('.sub_ditrict-option').remove();
 
-						$('#district-placeholder').removeAttr('disabled');
-						$('#sub-district-placeholder').removeAttr('disabled');
+							$('#city-placeholder').removeAttr('disabled');
+							$('#district-placeholder').removeAttr('disabled');
+							$('#sub-district-placeholder').removeAttr('disabled');
 
-						$('#district-placeholder').attr('selected');
-						$('#sub-district-placeholder').attr('selected');
+							$('#city-placeholder').attr('selected');
+							$('#district-placeholder').attr('selected');
+							$('#sub-district-placeholder').attr('selected');
 
-						$('#district-placeholder').attr('disabled');
-						$('#sub-district-placeholder').attr('disabled');
-						
-						for (let index = 0; index < data.district.length; index++) {
-							<% if (request[0]) { %>
+							$('#city-placeholder').attr('disabled', 'disabled');
+							$('#district-placeholder').attr('disabled', 'disabled');
+							$('#sub-district-placeholder').attr('disabled', 'disabled');
+							for (let index = 0; index < data.city.length; index++) {
+								if ('<%= request[0].city.city_name %>' == data.city[index].nama) {
+									$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
+								}
+								else {
+									$('#city').append('<option class="city-option" value="'+data.city[index].id+'" >'+data.city[index].nama+'</option>');
+								}
+							}
+						}
+					}
+				}),
+			<% } %>
+			<% if (request[0] && request[0].city.city_name) { %>
+				$.ajax({
+					type: "GET",
+					url: '/complete-profile/get-district',
+					async: false,
+					data: {
+						'city_id': city_id
+					},
+					success: function (data, status) {
+						if (data.success == true) {
+							$('.ditrict-option').remove();
+							$('.sub_ditrict-option').remove();
+
+							$('#district-placeholder').removeAttr('disabled');
+							$('#sub-district-placeholder').removeAttr('disabled');
+
+							$('#district-placeholder').attr('selected');
+							$('#sub-district-placeholder').attr('selected');
+							
+							for (let index = 0; index < data.district.length; index++) {
 								if ('<%= request[0].district.district_name %>' == data.district[index].nama) {
 									$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama + '</option>');
 								}
 								else {
 									$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama + '</option>');
 								}
-							<% } %>
-							<% if (!request[0]) { %>
-								$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama + '</option>');
-							<% } %>
+							}
+
+							$('#district-placeholder').attr('disabled', 'disabled');
+							$('#sub-district-placeholder').attr('disabled', 'disabled');
 						}
 					}
-				}
-			})
-		<% } %>
-		<% if (request[0] && request[0].district.district_name) { %>
-			var district_id = <%= request[0].district.district_id %>
-			var district_name = '<%= request[0].district.district_name %>';
-			$('#district-name').val(district_name);
-			$.ajax({
-				type: "GET",
-				url: '/complete-profile/get-sub_district',
-				data: {
-					'district_id': district_id
-				},
-				success: function (data, status) {
-					if (data.success == true) {
-						$('.sub_ditrict-option').remove();
+				}),
+			<% } %>
+			<% if (request[0] && request[0].district.district_name) { %>
+				$.ajax({
+					type: "GET",
+					url: '/complete-profile/get-sub_district',
+					async: false,
+					data: {
+						'district_id': district_id
+					},
+					success: function (data, status) {
+						if (data.success == true) {
+							$('.sub_ditrict-option').remove();
 
-						$('#sub-district-placeholder').removeAttr('disabled');
-
-						$('#sub-district-placeholder').attr('selected');
-
-						$('#sub-district-placeholder').attr('disabled');
-						for (let index = 0; index < data.sub_district.length; index++) {
-							<% if (request[0]) { %>
+							$('#sub-district-placeholder').removeAttr('disabled');
+							$('#sub-district-placeholder').attr('selected');
+							for (let index = 0; index < data.sub_district.length; index++) {
 								if ('<%= request[0].sub_district.sub_district_name %>' == data.sub_district[index].nama) {
 									$('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama + '</option>');
 								}
 								else {
 									$('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama + '</option>');
 								}
-							<% } %>
-							<% if (!request[0]) { %>
-								$('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama + '</option>');
-							<% } %>
+							}
+							$('#sub-district-placeholder').attr('disabled', 'disabled');
 						}
 					}
-				}
-			})
-		<% } %>
-		<% if (request[0] && request[0].sub_district.sub_district_name) { %>
-			var sub_district_name = '<%= request[0].sub_district.sub_district_name %>';
-			$('#sub-district-name').val(sub_district_name);
-		<% } %>
+				})
+			<% } %>
+		).then(function() {
+		});
+		// <% if (request[0] && request[0].sub_district.sub_district_name) { %>
+		// 	var sub_district_name = '<%= request[0].sub_district.sub_district_name %>';
+		// 	$('#sub-district-name').val(sub_district_name);
+		// <% } %>
 		$('#registration_type').on('change', function () {
 			event.preventDefault();
 			var registration_type = $('#registration_type option:selected').val();
-			var province_name = $('#province option:selected').text();
-			var city_name = $('#city option:selected').text();
-			var district_name = $('#district option:selected').text();
-			var sub_district_name = $('#sub-district option:selected').text();
+			
 			$('#name').val('');
 			$('#phone').val('');
 			$('#established-place').val('');
 			$('#company-phone').val('');
 			$('#datepicker').val('');
-
+			$('.city-option').remove();
+			$('.ditrict-option').remove();
+			$('.sub_ditrict-option').remove();
+			$('#province-placeholder').removeAttr('disabled');
+			$('#province-placeholder').attr('selected');
+			$('#province-placeholder').attr('disabled', 'disabled');
 
 			if (registration_type == 'individual') {
+				
 				$('#name-label').text('Nama Lengkap');
 				$('#name').attr('placeholder', 'Nama Lengkap');
 				$('#phone-input').attr('class', 'form-holder');
@@ -1751,91 +1775,16 @@
 				$('#established-place-company-phone-row').hide();
 				$('#established-place').val('');
 				$('#company-phone').val('');
+				$('#datepicker-label').html('Tanggal Lahir');
 				$('#datepicker').attr('placeholder', 'Tanggal Lahir');
 				$('#address-label').text('Alamat Korespondensi');
-
-				if (<%= profile_length != 0 %>) {
-					$('#registration_type').val(registration_type);
-					$('#name').val('<%= name %>');
-					$('#phone').val('<%= phone %>');
-					$('#datepicker').val('<%= birth_date %>');
-					$('#address').val('<%= address %>');
-					$('#name').attr('placeholder', 'Nama Lengkap');
-					$('#phone-input').attr('class', 'form-holder');
-					$('#phone').attr('placeholder', 'Nomor Handphone');
-					$('#gender-input').show();
-					if ('<%= gender %>' == 'male') {
-						$('#gender-male').attr('selected', 'selected');
-					}
-					else {
-						$('#gender-female').attr('selected', 'selected');
-					}
-					$('#established-place-company-phone-row').hide();
-					$('#datepicker').attr('placeholder', 'Tanggal Lahir');
-					$.when(
-						$.ajax({
-							type: 'get',
-							url: '/complete-profile/get-city',
-							data: {
-								'province_id': <%= province_id %>
-							},
-							success: function(data, status) {
-								if(data.success == true) {     
-									for (let index = 0; index < data.city.length; index++) {
-										if (data.city[index].id == <%= city_id %>) {
-											$('#city').append('<option class="city-option" value="'+data.city[index].id+'" selected>'+data.city[index].nama+'</option>');
-										}
-										else {
-											$('#city').append('<option class="city-option" value="'+data.city[index].id+'">'+data.city[index].nama+'</option>');
-										}
-									}
-								}
-							}
-						}),
-	
-						$.ajax({
-							type: "GET",
-							url: '/complete-profile/get-district',
-							data: {
-								'city_id': <%= city_id %>
-							},
-							success: function(data, status) {
-								if(data.success == true) {
-									for (let index = 0; index < data.district.length; index++) {
-										if (data.district[index].id == <%= district_id %>) {
-											$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'" selected>'+data.district[index].nama+'</option>');
-										}
-										else {
-											$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama+'</option>');
-										}
-									}
-								}
-							}
-						}),
-						$.ajax({
-							type: "GET",
-							url: '/complete-profile/get-sub_district',
-							data: {
-								'district_id': <%= district_id %>
-							},
-							success: function(data, status) {
-								if(data.success == true) {
-									for (let index = 0; index < data.sub_district.length; index++) {
-										if (data.sub_district[index].id == <%= sub_district_id %>) {
-											$('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'" selected>'+data.sub_district[index].nama+'</option>');
-										}
-										else {
-											$('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama+'</option>');
-										}
-									}
-								}
-							}
-						})
-					).then(function() {
-					});
-				}
 			} 
 			else {
+				$('#datepicker').datepicker().destroy();
+				$('#datepicker').datepicker({
+					uiLibrary: 'bootstrap4',
+					format: 'dd/mm/yyyy'
+				});
 				$('#name-label').text('Nama Perusahaan');
 				$('#name').attr('placeholder', 'Nama Perusahaan');
 				$('#phone-input').attr('class', 'form-holder form-holder-2');
@@ -1845,12 +1794,8 @@
 				$('#gender-input').hide();
 				$('#gender-input').val('');
 				$('#established-place-company-phone-row').show();
-				$('#datepicker-label').attr('placeholder', 'Tanggal Berdiri');
+				$('#datepicker-label').html('Tanggal Berdiri');
 				$('#datepicker').attr('placeholder', 'Tanggal Berdiri');
-				$('#province-name').val(province_name);
-				$('#city-name').val(city_name);
-				$('#district-name').val(district_name);
-				$('#sub-district-name').val(sub_district_name);
 			}
 		});
 
@@ -1875,13 +1820,10 @@
 						$('#district-placeholder').removeAttr('disabled');
 						$('#sub-district-placeholder').removeAttr('disabled');
 
-						$('#city-placeholder').attr('selected');
-						$('#district-placeholder').attr('selected');
-						$('#sub-district-placeholder').attr('selected');
+						$('#city-placeholder').attr('selected', 'selected');
+						$('#district-placeholder').attr('selected', 'selected');
+						$('#sub-district-placeholder').attr('selected', 'selected');
 
-						$('#city-placeholder').attr('disabled');
-						$('#district-placeholder').attr('disabled');
-						$('#sub-district-placeholder').attr('disabled');
 						for (let index = 0; index < data.city.length; index++) {
 							<% if (request[0]) { %>
 								if ('<%= request[0].city.city_name %>' == data.city[index].name) {
@@ -1896,6 +1838,9 @@
 							<% } %>
 
 						}
+						$('#city-placeholder').attr('disabled', 'disabled');
+						$('#district-placeholder').attr('disabled', 'disabled');
+						$('#sub-district-placeholder').attr('disabled', 'disabled');
 					}
 				}
 			})
@@ -1922,9 +1867,6 @@
 
 						$('#district-placeholder').attr('selected');
 						$('#sub-district-placeholder').attr('selected');
-
-						$('#district-placeholder').attr('disabled');
-						$('#sub-district-placeholder').attr('disabled');
 						
 						for (let index = 0; index < data.district.length; index++) {
 							<% if (request[0]) { %>
@@ -1939,6 +1881,9 @@
 								$('#district').append('<option class="ditrict-option" value="'+data.district[index].id+'">'+data.district[index].nama + '</option>');
 							<% } %>
 						}
+
+						$('#district-placeholder').attr('disabled', 'disabled');
+						$('#sub-district-placeholder').attr('disabled', 'disabled');
 					}
 				}
 			})
@@ -1958,12 +1903,9 @@
 				success: function (data, status) {
 					if (data.success == true) {
 						$('.sub_ditrict-option').remove();
-
 						$('#sub-district-placeholder').removeAttr('disabled');
-
 						$('#sub-district-placeholder').attr('selected');
 
-						$('#sub-district-placeholder').attr('disabled');
 						for (let index = 0; index < data.sub_district.length; index++) {
 							<% if (request[0]) { %>
 								if ('<%= request[0].sub_district_name %>' == data.sub_district[index].name) {
@@ -1977,6 +1919,7 @@
 								$('#sub-district').append('<option class="sub_ditrict-option" value="'+data.sub_district[index].id+'">'+data.sub_district[index].nama + '</option>');
 							<% } %>
 						}
+						$('#sub-district-placeholder').attr('disabled', 'disabled');
 					}
 				}
 			})

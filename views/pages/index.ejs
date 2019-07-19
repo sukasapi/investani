@@ -38,7 +38,7 @@
         font-size: 12px;
     }
     .weather-category ul li {
-        width: 32%;
+        width: 49%;
         text-align: center;
         border-right: 1px solid #e6e6e6;
         display: inline-block;
@@ -113,7 +113,7 @@
                     <a class="btn btn-sm btn-success-outline display-4" href="/investor/dashboard">Dashboard</a>
                     <a class="btn btn-sm btn-success display-4" href="/auth/logout">Keluar</a></div>
                 <% } %>
-                <% if (auth && user_type == 'super_user') {%>
+                <% if (auth && (user_type == 'super_admin' || user_type == 'analyst_admin' || user_type == 'cooperative_admin')) {%>
                     <a class="btn btn-sm btn-success-outline display-4" href="/admin/dashboard">Dashboard</a>
                     <a class="btn btn-sm btn-success display-4" href="/auth/logout">Keluar</a></div>
                 <% } %>
@@ -244,9 +244,15 @@
                                             Durasi Proyek
                                             <h6><%=project.project[0].duration[0].duration%> Bulan</h6>
                                         </li>
+                                    </ul>
+                                    <ul>
                                         <li>
-                                            Tersisa
+                                            Sisa Durasi
                                             <h6><%= durations[index] %> hari</h6>
+                                        </li>
+                                        <li>
+                                            Sisa Saham
+                                            <h6><%= project.basic[0].stock[0].temp %> Lembar</h6>
                                         </li>
                                     </ul>
                                 </div>
@@ -567,7 +573,9 @@
             document.getElementsByClassName('stock-price')[<%= index %>].innerHTML = formatRupiah('<%= project.basic[0].stock[0].price %>');
             <% let goal = 0 %>
             <% project.budget.forEach((budget) => { %>
-                <% goal = goal + budget.amount %>
+                <% if (budget.amount) { %>
+                    <% goal = goal + budget.amount %>
+                <% } %>
             <% }) %>
             document.getElementsByClassName('budget-goal')[<%= index %>].innerHTML = formatRupiah('<%= goal %>');
         <% }) %>

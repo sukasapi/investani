@@ -43,7 +43,7 @@
             font-size: 12px;
         }
         .weather-category ul li {
-            width: 32%;
+            width: 49%;
             text-align: center;
             border-right: 1px solid #e6e6e6;
             display: inline-block;
@@ -100,7 +100,7 @@
                     <% projects.forEach((project, index) => { %>
                     <div class="col-md-4">
                         <div class="card">
-                            <a href="<% if(project.status == 'done') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'done') { %> /inisiator/project/<%= project._id %>/edit <% } %>">
+                            <a href="<% if(project.status == 'done' || project.status == 'verified') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'done' && project.status != 'verified') { %> /inisiator/project/<%= project._id %>/edit <% } %>">
                                 <% if (project.image[0]) { %>
                                 <img alt="Card image cap" class="card-img-top"
                                     src="/image/project/<%= project._id %>/<%= project.image[0].filename %>"
@@ -113,17 +113,18 @@
                             </a>
                             <div class="card-body">
                                 <div class="mx-auto d-block">
-                                    <h4 class="card-title mb-3"><a
-                                            href="<% if(project.status == 'done') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'done') { %> /inisiator/project/<%= project._id %>/edit <% } %>"><%= project.basic[0].title %></a>
+                                    <h4 class="card-title mb-3">
+                                        <a href="<% if(project.status == 'done' || project.status == 'verified') { %> /inisiator/project/<%= project._id %>/transactions <% } %><% if(project.status != 'done' && project.status != 'verified') { %> /inisiator/project/<%= project._id %>/edit <% } %>">
+                                            <%= project.basic[0].title %>
+                                        </a>
                                         <% if (project.status == "draft") { %>
-                                        <small><span class="badge badge-light float-right mt-1">Draft</span></small>
+                                            <small><span class="badge badge-light float-right mt-1">Draft</span></small>
                                         <% } %>
                                         <% if (project.status == "waiting") { %>
-                                        <small><span
-                                                class="badge badge-warning float-right mt-1">Menunggu</span></small>
+                                            <small><span class="badge badge-warning float-right mt-1">Menunggu</span></small>
                                         <% } %>
                                         <% if (project.status == "verified") { %>
-                                            <small><span class="badge badge-primary float-right mt-1">Terverifikasi</span></small>
+                                            <small><span class="badge badge-primary float-right mt-1">Berlangsung</span></small>
                                         <% } %>
                                         <% if (project.status == "done") { %>
                                             <small><span class="badge badge-success float-right mt-1">Selesai</span></small>
@@ -135,54 +136,37 @@
                                     <ul>
                                         <li>
                                             Imbal Hasil
-                                            <h6>
-                                            <% if (project.project.length > 0) { %>
-                                                <%=project.project[0].roi%>%
-                                            <% } %>
-                                            <% if (project.project.length == 0) { %>
-                                                - %
-                                            <% } %>
-                                            </h6>
+                                            <h6><%=project.project[0].roi%>%</h6>
                                         </li>
                                         <li>
                                             Durasi Proyek
-                                            <h6>
-                                            <% if (project.project.length > 0) { %>
-                                                <%=project.project[0].duration[0].duration%> 
-                                            <% } %>
-                                            <% if (project.project.length == 0) { %>
-                                                - 
-                                            <% } %>
-                                            Bulan</h6>
+                                            <h6><%=project.project[0].duration[0].duration%> Bulan</h6>
+                                        </li>
+                                    </ul>
+                                    <ul>
+                                        <li>
+                                            Sisa Durasi
+                                            <h6><%= durations[index] %> hari</h6>
                                         </li>
                                         <li>
-                                            Tersisa
-                                            <% if (durations[index] == null) { %>
-                                                <h6>-</h6>
-                                            <% } %>
-                                            <% if (durations[index] != null && durations[index] >=0) { %>
-                                                <h6><%= durations[index] %> hari</h6>
-                                            <% } %>
+                                            Sisa Saham
+                                            <h6><%= project.basic[0].stock[0].temp %> Lembar</h6>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                             <footer class="twt-footer">
-                                Harga Saham: <% if (project.basic[0].stock.length != 0) { %> <strong>Rp. <span class="stock-price"></span></strong> <% } %>
+                                Harga Saham:  <strong>Rp. <span class="stock-price"></span></strong>
                             </footer>
                             <div class="card-footer" style="font-size: 12px;">
                                 <div class="card-text text-sm-center">
                                     <div class="progress mb-3">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: <% if (project.basic[0].stock.length != 0) { %> <%- Math.round((project.basic[0].stock[0].total-project.basic[0].stock[0].remain)/project.basic[0].stock[0].total*100 * 100) / 100  %> <% } %>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: <% if (project.basic[0].stock[0]) { %> <%- Math.round((project.basic[0].stock[0].total-project.basic[0].stock[0].remain)/project.basic[0].stock[0].total*100 * 100) / 100  %><%}%>%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </div>
                                 <strong class="card-title mb-3"> <% if (project.basic[0].stock.length != 0) { %> <%- Math.round((project.basic[0].stock[0].total-project.basic[0].stock[0].remain)/project.basic[0].stock[0].total*100 * 100) / 100  %> <% } %>%</strong> Dana Terkumpul
                                 <span class="pull-right">
-                                    <% let goal = 0 %>
-                                    <% project.budget.forEach((budget) => { %>
-                                        <% goal = goal + budget.amount %>
-                                    <% }) %>
-                                    Target: Rp. <%= goal %>
+                                    Target: Rp. <span class="target"></span>
                                 </span>
                             </div>
                         </div>
@@ -212,7 +196,16 @@
     <script src="/js/dashboard-main.js"></script>
     <script>
         <% projects.forEach((project, index) => { %>
-            document.getElementsByClassName('stock-price')[<%= index%>].innerHTML = formatRupiah('<%=project.basic[0].stock[0].price%>');
+            <% let goal = 0 %>
+            <% project.budget.forEach((budget) => { %>
+                <% if (budget.amount) { %>
+                    <% goal = goal + budget.amount %>
+                <% } %>
+            <% }) %>
+            <% if (project.basic[0].stock[0]) { %>
+                document.getElementsByClassName('stock-price')[<%= index%>].innerHTML = formatRupiah('<%= project.basic[0].stock[0].price%>');
+            <% } %>
+            document.getElementsByClassName('target')[<%= index%>].innerHTML = formatRupiah('<%= goal %>');
         <% }); %>
 
         function formatRupiah(angka) {

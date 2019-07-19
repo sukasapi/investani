@@ -1,0 +1,166 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ela Admin - HTML5 Admin Template</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="https://i.imgur.com/QRAUqs9.png">
+    <link rel="shortcut icon" href="https://i.imgur.com/QRAUqs9.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link rel="stylesheet" href="/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="/css/dashboard-style.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+    <style>
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
+			-webkit-appearance: none; 
+			margin: 0; 
+        }
+    </style>
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+</head>
+
+<body>
+    <!-- Left Panel -->
+
+    <% include ../../../../partials/admin/aside-dashboard %>
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <% include ../../../../partials/admin/header-dashboard %>
+        <!-- Header-->
+
+        <% include ../../../../partials/admin/breadcrumbs-dashboard %>
+
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div id="basic-card" class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Menambah Admin</strong>
+                            </div>
+                            <div class="card-body">
+                                <form action="/admin/user/management/edit/<%= admin._id %>" method="post">
+                                    <% if (success_message != '') { %>
+                                    <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
+                                        <%= success_message %>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <% } %>
+                                    <% if (error_message != '') { %>
+                                    <div class="sufee-alert alert with-close alert-danger alert-dismissible fade show">
+                                        <%= error_message %>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <% } %>
+                                    <div class="row form-group">
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">Email</label>
+                                            <input name="email" type="text" class="form-control"
+                                                placeholder="Email" value="<%= admin.email %>">
+                                        </div>
+                                        <% if (user.user_type[0].name == 'super_admin') { %>
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">Jenis Admin</label>
+                                            <select name="user_type" id="select" class="form-control">
+                                                <option value="analyst_admin" <% if (admin.user_type[0].name == 'analyst_admin') { %>selected<% } %>>Admin Analis</option>
+                                                <option value="cooperative_admin" <% if (admin.user_type[0].name == 'cooperative_admin') { %>selected<% } %>>Admin Koperasi</option>
+                                            </select>
+                                        </div>
+                                        <% } %>
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">Nama Lengkap</label>
+                                            <input name="name" type="text" class="form-control"
+                                                placeholder="Nama Lengkap" value="<%= admin.profile[0].name %>">
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">Nama perusahaan</label>
+                                            <input name="company_name" type="text" class="form-control"
+                                                placeholder="Nama Perusahaan" value="<%= admin.occupation[0].company_name %>">
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">NIK</label>
+                                            <input id="identity_number" name="identity_number" type="text" class="form-control"
+                                                placeholder="NIK" value=<%= admin.document[0].identity_number %>>
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">Jabatan</label>
+                                            <input name="position" type="text" class="form-control"
+                                                placeholder="Jabatan" value="<%= admin.occupation[0].position %>">
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <label class="control-label mb-1">Alamat Perusahaan</label>
+                                            <input name="address" type="text" class="form-control"
+                                                placeholder="Alamat" value="<%= admin.profile[0].address %>">
+                                        </div>
+                                        <% if (user.user_type[0].name == 'super_admin') { %>
+                                            <div class="col col-sm-6">
+                                                <label class="control-label mb-1">Status</label>
+                                                <select name="active" id="select" class="form-control">
+                                                    <option value="1" <% if (admin.active == true) { %>selected<% } %>>Aktif</option>
+                                                    <option value="0" <% if (admin.active == false) { %>selected<% } %>>Nonaktif</option>
+                                                </select>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-sm-12">
+                                            <button type="submit" class="btn btn-lg btn-info btn-block">Simpan</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
+
+        <div class="clearfix"></div>
+
+        <% include ../../../../partials/admin/footer-dashboard %>
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
+    <script src="/js/dashboard-main.js"></script>
+    <script>
+        document.getElementById("management").className = "active";
+    </script>
+</body>
+
+</html>

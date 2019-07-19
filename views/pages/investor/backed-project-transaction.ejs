@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
     <link rel="stylesheet" href="/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="/css/dashboard-style.css">
-    <link rel="stylesheet" href="/css/dropify.min.css">
     <link rel="stylesheet" href="/css/dataTables.bootstrap.min.css">
 
 
@@ -86,6 +85,7 @@
                                             <th>Saham yang Dibeli</th>
                                             <th>Harga Saham</th>
                                             <th>Total Pembayaran</th>
+                                            <th>Diverifikasi oleh</th>
                                             <th>Sertifikat</th>
                                         </tr>
                                     </thead>
@@ -104,13 +104,14 @@
                                             <td>
                                                 <%= transaction.stock_quantity %>
                                             </td>
-                                            <td>Rp. <%= transaction.project.basic[0].stock[0].price %></td>
-                                            <td>Rp. <%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>
+                                            <td>Rp. <span class="stock-price"></span></td>
+                                            <td>Rp. <span class="total-payment"></span></td>
                                             </td>
+                                            <td><%= transaction.verificator.email %></td>
                                             <td>
                                                 <% if (transaction.status == 'verified') { %>
                                                     <div class="input-group-btn">
-                                                        <a class="detail-link" href="/investor/transaction/get-certificate/<%= transaction._id %>/<%= transaction.receipt %>">
+                                                        <a class="detail-link" href="/investor/transaction/get-certificate/<%= transaction._id %>">
                                                             <button class="btn btn-primary">
                                                                 Unduh
                                                             </button>
@@ -150,7 +151,6 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
-    <script src="/js/dropify.min.js"></script>
     <script src="/js/dashboard-main.js"></script>
     <script src="/js/datatables.min.js"></script>
     <script src="/js/dataTables.bootstrap.min.js"></script>
@@ -171,7 +171,6 @@
     <script>
         $(document).ready(function () {
 
-            $('.dropify').dropify();
             $('#project-basic-form').on('submit', function () {
                 $('#project-basic-button').attr('disabled', 'disabled');
                 $('#project-basic-spinner').show();
@@ -196,6 +195,27 @@
         document.getElementById("my-project-link").click();
         document.getElementById("backed-project-icon").style.color = '#03a9f3';
         document.getElementById("backed-project-link").style.color = '#03a9f3';
+
+        <% transactions.forEach((transaction, index) => { %>
+            document.getElementsByClassName('stock-price')[<%= index %>].innerHTML = formatRupiah('<%= transaction.project.basic[0].stock[0].price %>')
+            document.getElementsByClassName('total-payment')[<%= index %>].innerHTML = formatRupiah('<%= transaction.stock_quantity*transaction.project.basic[0].stock[0].price %>');
+        <% }) %>
+        
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
     </script>
 </body>
 

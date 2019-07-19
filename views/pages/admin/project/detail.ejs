@@ -247,27 +247,27 @@
                                                 </button>
                                             </div>
                                             <% } %>
-                                            <% project.budget.forEach((budget) => { %>
-                                            <% if (budget.description != "") {%>
-                                            <div class="row form-group dynamic-row" id="dynamic_form">
-                                                <div class="col col-sm-3">
-                                                    <label class="control-label mb-1 item-label">Nama Kegiatan</label>
-                                                    <input class="form-control budget-description" name="description"
-                                                        placeholder="Kegiatan Baru" type="text"
-                                                        value="<%= budget.description %>" disabled>
+                                            <% budget.forEach((budget) => { %>
+                                                <% if (budget.description != "") {%>
+                                                <div class="row form-group dynamic-row" id="dynamic_form">
+                                                    <div class="col col-sm-3">
+                                                        <label class="control-label mb-1 item-label">Nama Kegiatan</label>
+                                                        <input class="form-control budget-description" name="description"
+                                                            placeholder="Kegiatan Baru" type="text"
+                                                            value="<%= budget.description %>" disabled>
+                                                    </div>
+                                                    <div class="col col-sm-4">
+                                                        <label class="control-label mb-1">Tanggal Kegiatan</label>
+                                                        <input type="text" name="activity_date" class="form-control" placeholder="Tanggal Kegiatan"
+                                                            value="<%= budget.activity_date %>" disabled>
+                                                    </div>
+                                                    <div class="col col-sm-2">
+                                                        <label class="control-label mb-1">Rp</label>
+                                                        <input class="form-control budget-amount" name="amount" placeholder="Rp" type="text"
+                                                            value="" disabled>
+                                                    </div>
                                                 </div>
-                                                <div class="col col-sm-4">
-                                                    <label class="control-label mb-1">Tanggal Kegiatan</label>
-                                                    <input type="text" name="activity_date" class="form-control" placeholder="Tanggal Kegiatan"
-                                                        value="<%= budget.activity_date.toLocaleDateString() %>" disabled>
-                                                </div>
-                                                <div class="col col-sm-2">
-                                                    <label class="control-label mb-1">Rp</label>
-                                                    <input class="form-control budget-amount" name="amount" placeholder="Rp" type="text"
-                                                        value="" disabled>
-                                                </div>
-                                            </div>
-                                            <% } %>
+                                                <% } %>
                                             <% }) %>
 
                                             <% if (url == 'waiting-detail-project') { %>
@@ -352,7 +352,7 @@
                                                     Dimulai</label>
                                                 <input type="text" name="start_date" class="date form-control"
                                                     id="datepicker" placeholder="Tanggal Proyek Dimulai"
-                                                    value="<%= project.project[0].duration[0].start_date.toLocaleDateString() %>"
+                                                    value="<%= start_date %>"
                                                     disabled>
                                             </div>
                                             <div class="form-group">

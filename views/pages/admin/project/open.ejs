@@ -28,6 +28,12 @@
         .bg-success {
             background-color: #ffc400 !important;
         }
+        .weather-category ul li {
+            width: 49%;
+            text-align: center;
+            border-right: 1px solid #e6e6e6;
+            display: inline-block;
+        }
     </style>
 </head>
 
@@ -90,16 +96,17 @@
                                         </li>
                                         <li>
                                             Durasi Proyek
-                                            <h6>
-                                                <%if (project.project[0].duration[0]) {%>
-                                                <%=project.project[0].duration[0].duration%>
-                                                <% } %>
-                                                Bulan
-                                            </h6>
+                                            <h6><%=project.project[0].duration[0].duration%> Bulan</h6>
+                                        </li>
+                                    </ul>
+                                    <ul>
+                                        <li>
+                                            Sisa Durasi
+                                            <h6><%= durations[index] %> hari</h6>
                                         </li>
                                         <li>
-                                            Tersisa
-                                            <h6><%= durations[index] %> Hari</h6>
+                                            Sisa Saham
+                                            <h6><%= project.basic[0].stock[0].temp %> Lembar</h6>
                                         </li>
                                     </ul>
                                 </div>
@@ -108,7 +115,7 @@
                                 Harga Saham:
                                 <strong>
                                     <% if (project.basic[0].stock[0]) { %>
-                                    Rp. <%=project.basic[0].stock[0].price%>
+                                        Rp. <span class="stock-price"></span>
                                     <% } %>
                                 </strong>
                             </footer>
@@ -122,9 +129,11 @@
                                 <span class="pull-right">
                                     <% let goal = 0 %>
                                     <% project.budget.forEach((budget) => { %>
-                                        <% goal = goal + budget.amount %>
+                                        <% if (budget.amount) { %>
+                                            <% goal = goal + budget.amount %>
+                                        <% } %>
                                     <% }) %>
-                                    Target: Rp. <%= goal %>
+                                    Target: Rp. <span class="budget-goal"></span>
                                 </span>
                             </div>
                         </div>
@@ -154,6 +163,33 @@
     <script src="/js/dashboard-main.js"></script>
     <script>
         document.getElementById("open-project").className = "active";
+
+        <% projects.forEach((project, index) => { %>
+            document.getElementsByClassName('stock-price')[<%= index %>].innerHTML = formatRupiah('<%= project.basic[0].stock[0].price %>');
+            <% let goal = 0 %>
+            <% project.budget.forEach((budget) => { %>
+                <% if (budget.amount) { %>
+                    <% goal = goal + budget.amount %>
+                <% } %>
+            <% }) %>
+            document.getElementsByClassName('budget-goal')[<%= index %>].innerHTML = formatRupiah('<%= goal %>');
+        <% }) %>
+
+        function formatRupiah(angka) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return rupiah;
+        }
     </script>
 </body>
 
