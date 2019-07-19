@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
     <link rel="stylesheet" href="/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="/css/dashboard-style.css">
-    <link rel="stylesheet" href="/css/dropify.min.css">
     <link rel="stylesheet" href="/css/dataTables.bootstrap.min.css">
 
 
@@ -86,6 +85,7 @@
                                             <th>Saham yang Dibeli</th>
                                             <th>Harga Saham</th>
                                             <th>Total Pembayaran</th>
+                                            <th>Diverifikasi oleh</th>
                                             <th>Sertifikat</th>
                                         </tr>
                                     </thead>
@@ -107,6 +107,7 @@
                                             <td>Rp. <span class="stock-price"></span></td>
                                             <td>Rp. <span class="total-payment"></span></td>
                                             </td>
+                                            <td><%= transaction.verificator.email %></td>
                                             <td>
                                                 <% if (transaction.status == 'verified') { %>
                                                     <div class="input-group-btn">
@@ -150,7 +151,6 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
-    <script src="/js/dropify.min.js"></script>
     <script src="/js/dashboard-main.js"></script>
     <script src="/js/datatables.min.js"></script>
     <script src="/js/dataTables.bootstrap.min.js"></script>
@@ -171,7 +171,6 @@
     <script>
         $(document).ready(function () {
 
-            $('.dropify').dropify();
             $('#project-basic-form').on('submit', function () {
                 $('#project-basic-button').attr('disabled', 'disabled');
                 $('#project-basic-spinner').show();

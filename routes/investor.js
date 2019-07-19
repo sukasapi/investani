@@ -703,7 +703,7 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, isVerified, function
                                     let data = {
                                         stock_quantity: req.body.stock,
                                         status: 'waiting_payment',
-                                        receipt: null,
+                                        receipt: [],
                                         due_date: moment().add(2, 'days'),
                                         payment_date: null,
                                         project: req.params.project_id,
@@ -761,7 +761,7 @@ router.post('/project/:project_id', isLoggedIn, isInvestor, isVerified, function
                             let data = {
                                 stock_quantity: req.body.stock,
                                 status: 'waiting_payment',
-                                receipt: null,
+                                receipt: [],
                                 due_date: moment().add(2, 'days'),
                                 payment_date: null,
                                 project: req.params.project_id,

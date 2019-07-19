@@ -24,6 +24,7 @@ let TransactionSchema = mongoose.Schema({
     project: { type: Schema.Types.ObjectId, ref: 'Project' },
     investor: { type: Schema.Types.ObjectId, ref: 'User'},
     inisiator: { type: Schema.Types.ObjectId, ref: 'User'},
+    verificator: {type: Schema.Types.ObjectId, ref: 'User'}
 }, {
     timestamps: true
 });
@@ -55,7 +56,7 @@ export const getTransactionByInvestorandProject = (investor_id, project_id, call
         investor: investor_id,
         project: project_id
     }
-    Transaction.find(obj, callback).populate('project');
+    Transaction.find(obj, callback).populate('project').populate('verificator');
 }
 export const getTransactionByProject = (project_id, callback) => {
     let obj = {

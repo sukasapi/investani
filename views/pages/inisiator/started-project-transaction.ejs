@@ -87,6 +87,7 @@
                                             <th>Saham yang Dibeli</th>
                                             <th>Harga Saham</th>
                                             <th>Total Pembayaran</th>
+                                            <th>Diverifikasi oleh</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -107,6 +108,7 @@
                                             </td>
                                             <td>Rp. <span class="stock-price"></span></td>
                                             <td>Rp. <span class="total-payment"></span></td>
+                                            <td><%= transaction.verificator.email %></td>
                                         </tr>
                                         <% no++ %>
                                         <% }) %>

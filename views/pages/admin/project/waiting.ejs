@@ -118,7 +118,7 @@
                                 Harga Saham:
                                 <strong>
                                     <% if (project.basic[0].stock[0]) { %>
-                                    Rp. <span class="stock-price"></span>
+                                        Rp. <span class="stock-price"></span>
                                     <% } %>
                                 </strong>
                             </footer>
@@ -165,7 +165,9 @@
             document.getElementsByClassName('stock-price')[<%= index %>].innerHTML = formatRupiah('<%= project.basic[0].stock[0].price %>');
             <% let goal = 0 %>
             <% project.budget.forEach((budget) => { %>
-                <% goal = goal + budget.amount %>
+                <% if (budget.amount) { %>
+                    <% goal = goal + budget.amount %>
+                <% } %>
             <% }) %>
             document.getElementsByClassName('budget-goal')[<%= index %>].innerHTML = formatRupiah('<%= goal %>');
         <% }) %>

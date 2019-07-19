@@ -1016,6 +1016,7 @@ router.get('/transaction/waiting/:transaction_id/verify', isLoggedIn, isCooperat
                                         }
                                         else {
                                             transaction.status = 'verified';
+                                            transaction.verificator = req.user._id;
                                             transaction.save().then(transaction => {
                                                 project.basic[0].stock[0].remain = project.basic[0].stock[0].remain-transaction.stock_quantity;
                                                 if (project.basic[0].stock[0].remain == 0) {
