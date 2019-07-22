@@ -1548,6 +1548,7 @@ router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isCooperativeAdm
                         budget_object.alternative_activity_date = moment(budget.alternative_activity_date).format('LL');
                         budget_object.project_id = project._id;
                         budget_object.project_title = project.basic[0].title;
+                        budget_object.inisiator_bank_name = project.inisiator.bank[0].bank_name;
                         waiting_withdraws.push(budget_object);
                     }
                 });
@@ -1570,7 +1571,7 @@ router.get('/withdraw/alternative/waiting-payment', isLoggedIn, isCooperativeAdm
                 }
             });
         }
-    }).sort({ createdAt: -1 });
+    }).populate('inisiator').sort({ createdAt: -1 });
 });
 router.get('/withdraw/alternative/waiting-payment/:project_id/:budget_id', isLoggedIn, isCooperativeAdmin, function(req, res) {
     let error_message;
