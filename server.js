@@ -24,7 +24,7 @@ import project from './routes/project';
 
 // Connect with Mongo database
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://admin:PjQC7AgCr9KLnpC@ds155916.mlab.com:55916/investani', {useNewUrlParser: true});
+mongoose.connect('mongodb+srv://investaniadmin:S3marNg1s1ng@investani-uk05g.gcp.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true});
 
 let db = mongoose.connect;
 

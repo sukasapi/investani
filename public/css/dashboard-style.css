@@ -2058,8 +2058,8 @@ header .form-inline {
 
 .card .dropdown.float-right .dropdown-menu {
   left: inherit !important;
-  right: 0 !important;
-  top: 93% !important; }
+  right: 5px !important;
+  top: 10% !important; }
 
 .dataTables_paginate .pagination {
   border-radius: 0; }

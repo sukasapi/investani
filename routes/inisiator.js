@@ -421,6 +421,55 @@ router.get('/project/:project_id/transactions', isLoggedIn, isInisiator, isVerif
         }
     });
 });
+router.get('/project/:project_id/investment-return', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    getProjectByID(req.params.project_id, function (error, project) {
+        if (error) {
+            error_message = "Terjadi kesalahan";
+            req.flash('error_message', error_message);
+            return res.redirect('/inisiator/start-project');
+        }
+        if (!project) {
+            error_message = "Proyek tidak tersedia";
+            req.flash('error_message', error_message);
+            return res.redirect('/inisiator/start-project');
+        } else {
+            if (req.user._id.equals(project.inisiator._id)) {
+                if (project.status == 'done') {
+                    
+                   
+                    getNotificationByReceiverAndStatus(req.user._id, "unread", function (error, notification) {
+                        if (error) {
+                            error_message = "Terjadi kesalahan";
+                            req.flash('error_message', error_message);
+                            return res.redirect('back');   
+                        }
+                        else {
+                            let data = {
+                                url: 'investment-return',
+                                project: project,
+                                inisiator: project.inisiator.profile[0].name,
+                                duration: moment(project.project[0].duration[0].due_campaign).diff(moment(), 'days'),
+                                user_id: req.user._id,
+                                notifications: notification,
+                            }
+                            return res.render('pages/inisiator/investment-return-project', data)
+                        }
+                    });
+                }
+                else {
+                    error_message = "Status proyek belum selesai.";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back')
+                }
+            } else {
+                error_message = "Proyek tidak tersedia.";
+                req.flash('error_message', error_message);
+                return res.redirect('back');
+            }
+        }
+    });
+})
 // router.get('/withdraw/waiting-approval', isLoggedIn, isInisiator, isVerified, function (req, res) {
 //     let error_message;
 //     let waiting_withdraws = [];
@@ -949,6 +998,10 @@ router.post('/start-project', isLoggedIn, isInisiator, isVerified, function (req
             title: req.body.title,
         },
         status: "draft",
+        revenue: {
+            amount: 0,
+            document: ""
+        },
         inisiator: req.user._id
     }
     req.checkBody('title', 'Judul proyek tidak boleh lebih dari 250 karakter.').isLength({
@@ -1632,7 +1685,6 @@ router.post('/project/:project_id/project', isLoggedIn, isInisiator, isVerified,
         }
     });
 
-
 });
 let cpUpload = upload.fields([
     {
@@ -1913,6 +1965,126 @@ router.post('/project/:project_id/image', isLoggedIn, isInisiator, isVerified, f
         });
     });
 });
+const projectRevenueDocumentStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, `../storage/projects/${req.params.project_id}`))
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${uuidv4()}-project_revenue_document.pdf`)
+    }
+})
+const projectRevenueDocumentUpload = multer({
+    storage: projectRevenueDocumentStorage,
+    limits: {
+        fileSize: 4 * 1024 * 1024,
+    },
+    fileFilter: function fileFilter (req, file, cb) {
+
+        // The function should call `cb` with a boolean
+        // to indicate if the file should be accepted
+      
+        // To accept the file pass `true`, like so:
+
+        req.checkBody('project_revenue', 'Hasil proyek wajib diisi.').notEmpty();
+        let errors = req.validationErrors();
+        
+        if (errors) {
+            return cb(null, false)
+        }
+        else {
+            getProjectByID(req.params.project_id, function (error, project) {
+                if (error) {
+                    return cb(null, false)
+                }
+                if (!project) {
+                    return cb(null, false)
+                }
+                else {
+                    if (!project.inisiator._id.equals(req.user._id)) {
+                        return cb(null, false)
+                    }
+                    if (project.status != 'done') {
+                        return cb(null, false)
+                    } 
+                    if (project.revenue[0].amount != 0) {
+                        return cb(null, false)
+                    }
+                    else {
+                        return cb(null, true)
+                    }
+                }
+            });
+        }
+
+        // You can always pass an error if something goes wrong:
+        // cb(new Error('I don\'t have a clue!'))
+    }
+}).single('project_revenue_document');
+router.post('/project/:project_id/investment-return', isLoggedIn, isInisiator, isVerified, function (req, res) {
+    let error_message;
+    let success_message;
+    projectRevenueDocumentUpload(req, res, function (error) {
+        req.checkBody('project_revenue', 'Hasil proyek wajib diisi.').notEmpty();
+        let errors = req.validationErrors();
+        
+        if (errors) {
+            error_message = errors[errors.length - 1].msg;
+            req.flash('error_message', error_message);
+            return res.redirect('back');
+        }
+        else {
+            getProjectByID(req.params.project_id, function (error, project) {
+                if (error) {
+                    error_message = "Terjadi kesalahan";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                }
+                if (!project) {
+                    error_message = "Proyek tidak tersedia";
+                    req.flash('error_message', error_message);
+                    return res.redirect('back');
+                }
+                else {
+                    if (!project.inisiator._id.equals(req.user._id)) {
+                        error_message = "Proyek tidak tersedia";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    }
+                    if (project.status != 'done') {
+                        error_message = "Status proyek belum selesai";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    }
+                    if (project.revenue[0].amount != 0) {
+                        error_message = "Hasil proyek sudah pernah dimasukkan.";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    }
+                    if (!req.file) {
+                        error_message = "Dokumen hasil proyek wajib diunggah.";
+                        req.flash('error_message', error_message);
+                        return res.redirect('back');
+                    }
+                    else {
+                        project.revenue[0].amount = parseInt(req.body.project_revenue.split('.').join(""));
+                        project.revenue[0].document = req.file.filename;
+                        project.save().then(project => {
+                            console.log(project.revenue[0].amount)
+                            success_message = "Berhasil menambahkan hasil proyek.";
+                            req.flash('success_message', success_message);
+                            return res.redirect('back');
+                        }).catch(error => {
+                            error_message = "Terjadi kesalahan";
+                            req.flash('error_message', error_message);
+                            return res.redirect('back');
+                        });    
+                    }
+                }
+            });
+        }
+    });
+
+})
 
 const officialRecordStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -1952,7 +2124,6 @@ const officialRecordUpload = multer({
         }
         else {            
             // To accept the file pass `true`, like so:
-
             getProjectByID(req.body.project, async function (error, project) {
                 if (error) {                    
                     return cb(null, false)
@@ -1999,7 +2170,6 @@ const officialRecordUpload = multer({
                 }
             });
         }
-
         // You can always pass an error if something goes wrong:
         // cb(new Error('I don\'t have a clue!'))
     }

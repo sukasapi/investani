@@ -42,12 +42,7 @@
                 </a>
 
                 <div class="user-menu dropdown-menu">
-                    <% if (user.user_type[0].name == 'super_admin') { %>
-                        <a class="nav-link" href="#"><i class="fa fa-user"></i>My Profile</a>
-                    <% } %>
-                    <% if (user.user_type[0].name != 'super_admin') { %>
-                        <a class="nav-link" href="/admin/user/management/detail/<%= user._id %>"><i class="fa fa-user"></i>My Profile</a>
-                    <% } %>
+                    <a class="nav-link" href="/admin/user/management/detail/<%= user._id %>"><i class="fa fa-user"></i>My Profile</a>
 
                     <a class="nav-link" href="#"><i class="fa fa-cog"></i>Settings</a>
 

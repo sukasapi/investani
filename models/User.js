@@ -171,6 +171,9 @@ let UserSchema = mongoose.Schema({
   contract : {
     type: String
   },
+  charge: {
+    type: Number
+  },
   createdBy: {
     type: Schema.Types.ObjectId, ref: 'User'
   },

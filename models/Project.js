@@ -112,6 +112,14 @@ let ProjectSchema = mongoose.Schema({
     status: {
         type: String
     },
+    revenue: [{
+        amount: {
+            type: Number
+        },
+        document: {
+            type: String
+        }
+    }],
     category: { type: Schema.Types.ObjectId, ref: 'Category' },
     sub_category: {
         type: Schema.Types.ObjectId

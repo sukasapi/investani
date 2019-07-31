@@ -311,14 +311,14 @@ router.get('/user/management/add', isLoggedIn, isSuperAdmin, function (req, res)
 });
 router.get('/user/management/detail/:user_id', isLoggedIn, isAdmin, function (req, res) {
     let error_message;
-    if (req.user.user_type[0].name != 'super_admin') {
-        if (!req.user._id.equals(req.params.user_id)) {
-            error_message = "User tidak tersedia.";
-            req.flash('error_message', error_message);
-            return res.redirect('back');
-        }
-    }
-    User.findOne({'_id': req.params.user_id, $or: [{'user_type.name': 'analyst_admin'}, {'user_type.name': 'cooperative_admin'}]}, function (error, user) {
+    // if (req.user.user_type[0].name != 'super_admin') {
+    //     if (!req.user._id.equals(req.params.user_id)) {
+    //         error_message = "User tidak tersedia.";
+    //         req.flash('error_message', error_message);
+    //         return res.redirect('back');
+    //     }
+    // }
+    User.findOne({'_id': req.params.user_id, $or: [{'user_type.name': 'super_admin'}, {'user_type.name': 'analyst_admin'}, {'user_type.name': 'cooperative_admin'}]}, function (error, user) {
         if (error) {
             error_message = "Terjadi kesalahan";
             req.flash('error_message', error_message);
@@ -1878,12 +1878,17 @@ router.post('/user/management/edit/:user_id', isLoggedIn, isAdmin, function (req
     let success_message;
     let error_message;
     
-    req.checkBody('address', 'Alamat perusahaan wajib diisi.').notEmpty();
-    req.checkBody('position', 'Jabatan wajib diisi.').notEmpty();
-    req.checkBody('identity_number', 'NIK wajib diisi.').notEmpty();
-    req.checkBody('company_name', 'Nama perusahaan wajib diisi.').notEmpty();
-    req.checkBody('name', 'Nama lengkap wajib diisi.').notEmpty();
-    if (req.user.user_type[0].name == 'super_admin') {
+    req.checkBody('charge', 'Biaya Platform antara 0%-100%').isInt({
+        min: 0,
+        max: 100
+    })
+    req.checkBody('charge', 'Biaya Platform wajib diisi').notEmpty();
+    if (req.user.user_type[0].name == 'super_admin' && !req.user._id.equals(req.params.user_id)) {
+        req.checkBody('address', 'Alamat perusahaan wajib diisi.').notEmpty();
+        req.checkBody('position', 'Jabatan wajib diisi.').notEmpty();
+        req.checkBody('identity_number', 'NIK wajib diisi.').notEmpty();
+        req.checkBody('company_name', 'Nama perusahaan wajib diisi.').notEmpty();
+        req.checkBody('name', 'Nama lengkap wajib diisi.').notEmpty();
         req.checkBody('user_type', 'Jenis admin wajib dipilih.').notEmpty();
     }
     req.checkBody('email', 'Email harus berupa alamat email yang benar.').isEmail();
@@ -1904,7 +1909,7 @@ router.post('/user/management/edit/:user_id', isLoggedIn, isAdmin, function (req
                 return res.redirect('back');
             }
         }
-        User.findOne({'_id': req.params.user_id, $or: [{'user_type.name': 'analyst_admin'}, {'user_type.name': 'cooperative_admin'}]}, function (error, user) {
+        User.findOne({'_id': req.params.user_id, $or: [{'user_type.name': 'super_admin'}, {'user_type.name': 'analyst_admin'}, {'user_type.name': 'cooperative_admin'}]}, function (error, user) {
             if (error) {
                 error_message = "Terjadi Kesalahan";
                 req.flash('error_message', error_message);
@@ -1925,12 +1930,15 @@ router.post('/user/management/edit/:user_id', isLoggedIn, isAdmin, function (req
                         }
                         else {
                             user.email = req.body.email;
-                            user.user_type[0].name = req.body.user_type;
-                            user.profile[0].name = req.body.name;
-                            user.occupation[0].company_name = req.body.company_name;
-                            user.document[0].identity_number = req.body.identity_number;
-                            user.occupation[0].position = req.body.position;
-                            user.profile[0].address = req.body.address;
+                            if (req.body.name) {
+                                user.user_type[0].name = req.body.user_type;
+                                user.profile[0].name = req.body.name;
+                                user.occupation[0].company_name = req.body.company_name;
+                                user.document[0].identity_number = req.body.identity_number;
+                                user.occupation[0].position = req.body.position;
+                                user.profile[0].address = req.body.address;
+                            }
+                            user.charge = req.body.charge;
                             user.updatedAt = req.user._id;
                             if (req.body.active == '1') {
                                 user.active = true;
@@ -1955,13 +1963,16 @@ router.post('/user/management/edit/:user_id', isLoggedIn, isAdmin, function (req
                     if (req.body.user_type) {
                         user.user_type[0].name = req.body.user_type;
                     }
-                    user.profile[0].name = req.body.name;
-                    user.occupation[0].company_name = req.body.company_name;
-                    user.document[0].identity_number = req.body.identity_number;
-                    user.occupation[0].position = req.body.position;
-                    user.profile[0].address = req.body.address;
+                    if (req.body.name) {
+                        user.profile[0].name = req.body.name;
+                        user.occupation[0].company_name = req.body.company_name;
+                        user.document[0].identity_number = req.body.identity_number;
+                        user.occupation[0].position = req.body.position;
+                        user.profile[0].address = req.body.address;
+                    }
+                    user.charge = req.body.charge;
                     user.updatedBy = req.user._id;
-                    if (req.body.active == '1' || req.user.user_type[0].name == 'cooperative_admin' || req.user.user_type[0].name == 'analyst_admin') {
+                    if (req.body.active == '1' || req.user.user_type[0].name == 'super_admin' || req.user.user_type[0].name == 'cooperative_admin' || req.user.user_type[0].name == 'analyst_admin') {
                         user.active = true;
                     }
                     else {
